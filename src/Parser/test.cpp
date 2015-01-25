@@ -31,7 +31,13 @@ template<>
 class Traits<Test>
 {
     public:
-        static constexpr TraitType type = TraitType::Map;
+        using Members = std::tuple<std::pair<char const*, int Test::*>, std::pair<char const*, float Test::*>>;
+        static constexpr TraitType  type = TraitType::Map;
+        static Members const& getMember()
+        {
+            static constexpr Members    members{{"anInt", &Test::anInt}, {"aFloat", &Test::aFloat}};
+            return members;
+        }
 };
     }
 }

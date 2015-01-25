@@ -61,18 +61,41 @@ template<> SerializerForBlock<TraitType::Map>::~SerializerForBlock()            
 template<> SerializerForBlock<TraitType::Array>::SerializerForBlock(PrinterInterface const& printer)   :printer(printer)   {std::cout << "[";}
 template<> SerializerForBlock<TraitType::Array>::~SerializerForBlock()                                                     {std::cout << "]";}
 
+class SerializeMember
+{
+    public:
+        template<typename T, typename M>
+        SerializeMember(T const& object, M const& memberInfo, bool first)
+        {
+            std::cout << (first?",":"") << memberInfo.first << " : " << (object.*(memberInfo.second)) << "\n";
+        }
+};
+
 template<typename T>
 class Serializer
 {
     PrinterInterface const& printer;
+
+    template<typename Members, std::size_t... Seq>
+    void printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
+    {
+        std::make_tuple(SerializeMember(object, std::get<Seq>(member), Seq)...);
+    }
+    template<typename Members>
+    void printMembers(T const& object, Members const& members)
+    {
+        printEachMember(object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
+    }
     public:
         Serializer(PrinterInterface const& printer)
             : printer(printer)
         {}
 
-        void print(T const&)
+        void print(T const& object)
         {
             SerializerForBlock<Traits<T>::type>     block(printer);
+
+            printMembers(object, Traits<T>::getMember());
         }
 };
 
