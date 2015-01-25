@@ -35,33 +35,34 @@ class YamlPrinter: public TA::PrinterInterface
 
     std::vector<std::pair<bool, TA::TraitType>> state;
     public:
+        using TA::PrinterInterface::PrinterInterface;
         virtual void openMap()
         {
-            std::cout << Indent(state.size()) << "{\n";
+            output << Indent(state.size()) << "{\n";
             state.emplace_back(false, TA::TraitType::Map);
         }
         virtual void closeMap()
         {
             state.pop_back();
-            std::cout << Indent(state.size()) << "}\n";
+            output << Indent(state.size()) << "}\n";
         }
         virtual void openArray()
         {
-            std::cout << Indent(state.size()) << "[\n";
+            output << Indent(state.size()) << "[\n";
             state.emplace_back(false, TA::TraitType::Map);
         }
         virtual void closeArray()
         {
             state.pop_back();
-            std::cout << Indent(state.size()) << "]\n";
+            output << Indent(state.size()) << "]\n";
         }
 
-        virtual void addKey(std::string const& key)         {std::cout << Indent(state.size()) << Comma(state.back().first) << '"' << key << '"' << ':';}
-        virtual void addValue(bool value)                   {std::cout << std::boolalpha << value << "\n";}
-        virtual void addValue(int value)                    {std::cout << value << "\n";}
-        virtual void addValue(double value)                 {std::cout << value << "\n";}
-        virtual void addValue(std::nullptr_t)               {std::cout << "Null\n";}
-        virtual void addValue(std::string const& value)     {std::cout << '"' << value << '"' << "\n";}
+        virtual void addKey(std::string const& key)         {output << Indent(state.size()) << Comma(state.back().first) << '"' << key << '"' << ':';}
+        virtual void addValue(bool value)                   {output << std::boolalpha << value << "\n";}
+        virtual void addValue(int value)                    {output << value << "\n";}
+        virtual void addValue(double value)                 {output << value << "\n";}
+        virtual void addValue(std::nullptr_t)               {output << "Null\n";}
+        virtual void addValue(std::string const& value)     {output << '"' << value << '"' << "\n";}
 };
 
 class Test
@@ -115,7 +116,7 @@ int main()
     parser.parse(object1);
     parser.parse(object2);
 
-    YamlPrinter                 yamlPrinter;
+    YamlPrinter                 yamlPrinter(std::cout);
     TA::Serializer<Test>        printer(yamlPrinter);
 
     printer.print(object1);

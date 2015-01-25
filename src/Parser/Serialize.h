@@ -18,6 +18,11 @@ class ParserInterface
 class PrinterInterface
 {
     public:
+        std::ostream&   output;
+
+        PrinterInterface(std::ostream& output)
+            : output(output)
+        {}
         virtual ~PrinterInterface() {}
         virtual void openMap()      = 0;
         virtual void closeMap()     = 0;
