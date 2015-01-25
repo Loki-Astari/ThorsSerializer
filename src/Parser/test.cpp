@@ -11,6 +11,57 @@ class JsonParser: public TA::ParserInterface
 
 class YamlPrinter: public TA::PrinterInterface
 {
+    class Indent
+    {
+        int     size;
+        public:
+            Indent(int size) : size(size) {}
+            friend std::ostream& operator<<(std::ostream& stream, Indent const& data)
+            {
+                return stream << std::string(data.size, '\t');
+            }
+    };
+    struct Comma
+    {
+        bool& needComma;
+        Comma(bool& needComma): needComma(needComma) {}
+        friend std::ostream& operator<<(std::ostream& stream, Comma const& data)
+        {
+            stream << (data.needComma ? "," : " ");
+            data.needComma = true;
+            return stream;
+        }
+    };
+
+    std::vector<std::pair<bool, TA::TraitType>> state;
+    public:
+        virtual void openMap()
+        {
+            std::cout << Indent(state.size()) << "{\n";
+            state.emplace_back(false, TA::TraitType::Map);
+        }
+        virtual void closeMap()
+        {
+            state.pop_back();
+            std::cout << Indent(state.size()) << "}\n";
+        }
+        virtual void openArray()
+        {
+            std::cout << Indent(state.size()) << "[\n";
+            state.emplace_back(false, TA::TraitType::Map);
+        }
+        virtual void closeArray()
+        {
+            state.pop_back();
+            std::cout << Indent(state.size()) << "]\n";
+        }
+
+        virtual void addKey(std::string const& key)         {std::cout << Indent(state.size()) << Comma(state.back().first) << '"' << key << '"' << ':';}
+        virtual void addValue(bool value)                   {std::cout << std::boolalpha << value << "\n";}
+        virtual void addValue(int value)                    {std::cout << value << "\n";}
+        virtual void addValue(double value)                 {std::cout << value << "\n";}
+        virtual void addValue(std::nullptr_t)               {std::cout << "Null\n";}
+        virtual void addValue(std::string const& value)     {std::cout << '"' << value << '"' << "\n";}
 };
 
 class Test
@@ -31,11 +82,21 @@ template<>
 class Traits<Test>
 {
     public:
-        using Members = std::tuple<std::pair<char const*, int Test::*>, std::pair<char const*, float Test::*>>;
+        using Members = std::tuple< std::pair<char const*, int Test::*>,
+                                    std::pair<char const*, float Test::*>,
+                                    std::pair<char const*, double Test::*>,
+                                    std::pair<char const*, bool Test::*>,
+                                    std::pair<char const*, std::string Test::*>
+                                  >;
         static constexpr TraitType  type = TraitType::Map;
         static Members const& getMember()
         {
-            static constexpr Members    members{{"anInt", &Test::anInt}, {"aFloat", &Test::aFloat}};
+            static constexpr Members    members{{"anInt", &Test::anInt},
+                                                {"aFloat", &Test::aFloat},
+                                                {"aDouble", &Test::aDouble},
+                                                {"aBool", &Test::aBool},
+                                                {"aString", &Test::aString}
+                                               };
             return members;
         }
 };

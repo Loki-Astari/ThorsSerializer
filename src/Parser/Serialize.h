@@ -3,6 +3,7 @@
 #define THORS_ANVIL_SERIALIZATION_SERIALIZE_H
 
 #include <iostream>
+#include <vector>
 
 namespace ThorsAnvil
 {
@@ -18,6 +19,17 @@ class PrinterInterface
 {
     public:
         virtual ~PrinterInterface() {}
+        virtual void openMap()      = 0;
+        virtual void closeMap()     = 0;
+        virtual void openArray()    = 0;
+        virtual void closeArray()   = 0;
+
+        virtual void addKey(std::string const& key)     = 0;
+        virtual void addValue(bool value)               = 0;
+        virtual void addValue(int value)                = 0;
+        virtual void addValue(double value)             = 0;
+        virtual void addValue(std::nullptr_t)           = 0;
+        virtual void addValue(std::string const& value) = 0;
 };
 
 enum class TraitType {Invalid, Parent, Value, Map, Array};
@@ -43,43 +55,44 @@ template<TraitType traitType>
 class SerializerForBlock
 {
     static_assert(traitType != TraitType::Invalid, "Invalid Serialization TraitType. This usually means you have not define ThorsAnvil::Serialization::Traits<Your Type>");
-    PrinterInterface const&     printer;
+    PrinterInterface&     printer;
     public:
-         SerializerForBlock(PrinterInterface const& printer);
+         SerializerForBlock(PrinterInterface& printer);
         ~SerializerForBlock();
 };
 
 // Need to define this for TraitType::Parent
 // But have not examined that yet
 
-template<> SerializerForBlock<TraitType::Value>::SerializerForBlock(PrinterInterface const& printer)   :printer(printer)   {}
-template<> SerializerForBlock<TraitType::Value>::~SerializerForBlock()                                                     {}
+template<> SerializerForBlock<TraitType::Value>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {}
+template<> SerializerForBlock<TraitType::Value>::~SerializerForBlock()                                               {}
 
-template<> SerializerForBlock<TraitType::Map>::SerializerForBlock(PrinterInterface const& printer)     :printer(printer)   {std::cout << "{";}
-template<> SerializerForBlock<TraitType::Map>::~SerializerForBlock()                                                       {std::cout << "}";}
+template<> SerializerForBlock<TraitType::Map>::SerializerForBlock(PrinterInterface& printer)     :printer(printer)   {printer.openMap();}
+template<> SerializerForBlock<TraitType::Map>::~SerializerForBlock()                                                 {printer.closeMap();}
 
-template<> SerializerForBlock<TraitType::Array>::SerializerForBlock(PrinterInterface const& printer)   :printer(printer)   {std::cout << "[";}
-template<> SerializerForBlock<TraitType::Array>::~SerializerForBlock()                                                     {std::cout << "]";}
+template<> SerializerForBlock<TraitType::Array>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {printer.openArray();}
+template<> SerializerForBlock<TraitType::Array>::~SerializerForBlock()                                               {printer.closeArray();}
 
 class SerializeMember
 {
     public:
         template<typename T, typename M>
-        SerializeMember(T const& object, M const& memberInfo, bool first)
+        SerializeMember(PrinterInterface& printer, T const& object, M const& memberInfo)
         {
-            std::cout << (first?",":"") << memberInfo.first << " : " << (object.*(memberInfo.second)) << "\n";
+            printer.addKey(memberInfo.first);
+            printer.addValue(object.*(memberInfo.second));
         }
 };
 
 template<typename T>
 class Serializer
 {
-    PrinterInterface const& printer;
+    PrinterInterface& printer;
 
     template<typename Members, std::size_t... Seq>
     void printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
     {
-        std::make_tuple(SerializeMember(object, std::get<Seq>(member), Seq)...);
+        std::make_tuple(SerializeMember(printer, object, std::get<Seq>(member))...);
     }
     template<typename Members>
     void printMembers(T const& object, Members const& members)
@@ -87,7 +100,7 @@ class Serializer
         printEachMember(object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
     }
     public:
-        Serializer(PrinterInterface const& printer)
+        Serializer(PrinterInterface& printer)
             : printer(printer)
         {}
 
