@@ -23,6 +23,19 @@ class Test
         std::string     aString;
 };
 
+namespace ThorsAnvil
+{
+    namespace Serialization
+    {
+template<>
+class Traits<Test>
+{
+    public:
+        static constexpr TraitType type = TraitType::Map;
+};
+    }
+}
+
 
 int main()
 {
