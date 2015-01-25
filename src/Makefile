@@ -1,7 +1,7 @@
 
-THORSANVIL_ROOT				= $(realpath ./)
+THORSANVIL_ROOT				= $(realpath ../)
 
-TARGET						= src
+TARGET						= Parser
 
 include $(THORSANVIL_ROOT)/build/tools/Project.Makefile
 
