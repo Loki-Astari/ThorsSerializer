@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#
+# Change this as required to point at the root of ThorsAnvil code
+ROOT=$(pwd)
+THORSANVIL_ROOT=$(dirname ${ROOT})
+
+pushd ${THORSANVIL_ROOT}
+git submodule init
+git submodule update
+cd build/third
+./setup
+popd
+
+
+install="sudo apt-get --yes"
+check="list"
+
+host=`uname`
+if [[ "${host}" == "Darwin" ]]; then
+    # This is a mac use brew
+    install="brew"
+    check="brew"
+fi
+
+if [[ "${host}" == "Linux" ]]; then
+    ${install} install libboost-dev
+    ${install} install libboost-doc
+fi
+if [[ "${host}" == "Darwin" ]]; then
+    ${check} list boost >/dev/null 2>&1 || { echo >&2 "boost required but not install. Will attempt to install"; exit 1; }
+    if [[ $? == 1 ]]; then
+        ${install} install boost
+    fi
+fi
+
+

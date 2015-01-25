@@ -1,0 +1,7 @@
+*.o
+unittest
+coverage/
+debug/
+release/
+profile/
+makefile_tmp
