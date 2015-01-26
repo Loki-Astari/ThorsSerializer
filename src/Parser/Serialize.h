@@ -13,7 +13,20 @@ namespace ThorsAnvil
 class ParserInterface
 {
     public:
+        enum class ParserToken {Error, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
+        std::istream&   input;
+
+        ParserInterface(std::istream& input)
+            : input(input)
+        {}
         virtual ~ParserInterface() {}
+        virtual ParserToken     getToken()              = 0;
+        virtual std::string     getKey()                = 0;
+        virtual void    getValue(bool& value)           = 0;
+        virtual void    getValue(int& value)            = 0;
+        virtual void    getValue(double& value)         = 0;
+        virtual void    getValue(std::nullptr_t)        = 0;
+        virtual void    getValue(std::string& value)    = 0;
 };
 class PrinterInterface
 {
@@ -45,15 +58,58 @@ class Traits
         static constexpr TraitType type = TraitType::Invalid;
 };
 
+class DeSerializeMember
+{
+    using ParserToken = ParserInterface::ParserToken;
+    public:
+        template<typename T, typename Member>
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, Member const& memberInfo)
+        {
+            if (key.compare(memberInfo.first) == 0)
+            {
+                parser.getValue(object.*(memberInfo.second));
+            }
+        }
+};
+
 template<typename T>
 class DeSerializer
 {
+    using ParserToken = ParserInterface::ParserToken;
+    ParserInterface&    parser;
+
+    template<typename Members, std::size_t... Seq>
+    void scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
+    {
+        std::make_tuple(DeSerializeMember(parser, key, object, std::get<Seq>(member))...);
+    }
+    template<typename Members>
+    void scanMembers(std::string const& key, T& object, Members& members)
+    {
+        scanEachMember(key, object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
+    }
     public:
-        DeSerializer(ParserInterface const&)
+        DeSerializer(ParserInterface& parser)
+            : parser(parser)
         {}
 
-        void parse(T&)
-        {}
+        void parse(T& object)
+        {
+
+            ParserToken     tokenType = parser.getToken();
+            if (tokenType != ParserToken::MapStart)
+            {   throw "Invalid Object Start";
+            }
+
+            while((tokenType = parser.getToken()) != ParserToken::MapEnd)
+            {
+                if (tokenType != ParserToken::Key)
+                {   throw "Expecting key token";
+                }
+                std::string key = parser.getKey();
+                scanMembers(key, object, Traits<T>::getMembers());
+            }
+        }
 };
 
 template<TraitType traitType>
@@ -113,7 +169,7 @@ class Serializer
         {
             SerializerForBlock<Traits<T>::type>     block(printer);
 
-            printMembers(object, Traits<T>::getMember());
+            printMembers(object, Traits<T>::getMembers());
         }
 };
 

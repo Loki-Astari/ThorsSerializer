@@ -7,6 +7,15 @@ namespace TA = ThorsAnvil::Serialization;
 
 class JsonParser: public TA::ParserInterface
 {
+    public:
+        using TA::ParserInterface::ParserInterface;
+        virtual ParserToken getToken()              {return ParserInterface::ParserToken::Error;}
+        virtual std::string getKey()                {return "XX";}
+        virtual void    getValue(bool& value)       {value = true;}
+        virtual void    getValue(int& value)        {value = 5;}
+        virtual void    getValue(double& value)     {value = 6.7;}
+        virtual void    getValue(std::nullptr_t)    {}
+        virtual void    getValue(std::string& value){value = "10 is a number";}
 };
 
 class YamlPrinter: public TA::PrinterInterface
@@ -84,16 +93,16 @@ class Traits<Test>
 {
     public:
         using Members = std::tuple< std::pair<char const*, int Test::*>,
-                                    std::pair<char const*, float Test::*>,
+ //                                   std::pair<char const*, float Test::*>,
                                     std::pair<char const*, double Test::*>,
                                     std::pair<char const*, bool Test::*>,
                                     std::pair<char const*, std::string Test::*>
                                   >;
         static constexpr TraitType  type = TraitType::Map;
-        static Members const& getMember()
+        static Members const& getMembers()
         {
             static constexpr Members    members{{"anInt", &Test::anInt},
-                                                {"aFloat", &Test::aFloat},
+//                                                {"aFloat", &Test::aFloat},
                                                 {"aDouble", &Test::aDouble},
                                                 {"aBool", &Test::aBool},
                                                 {"aString", &Test::aString}
@@ -110,7 +119,7 @@ int main()
     Test                        object1{5, 6.7, 8.9, true, "Test"};
     Test                        object2{3, 0.14159269, 8, false, "This is a string"};
 
-    JsonParser                  jsonParser;
+    JsonParser                  jsonParser(std::cin);
     TA::DeSerializer<Test>      parser(jsonParser);
 
     parser.parse(object1);
