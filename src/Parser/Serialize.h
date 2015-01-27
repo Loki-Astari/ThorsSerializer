@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cstdlib>
 
 namespace ThorsAnvil
 {
@@ -13,7 +14,7 @@ namespace ThorsAnvil
 class ParserInterface
 {
     public:
-        enum class ParserToken {Error, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
+        enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
         std::istream&   input;
 
         ParserInterface(std::istream& input)
@@ -95,8 +96,18 @@ class DeSerializer
 
         void parse(T& object)
         {
-
+            // Note:
+            //  Note: all elements are going to have a DocStart/DocEnd pair
+            //  Just the outer set. So that is something that we will need to deal with
+            //
+            //  Note: We also need to take care of arrays at the top level
+            //  We will get that in the next version
             ParserToken     tokenType = parser.getToken();
+            if (tokenType != ParserToken::DocStart)
+            {   throw "Invalid Doc Start";
+            }
+
+            tokenType = parser.getToken();
             if (tokenType != ParserToken::MapStart)
             {   throw "Invalid Object Start";
             }
@@ -107,7 +118,16 @@ class DeSerializer
                 {   throw "Expecting key token";
                 }
                 std::string key = parser.getKey();
+
+                tokenType = parser.getToken();
+                if (tokenType != ParserToken::Value)
+                {   throw "Expecting Value Token";
+                }
                 scanMembers(key, object, Traits<T>::getMembers());
+            }
+
+            if (tokenType == ParserToken::DocEnd)
+            {   throw "Expected Doc End";
             }
         }
 };
@@ -125,14 +145,14 @@ class SerializerForBlock
 // Need to define this for TraitType::Parent
 // But have not examined that yet
 
-template<> SerializerForBlock<TraitType::Value>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {}
-template<> SerializerForBlock<TraitType::Value>::~SerializerForBlock()                                               {}
+template<> inline SerializerForBlock<TraitType::Value>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {}
+template<> inline SerializerForBlock<TraitType::Value>::~SerializerForBlock()                                               {}
 
-template<> SerializerForBlock<TraitType::Map>::SerializerForBlock(PrinterInterface& printer)     :printer(printer)   {printer.openMap();}
-template<> SerializerForBlock<TraitType::Map>::~SerializerForBlock()                                                 {printer.closeMap();}
+template<> inline SerializerForBlock<TraitType::Map>::SerializerForBlock(PrinterInterface& printer)     :printer(printer)   {printer.openMap();}
+template<> inline SerializerForBlock<TraitType::Map>::~SerializerForBlock()                                                 {printer.closeMap();}
 
-template<> SerializerForBlock<TraitType::Array>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {printer.openArray();}
-template<> SerializerForBlock<TraitType::Array>::~SerializerForBlock()                                               {printer.closeArray();}
+template<> inline SerializerForBlock<TraitType::Array>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {printer.openArray();}
+template<> inline SerializerForBlock<TraitType::Array>::~SerializerForBlock()                                               {printer.closeArray();}
 
 class SerializeMember
 {

@@ -1,22 +1,11 @@
 
 
 #include "Serialize.h"
+#include "JsonParser.h"
 #include <string>
+#include <sstream>
 
 namespace TA = ThorsAnvil::Serialization;
-
-class JsonParser: public TA::ParserInterface
-{
-    public:
-        using TA::ParserInterface::ParserInterface;
-        virtual ParserToken getToken()              {return ParserInterface::ParserToken::Error;}
-        virtual std::string getKey()                {return "XX";}
-        virtual void    getValue(bool& value)       {value = true;}
-        virtual void    getValue(int& value)        {value = 5;}
-        virtual void    getValue(double& value)     {value = 6.7;}
-        virtual void    getValue(std::nullptr_t)    {}
-        virtual void    getValue(std::string& value){value = "10 is a number";}
-};
 
 class YamlPrinter: public TA::PrinterInterface
 {
@@ -114,21 +103,34 @@ class Traits<Test>
 }
 
 
-int main()
+void test()
 {
     Test                        object1{5, 6.7, 8.9, true, "Test"};
     Test                        object2{3, 0.14159269, 8, false, "This is a string"};
 
-    JsonParser                  jsonParser(std::cin);
+    std::stringstream           data("{\"anInt\": 5, \"aFloat\": 6.7, \"aDouble\": 8.9, \"aBool\": true, \"aString\": \"Test\"}");
+    TA::JsonParser              jsonParser(data);
     TA::DeSerializer<Test>      parser(jsonParser);
 
     parser.parse(object1);
-    parser.parse(object2);
+    //parser.parse(object2);
 
     YamlPrinter                 yamlPrinter(std::cout);
     TA::Serializer<Test>        printer(yamlPrinter);
 
     printer.print(object1);
     printer.print(object2);
+}
+
+int main()
+{
+    try
+    {
+        test();
+    }
+    catch(char const* msg)
+    {
+        std::cerr << "Exception: " << msg << "\n";
+    }
 }
 

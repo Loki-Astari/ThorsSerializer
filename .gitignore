@@ -1,4 +1,6 @@
 *.o
+*.lex.cpp
+.*.swp
 unittest
 coverage/
 debug/
