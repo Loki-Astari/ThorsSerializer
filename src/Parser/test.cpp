@@ -105,10 +105,10 @@ class Traits<Test>
 
 void test()
 {
-    Test                        object1{5, 6.7, 8.9, true, "Test"};
-    Test                        object2{3, 0.14159269, 8, false, "This is a string"};
+    Test                        object1{1, 2.3, 4.5, true, "Test"};
+    Test                        object2{6, 7.8, 9.10, false, "This is a string"};
 
-    std::stringstream           data("{\"anInt\": 5, \"aFloat\": 6.7, \"aDouble\": 8.9, \"aBool\": true, \"aString\": \"Test\"}");
+    std::stringstream           data("{\"anInt\": 11, \"aFloat\": 12.13, \"aDouble\": 14.15, \"aBool\": true, \"aString\": \"String from a stream\"}");
     TA::JsonParser              jsonParser(data);
     TA::DeSerializer<Test>      parser(jsonParser);
 
