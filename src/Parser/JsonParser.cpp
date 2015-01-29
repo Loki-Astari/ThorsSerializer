@@ -108,11 +108,11 @@ ParserToken JsonParser::getToken()
         // We are leaving the containing object.
         // Pop the state we previously saved.
         case CloseM:
-            currentState    = parrentState.back();
+            currentEnd  = currentState    = parrentState.back();
             parrentState.pop_back();
             return ParserToken::MapEnd;
         case CloseA:
-            currentState    = parrentState.back();
+            currentEnd  = currentState    = parrentState.back();
             parrentState.pop_back();
             return ParserToken::ArrayEnd;
 
@@ -127,6 +127,10 @@ ParserToken JsonParser::getToken()
 
 std::string JsonParser::getString()
 {
+    if (lexer.YYLeng() < 2 || lexer.YYText()[0] != '"' || lexer.YYText()[lexer.YYLeng()-1] != '"')
+    {
+        throw "getValue(std::std::string): Not a String value";
+    }
     // Remember to drop the quotes
     return std::string(lexer.YYText() + 1, lexer.YYText() + lexer.YYLeng() - 1);
 }
@@ -138,17 +142,17 @@ std::string JsonParser::getKey()
 
 void JsonParser::getValue(bool& value)
 {
-    if (strncmp(lexer.YYText(), "true", 5) == 0)
+    if (lexer.YYLeng() == 4 && strncmp(lexer.YYText(), "true", 4) == 0)
     {
         value = true;
     }
-    else if (strncmp(lexer.YYText(), "false", 6) == 0)
+    else if (lexer.YYLeng() == 5 && strncmp(lexer.YYText(), "false", 5) == 0)
     {
         value = false;
     }
     else
     {
-        throw "getValue: Not a bool";
+        throw "getValue(bool): Not a bool";
     }
 }
 
@@ -158,7 +162,7 @@ void JsonParser::getValue(int& value)
     value = std::strtol(lexer.YYText(), &end, 10);
     if (lexer.YYText() + lexer.YYLeng() != end)
     {
-        throw "getValue(): Integer did not read whole token";
+        throw "getValue(int): Integer did not read whole token";
     }
 }
 
@@ -168,12 +172,16 @@ void JsonParser::getValue(double& value)
     value = std::strtod(lexer.YYText(), &end);
     if (lexer.YYText() + lexer.YYLeng() != end)
     {
-        throw "getValue(): Fload did not read whole token";
+        throw "getValue(double): Fload did not read whole token";
     }
 }
 
 void JsonParser::getValue(std::nullptr_t)
 {
+    if (lexer.YYLeng() != 4 || strncmp(lexer.YYText(), "null", 4) != 0)
+    {
+        throw "getValue(std::nullptr_t): Not a Null value";
+    }
 }
 
 void JsonParser::getValue(std::string& value)
