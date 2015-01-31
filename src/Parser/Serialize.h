@@ -32,10 +32,17 @@ class ParserInterface
 class PrinterInterface
 {
     public:
-        std::ostream&   output;
+        enum class OutputType {Default, Stream, Config};
+        // Default:     What ever the implementation likes.
+        // Stream:      Compressed for over the wire protocol.
+        // Config:      Human readable (potentially config file like)
 
-        PrinterInterface(std::ostream& output)
+        std::ostream&   output;
+        OutputType      characteristics;
+
+        PrinterInterface(std::ostream& output, OutputType characteristics = OutputType::Default)
             : output(output)
+            , characteristics(characteristics)
         {}
         virtual ~PrinterInterface() {}
         virtual void openMap()      = 0;
@@ -48,6 +55,7 @@ class PrinterInterface
         virtual void addValue(int value)                = 0;
         virtual void addValue(double value)             = 0;
         virtual void addValue(std::nullptr_t)           = 0;
+        virtual void addValue(char const* value)        = 0;
         virtual void addValue(std::string const& value) = 0;
 };
 

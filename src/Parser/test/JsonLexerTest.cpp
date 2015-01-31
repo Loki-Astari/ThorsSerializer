@@ -34,3 +34,4 @@ TEST(JsonLexerTest, ValueTokens)
     EXPECT_EQ(ThorsAnvil::Serialization::JSON_FALSE,   lexer.yylex());
     EXPECT_EQ(ThorsAnvil::Serialization::JSON_NULL,    lexer.yylex());
 }
+
