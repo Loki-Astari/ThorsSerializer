@@ -79,8 +79,8 @@ ParserToken JsonParser::getToken()
     switch(currentState)
     {
         // These states should be impossible to get too
-        case Init:      throw "Got into Init State";
-        case Done:      throw "Got into Done State";
+        case Init:      throw std::runtime_error("ThorsAnvil::Serialization::JsonParser: Got into Init State");
+        case Done:      throw std::runtime_error("ThorsAnvil::Serialization::JsonParser: Got into Done State");
         // The states that we actually want to return
         case Error:     return ParserToken::Error;
         case Key:       return ParserToken::Key;
@@ -123,14 +123,14 @@ ParserToken JsonParser::getToken()
     }
     // If we hit anything else there was a serious problem in the
     // parser itself.
-    throw "Reached an Unnamed State";
+    throw std::runtime_error("ThorsAnvil::Serialization::JsonParser: Reached an Unnamed State");
 };
 
 std::string JsonParser::getString()
 {
     if (lexer.YYLeng() < 2 || lexer.YYText()[0] != '"' || lexer.YYText()[lexer.YYLeng()-1] != '"')
     {
-        throw "getValue(std::std::string): Not a String value";
+        throw std::runtime_error("ThorsAnvil::Serialization::JsonParser: Not a String value");
     }
     // Remember to drop the quotes
     return std::string(make_UnicodeWrapperIterator(lexer.YYText() + 1),
@@ -154,7 +154,7 @@ void JsonParser::getValue(bool& value)
     }
     else
     {
-        throw "getValue(bool): Not a bool";
+        throw std::runtime_error("ThorsAnvil::Serialization::JsonParser: Not a bool");
     }
 }
 
@@ -164,7 +164,7 @@ void JsonParser::getValue(int& value)
     value = std::strtol(lexer.YYText(), &end, 10);
     if (lexer.YYText() + lexer.YYLeng() != end)
     {
-        throw "getValue(int): Integer did not read whole token";
+        throw std::runtime_error("ThorsAnvil::Serialization::JsonParser: Not an integer");
     }
 }
 
@@ -174,7 +174,7 @@ void JsonParser::getValue(double& value)
     value = std::strtod(lexer.YYText(), &end);
     if (lexer.YYText() + lexer.YYLeng() != end)
     {
-        throw "getValue(double): Fload did not read whole token";
+        throw std::runtime_error("ThorsAnvil::Serialization::JsonParser: Not a float");
     }
 }
 
@@ -182,7 +182,7 @@ void JsonParser::getValue(std::nullptr_t)
 {
     if (lexer.YYLeng() != 4 || strncmp(lexer.YYText(), "null", 4) != 0)
     {
-        throw "getValue(std::nullptr_t): Not a Null value";
+        throw std::runtime_error("ThorsAnvil::Serialization::JsonParser: Not a null");
     }
 }
 

@@ -112,30 +112,30 @@ class DeSerializer
             //  We will get that in the next version
             ParserToken     tokenType = parser.getToken();
             if (tokenType != ParserToken::DocStart)
-            {   throw "Invalid Doc Start";
+            {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Invalid Doc Start");
             }
 
             tokenType = parser.getToken();
             if (tokenType != ParserToken::MapStart)
-            {   throw "Invalid Object Start";
+            {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Invalid Object Start");
             }
 
             while((tokenType = parser.getToken()) != ParserToken::MapEnd)
             {
                 if (tokenType != ParserToken::Key)
-                {   throw "Expecting key token";
+                {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Expecting key token");
                 }
                 std::string key = parser.getKey();
 
                 tokenType = parser.getToken();
                 if (tokenType != ParserToken::Value)
-                {   throw "Expecting Value Token";
+                {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Expecting Value Token");
                 }
                 scanMembers(key, object, Traits<T>::getMembers());
             }
 
             if (tokenType == ParserToken::DocEnd)
-            {   throw "Expected Doc End";
+            {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Expected Doc End");
             }
         }
 };

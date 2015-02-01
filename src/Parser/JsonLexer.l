@@ -46,7 +46,7 @@ null            {return ThorsAnvil::Serialization::JSON_NULL;}
 {VALUE_FLOAT}   {return ThorsAnvil::Serialization::JSON_FLOAT;}
 
 {WHITESPACE}    {/*IGNORE*/}
-.               {throw "Invalid Character in Lexer";}
+.               {throw std::runtime_error("ThorsAnvil::Serialization::JsonLexer: Invalid Character in Lexer");}
 
 %%
 

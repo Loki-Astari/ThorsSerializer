@@ -26,7 +26,7 @@ long convertHexToDec(char x)
     {
         return 10 + (x - 'a');
     }
-    throw std::runtime_error("Invalid Hex Digit in unicode string");
+    throw std::runtime_error("ThorsAnvil::Serialization::UnicodeIterator: Invalid Hex Digit in unicode string");
 }
         }
 
@@ -50,12 +50,18 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, pt
         {
             if (unicodeCount == 6)
             {
-                if (x != '\\')  { throw std::runtime_error("Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");}
+                if (x != '\\')
+                {
+                    throw std::runtime_error("ThorsAnvil::Serialization::UnicodeIterator: Push->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");
+                }
                 --unicodeCount;
             }
             else if (unicodeCount == 5)
             {
-                if (x != 'u')   { throw std::runtime_error("Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");}
+                if (x != 'u')
+                {
+                    throw std::runtime_error("ThorsAnvil::Serialization::UnicodeIterator: Push->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");
+                }
                 --unicodeCount;
             }
             else
@@ -94,7 +100,10 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, pt
                     else
                     {
                         // Surrogate pair
-                        if ((unicodeValue & 0xFC00FC00) != 0xD800DC00){ throw std::runtime_error("Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx");}
+                        if ((unicodeValue & 0xFC00FC00) != 0xD800DC00)
+                        {
+                            throw std::runtime_error("ThorsAnvil::Serialization::UnicodeIterator: Push->Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx");
+                        }
 
                         // Decode surrogate pair
                         unicodeValue    = 0x00010000 | ((unicodeValue & 0x03FF0000) >> 6) | (unicodeValue & 0x000003FF);
@@ -127,10 +136,12 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, pt
         else
         {
             if (x == '\\')
-            {   lastWasSlash    = true;
+            {
+                lastWasSlash    = true;
             }
             else
-            {   cont.push_back(x);
+            {
+                cont.push_back(x);
             }
         }
     }
@@ -237,13 +248,13 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, ptrd
         char nextChar  = *iter;
         if (nextChar != '\\')
         {
-            throw std::runtime_error("Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");
+            throw std::runtime_error("ThorsAnvil::Serialization::UnicodeIterator: Iter->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");
         }
         ++iter;
         nextChar  = *iter;
         if (nextChar != 'u')
         {
-            throw std::runtime_error("Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");
+            throw std::runtime_error("ThorsAnvil::Serialization::UnicodeIterator: Iter->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");
         }
 
         unicodeValue = (unicodeValue << 16) + getUnicodeHex();
@@ -251,7 +262,7 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, ptrd
         // Surrogate pair
         if ((unicodeValue & 0xFC00FC00) != 0xD800DC00)
         {
-            throw std::runtime_error("Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx");
+            throw std::runtime_error("ThorsAnvil::Serialization::UnicodeIterator: Iter->Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx");
         }
 
         // Decode surrogate pair
