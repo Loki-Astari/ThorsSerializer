@@ -1,6 +1,7 @@
 
 #include "JsonParser.h"
 #include "JsonLexemes.h"
+#include "UnicodeIterator.h"
 #include <map>
 #include <cstdlib>
 
@@ -132,7 +133,8 @@ std::string JsonParser::getString()
         throw "getValue(std::std::string): Not a String value";
     }
     // Remember to drop the quotes
-    return std::string(lexer.YYText() + 1, lexer.YYText() + lexer.YYLeng() - 1);
+    return std::string(make_UnicodeWrapperIterator(lexer.YYText() + 1),
+                       make_UnicodeWrapperIterator(lexer.YYText() + lexer.YYLeng() - 1));
 }
 
 std::string JsonParser::getKey()

@@ -139,9 +139,9 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, pt
 template<typename I>
 struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, ptrdiff_t, char*,char&>
 {
-    I                                           iter;
-    std::vector<char>                           cont;
-    int                                         index;
+    I                   iter;
+    std::vector<char>   cont;
+    std::size_t         index;
     UnicodeWrapperIterator(I iter)
         : iter(iter)
         , index(0)
