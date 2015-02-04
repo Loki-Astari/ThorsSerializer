@@ -114,6 +114,11 @@ JsonPrinter::JsonPrinter(std::ostream& output, OutputType characteristics)
     state.emplace_back(0, TraitType::Value);
 }
 
+void JsonPrinter::openDoc()
+{}
+void JsonPrinter::closeDoc()
+{}
+
 void JsonPrinter::openMap()
 {
     output << PrefixMap(characteristics, state.size(), state.back()) << "{";

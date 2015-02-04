@@ -45,6 +45,8 @@ class PrinterInterface
             , characteristics(characteristics)
         {}
         virtual ~PrinterInterface() {}
+        virtual void openDoc()      = 0;
+        virtual void closeDoc()     = 0;
         virtual void openMap()      = 0;
         virtual void closeMap()     = 0;
         virtual void openArray()    = 0;
@@ -191,7 +193,13 @@ class Serializer
     public:
         Serializer(PrinterInterface& printer)
             : printer(printer)
-        {}
+        {
+            printer.openDoc();
+        }
+        ~Serializer()
+        {
+            printer.closeDoc();
+        }
 
         void print(T const& object)
         {
