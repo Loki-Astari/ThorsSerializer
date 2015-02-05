@@ -1,7 +1,7 @@
 
 THORSANVIL_ROOT				= $(realpath ../../)
 
-TARGET						= test.app
+TARGET						= ThorSerialize.$(SO)
 
 CPPFLAGS					+= -I/Users/myork/Repository/TS.old/build/include/
 PREFIX_LIB					+= /Users/myork/Repository/TS.old/build/lib/

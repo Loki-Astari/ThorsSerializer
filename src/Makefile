@@ -1,7 +1,7 @@
 
 THORSANVIL_ROOT				= $(realpath ../)
 
-TARGET						= Parser
+TARGET						= Serialize
 
 include $(THORSANVIL_ROOT)/build/tools/Project.Makefile
 
