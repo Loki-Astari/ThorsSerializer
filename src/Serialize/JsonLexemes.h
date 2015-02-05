@@ -1,13 +1,13 @@
 
-#ifndef THORS_ANVIL_SERIALIZATION_JSON_LEXEMES_H
-#define THORS_ANVIL_SERIALIZATION_JSON_LEXEMES_H
+#ifndef THORS_ANVIL_SERIALIZE_JSON_LEXEMES_H
+#define THORS_ANVIL_SERIALIZE_JSON_LEXEMES_H
 
 #include "Serialize.h"
 #include <string>
 
 namespace ThorsAnvil
 {
-    namespace Serialization
+    namespace Serialize
     {
 
 enum yytokentype {

@@ -1,13 +1,13 @@
 
-#ifndef THORS_ANVIL_SERIALIZATION_YAML_PRINTER_H
-#define THORS_ANVIL_SERIALIZATION_YAML_PRINTER_H
+#ifndef THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
+#define THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
 
 #include "Serialize.h"
 #include <yaml.h>
 
 namespace ThorsAnvil
 {
-    namespace Serialization
+    namespace Serialize
     {
 
 class YamlPrinter: public PrinterInterface

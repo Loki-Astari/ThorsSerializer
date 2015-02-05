@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "YamlParser.h"
 
-namespace TA=ThorsAnvil::Serialization;
+namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 
 TEST(YamlParserTest, ArrayEmpty)

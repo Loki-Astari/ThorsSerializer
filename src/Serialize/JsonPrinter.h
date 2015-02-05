@@ -1,12 +1,12 @@
 
-#ifndef THORS_ANVIL_SERIALIZATION_JSON_PRINTER_H
-#define THORS_ANVIL_SERIALIZATION_JSON_PRINTER_H
+#ifndef THORS_ANVIL_SERIALIZE_JSON_PRINTER_H
+#define THORS_ANVIL_SERIALIZE_JSON_PRINTER_H
 
 #include "Serialize.h"
 
 namespace ThorsAnvil
 {
-    namespace Serialization
+    namespace Serialize
     {
 
 class JsonPrinter: public PrinterInterface

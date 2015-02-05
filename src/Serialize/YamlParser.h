@@ -1,6 +1,6 @@
 
-#ifndef THORSANIVL_YAML_YAML_PARSER_H
-#define THORSANIVL_YAML_YAML_PARSER_H
+#ifndef THORS_ANIVL_SERIALIZE_YAML_PARSER_H
+#define THORS_ANIVL_SERIALIZE_YAML_PARSER_H
 
 #include "Serialize.h"
 #include <istream>
@@ -8,7 +8,7 @@
 
 namespace ThorsAnvil
 {
-    namespace Serialization
+    namespace Serialize
     {
 
 class YamlParser: public ParserInterface

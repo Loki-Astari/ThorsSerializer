@@ -1,6 +1,6 @@
 
-#ifndef THORS_ANVIL_SERIALIZATION_JSON_PARSER_H
-#define THORS_ANVIL_SERIALIZATION_JSON_PARSER_H
+#ifndef THORS_ANVIL_SERIALIZE_JSON_PARSER_H
+#define THORS_ANVIL_SERIALIZE_JSON_PARSER_H
 
 #include "Serialize.h"
 #include "JsonLexer.h"
@@ -10,7 +10,7 @@
 
 namespace ThorsAnvil
 {
-    namespace Serialization
+    namespace Serialize
     {
 
 class JsonParser: public ParserInterface

@@ -5,8 +5,8 @@
 
 TEST(YamlPrinterTest, ArrayTokens)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream);
 
     printer.openDoc();
     printer.openMap();
@@ -19,8 +19,8 @@ TEST(YamlPrinterTest, ArrayTokens)
 }
 TEST(YamlPrinterTest, MapTokens)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream);
 
     printer.openDoc();
     printer.openArray();
@@ -33,9 +33,9 @@ TEST(YamlPrinterTest, MapTokens)
 }
 TEST(YamlPrinterTest, ArrayValues)
 {
-    std::stringstream                       stream;
-    using ThorsAnvil::Serialization::PrinterInterface;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    using ThorsAnvil::Serialize::PrinterInterface;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray();
@@ -54,9 +54,9 @@ TEST(YamlPrinterTest, ArrayValues)
 }
 TEST(YamlPrinterTest, MapValues)
 {
-    std::stringstream                       stream;
-    using ThorsAnvil::Serialization::PrinterInterface;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    using ThorsAnvil::Serialize::PrinterInterface;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
     printer.openMap();
@@ -81,9 +81,9 @@ TEST(YamlPrinterTest, MapValues)
 }
 TEST(YamlPrinterTest, MapWithMapValues)
 {
-    std::stringstream                       stream;
-    using ThorsAnvil::Serialization::PrinterInterface;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    using ThorsAnvil::Serialize::PrinterInterface;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
     printer.openMap();
@@ -114,9 +114,9 @@ TEST(YamlPrinterTest, MapWithMapValues)
 }
 TEST(YamlPrinterTest, MapWithArrayValues)
 {
-    std::stringstream                       stream;
-    using ThorsAnvil::Serialization::PrinterInterface;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    using ThorsAnvil::Serialize::PrinterInterface;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
     printer.openMap();
@@ -143,9 +143,9 @@ TEST(YamlPrinterTest, MapWithArrayValues)
 }
 TEST(YamlPrinterTest, ArrayWithMapValues)
 {
-    std::stringstream                       stream;
-    using ThorsAnvil::Serialization::PrinterInterface;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    using ThorsAnvil::Serialize::PrinterInterface;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray();
@@ -172,9 +172,9 @@ TEST(YamlPrinterTest, ArrayWithMapValues)
 }
 TEST(YamlPrinterTest, ArrayWithArrayValues)
 {
-    std::stringstream                       stream;
-    using ThorsAnvil::Serialization::PrinterInterface;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    using ThorsAnvil::Serialize::PrinterInterface;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray();
@@ -197,8 +197,8 @@ TEST(YamlPrinterTest, ArrayWithArrayValues)
 }
 TEST(YamlPrinterTest, CloseMapWithArray)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, ThorsAnvil::Serialization::PrinterInterface::OutputType::Config);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Config);
 
     printer.openDoc();
     printer.openMap();
@@ -208,8 +208,8 @@ TEST(YamlPrinterTest, CloseMapWithArray)
 }
 TEST(YamlPrinterTest, CloseArrayWithMap)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, ThorsAnvil::Serialization::PrinterInterface::OutputType::Config);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Config);
 
     printer.openDoc();
     printer.openArray();
@@ -219,8 +219,8 @@ TEST(YamlPrinterTest, CloseArrayWithMap)
 }
 TEST(YamlPrinterTest, PuttingKeyInArray)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::YamlPrinter  printer(stream, ThorsAnvil::Serialization::PrinterInterface::OutputType::Config);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Config);
 
     printer.openDoc();
     printer.openArray();

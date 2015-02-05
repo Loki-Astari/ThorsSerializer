@@ -7,7 +7,7 @@ extern "C"
     int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size);
 }
 
-using namespace ThorsAnvil::Serialization;
+using namespace ThorsAnvil::Serialize;
 
 int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size)
 {
@@ -20,7 +20,7 @@ int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size)
 
 void YamlPrinter::checkYamlResultCode(int code, char const* method, char const* msg)
 {
-    static std::string const  msgBase   = "ThorsAnvil::Serialization::YamlPrinter::";
+    static std::string const  msgBase   = "ThorsAnvil::Serialize::YamlPrinter::";
 
     if (code == 0)
     {
@@ -154,7 +154,7 @@ void YamlPrinter::addKey(std::string const& key)
     if (state.back().second != TraitType::Map && state.back().first % 2 != 1)
     {
         error = true;
-        throw std::runtime_error("ThorsAnvil::Serialization::YamlPrinter: Invalid call to addKey(): Currently not in a map");
+        throw std::runtime_error("ThorsAnvil::Serialize::YamlPrinter: Invalid call to addKey(): Currently not in a map");
     }
     emit(key);
 }

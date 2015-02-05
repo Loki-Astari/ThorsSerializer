@@ -38,15 +38,15 @@ WHITESPACE      [ \t\n]
 \]              {return ']';}
 ,               {return ',';}
 :               {return ':';}
-true            {return ThorsAnvil::Serialization::JSON_TRUE;}
-false           {return ThorsAnvil::Serialization::JSON_FALSE;}
-null            {return ThorsAnvil::Serialization::JSON_NULL;}
-{VALUE_STRING}  {return ThorsAnvil::Serialization::JSON_STRING;}
-{VALUE_INTEGER} {return ThorsAnvil::Serialization::JSON_INTEGER;}
-{VALUE_FLOAT}   {return ThorsAnvil::Serialization::JSON_FLOAT;}
+true            {return ThorsAnvil::Serialize::JSON_TRUE;}
+false           {return ThorsAnvil::Serialize::JSON_FALSE;}
+null            {return ThorsAnvil::Serialize::JSON_NULL;}
+{VALUE_STRING}  {return ThorsAnvil::Serialize::JSON_STRING;}
+{VALUE_INTEGER} {return ThorsAnvil::Serialize::JSON_INTEGER;}
+{VALUE_FLOAT}   {return ThorsAnvil::Serialize::JSON_FLOAT;}
 
 {WHITESPACE}    {/*IGNORE*/}
-.               {throw std::runtime_error("ThorsAnvil::Serialization::JsonLexer: Invalid Character in Lexer");}
+.               {throw std::runtime_error("ThorsAnvil::Serialize::JsonLexer: Invalid Character in Lexer");}
 
 %%
 

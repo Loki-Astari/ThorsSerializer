@@ -1,7 +1,7 @@
 
 #include "YamlParser.h"
 
-using namespace ThorsAnvil::Serialization;
+using namespace ThorsAnvil::Serialize;
 
 extern "C"
 {
@@ -65,9 +65,9 @@ ParserInterface::ParserToken YamlParser::getToken()
 
     switch(event.type)
     {
-        case YAML_STREAM_START_EVENT:   generateParsingException("ThorsAnvil::Serialization::YamlParser: Start should only happen as first event");
-        case YAML_ALIAS_EVENT:          generateParsingException("ThorsAnvil::Serialization::YamlParser: Alias not supported");
-        case YAML_NO_EVENT:             generateParsingException("ThorsAnvil::Serialization::YamlParser: No Event not supported");
+        case YAML_STREAM_START_EVENT:   generateParsingException("ThorsAnvil::Serialize::YamlParser: Start should only happen as first event");
+        case YAML_ALIAS_EVENT:          generateParsingException("ThorsAnvil::Serialize::YamlParser: Alias not supported");
+        case YAML_NO_EVENT:             generateParsingException("ThorsAnvil::Serialize::YamlParser: No Event not supported");
 
         case YAML_STREAM_END_EVENT:
         {
@@ -77,14 +77,14 @@ ParserInterface::ParserToken YamlParser::getToken()
         case YAML_DOCUMENT_START_EVENT:
         {
             generateParsingException([&](){return (state.size() != 1 || state.back().first != State::Open || state.back().second != 0);},
-                    "ThorsAnvil::Serialization::YamlParser: Invalid document start event");
+                    "ThorsAnvil::Serialize::YamlParser: Invalid document start event");
             ++state.back().second;
             return ParserToken::DocStart;
         }
         case YAML_DOCUMENT_END_EVENT:
         {
             generateParsingException([&](){return (state.size() != 1 || state.back().first != State::Open);},
-                    "ThorsAnvil::Serialization::YamlParser: Invalid document end event");
+                    "ThorsAnvil::Serialize::YamlParser: Invalid document end event");
             return ParserToken::DocEnd;
         }
 
@@ -92,14 +92,14 @@ ParserInterface::ParserToken YamlParser::getToken()
         {
             ++state.back().second;
             generateParsingException([&](){return ((state.back().first == State::Map) && ((state.back().second % 2) == 1));},
-                    "ThorsAnvil::Serialization::YamlParser: Map is not a valid Key");
+                    "ThorsAnvil::Serialize::YamlParser: Map is not a valid Key");
             state.emplace_back(State::Map, 0);
             return ParserToken::MapStart;
         }
         case YAML_MAPPING_END_EVENT:
         {
             generateParsingException([&](){return ((state.back().second % 2) != 0);},
-                    "ThorsAnvil::Serialization::YamlParser: Maps must have key value pairs");
+                    "ThorsAnvil::Serialize::YamlParser: Maps must have key value pairs");
             state.pop_back();
             return ParserToken::MapEnd;
         }
@@ -108,7 +108,7 @@ ParserInterface::ParserToken YamlParser::getToken()
         {
             ++state.back().second;
             generateParsingException([&](){return ((state.back().first == State::Map) && ((state.back().second % 2) == 1));},
-                    "ThorsAnvil::Serialization::YamlParser: Array is not a valid Key");
+                    "ThorsAnvil::Serialize::YamlParser: Array is not a valid Key");
             state.emplace_back(State::Array, 0);
             return ParserToken::ArrayStart;
         }
@@ -194,7 +194,7 @@ void YamlParser::getValue(bool& value)
     }
     else
     {
-        throw std::runtime_error("ThorsAnvil::Serialization::YamlParser: Not a bool");
+        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not a bool");
     }
 }
 
@@ -206,7 +206,7 @@ void YamlParser::getValue(int& value)
     value = std::strtol(buffer, &end, 10);
     if (buffer + length != end)
     {
-        throw std::runtime_error("ThorsAnvil::Serialization::YamlParser: Not an integer");
+        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not an integer");
     }
 }
 
@@ -218,7 +218,7 @@ void YamlParser::getValue(double& value)
     value = std::strtod(buffer, &end);
     if (buffer + length != end)
     {
-        throw std::runtime_error("ThorsAnvil::Serialization::YamlParser: Not a float");
+        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not a float");
     }
 }
 
@@ -230,7 +230,7 @@ void YamlParser::getValue(std::nullptr_t)
     {}
     else
     {
-        throw std::runtime_error("ThorsAnvil::Serialization::YamlParser: Not a null");
+        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not a null");
     }
 }
 
