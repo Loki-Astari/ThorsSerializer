@@ -1,6 +1,6 @@
 
-#ifndef THORS_ANVIL_SERIALIZATION_SERIALIZE_H
-#define THORS_ANVIL_SERIALIZATION_SERIALIZE_H
+#ifndef THORS_ANVIL_SERIALIZE_SERIALIZE_H
+#define THORS_ANVIL_SERIALIZE_SERIALIZE_H
 
 #include <iostream>
 #include <vector>
@@ -8,7 +8,7 @@
 
 namespace ThorsAnvil
 {
-    namespace Serialization
+    namespace Serialize
     {
 
 class ParserInterface
@@ -45,6 +45,8 @@ class PrinterInterface
             , characteristics(characteristics)
         {}
         virtual ~PrinterInterface() {}
+        virtual void openDoc()      = 0;
+        virtual void closeDoc()     = 0;
         virtual void openMap()      = 0;
         virtual void closeMap()     = 0;
         virtual void openArray()    = 0;
@@ -112,30 +114,30 @@ class DeSerializer
             //  We will get that in the next version
             ParserToken     tokenType = parser.getToken();
             if (tokenType != ParserToken::DocStart)
-            {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Invalid Doc Start");
+            {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Invalid Doc Start");
             }
 
             tokenType = parser.getToken();
             if (tokenType != ParserToken::MapStart)
-            {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Invalid Object Start");
+            {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Invalid Object Start");
             }
 
             while((tokenType = parser.getToken()) != ParserToken::MapEnd)
             {
                 if (tokenType != ParserToken::Key)
-                {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Expecting key token");
+                {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting key token");
                 }
                 std::string key = parser.getKey();
 
                 tokenType = parser.getToken();
                 if (tokenType != ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Expecting Value Token");
+                {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting Value Token");
                 }
                 scanMembers(key, object, Traits<T>::getMembers());
             }
 
             if (tokenType == ParserToken::DocEnd)
-            {   throw std::runtime_error("ThorsAnvil::Serialization::Serialize: Expected Doc End");
+            {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expected Doc End");
             }
         }
 };
@@ -143,7 +145,7 @@ class DeSerializer
 template<TraitType traitType>
 class SerializerForBlock
 {
-    static_assert(traitType != TraitType::Invalid, "Invalid Serialization TraitType. This usually means you have not define ThorsAnvil::Serialization::Traits<Your Type>");
+    static_assert(traitType != TraitType::Invalid, "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>");
     PrinterInterface&     printer;
     public:
          SerializerForBlock(PrinterInterface& printer);
@@ -191,7 +193,13 @@ class Serializer
     public:
         Serializer(PrinterInterface& printer)
             : printer(printer)
-        {}
+        {
+            printer.openDoc();
+        }
+        ~Serializer()
+        {
+            printer.closeDoc();
+        }
 
         void print(T const& object)
         {

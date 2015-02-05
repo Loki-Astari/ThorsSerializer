@@ -5,11 +5,13 @@
 
 TEST(JsonPrinterTest, ArrayTokens)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
+    printer.openDoc();
     printer.openMap();
     printer.closeMap();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -17,11 +19,13 @@ TEST(JsonPrinterTest, ArrayTokens)
 }
 TEST(JsonPrinterTest, MapTokens)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
+    printer.openDoc();
     printer.openArray();
     printer.closeArray();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -29,9 +33,10 @@ TEST(JsonPrinterTest, MapTokens)
 }
 TEST(JsonPrinterTest, ArrayValues)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
+    printer.openDoc();
     printer.openArray();
     printer.addValue(true);
     printer.addValue(false);
@@ -40,6 +45,7 @@ TEST(JsonPrinterTest, ArrayValues)
     printer.addValue(nullptr);
     printer.addValue("Astring");
     printer.closeArray();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -47,9 +53,10 @@ TEST(JsonPrinterTest, ArrayValues)
 }
 TEST(JsonPrinterTest, MapValues)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
+    printer.openDoc();
     printer.openMap();
     printer.addKey("K1");
     printer.addValue(true);
@@ -64,6 +71,7 @@ TEST(JsonPrinterTest, MapValues)
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
     printer.closeMap();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -71,9 +79,10 @@ TEST(JsonPrinterTest, MapValues)
 }
 TEST(JsonPrinterTest, MapWithMapValues)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
+    printer.openDoc();
     printer.openMap();
     printer.addKey("K1");
     printer.openMap();
@@ -94,6 +103,7 @@ TEST(JsonPrinterTest, MapWithMapValues)
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
     printer.closeMap();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -101,9 +111,10 @@ TEST(JsonPrinterTest, MapWithMapValues)
 }
 TEST(JsonPrinterTest, MapWithArrayValues)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
+    printer.openDoc();
     printer.openMap();
     printer.addKey("K1");
     printer.openArray();
@@ -120,6 +131,7 @@ TEST(JsonPrinterTest, MapWithArrayValues)
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
     printer.closeMap();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -127,9 +139,10 @@ TEST(JsonPrinterTest, MapWithArrayValues)
 }
 TEST(JsonPrinterTest, ArrayWithMapValues)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
+    printer.openDoc();
     printer.openArray();
     printer.openMap();
     printer.addKey("K1");
@@ -146,6 +159,7 @@ TEST(JsonPrinterTest, ArrayWithMapValues)
     printer.closeMap();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -153,9 +167,10 @@ TEST(JsonPrinterTest, ArrayWithMapValues)
 }
 TEST(JsonPrinterTest, ArrayWithArrayValues)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
+    printer.openDoc();
     printer.openArray();
     printer.openArray();
     printer.addValue(true);
@@ -168,6 +183,7 @@ TEST(JsonPrinterTest, ArrayWithArrayValues)
     printer.closeArray();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -175,9 +191,10 @@ TEST(JsonPrinterTest, ArrayWithArrayValues)
 }
 TEST(JsonPrinterTest, CheckStreeamIsCompressed)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream, ThorsAnvil::Serialization::PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
+    printer.openDoc();
     printer.openArray();
     printer.openMap();
     printer.addKey("K1");
@@ -194,6 +211,7 @@ TEST(JsonPrinterTest, CheckStreeamIsCompressed)
     printer.closeMap();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
+    printer.closeDoc();
 
     std::string     result  = stream.str();
     int             space   = std::count_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);});
@@ -201,9 +219,10 @@ TEST(JsonPrinterTest, CheckStreeamIsCompressed)
 }
 TEST(JsonPrinterTest, CloseMapWithArray)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream, ThorsAnvil::Serialization::PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
+    printer.openDoc();
     printer.openMap();
     ASSERT_ANY_THROW(
         printer.closeArray();
@@ -211,9 +230,10 @@ TEST(JsonPrinterTest, CloseMapWithArray)
 }
 TEST(JsonPrinterTest, CloseArrayWithMap)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream, ThorsAnvil::Serialization::PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
+    printer.openDoc();
     printer.openArray();
     ASSERT_ANY_THROW(
         printer.closeMap();
@@ -221,9 +241,10 @@ TEST(JsonPrinterTest, CloseArrayWithMap)
 }
 TEST(JsonPrinterTest, PuttingKeyInArray)
 {
-    std::stringstream                       stream;
-    ThorsAnvil::Serialization::JsonPrinter  printer(stream, ThorsAnvil::Serialization::PrinterInterface::OutputType::Stream);
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
+    printer.openDoc();
     printer.openArray();
     ASSERT_ANY_THROW(
         printer.addKey("This old house");

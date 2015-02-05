@@ -1,7 +1,7 @@
 
 #include "JsonPrinter.h"
 
-using namespace ThorsAnvil::Serialization;
+using namespace ThorsAnvil::Serialize;
 
 namespace
 {
@@ -114,6 +114,11 @@ JsonPrinter::JsonPrinter(std::ostream& output, OutputType characteristics)
     state.emplace_back(0, TraitType::Value);
 }
 
+void JsonPrinter::openDoc()
+{}
+void JsonPrinter::closeDoc()
+{}
+
 void JsonPrinter::openMap()
 {
     output << PrefixMap(characteristics, state.size(), state.back()) << "{";
@@ -123,7 +128,7 @@ void JsonPrinter::closeMap()
 {
     if (state.back().second != TraitType::Map)
     {
-        throw std::runtime_error("ThorsAnvil::Serialization::JsonPrinter: Invalid call to closeMap(): Currently not in a map");
+        throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to closeMap(): Currently not in a map");
     }
     state.pop_back();
     output << PrefixMapClose(characteristics, state.size(), state.back()) << "}";
@@ -137,7 +142,7 @@ void JsonPrinter::closeArray()
 {
     if (state.back().second != TraitType::Array)
     {
-        throw std::runtime_error("ThorsAnvil::Serialization::JsonPrinter: Invalid call to closeArray(): Currently not in an array");
+        throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to closeArray(): Currently not in an array");
     }
     state.pop_back();
     output << PrefixArrayClose(characteristics, state.size(), state.back()) << "]";
@@ -147,7 +152,7 @@ void JsonPrinter::addKey(std::string const& key)
 {
     if (state.back().second != TraitType::Map)
     {
-        throw std::runtime_error("ThorsAnvil::Serialization::JsonPrinter: Invalid call to addKey(): Currently not in a map");
+        throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to addKey(): Currently not in a map");
     }
     output << PrefixKey(characteristics, state.size(), state.back()) << '"' << key << '"';
 }

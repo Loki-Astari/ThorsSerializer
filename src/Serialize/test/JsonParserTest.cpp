@@ -4,7 +4,7 @@
 
 // enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
 
-namespace TA=ThorsAnvil::Serialization;
+namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 
 TEST(JsonParserTest, ArrayEmpty)

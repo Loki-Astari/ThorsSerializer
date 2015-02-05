@@ -3,7 +3,7 @@
 #include "UnicodeIterator.h"
 #include <algorithm>
 
-using namespace ThorsAnvil::Serialization;
+using namespace ThorsAnvil::Serialize;
 
 TEST(UnicodeIteratorTest, NormalCharacters)
 {
