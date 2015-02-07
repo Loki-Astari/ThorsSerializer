@@ -7,3 +7,11 @@ debug/
 release/
 profile/
 makefile_tmp
+
+aclocal.m4
+autom4te.cache/
+config.h
+config.log
+config.status
+libtool
+stamp-h1
