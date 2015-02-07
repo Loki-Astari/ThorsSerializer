@@ -2,12 +2,13 @@
 AC_INIT([ThorsAnvil], [0.1], [Loki.Astari+ThorsAnvil@gmail.com])
 AC_PREREQ([2.65])
 
-
+# Set up the build system
 AC_CONFIG_MACRO_DIR([build/autotools/m4])
 AX_FUNC_THORBUILD
+AC_CONFIG_AUX_DIR([build/autotools/build])
+
 
 AC_CONFIG_SRCDIR([src/Serialize/JsonParser.cpp])
-AC_CONFIG_AUX_DIR([build/autotools/build])
 AC_PROG_CXX
 AC_PROG_LEX
 LT_INIT
