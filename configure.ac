@@ -14,5 +14,5 @@ LT_INIT
 
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile.config])
+AC_CONFIG_FILES([Makefile.extra])
 AC_OUTPUT
