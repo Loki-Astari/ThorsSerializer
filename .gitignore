@@ -16,3 +16,4 @@ config.status
 libtool
 stamp-h1
 Makefile.extra
+confdefs.h

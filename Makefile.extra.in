@@ -80,7 +80,8 @@ host_triplet = @host@
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.extra.in $(srcdir)/Makefile.extra.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
-	$(srcdir)/config.h.in build/autotools/build/compile \
+	$(srcdir)/config.h.in build/autotools/build/ar-lib \
+	build/autotools/build/compile \
 	build/autotools/build/config.guess \
 	build/autotools/build/config.sub \
 	build/autotools/build/install-sh build/autotools/build/missing \
@@ -274,7 +275,9 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+UNZIP = @UNZIP@
 VERSION = @VERSION@
+WGET = @WGET@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
