@@ -4,3 +4,11 @@ CXXSTDVER				= 14
 SERIALIZATION_EXTERN_LIBS=@SERIALIZATION_EXTERN_LIBS@
 SERIALIZATION_EXTERN_LOC=@SERIALIZATION_EXTERN_LOC@
 
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+PREFIX=$(prefix)
+EXEC_PREFIX=$(exec_prefix)
+PREFIX_BIN=@bindir@
+PREFIX_LIB=@libdir@
+PREFIX_INC=@includedir@
+
