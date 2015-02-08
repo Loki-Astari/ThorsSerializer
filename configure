@@ -674,6 +674,8 @@ am__isrc
 INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
+SERIALIZATION_EXTERN_LOC
+SERIALIZATION_EXTERN_LIBS
 CXXCPP
 CPP
 OTOOL64
@@ -770,6 +772,8 @@ enable_fast_install
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
+with_yamlroot
+enable_yaml
 enable_dependency_tracking
 enable_silent_rules
 '
@@ -1409,6 +1413,8 @@ Optional Features:
   --enable-fast-install[=PKGS]
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
+  --disable-yaml          Disable yaml serializsation
+
   --enable-dependency-tracking
                           do not reject slow dependency extractors
   --disable-dependency-tracking
@@ -1424,6 +1430,9 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
+  --with-yamlroot=<location>
+                          Directory of YAML_ROOT
+
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -14737,6 +14746,100 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
+
+
+
+
+# Check whether --with-yamlroot was given.
+if test "${with_yamlroot+set}" = set; then :
+  withval=$with_yamlroot;
+fi
+
+    # Check whether --enable-yaml was given.
+if test "${enable_yaml+set}" = set; then :
+  enableval=$enable_yaml;
+fi
+
+    if test "x$enable_yaml" != "xno"; then :
+  ORIG_LDFLAGS="${LDFLAGS}"
+        if test "${with_yamlroot}" != ""; then
+            LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
+        fi
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
+$as_echo_n "checking for yaml_parser_initialize in -lyaml... " >&6; }
+if ${ac_cv_lib_yaml_yaml_parser_initialize+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lyaml  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char yaml_parser_initialize ();
+int
+main ()
+{
+return yaml_parser_initialize ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_yaml_yaml_parser_initialize=yes
+else
+  ac_cv_lib_yaml_yaml_parser_initialize=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_yaml_yaml_parser_initialize" >&5
+$as_echo "$ac_cv_lib_yaml_yaml_parser_initialize" >&6; }
+if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes; then :
+
+
+$as_echo "#define HAVE_YAML 1" >>confdefs.h
+
+                with_yamllib=-lyaml
+
+else
+  as_fn_error 1 "
+
+Error: Could not find libyaml
+
+You can solve this by installing libyaml
+    see http://pyyaml.org/wiki/LibYAML
+
+Alternately specify install location with:
+    --with-yamlroot=<location of yaml installation>
+
+If you do not want to use yaml serialization then it
+can be disabled with:
+    --disable-yaml
+
+                " "$LINENO" 5
+
+fi
+
+
+        LDFLAGS="${ORIG_LDFLAGS}"
+
+fi
+
+SERIALIZATION_EXTERN_LIBS=$with_yamllib  $SERIALIZATION_EXTERN_LIBS
+
+SERIALIZATION_EXTERN_LOC=$with_yamlroot $SERIALIZATION_EXTERN_LOC
+
+
+
 am__api_version='1.14'
 
 # Find a good install program.  We prefer a C program (faster),
@@ -15591,7 +15694,7 @@ END
 fi
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile.extra"
+ac_config_files="$ac_config_files Makefile.extra Makefile.config"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -16701,6 +16804,7 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile.extra") CONFIG_FILES="$CONFIG_FILES Makefile.extra" ;;
+    "Makefile.config") CONFIG_FILES="$CONFIG_FILES Makefile.config" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

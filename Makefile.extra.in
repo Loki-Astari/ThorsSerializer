@@ -80,8 +80,8 @@ host_triplet = @host@
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.extra.in $(srcdir)/Makefile.extra.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
-	$(srcdir)/config.h.in build/autotools/build/ar-lib \
-	build/autotools/build/compile \
+	$(srcdir)/config.h.in $(srcdir)/Makefile.config.in \
+	build/autotools/build/ar-lib build/autotools/build/compile \
 	build/autotools/build/config.guess \
 	build/autotools/build/config.sub \
 	build/autotools/build/install-sh build/autotools/build/missing \
@@ -106,7 +106,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = Makefile.config
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -272,6 +272,8 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
 SED = @SED@
+SERIALIZATION_EXTERN_LIBS = @SERIALIZATION_EXTERN_LIBS@
+SERIALIZATION_EXTERN_LOC = @SERIALIZATION_EXTERN_LOC@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -385,6 +387,8 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+Makefile.config: $(top_builddir)/config.status $(srcdir)/Makefile.config.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
 	-rm -f *.lo
