@@ -93,7 +93,9 @@ DIST_COMMON = $(srcdir)/Makefile.extra.in $(srcdir)/Makefile.extra.am \
 	$(top_srcdir)/build/autotools/build/ltmain.sh \
 	$(top_srcdir)/build/autotools/build/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/build/autotools/m4/libtool.m4 \
+am__aclocal_m4_deps =  \
+	$(top_srcdir)/build/autotools/m4/ax_check_compile_flag.m4 \
+	$(top_srcdir)/build/autotools/m4/libtool.m4 \
 	$(top_srcdir)/build/autotools/m4/ltoptions.m4 \
 	$(top_srcdir)/build/autotools/m4/ltsugar.m4 \
 	$(top_srcdir)/build/autotools/m4/ltversion.m4 \
@@ -223,7 +225,11 @@ CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
+CXXExpLanguage = @CXXExpLanguage@
 CXXFLAGS = @CXXFLAGS@
+CXXMaxLanguage = @CXXMaxLanguage@
+CXXSTDVER = @CXXSTDVER@
+CXX_STD_FLAG = @CXX_STD_FLAG@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -235,6 +241,9 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+ExpFlag11 = @ExpFlag11@
+ExpFlag14 = @ExpFlag14@
+ExpFlag17 = @ExpFlag17@
 FGREP = @FGREP@
 GREP = @GREP@
 INSTALL = @INSTALL@
@@ -277,6 +286,9 @@ SERIALIZATION_EXTERN_LOC = @SERIALIZATION_EXTERN_LOC@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+StdFlag11 = @StdFlag11@
+StdFlag14 = @StdFlag14@
+StdFlag17 = @StdFlag17@
 UNZIP = @UNZIP@
 VERSION = @VERSION@
 WGET = @WGET@
