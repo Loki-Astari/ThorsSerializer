@@ -186,6 +186,19 @@ void JsonParser::getValue(std::nullptr_t)
     }
 }
 
+void JsonParser::getValue(char*& value)
+{
+    std::string const& str = getString();
+
+    char* newValue = new char[str.size() + 1];
+    std::copy(std::begin(str), std::end(str), newValue);
+    newValue[str.size()] = '\0';
+
+    std::swap(newValue, value);
+
+    delete newValue;
+}
+
 void JsonParser::getValue(std::string& value)
 {
     value = getString();

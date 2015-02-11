@@ -27,6 +27,7 @@ class ParserInterface
         virtual void    getValue(int& value)            = 0;
         virtual void    getValue(double& value)         = 0;
         virtual void    getValue(std::nullptr_t)        = 0;
+        virtual void    getValue(char*& value)          = 0;
         virtual void    getValue(std::string& value)    = 0;
 };
 class PrinterInterface
