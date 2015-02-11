@@ -1,4 +1,6 @@
 
+#include "../../../config.h"
+#ifdef  HAVE_YAML
 #include "gtest/gtest.h"
 #include "YamlParser.h"
 
@@ -528,5 +530,5 @@ TEST(YamlParserTest, ArrayAsKey)
     );
 }
 
-
+#endif
 

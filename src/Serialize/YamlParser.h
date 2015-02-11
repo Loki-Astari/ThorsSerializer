@@ -2,6 +2,9 @@
 #ifndef THORS_ANIVL_SERIALIZE_YAML_PARSER_H
 #define THORS_ANIVL_SERIALIZE_YAML_PARSER_H
 
+#include "../../config.h"
+#ifdef HAVE_YAML
+
 #include "Serialize.h"
 #include <istream>
 #include <yaml.h>
@@ -40,5 +43,6 @@ class YamlParser: public ParserInterface
     }
 }
 
+#endif
 #endif
 

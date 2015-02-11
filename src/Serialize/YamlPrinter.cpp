@@ -1,4 +1,6 @@
 
+#include "../../config.h"
+#ifdef HAVE_YAML
 #include "YamlPrinter.h"
 #include <sstream>
 
@@ -182,4 +184,6 @@ void YamlPrinter::addValue(std::string const& value)
 {
     emit(value);
 }
+
+#endif
 

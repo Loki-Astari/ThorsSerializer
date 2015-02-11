@@ -7,3 +7,14 @@ debug/
 release/
 profile/
 makefile_tmp
+Makefile.extra
+Makefile.config
+
+aclocal.m4
+autom4te.cache/
+config.h
+config.log
+config.status
+libtool
+stamp-h1
+confdefs.h

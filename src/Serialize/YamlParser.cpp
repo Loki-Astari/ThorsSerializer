@@ -1,4 +1,6 @@
 
+#include "../../config.h"
+#ifdef HAVE_YAML
 #include "YamlParser.h"
 
 using namespace ThorsAnvil::Serialize;
@@ -238,4 +240,6 @@ void YamlParser::getValue(std::string& value)
 {
     value = getString();
 }
+
+#endif
 
