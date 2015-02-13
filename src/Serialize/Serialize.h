@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include "Traits.h"
 
 namespace ThorsAnvil
 {
@@ -60,14 +61,6 @@ class PrinterInterface
         virtual void addValue(std::nullptr_t)           = 0;
         virtual void addValue(char const* value)        = 0;
         virtual void addValue(std::string const& value) = 0;
-};
-
-enum class TraitType {Invalid, Parent, Value, Map, Array};
-template<typename T>
-class Traits
-{
-    public:
-        static constexpr TraitType type = TraitType::Invalid;
 };
 
 class DeSerializeMember
