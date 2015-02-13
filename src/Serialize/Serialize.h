@@ -63,6 +63,26 @@ class PrinterInterface
         virtual void addValue(std::string const& value) = 0;
 };
 
+class Serializer;
+class DeSerializer;
+
+template<TraitType type, typename T>
+class ApplyActionToParent
+{
+    public:
+        // Default do nothing.
+        void printParentMembers(Serializer&, T const&)                      {}
+        void scanParentMember(DeSerializer&, std::string const&, T const&)  {}
+};
+
+template<typename T>
+class ApplyActionToParent<TraitType::Parent, T>
+{
+    public:
+        void printParentMembers(Serializer& serializer, T const&);
+        void scanParentMember(DeSerializer&, std::string const&, T const&);
+};
+
 class DeSerializeMember
 {
     using ParserToken = ParserInterface::ParserToken;
@@ -77,18 +97,17 @@ class DeSerializeMember
         }
 };
 
-template<typename T>
 class DeSerializer
 {
     using ParserToken = ParserInterface::ParserToken;
     ParserInterface&    parser;
 
-    template<typename Members, std::size_t... Seq>
+    template<typename T, typename Members, std::size_t... Seq>
     void scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
     {
         std::make_tuple(DeSerializeMember(parser, key, object, std::get<Seq>(member))...);
     }
-    template<typename Members>
+    template<typename T, typename Members>
     void scanMembers(std::string const& key, T& object, Members& members)
     {
         scanEachMember(key, object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
@@ -98,6 +117,7 @@ class DeSerializer
             : parser(parser)
         {}
 
+        template<typename T>
         void parse(T& object)
         {
             // Note:
@@ -127,36 +147,62 @@ class DeSerializer
                 if (tokenType != ParserToken::Value)
                 {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting Value Token");
                 }
-                scanMembers(key, object, Traits<T>::getMembers());
+                scanObjectMembers(key, object);
             }
 
             if (tokenType == ParserToken::DocEnd)
             {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expected Doc End");
             }
         }
+
+        template<typename T>
+        void scanObjectMembers(std::string const& key, T const& object)
+        {
+            ApplyActionToParent<Traits<T>::type, T>     parentScanner;
+            
+            parentScanner.scanParentMember(*this, key, object);
+            scanMembers(key, object, Traits<T>::getMembers());
+        }
 };
 
-template<TraitType traitType>
+template<TraitType traitType, typename T>
 class SerializerForBlock
 {
     static_assert(traitType != TraitType::Invalid, "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>");
-    PrinterInterface&     printer;
-    public:
-         SerializerForBlock(PrinterInterface& printer);
-        ~SerializerForBlock();
 };
 
-// Need to define this for TraitType::Parent
-// But have not examined that yet
+template<typename T>
+class SerializerForBlock<TraitType::Value, T>
+{
+    public:
+         SerializerForBlock(PrinterInterface&)  {}
+        ~SerializerForBlock()                   {}
+};
 
-template<> inline SerializerForBlock<TraitType::Value>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {}
-template<> inline SerializerForBlock<TraitType::Value>::~SerializerForBlock()                                               {}
+template<typename T>
+class SerializerForBlock<TraitType::Map, T>
+{
+    PrinterInterface& printer;
+    public:
+        SerializerForBlock(PrinterInterface& printer): printer(printer)     {printer.openMap(); }
+        ~SerializerForBlock()                                               {printer.closeMap();}
+};
 
-template<> inline SerializerForBlock<TraitType::Map>::SerializerForBlock(PrinterInterface& printer)     :printer(printer)   {printer.openMap();}
-template<> inline SerializerForBlock<TraitType::Map>::~SerializerForBlock()                                                 {printer.closeMap();}
+template<typename T>
+class SerializerForBlock<TraitType::Array, T>
+{
+    PrinterInterface& printer;
+    public:
+        SerializerForBlock(PrinterInterface& printer): printer(printer)     {printer.openArray();}
+        ~SerializerForBlock()                                               {printer.closeArray();}
+};
 
-template<> inline SerializerForBlock<TraitType::Array>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {printer.openArray();}
-template<> inline SerializerForBlock<TraitType::Array>::~SerializerForBlock()                                               {printer.closeArray();}
+template<typename T>
+class SerializerForBlock<TraitType::Parent, T>: public SerializerForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>
+{
+    public:
+        using SerializerForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>::SerializerForBlock;
+};
 
 class SerializeMember
 {
@@ -169,17 +215,16 @@ class SerializeMember
         }
 };
 
-template<typename T>
 class Serializer
 {
     PrinterInterface& printer;
 
-    template<typename Members, std::size_t... Seq>
+    template<typename T, typename Members, std::size_t... Seq>
     void printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
     {
         std::make_tuple(SerializeMember(printer, object, std::get<Seq>(member))...);
     }
-    template<typename Members>
+    template<typename T, typename Members>
     void printMembers(T const& object, Members const& members)
     {
         printEachMember(object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
@@ -195,13 +240,33 @@ class Serializer
             printer.closeDoc();
         }
 
+        template<typename T>
         void print(T const& object)
         {
-            SerializerForBlock<Traits<T>::type>     block(printer);
+            SerializerForBlock<Traits<T>::type, T>     block(printer);
+            printObjectMembers(object);
+        }
+        template<typename T>
+        void printObjectMembers(T const& object)
+        {
+            ApplyActionToParent<Traits<T>::type, T>     parentPrinter;
 
+            parentPrinter.printParentMembers(*this, object);
             printMembers(object, Traits<T>::getMembers());
         }
 };
+
+template<typename T>
+inline void ApplyActionToParent<TraitType::Parent, T>::printParentMembers(Serializer& serializer, T const& object)
+{
+    serializer.printObjectMembers(static_cast<typename Traits<T>::Parent const&>(object));
+}
+
+template<typename T>
+inline void ApplyActionToParent<TraitType::Parent, T>::scanParentMember(DeSerializer& deSerializer, std::string const& key, T const& object)
+{
+    deSerializer.scanObjectMembers(key, static_cast<typename Traits<T>::Parent const&>(object));
+}
 
     }
 }
