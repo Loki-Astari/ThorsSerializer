@@ -1,7 +1,7 @@
 
 THORSANVIL_ROOT				= $(realpath ../../)
 
-TARGET						= ThorSerialize.slib
+TARGET						= TestExport.app ThorSerialize.slib
 
 CPPFLAGS					+= -I/Users/myork/Repository/TS.old/build/include/
 LDLIBS						+= $(patsubst %,-L%/lib,$(SERIALIZATION_EXTERN_LOC))  $(SERIALIZATION_EXTERN_LIBS)

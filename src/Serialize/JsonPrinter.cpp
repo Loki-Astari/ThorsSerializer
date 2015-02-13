@@ -50,11 +50,11 @@ namespace
             data.printSeporator(stream, false);
             ++data.state.first;
 
-            if (data.characteristics == PrinterInterface::OutputType::Stream || data.state.second == TraitType::Array)
+            //if (data.characteristics == PrinterInterface::OutputType::Stream || data.state.second == TraitType::Array)
             {
                 return stream;
             }
-            return stream << "\n" << std::string(data.size, '\t');
+            //return stream << "\n" << std::string(data.size, '\t');
         }
     };
     struct PrefixMap: public Prefix
