@@ -52,8 +52,25 @@ class SerializeTestChild: public SerializeTestExtra
         {}
 };
 
+class SerializeTestMembers
+{
+    public:
+    SerializeTestExtra member1;
+    SerializeTestChild member2;
+
+    friend class ThorsAnvil::Serialize::Traits<SerializeTestMembers>;
+    public:
+        SerializeTestMembers()
+        {}
+        SerializeTestMembers(int data1, int data2, int theInteger, double aNonRealValue, bool test, std::string const& aCStringObject, std::string const& normalString)
+            : member1(theInteger, aNonRealValue, test, aCStringObject, normalString)
+            , member2(data1, data2, theInteger, aNonRealValue, test, aCStringObject, normalString)
+        {}
+};
+
 ThorsAnvil_MakeTrait(SerializeTestExtra, Map, theInteger, aNonRealValue, test, aCStringObject, normalString);
 ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeTestChild, data1, data2);
+ThorsAnvil_MakeTrait(SerializeTestMembers, Map, member1, member2);
 
 
 #endif

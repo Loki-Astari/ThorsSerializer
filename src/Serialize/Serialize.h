@@ -110,11 +110,11 @@ class SerializerForBlock
     );
 };
 
+template<typename T, typename M, TraitType type = Traits<M>::type>
 class SerializeMember
 {
     public:
-        template<typename T, typename M>
-        SerializeMember(PrinterInterface& printer, T const& object, M const& memberInfo);
+        SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo);
 };
 
 class Serializer

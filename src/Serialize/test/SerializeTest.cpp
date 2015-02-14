@@ -10,6 +10,8 @@
 
 std::string const testData1 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"aCStringObject":"Help","normalString":"Done"})";
 std::string const testData2 = R"({"theInteger":456,"aNonRealValue":89.101,"test":false,"aCStringObject":"Bend","normalString":"Akinkthatisnotstraight","data1":1,"data2":2})";
+std::string const testData3 = R"({"member1":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"aCStringObject":"Round","normalString":"NotASquareAndOnlyOneSide"})"
+                              R"(,"member2":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"aCStringObject":"Round","normalString":"NotASquareAndOnlyOneSide","data1":67,"data2":11}})";
 
 TEST(SerializeTest, SerializeStructureOfValue)
 {
@@ -77,4 +79,18 @@ TEST(SerializeTest, DeSerializeStructureOfValueAndParent)
     EXPECT_EQ(data.data2,           2);
 }
 
+TEST(SerializeTest, SerializeStructureMemberOfValue)
+{
+    SerializeTestMembers        data(67, 11, 234567, 123.45, true, "Round", "NotASquareAndOnlyOneSide");
+
+    std::stringstream   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
+    ThorsAnvil::Serialize::Serializer   serializer(printer);
+
+    serializer.print(data);
+    std::string result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+
+    EXPECT_EQ(testData3, result);
+ }
 

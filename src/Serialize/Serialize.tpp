@@ -131,17 +131,38 @@ class SerializerForBlock<TraitType::Parent, T>: public SerializerForBlock<Traits
         using SerializerForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>::SerializerForBlock;
 };
 
-template<typename T, typename M>
-inline SerializeMember::SerializeMember(PrinterInterface& printer, T const& object, M const& memberInfo)
+template<typename T, typename M, TraitType type>
+SerializeMember<T, M, type>::SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
+    static_assert(type != TraitType::Invalid, "Trying to serialize an object that does not have a ThorsAnvil::Serialize::Trait<> defined."
+                                              "Look at macro ThorsAnvil_MakeTrait() for more information.");
+
     printer.addKey(memberInfo.first);
-    printer.addValue(object.*(memberInfo.second));
+
+    Serializer      serialzier(printer);
+    serialzier.print(object.*(memberInfo.second));
+}
+template<typename T, typename M>
+class SerializeMember<T, M, TraitType::Value>
+{
+    public:
+        SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+        {
+            printer.addKey(memberInfo.first);
+            printer.addValue(object.*(memberInfo.second));
+        }
+};
+
+template<typename T, typename M>
+SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+{
+    return SerializeMember<T,M>(printer, object, memberInfo);
 }
 
 template<typename T, typename Members, std::size_t... Seq>
 inline void Serializer::printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    std::make_tuple(SerializeMember(printer, object, std::get<Seq>(member))...);
+    std::make_tuple(make_SerializeMember(printer, object, std::get<Seq>(member))...);
 }
 
 template<typename T, typename Members>

@@ -131,6 +131,14 @@ class Traits
         // appropriate error messages based on this being invalid.
         static constexpr TraitType type = TraitType::Invalid;
 };
+
+template<> class Traits<int>        {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<double>     {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<bool>       {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<char*>      {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<std::string>{public: static constexpr TraitType type = TraitType::Value;};
+
+
     }
 }
 
