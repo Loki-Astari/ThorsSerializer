@@ -45,7 +45,7 @@ TEST(SerializeTest, SerializeStructureOfValue)
 
 TEST(SerializeTest, SerializeStructureOfValueAndParents)
 {
-    SerializeTestChild     data(1, 2, 456, 89.101, false, "Bend", "A kink that is not straight");
+    SerializeTestChild     data(1, 2, 456, 89.101, false, "Bend", "Akinkthatisnotstraight");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -57,4 +57,24 @@ TEST(SerializeTest, SerializeStructureOfValueAndParents)
 
     EXPECT_EQ(testData2, result);
 }
+
+TEST(SerializeTest, DeSerializeStructureOfValueAndParent)
+{
+    SerializeTestChild      data;
+
+    std::stringstream                   stream(testData2);
+    ThorsAnvil::Serialize::JsonParser   parser(stream);
+    ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
+
+    deSerializer.parse(data);
+
+    EXPECT_EQ(data.theInteger,      456);
+    EXPECT_EQ(data.aNonRealValue,   89.101);
+    EXPECT_EQ(data.test,            false);
+    EXPECT_EQ(std::string(data.aCStringObject),  "Bend");
+    EXPECT_EQ(data.normalString,    "Akinkthatisnotstraight");
+    EXPECT_EQ(data.data1,           1);
+    EXPECT_EQ(data.data2,           2);
+}
+
 

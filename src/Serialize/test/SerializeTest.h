@@ -43,6 +43,8 @@ class SerializeTestChild: public SerializeTestExtra
 
     friend class ThorsAnvil::Serialize::Traits<SerializeTestChild>;
     public:
+        SerializeTestChild()
+        {}
         SerializeTestChild(int data1, int data2, int theInteger, double aNonRealValue, bool test, std::string const& aCStringObject, std::string const& normalString)
             : SerializeTestExtra(theInteger, aNonRealValue, test, aCStringObject, normalString)
             , data1(data1)

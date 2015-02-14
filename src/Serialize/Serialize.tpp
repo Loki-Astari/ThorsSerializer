@@ -20,9 +20,9 @@ class ApplyActionToParent<TraitType::Parent, T>
         {
             serializer.printObjectMembers(static_cast<typename Traits<T>::Parent const&>(object));
         }
-        void scanParentMember(DeSerializer& deSerializer, std::string const& key, T const& object)
+        void scanParentMember(DeSerializer& deSerializer, std::string const& key, T& object)
         {
-            deSerializer.scanObjectMembers(key, static_cast<typename Traits<T>::Parent const&>(object));
+            deSerializer.scanObjectMembers(key, static_cast<typename Traits<T>::Parent&>(object));
         }
 };
 

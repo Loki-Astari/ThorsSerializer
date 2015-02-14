@@ -70,7 +70,7 @@ class ApplyActionToParent
     public:
         // Default do nothing.
         void printParentMembers(Serializer&, T const&)                      {}
-        void scanParentMember(DeSerializer&, std::string const&, T const&)  {}
+        void scanParentMember(DeSerializer&, std::string const&, T&)        {}
 };
 
 class DeSerializeMember
