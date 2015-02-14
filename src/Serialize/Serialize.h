@@ -168,7 +168,10 @@ class DeSerializer
 template<TraitType traitType, typename T>
 class SerializerForBlock
 {
-    static_assert(traitType != TraitType::Invalid, "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>");
+    static_assert(
+        traitType != TraitType::Invalid,
+        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
+    );
 };
 
 template<typename T>
