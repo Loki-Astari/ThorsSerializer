@@ -97,9 +97,17 @@ static_assert(                                                                  
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."                            \
 )
 
-#define ThorsAnvil_MakeTrait(DataType, TType, ...)          ThorsAnvil_MakeTrait_Base(DataType, , TType, __VA_ARGS__)
-#define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)                                                           \
-    static_assert(std::is_base_of<ParentType, DataType>::value, "ParentType must be a base class of DataType");   \
+#define ThorsAnvil_MakeTrait(DataType, TType, ...)                      \
+    ThorsAnvil_MakeTrait_Base(DataType, , TType, __VA_ARGS__)
+
+#define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)               \
+    static_assert(                                                      \
+        std::is_base_of<ParentType, DataType>::value,                   \
+        "ParentType must be a base class of DataType");                 \
+    static_assert(                                                      \
+        ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
+        "Parent type must have Serialization Traits defined"            \
+    );                                                                  \
     ThorsAnvil_MakeTrait_Base(DataType, typedef ParentType Parent;, Parent, __VA_ARGS__)
 
 
