@@ -35,7 +35,23 @@ class SerializeTestExtra
         SerializeTestExtra& operator=(SerializeTestExtra const&)  = delete;
 };
 
+class SerializeTestChild: public SerializeTestExtra
+{
+    public:
+    int data1;
+    int data2;
+
+    friend class ThorsAnvil::Serialize::Traits<SerializeTestChild>;
+    public:
+        SerializeTestChild(int data1, int data2, int theInteger, double aNonRealValue, bool test, std::string const& aCStringObject, std::string const& normalString)
+            : SerializeTestExtra(theInteger, aNonRealValue, test, aCStringObject, normalString)
+            , data1(data1)
+            , data2(data2)
+        {}
+};
+
 ThorsAnvil_MakeTrait(SerializeTestExtra, Map, theInteger, aNonRealValue, test, aCStringObject, normalString);
+ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeTestChild, data1, data2);
 
 
 #endif
