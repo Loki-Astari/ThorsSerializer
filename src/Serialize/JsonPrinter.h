@@ -3,6 +3,7 @@
 #define THORS_ANVIL_SERIALIZE_JSON_PRINTER_H
 
 #include "Serialize.h"
+#include <vector>
 
 namespace ThorsAnvil
 {
