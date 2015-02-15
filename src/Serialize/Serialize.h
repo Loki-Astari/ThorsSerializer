@@ -15,12 +15,16 @@ class ParserInterface
     public:
         enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
         std::istream&   input;
+        ParserToken     pushBack;
 
         ParserInterface(std::istream& input)
             : input(input)
+            , pushBack(ParserToken::Error)
         {}
         virtual ~ParserInterface() {}
-        virtual ParserToken     getToken()              = 0;
+                ParserToken     getToken();
+                void            pushBackToken(ParserToken token);
+        virtual ParserToken     getNextToken()          = 0;
         virtual std::string     getKey()                = 0;
         virtual void    getValue(bool& value)           = 0;
         virtual void    getValue(int& value)            = 0;

@@ -12,6 +12,29 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+/* ------------ ParserInterface ------------------------- */
+inline ParserInterface::ParserToken ParserInterface::getToken()
+{
+    ParserToken result  = ParserToken::Error;
+
+    if (pushBack != ParserToken::Error)
+    {
+        std::swap(pushBack, result);
+    }
+    else
+    {
+        result = this->getNextToken();
+    }
+    return result;
+}
+inline void ParserInterface::pushBackToken(ParserToken token)
+{
+    if (pushBack != ParserToken::Error)
+    {
+        throw std::runtime_error("Push only allows for single push back. More than one token has been pushed back between reads.");
+    }
+    pushBack    = token;
+}
 /* ------------ ApplyActionToParent ------------------------- */
 
 template<typename T>

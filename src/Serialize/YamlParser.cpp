@@ -40,7 +40,7 @@ YamlParser::~YamlParser()
     yaml_parser_delete(&parser);
 }
 
-ParserInterface::ParserToken YamlParser::getToken()
+ParserInterface::ParserToken YamlParser::getNextToken()
 {
     // enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
     if (first)
