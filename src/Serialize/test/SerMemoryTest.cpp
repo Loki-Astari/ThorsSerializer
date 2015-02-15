@@ -18,3 +18,14 @@ TEST(SerMemoryTest, serialize)
     EXPECT_EQ(result, R"({"first":56,"second":78.901})");
 }
 
+TEST(SerMemoryTest, deSerialize)
+{
+    std::pair<int, double>  data;
+
+    std::stringstream       stream(R"({"first":22,"second":45.67})");
+    stream >> TS::jsonImport(data);
+
+    EXPECT_EQ(data.first, 22);
+    EXPECT_EQ(data.second, 45.67);
+}
+

@@ -8,6 +8,8 @@
 
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::map<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > > >(std::__1::map<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > > const&);
 
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::pair<int, double> >(std::__1::pair<int, double>&);
+
 #endif
 
 
