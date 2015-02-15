@@ -37,7 +37,7 @@ class Traits<std::map<Key, Value>>
 
                     std::pair<Key, Value>   data;
                     deSerializer.parse(data);
-                    object.insert(data);
+                    object.insert(std::move(data));
                 }
         };
         using Members = std::tuple<MemberExtractor>;
@@ -52,6 +52,30 @@ class Traits<std::map<Key, Value>>
 template<typename Value>
 class Traits<std::map<std::string, Value>>
 {
+    template<typename V, TraitType type = Traits<V>::type>
+    class GetValueType
+    {
+        public:
+            GetValueType(ParserInterface& parser, V& value)
+            {
+                DeSerializer            deSerializer(parser, false);
+                deSerializer.parse(value);
+            }
+    };
+
+    template<typename V>
+    class GetValueType<V, TraitType::Value>
+    {
+        public:
+            GetValueType(ParserInterface& parser, V& value)
+            {
+                if (parser.getToken() != ThorsAnvil::Serialize::ParserInterface::ParserToken::Value)
+                {   throw std::runtime_error("ThorsAnvil::Serializer::SerMap::GetValueType::GetValueType<Value>: Expecting a normal value after the key");
+                }
+                parser.getValue(value);
+            }
+    };
+
     public:
         static constexpr TraitType type = TraitType::Map;
 
@@ -66,6 +90,12 @@ class Traits<std::map<std::string, Value>>
                         printer.addKey(loop.first);
                         printer.addValue(loop.second);
                     }
+                }
+                void operator()(ParserInterface& parser, std::string const& key, std::map<std::string, Value>& object)
+                {
+                    Value                   data;
+                    GetValueType<Value>     valueGetter(parser, data);
+                    object.insert(std::make_pair(std::move(key), std::move(data)));
                 }
         };
         using Members = std::tuple<MemberExtractor>;
