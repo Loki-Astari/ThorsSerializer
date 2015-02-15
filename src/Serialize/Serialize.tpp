@@ -69,6 +69,11 @@ DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::str
 
 /* ------------ DeSerializer ------------------------- */
 
+INLINE DeSerializer::DeSerializer(ParserInterface& parser, bool root)
+    : parser(parser)
+    , root(root)
+{}
+
 template<typename T, typename Members, std::size_t... Seq>
 inline void DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
 {
@@ -81,10 +86,14 @@ inline void DeSerializer::scanMembers(std::string const& key, T& object, Members
     scanEachMember(key, object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
 }
 
-INLINE DeSerializer::DeSerializer(ParserInterface& parser, bool root)
-    : parser(parser)
-    , root(root)
-{}
+template<typename T>
+inline void DeSerializer::scanObjectMembers(std::string const& key, T& object)
+{
+    ApplyActionToParent<Traits<T>::type, T>     parentScanner;
+    
+    parentScanner.scanParentMember(*this, key, object);
+    scanMembers(key, object, Traits<T>::getMembers());
+}
 
 template<typename T>
 inline void DeSerializer::parse(T& object)
@@ -121,15 +130,6 @@ inline void DeSerializer::parse(T& object)
     if (tokenType == ParserToken::DocEnd)
     {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expected Doc End");
     }
-}
-
-template<typename T>
-inline void DeSerializer::scanObjectMembers(std::string const& key, T& object)
-{
-    ApplyActionToParent<Traits<T>::type, T>     parentScanner;
-    
-    parentScanner.scanParentMember(*this, key, object);
-    scanMembers(key, object, Traits<T>::getMembers());
 }
 
 /* ------------ SerializerForBlock ------------------------- */
@@ -199,18 +199,6 @@ SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& o
 
 /* ------------ Serializer ------------------------- */
 
-template<typename T, typename Members, std::size_t... Seq>
-inline void Serializer::printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
-{
-    std::make_tuple(make_SerializeMember(printer, object, std::get<Seq>(member))...);
-}
-
-template<typename T, typename Members>
-inline void Serializer::printMembers(T const& object, Members const& members)
-{
-    printEachMember(object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
-}
-
 INLINE Serializer::Serializer(PrinterInterface& printer, bool root)
     : printer(printer)
     , root(root)
@@ -226,6 +214,18 @@ INLINE Serializer::~Serializer()
     {
         printer.closeDoc();
     }
+}
+
+template<typename T, typename Members, std::size_t... Seq>
+inline void Serializer::printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
+{
+    std::make_tuple(make_SerializeMember(printer, object, std::get<Seq>(member))...);
+}
+
+template<typename T, typename Members>
+inline void Serializer::printMembers(T const& object, Members const& members)
+{
+    printEachMember(object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
 }
 
 template<typename T>
