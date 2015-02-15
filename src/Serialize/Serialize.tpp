@@ -222,10 +222,16 @@ inline void Serializer::printEachMember(T const& object, Members const& member, 
     std::make_tuple(make_SerializeMember(printer, object, std::get<Seq>(member))...);
 }
 
-template<typename T, typename Members>
-inline void Serializer::printMembers(T const& object, Members const& members)
+template<typename T, typename... Members>
+inline void Serializer::printMembers(T const& object, std::tuple<Members...> const& members)
 {
-    printEachMember(object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
+    printEachMember(object, members, std::make_index_sequence<sizeof...(Members)>());
+}
+
+template<typename T, typename Action>
+inline void Serializer::printMembers(T const& object, Action action)
+{
+    action(printer, object);
 }
 
 template<typename T>

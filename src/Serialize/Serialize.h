@@ -111,7 +111,7 @@ class SerializerForBlock
     );
 };
 
-template<typename T, typename M, TraitType type = Traits<M>::type>
+template<typename T, typename M, TraitType type = Traits<typename std::remove_cv<M>::type>::type>
 class SerializeMember
 {
     public:
@@ -126,8 +126,12 @@ class Serializer
     template<typename T, typename Members, std::size_t... Seq>
     void printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&);
 
-    template<typename T, typename Members>
-    void printMembers(T const& object, Members const& members);
+    template<typename T, typename... Members>
+    void printMembers(T const& object, std::tuple<Members...> const& members);
+
+    template<typename T, typename Action>
+    void printMembers(T const& object, Action action);
+
     public:
         Serializer(PrinterInterface& printer, bool root = true);
         ~Serializer();
