@@ -12,6 +12,8 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+/* ------------ ApplyActionToParent ------------------------- */
+
 template<typename T>
 class ApplyActionToParent<TraitType::Parent, T>
 {
@@ -25,6 +27,8 @@ class ApplyActionToParent<TraitType::Parent, T>
             deSerializer.scanObjectMembers(key, static_cast<typename Traits<T>::Parent&>(object));
         }
 };
+
+/* ------------ DeSerializeMember ------------------------- */
 
 template<typename T, typename M, TraitType type>
 DeSerializeMember<T, M, type>::DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
@@ -62,6 +66,8 @@ DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::str
 {
     return DeSerializeMember<T, M>(parser, key, object, memberInfo);
 }
+
+/* ------------ DeSerializer ------------------------- */
 
 template<typename T, typename Members, std::size_t... Seq>
 inline void DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
@@ -126,6 +132,8 @@ inline void DeSerializer::scanObjectMembers(std::string const& key, T& object)
     scanMembers(key, object, Traits<T>::getMembers());
 }
 
+/* ------------ SerializerForBlock ------------------------- */
+
 template<typename T>
 class SerializerForBlock<TraitType::Value, T>
 {
@@ -159,6 +167,8 @@ class SerializerForBlock<TraitType::Parent, T>: public SerializerForBlock<Traits
         using SerializerForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>::SerializerForBlock;
 };
 
+/* ------------ SerializeMember ------------------------- */
+
 template<typename T, typename M, TraitType type>
 SerializeMember<T, M, type>::SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
@@ -186,6 +196,8 @@ SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& o
 {
     return SerializeMember<T,M>(printer, object, memberInfo);
 }
+
+/* ------------ Serializer ------------------------- */
 
 template<typename T, typename Members, std::size_t... Seq>
 inline void Serializer::printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
