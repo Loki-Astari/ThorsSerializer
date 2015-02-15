@@ -23,7 +23,7 @@ class Traits<std::map<Key, Value>>
         {
             public:
                 constexpr MemberExtractor() {}
-                void operator()(PrinterInterface& printer, std::map<Key, Value> const& object)
+                void operator()(PrinterInterface& printer, std::map<Key, Value> const& object) const
                 {
                     Serializer  serializer(printer, false);
                     for(auto const& loop: object)
@@ -31,7 +31,7 @@ class Traits<std::map<Key, Value>>
                         serializer.print(loop);
                     }
                 }
-                void operator()(ParserInterface& parser, std::string const&, std::map<Key, Value>& object)
+                void operator()(ParserInterface& parser, std::string const&, std::map<Key, Value>& object) const
                 {
                     DeSerializer            deSerializer(parser, false);
 
@@ -83,7 +83,7 @@ class Traits<std::map<std::string, Value>>
         {
             public:
                 constexpr MemberExtractor(){}
-                void operator()(PrinterInterface& printer, std::map<std::string, Value> const& object)
+                void operator()(PrinterInterface& printer, std::map<std::string, Value> const& object) const
                 {
                     for(auto const& loop: object)
                     {
@@ -91,7 +91,7 @@ class Traits<std::map<std::string, Value>>
                         printer.addValue(loop.second);
                     }
                 }
-                void operator()(ParserInterface& parser, std::string const& key, std::map<std::string, Value>& object)
+                void operator()(ParserInterface& parser, std::string const& key, std::map<std::string, Value>& object) const
                 {
                     Value                   data;
                     GetValueType<Value>     valueGetter(parser, data);
