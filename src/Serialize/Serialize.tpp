@@ -86,6 +86,12 @@ inline void DeSerializer::scanMembers(std::string const& key, T& object, std::tu
     scanEachMember(key, object, members, std::make_index_sequence<sizeof...(Members)>());
 }
 
+template<typename T, typename Action>
+inline void DeSerializer::scanMembers(std::string const& key, T& object, Action action)
+{
+    action(parser, key, object);
+}
+
 template<typename T>
 inline void DeSerializer::scanObjectMembers(std::string const& key, T& object)
 {
@@ -114,18 +120,28 @@ inline void DeSerializer::parse(T& object)
     }
 
     tokenType = parser.getToken();
-    if (tokenType != ParserToken::MapStart)
+    if (tokenType == ParserToken::MapStart)
+    {
+        while((tokenType = parser.getToken()) != ParserToken::MapEnd)
+        {
+            if (tokenType != ParserToken::Key)
+            {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting key token");
+            }
+            std::string key = parser.getKey();
+            scanObjectMembers(key, object);
+        }
+    }
+    else if (tokenType == ParserToken::ArrayStart)
+    {
+        while((tokenType = parser.getToken()) != ParserToken::ArrayEnd)
+        {
+            scanObjectMembers("", object);
+        }
+    }
+    else
     {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Invalid Object Start");
     }
 
-    while((tokenType = parser.getToken()) != ParserToken::MapEnd)
-    {
-        if (tokenType != ParserToken::Key)
-        {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting key token");
-        }
-        std::string key = parser.getKey();
-        scanObjectMembers(key, object);
-    }
 
     if (tokenType == ParserToken::DocEnd)
     {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expected Doc End");

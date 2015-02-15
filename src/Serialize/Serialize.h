@@ -92,6 +92,9 @@ class DeSerializer
 
     template<typename T, typename... Members>
     void scanMembers(std::string const& key, T& object, std::tuple<Members...> const& members);
+
+    template<typename T, typename Action>
+    void scanMembers(std::string const& key, T& object, Action action);
     public:
         DeSerializer(ParserInterface& parser, bool root = true);
 
