@@ -143,9 +143,7 @@ class Serializer
 }
 
 #ifndef COVERAGE_TEST
-#define INLINE  inline
 #include "Serialize.tpp"
-#undef  INLINE
 #endif
 
 #endif

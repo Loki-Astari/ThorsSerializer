@@ -69,7 +69,7 @@ DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::str
 
 /* ------------ DeSerializer ------------------------- */
 
-INLINE DeSerializer::DeSerializer(ParserInterface& parser, bool root)
+inline DeSerializer::DeSerializer(ParserInterface& parser, bool root)
     : parser(parser)
     , root(root)
 {}
@@ -199,7 +199,7 @@ SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& o
 
 /* ------------ Serializer ------------------------- */
 
-INLINE Serializer::Serializer(PrinterInterface& printer, bool root)
+inline Serializer::Serializer(PrinterInterface& printer, bool root)
     : printer(printer)
     , root(root)
 {
@@ -208,7 +208,7 @@ INLINE Serializer::Serializer(PrinterInterface& printer, bool root)
         printer.openDoc();
     }
 }
-INLINE Serializer::~Serializer()
+inline Serializer::~Serializer()
 {
     if (root)
     {
