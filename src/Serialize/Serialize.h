@@ -73,18 +73,19 @@ class ApplyActionToParent
         void scanParentMember(DeSerializer&, std::string const&, T&)        {}
 };
 
+template<typename T, typename M, TraitType type = Traits<M>::type>
 class DeSerializeMember
 {
     using ParserToken = ParserInterface::ParserToken;
     public:
-        template<typename T, typename Member>
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, Member const& memberInfo);
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
 };
 
 class DeSerializer
 {
     using ParserToken = ParserInterface::ParserToken;
     ParserInterface&    parser;
+    bool                root;
 
     template<typename T, typename Members, std::size_t... Seq>
     void scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&);
@@ -92,7 +93,7 @@ class DeSerializer
     template<typename T, typename Members>
     void scanMembers(std::string const& key, T& object, Members& members);
     public:
-        DeSerializer(ParserInterface& parser);
+        DeSerializer(ParserInterface& parser, bool root = true);
 
         template<typename T>
         void parse(T& object);
@@ -120,6 +121,7 @@ class SerializeMember
 class Serializer
 {
     PrinterInterface& printer;
+    bool              root;
 
     template<typename T, typename Members, std::size_t... Seq>
     void printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&);
@@ -127,7 +129,7 @@ class Serializer
     template<typename T, typename Members>
     void printMembers(T const& object, Members const& members);
     public:
-        Serializer(PrinterInterface& printer);
+        Serializer(PrinterInterface& printer, bool root = true);
         ~Serializer();
 
         template<typename T>

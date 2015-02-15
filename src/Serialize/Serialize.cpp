@@ -14,6 +14,7 @@ template void ThorsAnvil::Serialize::Serializer::print<SerializeTestMembers>(Ser
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestExtra>(SerializeTestExtra&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestChild>(SerializeTestChild&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestMembers>(SerializeTestMembers&);
 
 #endif
 

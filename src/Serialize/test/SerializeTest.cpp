@@ -92,5 +92,30 @@ TEST(SerializeTest, SerializeStructureMemberOfValue)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ(testData3, result);
- }
+}
+
+TEST(SerializeTest, DeSerializeStructureMemberOfValue)
+{
+    SerializeTestMembers        data;
+
+    std::stringstream                   stream(testData3);
+    ThorsAnvil::Serialize::JsonParser   parser(stream);
+    ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
+
+    deSerializer.parse(data);
+
+    EXPECT_EQ(data.member1.theInteger,      234567);
+    EXPECT_EQ(data.member1.aNonRealValue,   123.45);
+    EXPECT_EQ(data.member1.test,            true);
+    EXPECT_EQ(std::string(data.member1.aCStringObject),  "Round");
+    EXPECT_EQ(data.member1.normalString,    "NotASquareAndOnlyOneSide");
+    EXPECT_EQ(data.member2.theInteger,      234567);
+    EXPECT_EQ(data.member2.aNonRealValue,   123.45);
+    EXPECT_EQ(data.member2.test,            true);
+    EXPECT_EQ(std::string(data.member2.aCStringObject),  "Round");
+    EXPECT_EQ(data.member2.normalString,    "NotASquareAndOnlyOneSide");
+    EXPECT_EQ(data.member2.data1,           67);
+    EXPECT_EQ(data.member2.data2,           11);
+}
+
 
