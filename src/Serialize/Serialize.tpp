@@ -80,10 +80,10 @@ inline void DeSerializer::scanEachMember(std::string const& key, T& object, Memb
     std::make_tuple(make_DeSerializeMember(parser, key, object, std::get<Seq>(member))...);
 }
 
-template<typename T, typename Members>
-inline void DeSerializer::scanMembers(std::string const& key, T& object, Members& members)
+template<typename T, typename... Members>
+inline void DeSerializer::scanMembers(std::string const& key, T& object, std::tuple<Members...> const& members)
 {
-    scanEachMember(key, object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
+    scanEachMember(key, object, members, std::make_index_sequence<sizeof...(Members)>());
 }
 
 template<typename T>
