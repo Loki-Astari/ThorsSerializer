@@ -77,6 +77,15 @@ class ApplyActionToParent
         void scanParentMember(DeSerializer&, std::string const&, T&)        {}
 };
 
+template<TraitType traitType, typename T>
+class DeSerializationForBlock
+{
+    static_assert(
+        traitType != TraitType::Invalid,
+        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
+    );
+};
+
 template<typename T, typename M, TraitType type = Traits<M>::type>
 class DeSerializeMember
 {
@@ -101,6 +110,7 @@ class DeSerializer
     void scanMembers(std::string const& key, T& object, Action action);
     public:
         DeSerializer(ParserInterface& parser, bool root = true);
+        ~DeSerializer();
 
         template<typename T>
         void parse(T& object);
