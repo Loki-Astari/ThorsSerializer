@@ -19,4 +19,14 @@ TEST(SerMapTest, serialize)
     EXPECT_EQ(result, R"([{"first":56,"second":78.901}])");
 }
 
+TEST(SerMapTest, deSerialize)
+{
+    std::map<int, double>  data;
+
+    std::stringstream       stream(R"([{"first":64,"second":12}, {"first":118,"second":14}])");
+    stream >> TS::jsonImport(data);
+
+    EXPECT_EQ(data[64],  12);
+    EXPECT_EQ(data[118], 14);
+}
 

@@ -31,6 +31,14 @@ class Traits<std::map<Key, Value>>
                         serializer.print(loop);
                     }
                 }
+                void operator()(ParserInterface& parser, std::string const&, std::map<Key, Value>& object)
+                {
+                    DeSerializer            deSerializer(parser, false);
+
+                    std::pair<Key, Value>   data;
+                    deSerializer.parse(data);
+                    object.insert(data);
+                }
         };
         using Members = std::tuple<MemberExtractor>;
 
