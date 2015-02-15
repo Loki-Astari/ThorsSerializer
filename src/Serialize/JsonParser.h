@@ -26,7 +26,7 @@ class JsonParser: public ParserInterface
     std::string getString();
     public:
         JsonParser(std::istream& stream);
-        virtual ParserToken getToken()      override;
+        virtual ParserToken getNextToken()      override;
         virtual std::string getKey()        override;
         virtual void    getValue(bool& value)           override;
         virtual void    getValue(int& value)            override;

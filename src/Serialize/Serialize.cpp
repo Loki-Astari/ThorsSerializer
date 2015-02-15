@@ -22,6 +22,8 @@ void fake_Serialize_Force_Initializeation_For_Coverage_Test()
 
     ThorsAnvil::Serialize::JsonParser   parser(std::cin);
     ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
+
+    parser.pushBackToken(ThorsAnvil::Serialize::ParserInterface::ParserToken::Value);
 }
 
 #endif

@@ -15,12 +15,16 @@ class ParserInterface
     public:
         enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
         std::istream&   input;
+        ParserToken     pushBack;
 
         ParserInterface(std::istream& input)
             : input(input)
+            , pushBack(ParserToken::Error)
         {}
         virtual ~ParserInterface() {}
-        virtual ParserToken     getToken()              = 0;
+                ParserToken     getToken();
+                void            pushBackToken(ParserToken token);
+        virtual ParserToken     getNextToken()          = 0;
         virtual std::string     getKey()                = 0;
         virtual void    getValue(bool& value)           = 0;
         virtual void    getValue(int& value)            = 0;
@@ -73,6 +77,15 @@ class ApplyActionToParent
         void scanParentMember(DeSerializer&, std::string const&, T&)        {}
 };
 
+template<TraitType traitType, typename T>
+class DeSerializationForBlock
+{
+    static_assert(
+        traitType != TraitType::Invalid,
+        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
+    );
+};
+
 template<typename T, typename M, TraitType type = Traits<M>::type>
 class DeSerializeMember
 {
@@ -97,6 +110,7 @@ class DeSerializer
     void scanMembers(std::string const& key, T& object, Action action);
     public:
         DeSerializer(ParserInterface& parser, bool root = true);
+        ~DeSerializer();
 
         template<typename T>
         void parse(T& object);
