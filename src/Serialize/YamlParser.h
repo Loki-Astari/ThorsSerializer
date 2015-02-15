@@ -6,8 +6,9 @@
 #ifdef HAVE_YAML
 
 #include "Serialize.h"
-#include <istream>
 #include <yaml.h>
+#include <istream>
+#include <vector>
 
 namespace ThorsAnvil
 {

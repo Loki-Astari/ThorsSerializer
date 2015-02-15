@@ -71,14 +71,13 @@
  * Defines a trait for a user defined type.
  * Lists the members of the type that can be serialized.
  */
-#define ThorsAnvil_MakeTrait(DataType, TType, ...)                      \
-namespace ThorsAnvil    {                                               \
-namespace Serialize     {                                               \
+#define ThorsAnvil_MakeTrait_Base(DataType, Parent, TType, ...)         \
 template<>                                                              \
-class Traits<DataType>                                                  \
+class ::ThorsAnvil::Serialize::Traits<DataType>                         \
 {                                                                       \
     public:                                                             \
         static constexpr TraitType type = TraitType::TType;             \
+        Parent                                                          \
                                                                         \
         using Members = std::tuple<                                     \
                         REP_N(TypeAction, DataType, __VA_ARGS__)        \
@@ -92,7 +91,25 @@ class Traits<DataType>                                                  \
             return members;                                             \
         }                                                               \
 };                                                                      \
-}}
+                                                                        \
+static_assert(                                                                                      \
+    ::ThorsAnvil::Serialize::Traits<DataType>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
+    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."                            \
+)
+
+#define ThorsAnvil_MakeTrait(DataType, TType, ...)                      \
+    ThorsAnvil_MakeTrait_Base(DataType, , TType, __VA_ARGS__)
+
+#define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)               \
+    static_assert(                                                      \
+        std::is_base_of<ParentType, DataType>::value,                   \
+        "ParentType must be a base class of DataType");                 \
+    static_assert(                                                      \
+        ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
+        "Parent type must have Serialization Traits defined"            \
+    );                                                                  \
+    ThorsAnvil_MakeTrait_Base(DataType, typedef ParentType Parent;, Parent, __VA_ARGS__)
+
 
 /*
  * Defines the generic type that all serialization types can expand on
@@ -114,6 +131,14 @@ class Traits
         // appropriate error messages based on this being invalid.
         static constexpr TraitType type = TraitType::Invalid;
 };
+
+template<> class Traits<int>        {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<double>     {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<bool>       {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<char*>      {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<std::string>{public: static constexpr TraitType type = TraitType::Value;};
+
+
     }
 }
 

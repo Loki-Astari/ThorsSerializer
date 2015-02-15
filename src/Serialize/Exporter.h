@@ -24,7 +24,7 @@ class Exporter
         friend std::ostream& operator<<(std::ostream& stream, Exporter const& data)
         {
             typename Format::Printer    printer(stream, data.characteristics);
-            Serializer<T>               serializer(printer);
+            Serializer                  serializer(printer);
 
             serializer.print(data.value);
 

@@ -20,7 +20,7 @@ class Importer
         friend std::istream& operator>>(std::istream& stream, Importer const& data)
         {
             typename Format::Parser     parser(stream);
-            DeSerializer<T>             deSerializer(parser);
+            DeSerializer                deSerializer(parser);
 
             deSerializer.parse(data.value);
             return stream;

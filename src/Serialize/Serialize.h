@@ -3,8 +3,6 @@
 #define THORS_ANVIL_SERIALIZE_SERIALIZE_H
 
 #include <iostream>
-#include <vector>
-#include <cstdlib>
 #include "Traits.h"
 
 namespace ThorsAnvil
@@ -63,148 +61,90 @@ class PrinterInterface
         virtual void addValue(std::string const& value) = 0;
 };
 
+class Serializer;
+class DeSerializer;
+
+template<TraitType type, typename T>
+class ApplyActionToParent
+{
+    public:
+        // Default do nothing.
+        void printParentMembers(Serializer&, T const&)                      {}
+        void scanParentMember(DeSerializer&, std::string const&, T&)        {}
+};
+
+template<typename T, typename M, TraitType type = Traits<M>::type>
 class DeSerializeMember
 {
     using ParserToken = ParserInterface::ParserToken;
     public:
-        template<typename T, typename Member>
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, Member const& memberInfo)
-        {
-            if (key.compare(memberInfo.first) == 0)
-            {
-                parser.getValue(object.*(memberInfo.second));
-            }
-        }
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
 };
 
-template<typename T>
 class DeSerializer
 {
     using ParserToken = ParserInterface::ParserToken;
     ParserInterface&    parser;
+    bool                root;
 
-    template<typename Members, std::size_t... Seq>
-    void scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
-    {
-        std::make_tuple(DeSerializeMember(parser, key, object, std::get<Seq>(member))...);
-    }
-    template<typename Members>
-    void scanMembers(std::string const& key, T& object, Members& members)
-    {
-        scanEachMember(key, object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
-    }
+    template<typename T, typename Members, std::size_t... Seq>
+    void scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&);
+
+    template<typename T, typename Members>
+    void scanMembers(std::string const& key, T& object, Members& members);
     public:
-        DeSerializer(ParserInterface& parser)
-            : parser(parser)
-        {}
+        DeSerializer(ParserInterface& parser, bool root = true);
 
-        void parse(T& object)
-        {
-            // Note:
-            //  Note: all elements are going to have a DocStart/DocEnd pair
-            //  Just the outer set. So that is something that we will need to deal with
-            //
-            //  Note: We also need to take care of arrays at the top level
-            //  We will get that in the next version
-            ParserToken     tokenType = parser.getToken();
-            if (tokenType != ParserToken::DocStart)
-            {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Invalid Doc Start");
-            }
+        template<typename T>
+        void parse(T& object);
 
-            tokenType = parser.getToken();
-            if (tokenType != ParserToken::MapStart)
-            {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Invalid Object Start");
-            }
-
-            while((tokenType = parser.getToken()) != ParserToken::MapEnd)
-            {
-                if (tokenType != ParserToken::Key)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting key token");
-                }
-                std::string key = parser.getKey();
-
-                tokenType = parser.getToken();
-                if (tokenType != ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting Value Token");
-                }
-                scanMembers(key, object, Traits<T>::getMembers());
-            }
-
-            if (tokenType == ParserToken::DocEnd)
-            {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expected Doc End");
-            }
-        }
+        template<typename T>
+        void scanObjectMembers(std::string const& key, T& object);
 };
 
-template<TraitType traitType>
+template<TraitType traitType, typename T>
 class SerializerForBlock
 {
-    static_assert(traitType != TraitType::Invalid, "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>");
-    PrinterInterface&     printer;
-    public:
-         SerializerForBlock(PrinterInterface& printer);
-        ~SerializerForBlock();
+    static_assert(
+        traitType != TraitType::Invalid,
+        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
+    );
 };
 
-// Need to define this for TraitType::Parent
-// But have not examined that yet
-
-template<> inline SerializerForBlock<TraitType::Value>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {}
-template<> inline SerializerForBlock<TraitType::Value>::~SerializerForBlock()                                               {}
-
-template<> inline SerializerForBlock<TraitType::Map>::SerializerForBlock(PrinterInterface& printer)     :printer(printer)   {printer.openMap();}
-template<> inline SerializerForBlock<TraitType::Map>::~SerializerForBlock()                                                 {printer.closeMap();}
-
-template<> inline SerializerForBlock<TraitType::Array>::SerializerForBlock(PrinterInterface& printer)   :printer(printer)   {printer.openArray();}
-template<> inline SerializerForBlock<TraitType::Array>::~SerializerForBlock()                                               {printer.closeArray();}
-
+template<typename T, typename M, TraitType type = Traits<M>::type>
 class SerializeMember
 {
     public:
-        template<typename T, typename M>
-        SerializeMember(PrinterInterface& printer, T const& object, M const& memberInfo)
-        {
-            printer.addKey(memberInfo.first);
-            printer.addValue(object.*(memberInfo.second));
-        }
+        SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo);
 };
 
-template<typename T>
 class Serializer
 {
     PrinterInterface& printer;
+    bool              root;
 
-    template<typename Members, std::size_t... Seq>
-    void printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
-    {
-        std::make_tuple(SerializeMember(printer, object, std::get<Seq>(member))...);
-    }
-    template<typename Members>
-    void printMembers(T const& object, Members const& members)
-    {
-        printEachMember(object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
-    }
+    template<typename T, typename Members, std::size_t... Seq>
+    void printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&);
+
+    template<typename T, typename Members>
+    void printMembers(T const& object, Members const& members);
     public:
-        Serializer(PrinterInterface& printer)
-            : printer(printer)
-        {
-            printer.openDoc();
-        }
-        ~Serializer()
-        {
-            printer.closeDoc();
-        }
+        Serializer(PrinterInterface& printer, bool root = true);
+        ~Serializer();
 
-        void print(T const& object)
-        {
-            SerializerForBlock<Traits<T>::type>     block(printer);
+        template<typename T>
+        void print(T const& object);
 
-            printMembers(object, Traits<T>::getMembers());
-        }
+        template<typename T>
+        void printObjectMembers(T const& object);
 };
 
     }
 }
+
+#ifndef COVERAGE_TEST
+#include "Serialize.tpp"
+#endif
 
 #endif
 
