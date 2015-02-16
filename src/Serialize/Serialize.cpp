@@ -4,11 +4,8 @@
 #ifdef COVERAGE_TEST
 
 #include "test/SerializeTest.h"
-#include "SerMemory.h"
-#include "SerMap.h"
-#include "SerVector.h"
-#include "SerList.h"
 #include "Serialize.tpp"
+#include "SerUtil.h"
 
 #include "Json.h"
 

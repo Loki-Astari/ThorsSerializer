@@ -2,7 +2,7 @@
 
 #include "gtest/gtest.h"
 #include "Json.h"
-#include "SerList.h"
+#include "SerUtil.h"
 #include <algorithm>
 
 using namespace ThorsAnvil::Serialize;

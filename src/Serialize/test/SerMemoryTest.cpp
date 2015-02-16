@@ -1,7 +1,7 @@
 
 #include "gtest/gtest.h"
 #include "Json.h"
-#include "SerMemory.h"
+#include "SerUtil.h"
 #include <algorithm>
 
 namespace TS = ThorsAnvil::Serialize;
