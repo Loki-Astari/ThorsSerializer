@@ -28,6 +28,8 @@
  * Traits<std::multiset<K>>
  * Traits<std::map<K,V>>
  *      Traits<std::map<std::string,V>>
+ * Traits<std::multimap<K,V>>
+ *      Traits<std::multimap<std::string,V>>
 
  */
 
@@ -100,6 +102,19 @@ class MemberInserter<std::map<Key, T, Compare, Allocator>>
     std::map<Key, T, Compare, Allocator>& container;
     public:
         MemberInserter(std::map<Key, T, Compare, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, std::pair<Key, T>&& value)
+        {
+            container.insert(std::forward<std::pair<Key, T>>(value));
+        }
+};
+template<typename Key,typename T, typename Compare, typename Allocator>
+class MemberInserter<std::multimap<Key, T, Compare, Allocator>>
+{
+    std::multimap<Key, T, Compare, Allocator>& container;
+    public:
+        MemberInserter(std::multimap<Key, T, Compare, Allocator>& container)
             : container(container)
         {}
         void add(std::size_t const&, std::pair<Key, T>&& value)
@@ -352,6 +367,54 @@ class Traits<std::map<std::string, Value>>
                     }
                 }
                 void operator()(ParserInterface& parser, std::string const& key, std::map<std::string, Value>& object) const
+                {
+                    Value                   data;
+                    GetValueType<Value>     valueGetter(parser, data);
+                    object.insert(std::make_pair(std::move(key), std::move(data)));
+                }
+        };
+
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
+
+/* ------------------------------- Traits<std::multimap<Key, Value>> ------------------------------- */
+template<typename Key, typename T, typename Compare, typename Allocator>
+class Traits<std::multimap<Key, T, Compare, Allocator>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractor<std::multimap<Key, T, Compare, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
+
+template<typename Value>
+class Traits<std::multimap<std::string, Value>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Map;
+
+        class MemberExtractor
+        {
+            public:
+                constexpr MemberExtractor(){}
+                void operator()(PrinterInterface& printer, std::multimap<std::string, Value> const& object) const
+                {
+                    PutValueType<Value>     valuePutter(printer);
+                    for(auto const& loop: object)
+                    {
+                        printer.addKey(loop.first);
+                        valuePutter.putValue(loop.second);
+                    }
+                }
+                void operator()(ParserInterface& parser, std::string const& key, std::multimap<std::string, Value>& object) const
                 {
                     Value                   data;
                     GetValueType<Value>     valueGetter(parser, data);
