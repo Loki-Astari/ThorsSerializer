@@ -98,7 +98,6 @@ class Traits<std::map<std::string, Value>>
                     object.insert(std::make_pair(std::move(key), std::move(data)));
                 }
         };
-        using Members = std::tuple<MemberExtractor>;
 
         static MemberExtractor const& getMembers()
         {
