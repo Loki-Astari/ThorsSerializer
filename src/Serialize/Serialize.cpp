@@ -18,10 +18,10 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestChild>(Ser
 template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestMembers>(SerializeTestMembers&);
 
 
-
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::array<int, 12ul> >(std::__1::array<int, 12ul> const&);
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::pair<int, double> >(std::__1::pair<int, double> const&);
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::list<int, std::__1::allocator<int> > >(std::__1::list<int, std::__1::allocator<int> > const&);
+template void ThorsAnvil::Serialize::Serializer::print<std::__1::deque<int, std::__1::allocator<int> > >(std::__1::deque<int, std::__1::allocator<int> > const&);
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::vector<int, std::__1::allocator<int> > >(std::__1::vector<int, std::__1::allocator<int> > const&);
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::map<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > > >(std::__1::map<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > > const&);
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, double, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, double> > > >(std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, double, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, double> > > const&);
@@ -31,6 +31,7 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::array<int, 0u
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::array<int, 12ul> >(std::__1::array<int, 12ul>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::pair<int, double> >(std::__1::pair<int, double>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::list<int, std::__1::allocator<int> > >(std::__1::list<int, std::__1::allocator<int> >&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::deque<int, std::__1::allocator<int> > >(std::__1::deque<int, std::__1::allocator<int> >&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::vector<int, std::__1::allocator<int> > >(std::__1::vector<int, std::__1::allocator<int> >&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::map<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > > >(std::__1::map<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > >&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, bool, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, bool> > > >(std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, bool, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, bool> > >&);

@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <deque>
 #include <list>
 #include <array>
 
@@ -17,8 +18,10 @@
  * MemberInserter
  * ContainerMemberExtractor
  *
+ * Traits<std::array<T,N>>
  * Traits<std::list<T>>
- * Traits<std::vector<T>>
+ * Traits<std::vector<T, Allocator>>
+ * Traits<std::deque<T, Allocator>>
  * Traits<std::pair<A,B>>
  * Traits<std::map<K,V>>
  *      Traits<std::map<std::string,V>>
@@ -115,6 +118,19 @@ class MemberInserter<std::vector<T, Allocator>>
             container.push_back(std::forward<T>(value));
         }
 };
+template<typename T, typename Allocator>
+class MemberInserter<std::deque<T, Allocator>>
+{
+    std::deque<T, Allocator>& container;
+    public:
+        MemberInserter(std::deque<T, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, T&& value)
+        {
+            container.push_back(std::forward<T>(value));
+        }
+};
 
 template<typename T>
 class MemberInserter<std::list<T>>
@@ -204,6 +220,20 @@ class Traits<std::vector<T, Allocator>>
     public:
         static constexpr TraitType type = TraitType::Array;
         typedef ContainerMemberExtractor<std::vector<T, Allocator>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
+
+/* ------------------------------- Traits<std::deque<T>> ------------------------------- */
+template<typename T, typename Allocator>
+class Traits<std::deque<T, Allocator>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractor<std::deque<T, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
