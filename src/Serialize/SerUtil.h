@@ -4,6 +4,7 @@
 
 #include <map>
 #include <vector>
+#include <list>
 #include <utility>
 
 namespace ThorsAnvil
@@ -84,6 +85,19 @@ class MemberInserter<std::vector<T>>
     std::vector<T>& container;
     public:
         MemberInserter(std::vector<T>& container)
+            : container(container)
+        {}
+        void add(T&& value)
+        {
+            container.push_back(std::forward<T>(value));
+        }
+};
+template<typename T>
+class MemberInserter<std::list<T>>
+{
+    std::list<T>& container;
+    public:
+        MemberInserter(std::list<T>& container)
             : container(container)
         {}
         void add(T&& value)
