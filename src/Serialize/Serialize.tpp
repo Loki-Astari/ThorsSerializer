@@ -37,15 +37,15 @@ inline void ParserInterface::pushBackToken(ParserToken token)
 }
 /* ------------ ApplyActionToParent ------------------------- */
 
-template<typename T>
-class ApplyActionToParent<TraitType::Parent, T>
+template<typename T, typename I>
+class ApplyActionToParent<TraitType::Parent, T, I>
 {
     public:
         void printParentMembers(Serializer& serializer, T const& object)
         {
             serializer.printObjectMembers(static_cast<typename Traits<T>::Parent const&>(object));
         }
-        void scanParentMember(DeSerializer& deSerializer, std::string const& key, T& object)
+        void scanParentMember(DeSerializer& deSerializer, I const& key, T& object)
         {
             deSerializer.scanObjectMembers(key, static_cast<typename Traits<T>::Parent&>(object));
         }
@@ -63,6 +63,7 @@ template<typename T>
 class DeSerializationForBlock<TraitType::Map, T>
 {
     ParserInterface& parser;
+    std::string      key;
     public:
         DeSerializationForBlock(ParserInterface& parser)
             : parser(parser)
@@ -74,7 +75,7 @@ class DeSerializationForBlock<TraitType::Map, T>
             }
         }
 
-        bool hasMoreValue(std::string& key)
+        bool hasMoreValue()
         {
             ParserInterface::ParserToken    tokenType = parser.getToken();
             bool                            result    = tokenType != ParserInterface::ParserToken::MapEnd;
@@ -88,15 +89,21 @@ class DeSerializationForBlock<TraitType::Map, T>
 
             return result;
         }
+        std::string const& getIndex() const
+        {
+            return key;
+        }
 };
 
 template<typename T>
 class DeSerializationForBlock<TraitType::Array, T>
 {
     ParserInterface& parser;
+    std::size_t      index;
     public:
         DeSerializationForBlock(ParserInterface& parser)
             : parser(parser)
+            , index(-1)
         {
             ParserInterface::ParserToken    tokenType = parser.getToken();
 
@@ -105,15 +112,20 @@ class DeSerializationForBlock<TraitType::Array, T>
             }
         }
 
-        bool hasMoreValue(std::string&)
+        bool hasMoreValue()
         {
             ParserInterface::ParserToken    tokenType = parser.getToken();
             bool                            result    = tokenType != ParserInterface::ParserToken::ArrayEnd;
             if (result)
             {
                 parser.pushBackToken(tokenType);
+                ++index;
             }
             return result;
+        }
+        std::size_t const& getIndex() const
+        {
+            return index;
         }
 };
 
@@ -205,16 +217,16 @@ inline void DeSerializer::scanMembers(std::string const& key, T& object, std::tu
     scanEachMember(key, object, members, std::make_index_sequence<sizeof...(Members)>());
 }
 
-template<typename T, typename Action>
-inline void DeSerializer::scanMembers(std::string const& key, T& object, Action action)
+template<typename T, typename I, typename Action>
+inline void DeSerializer::scanMembers(I const& key, T& object, Action action)
 {
     action(parser, key, object);
 }
 
-template<typename T>
-inline void DeSerializer::scanObjectMembers(std::string const& key, T& object)
+template<typename T, typename I>
+inline void DeSerializer::scanObjectMembers(I const& key, T& object)
 {
-    ApplyActionToParent<Traits<T>::type, T>     parentScanner;
+    ApplyActionToParent<Traits<T>::type, T, I>     parentScanner;
     
     parentScanner.scanParentMember(*this, key, object);
     scanMembers(key, object, Traits<T>::getMembers());
@@ -224,11 +236,10 @@ template<typename T>
 inline void DeSerializer::parse(T& object)
 {
     DeSerializationForBlock<Traits<T>::type, T>     block(parser);
-    std::string                                     key;
 
-    while(block.hasMoreValue(key))
+    while(block.hasMoreValue())
     {
-        scanObjectMembers(key, object);
+        scanObjectMembers(block.getIndex(), object);
     }
 }
 
@@ -341,10 +352,32 @@ inline void Serializer::print(T const& object)
     printObjectMembers(object);
 }
 
+template<TraitType type>
+struct IndexType;
+
+template<>
+struct IndexType<TraitType::Map>
+{
+    typedef std::string     IndexInfoType;
+};
+template<>
+struct IndexType<TraitType::Array>
+{
+    typedef std::size_t     IndexInfoType;
+};
+template<>
+struct IndexType<TraitType::Parent>
+{
+    typedef std::string     IndexInfoType;
+};
+
+
 template<typename T>
 inline void Serializer::printObjectMembers(T const& object)
 {
-    ApplyActionToParent<Traits<T>::type, T>     parentPrinter;
+    typedef typename IndexType<Traits<T>::type>::IndexInfoType IndexInfoType;
+
+    ApplyActionToParent<Traits<T>::type, T, IndexInfoType>     parentPrinter;
 
     parentPrinter.printParentMembers(*this, object);
     printMembers(object, Traits<T>::getMembers());

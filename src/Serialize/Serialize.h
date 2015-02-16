@@ -68,13 +68,13 @@ class PrinterInterface
 class Serializer;
 class DeSerializer;
 
-template<TraitType type, typename T>
+template<TraitType type, typename T, typename I>
 class ApplyActionToParent
 {
     public:
         // Default do nothing.
-        void printParentMembers(Serializer&, T const&)                      {}
-        void scanParentMember(DeSerializer&, std::string const&, T&)        {}
+        void printParentMembers(Serializer&, T const&)            {}
+        void scanParentMember(DeSerializer&, I const&, T&)        {}
 };
 
 template<TraitType traitType, typename T>
@@ -106,8 +106,8 @@ class DeSerializer
     template<typename T, typename... Members>
     void scanMembers(std::string const& key, T& object, std::tuple<Members...> const& members);
 
-    template<typename T, typename Action>
-    void scanMembers(std::string const& key, T& object, Action action);
+    template<typename T, typename I, typename Action>
+    void scanMembers(I const& key, T& object, Action action);
     public:
         DeSerializer(ParserInterface& parser, bool root = true);
         ~DeSerializer();
@@ -115,8 +115,8 @@ class DeSerializer
         template<typename T>
         void parse(T& object);
 
-        template<typename T>
-        void scanObjectMembers(std::string const& key, T& object);
+        template<typename T, typename I>
+        void scanObjectMembers(I const& key, T& object);
 };
 
 template<TraitType traitType, typename T>

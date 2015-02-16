@@ -9,6 +9,7 @@
 #include <map>
 #include <vector>
 #include <list>
+#include <array>
 
 /*
  * GetValueType
@@ -95,7 +96,7 @@ class MemberInserter<std::map<K,V>>
         MemberInserter(std::map<K, V>& container)
             : container(container)
         {}
-        void add(std::pair<K, V>&& value)
+        void add(std::size_t const&, std::pair<K, V>&& value)
         {
             container.insert(std::forward<std::pair<K, V>>(value));
         }
@@ -109,7 +110,7 @@ class MemberInserter<std::vector<T>>
         MemberInserter(std::vector<T>& container)
             : container(container)
         {}
-        void add(T&& value)
+        void add(std::size_t const&, T&& value)
         {
             container.push_back(std::forward<T>(value));
         }
@@ -123,9 +124,23 @@ class MemberInserter<std::list<T>>
         MemberInserter(std::list<T>& container)
             : container(container)
         {}
-        void add(T&& value)
+        void add(std::size_t const&, T&& value)
         {
             container.push_back(std::forward<T>(value));
+        }
+};
+
+template<typename T, std::size_t N>
+class MemberInserter<std::array<T, N>>
+{
+    std::array<T, N>& container;
+    public:
+        MemberInserter(std::array<T, N>& container)
+            : container(container)
+        {}
+        void add(std::size_t const& index, T&& value)
+        {
+            container[index] = std::forward<T>(value);
         }
 };
 
@@ -143,14 +158,28 @@ class ContainerMemberExtractor
                 valuePutter.putValue(loop);
             }
         }
-        void operator()(ParserInterface& parser, std::string const&, C& object) const
+        void operator()(ParserInterface& parser, std::size_t const& index, C& object) const
         {
             V                   data;
             GetValueType<V>     valueGetter(parser, data);
 
             MemberInserter<C>   inserter(object);
-            inserter.add(std::move(data));
+            inserter.add(index, std::move(data));
             //object.insert(std::move(data));
+        }
+};
+
+/* ------------------------------- Traits<std::array<T, N>> ------------------------------- */
+template<typename T, std::size_t N>
+class Traits<std::array<T, N>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractor<std::array<T, N>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
         }
 };
 
