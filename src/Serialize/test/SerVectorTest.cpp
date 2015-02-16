@@ -3,7 +3,6 @@
 #include "gtest/gtest.h"
 #include "Json.h"
 #include "SerVector.h"
-#include "Serialize.tpp"
 #include <algorithm>
 
 using namespace ThorsAnvil::Serialize;
