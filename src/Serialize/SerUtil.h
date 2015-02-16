@@ -132,12 +132,12 @@ class MemberInserter<std::deque<T, Allocator>>
         }
 };
 
-template<typename T>
-class MemberInserter<std::list<T>>
+template<typename T, typename Allocator>
+class MemberInserter<std::list<T, Allocator>>
 {
-    std::list<T>& container;
+    std::list<T, Allocator>& container;
     public:
-        MemberInserter(std::list<T>& container)
+        MemberInserter(std::list<T, Allocator>& container)
             : container(container)
         {}
         void add(std::size_t const&, T&& value)
@@ -200,12 +200,12 @@ class Traits<std::array<T, N>>
 };
 
 /* ------------------------------- Traits<std::list<T>> ------------------------------- */
-template<typename T>
-class Traits<std::list<T>>
+template<typename T, typename Allocator>
+class Traits<std::list<T, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::list<T>>    MemberExtractor;
+        typedef ContainerMemberExtractor<std::list<T, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
