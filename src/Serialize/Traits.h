@@ -2,6 +2,8 @@
 #ifndef THORS_ANVIL_SERIALIZE_TRAITS_H
 #define THORS_ANVIL_SERIALIZE_TRAITS_H
 
+#include <string>
+
 /*
  * Macros for counting the number of arguments
  * Currently set up for a max of 20.

@@ -32,7 +32,7 @@ class YamlParser: public ParserInterface
         YamlParser(std::istream& input);
         virtual ~YamlParser();
 
-        virtual ParserToken     getToken()              override;
+        virtual ParserToken     getNextToken()          override;
         virtual std::string     getKey()                override;
         virtual void    getValue(bool& value)           override;
         virtual void    getValue(int& value)            override;

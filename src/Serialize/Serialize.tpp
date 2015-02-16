@@ -12,21 +12,130 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+/* ------------ ParserInterface ------------------------- */
+inline ParserInterface::ParserToken ParserInterface::getToken()
+{
+    ParserToken result  = ParserToken::Error;
+
+    if (pushBack != ParserToken::Error)
+    {
+        std::swap(pushBack, result);
+    }
+    else
+    {
+        result = this->getNextToken();
+    }
+    return result;
+}
+inline void ParserInterface::pushBackToken(ParserToken token)
+{
+    if (pushBack != ParserToken::Error)
+    {
+        throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::pushBackToken: Push only allows for single push back. More than one token has been pushed back between reads.");
+    }
+    pushBack    = token;
+}
 /* ------------ ApplyActionToParent ------------------------- */
 
-template<typename T>
-class ApplyActionToParent<TraitType::Parent, T>
+template<typename T, typename I>
+class ApplyActionToParent<TraitType::Parent, T, I>
 {
     public:
         void printParentMembers(Serializer& serializer, T const& object)
         {
             serializer.printObjectMembers(static_cast<typename Traits<T>::Parent const&>(object));
         }
-        void scanParentMember(DeSerializer& deSerializer, std::string const& key, T& object)
+        void scanParentMember(DeSerializer& deSerializer, I const& key, T& object)
         {
             deSerializer.scanObjectMembers(key, static_cast<typename Traits<T>::Parent&>(object));
         }
 };
+/* ------------ DeSerializationForBlock ------------------------- */
+
+template<typename T>
+class DeSerializationForBlock<TraitType::Value, T>
+{
+    public:
+         DeSerializationForBlock(ParserInterface&)  {}
+};
+
+template<typename T>
+class DeSerializationForBlock<TraitType::Map, T>
+{
+    ParserInterface& parser;
+    std::string      key;
+    public:
+        DeSerializationForBlock(ParserInterface& parser)
+            : parser(parser)
+        {
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+
+            if (tokenType != ParserInterface::ParserToken::MapStart)
+            {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Map>::DeSerializationForBlock: Invalid Object Start");
+            }
+        }
+
+        bool hasMoreValue()
+        {
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+            bool                            result    = tokenType != ParserInterface::ParserToken::MapEnd;
+            if (result)
+            {
+                if (tokenType != ParserInterface::ParserToken::Key)
+                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Map>::hasMoreValue: Expecting key token");
+                }
+                key = parser.getKey();
+            }
+
+            return result;
+        }
+        std::string const& getIndex() const
+        {
+            return key;
+        }
+};
+
+template<typename T>
+class DeSerializationForBlock<TraitType::Array, T>
+{
+    ParserInterface& parser;
+    std::size_t      index;
+    public:
+        DeSerializationForBlock(ParserInterface& parser)
+            : parser(parser)
+            , index(-1)
+        {
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+
+            if (tokenType != ParserInterface::ParserToken::ArrayStart)
+            {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Array>::DeSerializationForBlock: Invalid Object Start");
+            }
+        }
+
+        bool hasMoreValue()
+        {
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+            bool                            result    = tokenType != ParserInterface::ParserToken::ArrayEnd;
+            if (result)
+            {
+                parser.pushBackToken(tokenType);
+                ++index;
+            }
+            return result;
+        }
+        std::size_t const& getIndex() const
+        {
+            return index;
+        }
+};
+
+template<typename T>
+class DeSerializationForBlock<TraitType::Parent, T>: public DeSerializationForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>
+{
+    public:
+        using DeSerializationForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>::DeSerializationForBlock;
+};
+
 
 /* ------------ DeSerializeMember ------------------------- */
 
@@ -53,7 +162,7 @@ class DeSerializeMember<T, M, TraitType::Value>
             {
                 ParserInterface::ParserToken tokenType = parser.getToken();
                 if (tokenType != ParserInterface::ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting Value Token");
+                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
                 }
 
                 parser.getValue(object.*(memberInfo.second));
@@ -72,33 +181,7 @@ DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::str
 inline DeSerializer::DeSerializer(ParserInterface& parser, bool root)
     : parser(parser)
     , root(root)
-{}
-
-template<typename T, typename Members, std::size_t... Seq>
-inline void DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    std::make_tuple(make_DeSerializeMember(parser, key, object, std::get<Seq>(member))...);
-}
-
-template<typename T, typename Members>
-inline void DeSerializer::scanMembers(std::string const& key, T& object, Members& members)
-{
-    scanEachMember(key, object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
-}
-
-template<typename T>
-inline void DeSerializer::scanObjectMembers(std::string const& key, T& object)
-{
-    ApplyActionToParent<Traits<T>::type, T>     parentScanner;
-    
-    parentScanner.scanParentMember(*this, key, object);
-    scanMembers(key, object, Traits<T>::getMembers());
-}
-
-template<typename T>
-inline void DeSerializer::parse(T& object)
-{
-    ParserToken     tokenType;
     if (root)
     {
         // Note:
@@ -107,28 +190,56 @@ inline void DeSerializer::parse(T& object)
         //
         //  Note: We also need to take care of arrays at the top level
         //  We will get that in the next version
-        tokenType = parser.getToken();
-        if (tokenType != ParserToken::DocStart)
-        {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Invalid Doc Start");
+        if (parser.getToken() != ParserToken::DocStart)
+        {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializer::DeSerializer: Invalid Doc Start");
         }
     }
-
-    tokenType = parser.getToken();
-    if (tokenType != ParserToken::MapStart)
-    {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Invalid Object Start");
-    }
-
-    while((tokenType = parser.getToken()) != ParserToken::MapEnd)
+}
+inline DeSerializer::~DeSerializer()
+{
+    if (root)
     {
-        if (tokenType != ParserToken::Key)
-        {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expecting key token");
+        if (parser.getToken() != ParserToken::DocEnd)
+        {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializer::~DeSerializer: Expected Doc End");
         }
-        std::string key = parser.getKey();
-        scanObjectMembers(key, object);
     }
+}
 
-    if (tokenType == ParserToken::DocEnd)
-    {   throw std::runtime_error("ThorsAnvil::Serialize::Serialize: Expected Doc End");
+template<typename T, typename Members, std::size_t... Seq>
+inline void DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
+{
+    std::make_tuple(make_DeSerializeMember(parser, key, object, std::get<Seq>(member))...);
+}
+
+template<typename T, typename... Members>
+inline void DeSerializer::scanMembers(std::string const& key, T& object, std::tuple<Members...> const& members)
+{
+    scanEachMember(key, object, members, std::make_index_sequence<sizeof...(Members)>());
+}
+
+template<typename T, typename I, typename Action>
+inline void DeSerializer::scanMembers(I const& key, T& object, Action action)
+{
+    action(parser, key, object);
+}
+
+template<typename T, typename I>
+inline void DeSerializer::scanObjectMembers(I const& key, T& object)
+{
+    ApplyActionToParent<Traits<T>::type, T, I>     parentScanner;
+    
+    parentScanner.scanParentMember(*this, key, object);
+    scanMembers(key, object, Traits<T>::getMembers());
+}
+
+template<typename T>
+inline void DeSerializer::parse(T& object)
+{
+    DeSerializationForBlock<Traits<T>::type, T>     block(parser);
+
+    while(block.hasMoreValue())
+    {
+        scanObjectMembers(block.getIndex(), object);
     }
 }
 
@@ -222,10 +333,16 @@ inline void Serializer::printEachMember(T const& object, Members const& member, 
     std::make_tuple(make_SerializeMember(printer, object, std::get<Seq>(member))...);
 }
 
-template<typename T, typename Members>
-inline void Serializer::printMembers(T const& object, Members const& members)
+template<typename T, typename... Members>
+inline void Serializer::printMembers(T const& object, std::tuple<Members...> const& members)
 {
-    printEachMember(object, members, std::make_index_sequence<std::tuple_size<Members>::value>());
+    printEachMember(object, members, std::make_index_sequence<sizeof...(Members)>());
+}
+
+template<typename T, typename Action>
+inline void Serializer::printMembers(T const& object, Action action)
+{
+    action(printer, object);
 }
 
 template<typename T>
@@ -235,10 +352,32 @@ inline void Serializer::print(T const& object)
     printObjectMembers(object);
 }
 
+template<TraitType type>
+struct IndexType;
+
+template<>
+struct IndexType<TraitType::Map>
+{
+    typedef std::string     IndexInfoType;
+};
+template<>
+struct IndexType<TraitType::Array>
+{
+    typedef std::size_t     IndexInfoType;
+};
+template<>
+struct IndexType<TraitType::Parent>
+{
+    typedef std::string     IndexInfoType;
+};
+
+
 template<typename T>
 inline void Serializer::printObjectMembers(T const& object)
 {
-    ApplyActionToParent<Traits<T>::type, T>     parentPrinter;
+    typedef typename IndexType<Traits<T>::type>::IndexInfoType IndexInfoType;
+
+    ApplyActionToParent<Traits<T>::type, T, IndexInfoType>     parentPrinter;
 
     parentPrinter.printParentMembers(*this, object);
     printMembers(object, Traits<T>::getMembers());

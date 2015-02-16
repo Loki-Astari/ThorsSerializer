@@ -15,12 +15,16 @@ class ParserInterface
     public:
         enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
         std::istream&   input;
+        ParserToken     pushBack;
 
         ParserInterface(std::istream& input)
             : input(input)
+            , pushBack(ParserToken::Error)
         {}
         virtual ~ParserInterface() {}
-        virtual ParserToken     getToken()              = 0;
+                ParserToken     getToken();
+                void            pushBackToken(ParserToken token);
+        virtual ParserToken     getNextToken()          = 0;
         virtual std::string     getKey()                = 0;
         virtual void    getValue(bool& value)           = 0;
         virtual void    getValue(int& value)            = 0;
@@ -64,13 +68,22 @@ class PrinterInterface
 class Serializer;
 class DeSerializer;
 
-template<TraitType type, typename T>
+template<TraitType type, typename T, typename I>
 class ApplyActionToParent
 {
     public:
         // Default do nothing.
-        void printParentMembers(Serializer&, T const&)                      {}
-        void scanParentMember(DeSerializer&, std::string const&, T&)        {}
+        void printParentMembers(Serializer&, T const&)            {}
+        void scanParentMember(DeSerializer&, I const&, T&)        {}
+};
+
+template<TraitType traitType, typename T>
+class DeSerializationForBlock
+{
+    static_assert(
+        traitType != TraitType::Invalid,
+        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
+    );
 };
 
 template<typename T, typename M, TraitType type = Traits<M>::type>
@@ -90,16 +103,20 @@ class DeSerializer
     template<typename T, typename Members, std::size_t... Seq>
     void scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&);
 
-    template<typename T, typename Members>
-    void scanMembers(std::string const& key, T& object, Members& members);
+    template<typename T, typename... Members>
+    void scanMembers(std::string const& key, T& object, std::tuple<Members...> const& members);
+
+    template<typename T, typename I, typename Action>
+    void scanMembers(I const& key, T& object, Action action);
     public:
         DeSerializer(ParserInterface& parser, bool root = true);
+        ~DeSerializer();
 
         template<typename T>
         void parse(T& object);
 
-        template<typename T>
-        void scanObjectMembers(std::string const& key, T& object);
+        template<typename T, typename I>
+        void scanObjectMembers(I const& key, T& object);
 };
 
 template<TraitType traitType, typename T>
@@ -111,7 +128,7 @@ class SerializerForBlock
     );
 };
 
-template<typename T, typename M, TraitType type = Traits<M>::type>
+template<typename T, typename M, TraitType type = Traits<typename std::remove_cv<M>::type>::type>
 class SerializeMember
 {
     public:
@@ -126,8 +143,12 @@ class Serializer
     template<typename T, typename Members, std::size_t... Seq>
     void printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&);
 
-    template<typename T, typename Members>
-    void printMembers(T const& object, Members const& members);
+    template<typename T, typename... Members>
+    void printMembers(T const& object, std::tuple<Members...> const& members);
+
+    template<typename T, typename Action>
+    void printMembers(T const& object, Action action);
+
     public:
         Serializer(PrinterInterface& printer, bool root = true);
         ~Serializer();

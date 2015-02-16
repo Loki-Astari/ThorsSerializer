@@ -17,7 +17,7 @@ JsonParser::JsonParser(std::istream& stream)
     , started(false)
 {}
 
-ParserToken JsonParser::getToken()
+ParserToken JsonParser::getNextToken()
 {
     /* Handle States were we are not going to read any more */
     if (!started)
@@ -89,9 +89,9 @@ ParserToken JsonParser::getToken()
         // Punctuation.
         // Parse it but it is not the actual result
         // So try and get the next token.
-        case Colon:     return getToken();
-        case CommaM:    return getToken();
-        case CommaA:    return getToken();
+        case Colon:     return getNextToken();
+        case CommaM:    return getNextToken();
+        case CommaA:    return getNextToken();
         // We are going into a containing object.
 
         // Push the state we want when the containing
