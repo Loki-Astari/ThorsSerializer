@@ -102,12 +102,12 @@ class MemberInserter<std::map<K,V>>
         }
 };
 
-template<typename T>
-class MemberInserter<std::vector<T>>
+template<typename T, typename Allocator>
+class MemberInserter<std::vector<T, Allocator>>
 {
-    std::vector<T>& container;
+    std::vector<T, Allocator>& container;
     public:
-        MemberInserter(std::vector<T>& container)
+        MemberInserter(std::vector<T, Allocator>& container)
             : container(container)
         {}
         void add(std::size_t const&, T&& value)
@@ -198,12 +198,12 @@ class Traits<std::list<T>>
 };
 
 /* ------------------------------- Traits<std::vector<T>> ------------------------------- */
-template<typename T>
-class Traits<std::vector<T>>
+template<typename T, typename Allocator>
+class Traits<std::vector<T, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::vector<T>>    MemberExtractor;
+        typedef ContainerMemberExtractor<std::vector<T, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
