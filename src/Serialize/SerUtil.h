@@ -94,44 +94,44 @@ class PutValueType<V, TraitType::Value>
 template<typename T>
 class MemberInserter;
 
-template<typename K,typename V>
-class MemberInserter<std::map<K,V>>
+template<typename Key,typename T, typename Compare, typename Allocator>
+class MemberInserter<std::map<Key, T, Compare, Allocator>>
 {
-    std::map<K, V>& container;
+    std::map<Key, T, Compare, Allocator>& container;
     public:
-        MemberInserter(std::map<K, V>& container)
+        MemberInserter(std::map<Key, T, Compare, Allocator>& container)
             : container(container)
         {}
-        void add(std::size_t const&, std::pair<K, V>&& value)
+        void add(std::size_t const&, std::pair<Key, T>&& value)
         {
-            container.insert(std::forward<std::pair<K, V>>(value));
+            container.insert(std::forward<std::pair<Key, T>>(value));
         }
 };
-template<typename K, typename Compare, typename Allocator>
-class MemberInserter<std::set<K, Compare, Allocator>>
+template<typename Key, typename Compare, typename Allocator>
+class MemberInserter<std::set<Key, Compare, Allocator>>
 {
-    std::set<K, Compare, Allocator>& container;
+    std::set<Key, Compare, Allocator>& container;
     public:
-        MemberInserter(std::set<K, Compare, Allocator>& container)
+        MemberInserter(std::set<Key, Compare, Allocator>& container)
             : container(container)
         {}
-        void add(std::size_t const&, K&& value)
+        void add(std::size_t const&, Key&& value)
         {
-            container.insert(std::forward<K>(value));
+            container.insert(std::forward<Key>(value));
         }
 };
 
-template<typename K, typename Compare, typename Allocator>
-class MemberInserter<std::multiset<K, Compare, Allocator>>
+template<typename Key, typename Compare, typename Allocator>
+class MemberInserter<std::multiset<Key, Compare, Allocator>>
 {
-    std::multiset<K, Compare, Allocator>& container;
+    std::multiset<Key, Compare, Allocator>& container;
     public:
-        MemberInserter(std::multiset<K, Compare, Allocator>& container)
+        MemberInserter(std::multiset<Key, Compare, Allocator>& container)
             : container(container)
         {}
-        void add(std::size_t const&, K&& value)
+        void add(std::size_t const&, Key&& value)
         {
-            container.insert(std::forward<K>(value));
+            container.insert(std::forward<Key>(value));
         }
 };
 
@@ -319,12 +319,12 @@ class Traits<std::multiset<Key, Compare, Allocator>>
         }
 };
 /* ------------------------------- Traits<std::map<Key, Value>> ------------------------------- */
-template<typename Key, typename Value>
-class Traits<std::map<Key, Value>>
+template<typename Key, typename T, typename Compare, typename Allocator>
+class Traits<std::map<Key, T, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::map<Key, Value>, std::pair<Key,Value>>    MemberExtractor;
+        typedef ContainerMemberExtractor<std::map<Key, T, Compare, Allocator>, std::pair<Key, T>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
