@@ -11,7 +11,10 @@ For each implementation we expect to see:
                         <name>Import        Import/Export function that simply wrap the Import/Export functions
                         <name>Export        generic function (using "Name") as input.
 
+Other Files to make Serialization automatic:
 
+    File:               Class:              Description:
+    ====================================================
     Serialize.h         ParserInterface     An interface to parsing used by DeSerialize
                         PrinterInterface    An interface to printing used by Serialize
                         Serializer<T>       Generic serialize class that uses Traits<T> and <Name>PrinterInterface
@@ -24,6 +27,17 @@ For each implementation we expect to see:
 
     Traits.h            Traits<T>
                         Macros: ThorsAnvil_MakeTrait    Simplifies the creation of Traits for user types.
+
+    SerUtil.h           Traits<std::pair<A,B>>          Provides traits for all the standard containers.
+                        Traits<std::array<T, N>>
+                        Traits<std::list<T>>
+                        Traits<std::vector<T>>
+                        Traits<std::deque<T>>
+                        Traits<std::set<T>>
+                        Traits<std::multiset<T>>
+                        Traits<std::map<K, V>>
+                        Traits<std::multimap<K, V>>
+
 
     UnicodeIterator.h   Iterator for replacing escape characters with their actual encodings for use inside the application.
                         Should be used by the <XXX>Parser class on strings that can contain escape characters.
@@ -51,11 +65,13 @@ For simplicity we have stream adapters.
     #include "Json.h"
     #include "Yaml.h"
 
-    std::cout << jsonExport(object1);
-    std::cin  >> jsonImport(object1);
+    namespace TS = ThorsAnvil::Serialize;
 
-    std::cout << yamlExport(object1);
-    std::cin  >> yamlImport(object1);
+    std::cout << TS::jsonExport(object1);
+    std::cin  >> TS::jsonImport(object1);
+
+    std::cout << TS::yamlExport(object1);
+    std::cin  >> TS::yamlImport(object1);
 
 All standard types have a serialization defined for them. To add one for your class.
 
