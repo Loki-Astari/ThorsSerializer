@@ -7,6 +7,7 @@
 #include <utility>
 #include <string>
 #include <map>
+#include <set>
 #include <vector>
 #include <deque>
 #include <list>
@@ -23,6 +24,7 @@
  * Traits<std::vector<T, Allocator>>
  * Traits<std::deque<T, Allocator>>
  * Traits<std::pair<A,B>>
+ * Traits<std::set<K,V>>
  * Traits<std::map<K,V>>
  *      Traits<std::map<std::string,V>>
 
@@ -102,6 +104,19 @@ class MemberInserter<std::map<K,V>>
         void add(std::size_t const&, std::pair<K, V>&& value)
         {
             container.insert(std::forward<std::pair<K, V>>(value));
+        }
+};
+template<typename K, typename Compare, typename Allocator>
+class MemberInserter<std::set<K, Compare, Allocator>>
+{
+    std::set<K, Compare, Allocator>& container;
+    public:
+        MemberInserter(std::set<K, Compare, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, K&& value)
+        {
+            container.insert(std::forward<K>(value));
         }
 };
 
@@ -262,6 +277,19 @@ class Traits<std::pair<F, S>>
         }
 };
 
+/* ------------------------------- Traits<std::set<Key>> ------------------------------- */
+template<typename Key, typename Compare, typename Allocator>
+class Traits<std::set<Key, Compare, Allocator>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractor<std::set<Key, Compare, Allocator>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
 /* ------------------------------- Traits<std::map<Key, Value>> ------------------------------- */
 template<typename Key, typename Value>
 class Traits<std::map<Key, Value>>
