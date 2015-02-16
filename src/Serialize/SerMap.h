@@ -19,30 +19,7 @@ class Traits<std::map<Key, Value>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-
-        class MemberExtractor
-        {
-            typedef std::pair<Key, Value>   ValueType;
-            public:
-                constexpr MemberExtractor() {}
-                void operator()(PrinterInterface& printer, std::map<Key, Value> const& object) const
-                {
-                    PutValueType<ValueType> valuePutter(printer);
-                    for(auto const& loop: object)
-                    {
-                        valuePutter.putValue(loop);
-                    }
-                }
-                void operator()(ParserInterface& parser, std::string const&, std::map<Key, Value>& object) const
-                {
-                    ValueType               data;
-                    GetValueType<ValueType> valueGetter(parser, data);
-
-                    object.insert(std::move(data));
-                }
-        };
-        using Members = std::tuple<MemberExtractor>;
-
+        typedef ContainerMemberExtractor<std::map<Key, Value>, std::pair<Key,Value>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;

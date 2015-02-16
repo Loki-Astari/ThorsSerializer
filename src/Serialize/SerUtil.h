@@ -2,6 +2,10 @@
 #ifndef THORS_ANVIL_SERIALIZE_SER_UTIL_H
 #define THORS_ANVIL_SERIALIZE_SER_UTIL_H
 
+#include <map>
+#include <vector>
+#include <utility>
+
 namespace ThorsAnvil
 {
     namespace Serialize
@@ -58,6 +62,59 @@ class PutValueType<V, TraitType::Value>
             printer.addValue(value);
         }
 };
+template<typename T>
+class MemberInserter;
+
+template<typename K,typename V>
+class MemberInserter<std::map<K,V>>
+{
+    std::map<K, V>& container;
+    public:
+        MemberInserter(std::map<K, V>& container)
+            : container(container)
+        {}
+        void add(std::pair<K, V>&& value)
+        {
+            container.insert(std::forward<std::pair<K, V>>(value));
+        }
+};
+template<typename T>
+class MemberInserter<std::vector<T>>
+{
+    std::vector<T>& container;
+    public:
+        MemberInserter(std::vector<T>& container)
+            : container(container)
+        {}
+        void add(T&& value)
+        {
+            container.push_back(std::forward<T>(value));
+        }
+};
+template<typename C, typename V = typename C::value_type>
+class ContainerMemberExtractor
+{
+    public:
+        constexpr ContainerMemberExtractor() {}
+        void operator()(PrinterInterface& printer, C const& object) const
+        {
+            PutValueType<V>     valuePutter(printer);
+            for(auto const& loop: object)
+            {
+                valuePutter.putValue(loop);
+            }
+        }
+        void operator()(ParserInterface& parser, std::string const&, C& object) const
+        {
+            V                   data;
+            GetValueType<V>     valueGetter(parser, data);
+
+            MemberInserter<C>   inserter(object);
+            inserter.add(std::move(data));
+            //object.insert(std::move(data));
+        }
+};
+
     }
 }
 
