@@ -26,12 +26,23 @@ class ParserInterface
                 void            pushBackToken(ParserToken token);
         virtual ParserToken     getNextToken()          = 0;
         virtual std::string     getKey()                = 0;
-        virtual void    getValue(bool& value)           = 0;
-        virtual void    getValue(int& value)            = 0;
-        virtual void    getValue(double& value)         = 0;
-        virtual void    getValue(std::nullptr_t)        = 0;
-        virtual void    getValue(char*& value)          = 0;
-        virtual void    getValue(std::string& value)    = 0;
+
+        virtual void    getValue(short int)             = 0;
+        virtual void    getValue(short unsigned int)    = 0;
+        virtual void    getValue(int)                   = 0;
+        virtual void    getValue(unsigned long int)     = 0;
+        virtual void    getValue(long int)              = 0;
+        virtual void    getValue(unsigned long int)     = 0;
+        virtual void    getValue(long long int)         = 0;
+        virtual void    getValue(unsigned long long int)= 0;
+
+        virtual void    getValue(float)                 = 0;
+        virtual void    getValue(double)                = 0;
+        virtual void    getValue(long double)           = 0;
+
+        virtual void    getValue(bool)                  = 0;
+
+        virtual void    getValue(std::string)           = 0;
 };
 class PrinterInterface
 {
@@ -56,13 +67,24 @@ class PrinterInterface
         virtual void openArray()    = 0;
         virtual void closeArray()   = 0;
 
-        virtual void addKey(std::string const& key)     = 0;
-        virtual void addValue(bool value)               = 0;
-        virtual void addValue(int value)                = 0;
-        virtual void addValue(double value)             = 0;
-        virtual void addValue(std::nullptr_t)           = 0;
-        virtual void addValue(char const* value)        = 0;
-        virtual void addValue(std::string const& value) = 0;
+        virtual void    addKey(std::string const& key)  = 0;
+
+        virtual void    addValue(short int)             = 0;
+        virtual void    addValue(short unsigned int)    = 0;
+        virtual void    addValue(int)                   = 0;
+        virtual void    addValue(unsigned long int)     = 0;
+        virtual void    addValue(long int)              = 0;
+        virtual void    addValue(unsigned long int)     = 0;
+        virtual void    addValue(long long int)         = 0;
+        virtual void    addValue(unsigned long long int)= 0;
+
+        virtual void    addValue(float)                 = 0;
+        virtual void    addValue(double)                = 0;
+        virtual void    addValue(long double)           = 0;
+
+        virtual void    addValue(bool)                  = 0;
+
+        virtual void    addValue(std::string)           = 0;
 };
 
 class Serializer;
