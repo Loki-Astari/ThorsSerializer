@@ -30,7 +30,7 @@
  *      Traits<std::map<std::string,V>>
  * Traits<std::multimap<K,V>>
  *      Traits<std::multimap<std::string,V>>
-
+ *
  */
 
 namespace ThorsAnvil
@@ -39,6 +39,11 @@ namespace ThorsAnvil
     {
 
 /* ------------------------------- GetValueType ------------------------------- */
+/*
+ * Used to retrieve a value from a stream.
+ * A normal value is retrieved directly from the stream (via the parser object).
+ * A compound type Map/Array is retrieved from the stream using a DeSerializer.
+ */
 template<typename V, TraitType type = Traits<V>::type>
 class GetValueType
 {
@@ -64,6 +69,11 @@ class GetValueType<V, TraitType::Value>
 };
 
 /* ------------------------------- PutValueType ------------------------------- */
+/*
+ * Used to put a values onto a stream.
+ * A normal value is put directly onto the stream (via the printer object).
+ * A compound type Map/Array is printed to the stream using a Serializer.
+ */
 template<typename V, TraitType type = Traits<V>::type>
 class PutValueType
 {
@@ -77,6 +87,7 @@ class PutValueType
             serializer.print(value);
         }
 };
+
 template<typename V>
 class PutValueType<V, TraitType::Value>
 {
@@ -93,119 +104,29 @@ class PutValueType<V, TraitType::Value>
 };
 
 /* ------------------------------- MemberInserter ------------------------------- */
+/*
+ * Defines how a value is inserted into a container.
+ * Overloaded for each container type (no generic definition)
+ */
 template<typename T>
 class MemberInserter;
 
-template<typename Key,typename T, typename Compare, typename Allocator>
-class MemberInserter<std::map<Key, T, Compare, Allocator>>
-{
-    std::map<Key, T, Compare, Allocator>& container;
-    public:
-        MemberInserter(std::map<Key, T, Compare, Allocator>& container)
-            : container(container)
-        {}
-        void add(std::size_t const&, std::pair<Key, T>&& value)
-        {
-            container.insert(std::forward<std::pair<Key, T>>(value));
-        }
-};
-template<typename Key,typename T, typename Compare, typename Allocator>
-class MemberInserter<std::multimap<Key, T, Compare, Allocator>>
-{
-    std::multimap<Key, T, Compare, Allocator>& container;
-    public:
-        MemberInserter(std::multimap<Key, T, Compare, Allocator>& container)
-            : container(container)
-        {}
-        void add(std::size_t const&, std::pair<Key, T>&& value)
-        {
-            container.insert(std::forward<std::pair<Key, T>>(value));
-        }
-};
-template<typename Key, typename Compare, typename Allocator>
-class MemberInserter<std::set<Key, Compare, Allocator>>
-{
-    std::set<Key, Compare, Allocator>& container;
-    public:
-        MemberInserter(std::set<Key, Compare, Allocator>& container)
-            : container(container)
-        {}
-        void add(std::size_t const&, Key&& value)
-        {
-            container.insert(std::forward<Key>(value));
-        }
-};
-
-template<typename Key, typename Compare, typename Allocator>
-class MemberInserter<std::multiset<Key, Compare, Allocator>>
-{
-    std::multiset<Key, Compare, Allocator>& container;
-    public:
-        MemberInserter(std::multiset<Key, Compare, Allocator>& container)
-            : container(container)
-        {}
-        void add(std::size_t const&, Key&& value)
-        {
-            container.insert(std::forward<Key>(value));
-        }
-};
-
-template<typename T, typename Allocator>
-class MemberInserter<std::vector<T, Allocator>>
-{
-    std::vector<T, Allocator>& container;
-    public:
-        MemberInserter(std::vector<T, Allocator>& container)
-            : container(container)
-        {}
-        void add(std::size_t const&, T&& value)
-        {
-            container.push_back(std::forward<T>(value));
-        }
-};
-template<typename T, typename Allocator>
-class MemberInserter<std::deque<T, Allocator>>
-{
-    std::deque<T, Allocator>& container;
-    public:
-        MemberInserter(std::deque<T, Allocator>& container)
-            : container(container)
-        {}
-        void add(std::size_t const&, T&& value)
-        {
-            container.push_back(std::forward<T>(value));
-        }
-};
-
-template<typename T, typename Allocator>
-class MemberInserter<std::list<T, Allocator>>
-{
-    std::list<T, Allocator>& container;
-    public:
-        MemberInserter(std::list<T, Allocator>& container)
-            : container(container)
-        {}
-        void add(std::size_t const&, T&& value)
-        {
-            container.push_back(std::forward<T>(value));
-        }
-};
-
-template<typename T, std::size_t N>
-class MemberInserter<std::array<T, N>>
-{
-    std::array<T, N>& container;
-    public:
-        MemberInserter(std::array<T, N>& container)
-            : container(container)
-        {}
-        void add(std::size_t const& index, T&& value)
-        {
-            container[index] = std::forward<T>(value);
-        }
-};
-
 /* ------------------------------- ContainerMemberExtractor ------------------------------- */
+/*
+ * A generic contain manipulator class
+ *
+ * The operator()(printer) prints all the values in the container using PutValueType class.
+ * The PutValueType will call the printer directly for value types but recursively use
+ * the Serializer class for Map/Array types.
+ *
+ * The operator()(parser) reads a single value from the parser and puts it in the container
+ * using the GetValueType class. The GetValueType will call the parser directly for value types
+ * but recursively use the DeSerializer class for Map/Array types.
+ *
+ * Note each container has differences in the insert technique thus we use a MemberInserter
+ * object to do the inserting of values after they have been read. The class attempts to do this
+ * using move semantics.
+ */
 template<typename C, typename V = typename C::value_type>
 class ContainerMemberExtractor
 {
@@ -226,11 +147,41 @@ class ContainerMemberExtractor
 
             MemberInserter<C>   inserter(object);
             inserter.add(index, std::move(data));
-            //object.insert(std::move(data));
+        }
+};
+
+/* ------------------------------- Traits<std::pair<F, S>> ------------------------------- */
+template<typename F, typename S>
+class Traits<std::pair<F, S>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Map;
+        typedef std::pair<F,S>  Self;
+
+        using Members = std::tuple< REP_N(TypeAction, Self, first, second) >;
+
+        static Members const& getMembers()
+        {
+            static constexpr Members members{ REP_N(ValueAction, Self, first, second) };
+            return members;
         }
 };
 
 /* ------------------------------- Traits<std::array<T, N>> ------------------------------- */
+template<typename T, std::size_t N>
+class MemberInserter<std::array<T, N>>
+{
+    std::array<T, N>& container;
+    public:
+        MemberInserter(std::array<T, N>& container)
+            : container(container)
+        {}
+        void add(std::size_t const& index, T&& value)
+        {
+            container[index] = std::forward<T>(value);
+        }
+};
+
 template<typename T, std::size_t N>
 class Traits<std::array<T, N>>
 {
@@ -246,6 +197,20 @@ class Traits<std::array<T, N>>
 
 /* ------------------------------- Traits<std::list<T>> ------------------------------- */
 template<typename T, typename Allocator>
+class MemberInserter<std::list<T, Allocator>>
+{
+    std::list<T, Allocator>& container;
+    public:
+        MemberInserter(std::list<T, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, T&& value)
+        {
+            container.push_back(std::forward<T>(value));
+        }
+};
+
+template<typename T, typename Allocator>
 class Traits<std::list<T, Allocator>>
 {
     public:
@@ -259,6 +224,20 @@ class Traits<std::list<T, Allocator>>
 };
 
 /* ------------------------------- Traits<std::vector<T>> ------------------------------- */
+template<typename T, typename Allocator>
+class MemberInserter<std::vector<T, Allocator>>
+{
+    std::vector<T, Allocator>& container;
+    public:
+        MemberInserter(std::vector<T, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, T&& value)
+        {
+            container.push_back(std::forward<T>(value));
+        }
+};
+
 template<typename T, typename Allocator>
 class Traits<std::vector<T, Allocator>>
 {
@@ -274,6 +253,20 @@ class Traits<std::vector<T, Allocator>>
 
 /* ------------------------------- Traits<std::deque<T>> ------------------------------- */
 template<typename T, typename Allocator>
+class MemberInserter<std::deque<T, Allocator>>
+{
+    std::deque<T, Allocator>& container;
+    public:
+        MemberInserter(std::deque<T, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, T&& value)
+        {
+            container.push_back(std::forward<T>(value));
+        }
+};
+
+template<typename T, typename Allocator>
 class Traits<std::deque<T, Allocator>>
 {
     public:
@@ -286,28 +279,21 @@ class Traits<std::deque<T, Allocator>>
         }
 };
 
-/* ------------------------------- Traits<std::pair<F, S>> ------------------------------- */
-template<typename F, typename S>
-class Traits<std::pair<F, S>>
+/* ------------------------------- Traits<std::set<Key>> ------------------------------- */
+template<typename Key, typename Compare, typename Allocator>
+class MemberInserter<std::set<Key, Compare, Allocator>>
 {
+    std::set<Key, Compare, Allocator>& container;
     public:
-        static constexpr TraitType type = TraitType::Map;
-        typedef std::pair<F,S>  Self;
-
-        using Members = std::tuple<
-                        REP_N(TypeAction, Self, first, second)
-                                    >;
-
-        static Members const& getMembers()
+        MemberInserter(std::set<Key, Compare, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, Key&& value)
         {
-            static constexpr Members members{
-                        REP_N(ValueAction, Self, first, second)
-                                            };
-            return members;
+            container.insert(std::forward<Key>(value));
         }
 };
 
-/* ------------------------------- Traits<std::set<Key>> ------------------------------- */
 template<typename Key, typename Compare, typename Allocator>
 class Traits<std::set<Key, Compare, Allocator>>
 {
@@ -320,7 +306,22 @@ class Traits<std::set<Key, Compare, Allocator>>
             return memberExtractor;
         }
 };
+
 /* ------------------------------- Traits<std::multiset<Key>> ------------------------------- */
+template<typename Key, typename Compare, typename Allocator>
+class MemberInserter<std::multiset<Key, Compare, Allocator>>
+{
+    std::multiset<Key, Compare, Allocator>& container;
+    public:
+        MemberInserter(std::multiset<Key, Compare, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, Key&& value)
+        {
+            container.insert(std::forward<Key>(value));
+        }
+};
+
 template<typename Key, typename Compare, typename Allocator>
 class Traits<std::multiset<Key, Compare, Allocator>>
 {
@@ -333,7 +334,22 @@ class Traits<std::multiset<Key, Compare, Allocator>>
             return memberExtractor;
         }
 };
+
 /* ------------------------------- Traits<std::map<Key, Value>> ------------------------------- */
+template<typename Key,typename T, typename Compare, typename Allocator>
+class MemberInserter<std::map<Key, T, Compare, Allocator>>
+{
+    std::map<Key, T, Compare, Allocator>& container;
+    public:
+        MemberInserter(std::map<Key, T, Compare, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, std::pair<Key, T>&& value)
+        {
+            container.insert(std::forward<std::pair<Key, T>>(value));
+        }
+};
+
 template<typename Key, typename T, typename Compare, typename Allocator>
 class Traits<std::map<Key, T, Compare, Allocator>>
 {
@@ -347,6 +363,10 @@ class Traits<std::map<Key, T, Compare, Allocator>>
         }
 };
 
+/*
+ * std::map<> we use a specialization when the key is a std::string.
+ * This allows maps that have string keys to be represented directly by Json Map objects.
+ */
 template<typename Value>
 class Traits<std::map<std::string, Value>>
 {
@@ -382,6 +402,20 @@ class Traits<std::map<std::string, Value>>
 };
 
 /* ------------------------------- Traits<std::multimap<Key, Value>> ------------------------------- */
+template<typename Key,typename T, typename Compare, typename Allocator>
+class MemberInserter<std::multimap<Key, T, Compare, Allocator>>
+{
+    std::multimap<Key, T, Compare, Allocator>& container;
+    public:
+        MemberInserter(std::multimap<Key, T, Compare, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, std::pair<Key, T>&& value)
+        {
+            container.insert(std::forward<std::pair<Key, T>>(value));
+        }
+};
+
 template<typename Key, typename T, typename Compare, typename Allocator>
 class Traits<std::multimap<Key, T, Compare, Allocator>>
 {

@@ -99,8 +99,8 @@ static_assert(                                                                  
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."                            \
 )
 
-#define ThorsAnvil_MakeTrait(DataType, TType, ...)                      \
-    ThorsAnvil_MakeTrait_Base(DataType, , TType, __VA_ARGS__)
+#define ThorsAnvil_MakeTrait(DataType, ...)                             \
+    ThorsAnvil_MakeTrait_Base(DataType, , Map, __VA_ARGS__)
 
 #define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)               \
     static_assert(                                                      \
