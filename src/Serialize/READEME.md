@@ -5,7 +5,7 @@ This is a framework for serializing C++ objects to/from stream in some "standard
 Standard Formats: Currently supported are Json/Yaml
 
 
-It is designed so that no intermediate format it used; the data is read directly from the object and placed on the stream, conversely the data is read directly from the stream into C++ objects. Note because C++ container con only hold fully formed objects the data is read into temporary object then inserted (moved if possible otherwise copied) into the container.
+It is designed so that no intermediate format it used; data is read directly from the object and placed on the stream, conversely data is read directly from the stream into C++ objects. Note because C++ container con only hold fully formed objects, data is read into temporary object then inserted (moved if possible otherwise copied) into the container.
 
 User defined classes require no additional code to be serialized, only a simple declaration that defines what member need to be serialized. The appropriate declarations for the standard containers has already been provided.
 
@@ -15,6 +15,8 @@ There are two main functions for export and import that can be used with streams
 
     <formatName>Export(<object>)    eg   jsonExport(o)
     <formatNAme>Import(<object>)    eg   jsonImport(o)
+
+The object part of the above declaration is any object that has a type with ThorsAnvil::Serialize::Traits<> declaration defined for that type. Traits declarations are already provided for all std:: container types and it is simple to provide declarations for user defined types (See below).
 
 A simple example of usage would be (link against libThorSerialize14.dynlib)
     
@@ -32,8 +34,10 @@ A simple example of usage would be (link against libThorSerialize14.dynlib)
 
 ##User declared Types
 
-User defined classes can be made serialize-able by defining a specialization of the class ThorsAnvil::Serialize::Traits<>.  
-The macros `ThorsAnvil_MakeTrait` is provided to simplify this for most standard situations. Yes I know macros are nasty. But the idea is to make usage easier and hide the real work. So the macro takes the names of the members.
+User defined classes can be made serialize-able by defining a specialization of the class ThorsAnvil::Serialize::Traits<>.
+The macros `ThorsAnvil_MakeTrait` is provided to simplify this for most standard situations. Yes I know macros are nasty. But the idea is to make usage easier and hide the real work. So the macro takes the names of the members (and generates that appropriate type information from the names). A more detailed explanation of how to build a Traits class by hand is provided below.
+
+A simple example of a traits class definition for a user defined type.
 
     #include "ThorSerialize/Traits.h"
     
@@ -45,8 +49,8 @@ The macros `ThorsAnvil_MakeTrait` is provided to simplify this for most standard
         double          data2;
         std::string     name;
 
-        // To allow the serialization class access to private members
-        // the traits must be a frined of the class. If the members are
+        // To allow the serialization code access to private members
+        // the "Traits<>" must be a friend of the class. If the members are
         // all public then this is not needed.
         friend class TS::Traits<MyClass>;
 
@@ -92,14 +96,39 @@ A serialize-able class can be a member/parent or contained in another serialize-
 
 ## Inheriting
 
+A user defined class that inherits from a serialize-able class can also be extended the serializable attributes but you must a slightly different macro:
+
+    #include "MyClass.h"
+    #include "ThorSerialize/Traits.h"
 
     
+    namespace TS = ThorsAnvil::Serialize;
 
+    class MySubClass: public MyClass
+    {
+        std::string     parentName;
 
+        // To allow the serialization code access to private members
+        // the "Traits<>" must be a friend of the class. If the members are
+        // all public then this is not needed.
+        friend class TS::Traits<MySubClass>;
 
+        public:
+            MySubClass(int member1, double data2, std::string const& name, std::string const& parentName)
+                : MyClass(member1, data2, name)
+                , parentName(parentName)
+            {}
+    };
 
+    // This macros crates the appropriate Traits class specialized for the
+    // user defined class allowing it to be used by jsonImport() and jsonExport()
+    ThorsAnvil_ExpandTrait(MyClass, MySubClass, parentName);
 
+The only real difference is exchanging the `ThorsAnvil_MakeTrait` for `ThorsAnvil_ExpandTrait` macro. Both macros accept any number of field names.
 
+## Serialization Formats
+
+Currently the framework exposes two specific format types (Json/Yaml). But it has been designed to be easily extended to support other formats that may be useful. The basis for other formats is defined via the ParserInterface and PrinterInterface classes.
 
 
 
