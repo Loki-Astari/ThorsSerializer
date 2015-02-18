@@ -142,6 +142,32 @@ std::string JsonParser::getKey()
     return getString();
 }
 
+template<typename T>
+inline T JsonParser::scan()
+{
+    char*   end;
+    T value = scanValue<T>(lexer.YYText(), &end);
+    if (lexer.YYText() + lexer.YYLeng() != end)
+    {
+        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not an integer");
+    }
+    return value;
+}
+
+void JsonParser::getValue(short& value)                         {value = scan<short>();}
+void JsonParser::getValue(int& value)                           {value = scan<int>();}
+void JsonParser::getValue(long& value)                          {value = scan<long>();}
+void JsonParser::getValue(long long& value)                     {value = scan<long long>();}
+
+void JsonParser::getValue(unsigned short& value)                {value = scan<unsigned short>();}
+void JsonParser::getValue(unsigned int& value)                  {value = scan<unsigned int>();}
+void JsonParser::getValue(unsigned long& value)                 {value = scan<unsigned long>();}
+void JsonParser::getValue(unsigned long long& value)            {value = scan<unsigned long long>();}
+
+void JsonParser::getValue(float& value)                         {value = scan<float>();}
+void JsonParser::getValue(double& value)                        {value = scan<double>();}
+void JsonParser::getValue(long double& value)                   {value = scan<long double>();}
+
 void JsonParser::getValue(bool& value)
 {
     if (lexer.YYLeng() == 4 && strncmp(lexer.YYText(), "true", 4) == 0)
@@ -156,47 +182,6 @@ void JsonParser::getValue(bool& value)
     {
         throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not a bool");
     }
-}
-
-void JsonParser::getValue(int& value)
-{
-    char*   end;
-    value = std::strtol(lexer.YYText(), &end, 10);
-    if (lexer.YYText() + lexer.YYLeng() != end)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not an integer");
-    }
-}
-
-void JsonParser::getValue(double& value)
-{
-    char*   end;
-    value = std::strtod(lexer.YYText(), &end);
-    if (lexer.YYText() + lexer.YYLeng() != end)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not a float");
-    }
-}
-
-void JsonParser::getValue(std::nullptr_t)
-{
-    if (lexer.YYLeng() != 4 || strncmp(lexer.YYText(), "null", 4) != 0)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not a null");
-    }
-}
-
-void JsonParser::getValue(char*& value)
-{
-    std::string const& str = getString();
-
-    char* newValue = new char[str.size() + 1];
-    std::copy(std::begin(str), std::end(str), newValue);
-    newValue[str.size()] = '\0';
-
-    std::swap(newValue, value);
-
-    delete newValue;
 }
 
 void JsonParser::getValue(std::string& value)

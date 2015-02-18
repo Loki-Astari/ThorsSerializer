@@ -27,22 +27,23 @@ class ParserInterface
         virtual ParserToken     getNextToken()          = 0;
         virtual std::string     getKey()                = 0;
 
-        virtual void    getValue(short int)             = 0;
-        virtual void    getValue(short unsigned int)    = 0;
-        virtual void    getValue(int)                   = 0;
-        virtual void    getValue(unsigned long int)     = 0;
-        virtual void    getValue(long int)              = 0;
-        virtual void    getValue(unsigned long int)     = 0;
-        virtual void    getValue(long long int)         = 0;
-        virtual void    getValue(unsigned long long int)= 0;
+        virtual void    getValue(short int&)             = 0;
+        virtual void    getValue(int&)                   = 0;
+        virtual void    getValue(long int&)              = 0;
+        virtual void    getValue(long long int&)         = 0;
 
-        virtual void    getValue(float)                 = 0;
-        virtual void    getValue(double)                = 0;
-        virtual void    getValue(long double)           = 0;
+        virtual void    getValue(unsigned short int&)    = 0;
+        virtual void    getValue(unsigned int&)          = 0;
+        virtual void    getValue(unsigned long int&)     = 0;
+        virtual void    getValue(unsigned long long int&)= 0;
 
-        virtual void    getValue(bool)                  = 0;
+        virtual void    getValue(float&)                 = 0;
+        virtual void    getValue(double&)                = 0;
+        virtual void    getValue(long double&)           = 0;
 
-        virtual void    getValue(std::string)           = 0;
+        virtual void    getValue(bool&)                  = 0;
+
+        virtual void    getValue(std::string&)           = 0;
 };
 class PrinterInterface
 {
@@ -70,12 +71,13 @@ class PrinterInterface
         virtual void    addKey(std::string const& key)  = 0;
 
         virtual void    addValue(short int)             = 0;
-        virtual void    addValue(short unsigned int)    = 0;
         virtual void    addValue(int)                   = 0;
-        virtual void    addValue(unsigned long int)     = 0;
         virtual void    addValue(long int)              = 0;
-        virtual void    addValue(unsigned long int)     = 0;
         virtual void    addValue(long long int)         = 0;
+
+        virtual void    addValue(unsigned short int)    = 0;
+        virtual void    addValue(unsigned int)          = 0;
+        virtual void    addValue(unsigned long int)     = 0;
         virtual void    addValue(unsigned long long int)= 0;
 
         virtual void    addValue(float)                 = 0;
@@ -84,8 +86,28 @@ class PrinterInterface
 
         virtual void    addValue(bool)                  = 0;
 
-        virtual void    addValue(std::string)           = 0;
+        virtual void    addValue(std::string const&)    = 0;
+
+        void addValue(void*)        = delete;
+        void addValue(void const*)  = delete;
 };
+
+template<typename T>
+T scanValue(char const* buffer, char** end);
+
+template<>  inline short                   scanValue<short>(char const* buffer, char** end)                   {return std::strtol(buffer, end, 10);}
+template<>  inline int                     scanValue<int>(char const* buffer, char** end)                     {return std::strtol(buffer, end, 10);}
+template<>  inline long int                scanValue<long int>(char const* buffer, char** end)                {return std::strtol(buffer, end, 10);}
+template<>  inline long long int           scanValue<long long int>(char const* buffer, char** end)           {return std::strtoll(buffer, end, 10);}
+
+template<>  inline unsigned short          scanValue<unsigned short>(char const* buffer, char** end)          {return std::strtoul(buffer, end, 10);}
+template<>  inline unsigned int            scanValue<unsigned int>(char const* buffer, char** end)            {return std::strtoul(buffer, end, 10);}
+template<>  inline unsigned long int       scanValue<unsigned long int>(char const* buffer, char** end)       {return std::strtoul(buffer, end, 10);}
+template<>  inline unsigned long long int  scanValue<unsigned long long int>(char const* buffer, char** end)  {return std::strtoull(buffer, end, 10);}
+
+template<>  inline float                   scanValue<float>(char const* buffer, char** end)                   {return std::strtof(buffer, end);}
+template<>  inline double                  scanValue<double>(char const* buffer, char** end)                  {return std::strtod(buffer, end);}
+template<>  inline long double             scanValue<long double>(char const* buffer, char** end)             {return std::strtold(buffer, end);}
 
 class Serializer;
 class DeSerializer;

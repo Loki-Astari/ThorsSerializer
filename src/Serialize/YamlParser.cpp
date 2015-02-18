@@ -181,6 +181,36 @@ std::string YamlParser::getKey()
     return getString();
 }
 
+template<typename T>
+T YamlParser::scan()
+{
+    char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
+    std::size_t length  = event.data.scalar.length;
+    char*       end;
+
+    T   value = scanValue<T>(buffer, &end);
+    if (buffer + length != end)
+    {
+        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not an integer");
+    }
+    return value;
+}
+
+
+void YamlParser::getValue(short& value)                 {value   = scan<short>();}
+void YamlParser::getValue(int& value)                   {value   = scan<int>();}
+void YamlParser::getValue(long& value)                  {value   = scan<long>();}
+void YamlParser::getValue(long long& value)             {value   = scan<long long>();}
+
+void YamlParser::getValue(unsigned short& value)        {value   = scan<unsigned short>();}
+void YamlParser::getValue(unsigned int& value)          {value   = scan<unsigned int>();}
+void YamlParser::getValue(unsigned long& value)         {value   = scan<unsigned long>();}
+void YamlParser::getValue(unsigned long long& value)    {value   = scan<unsigned long long>();}
+
+void YamlParser::getValue(float& value)                 {value   = scan<float>();}
+void YamlParser::getValue(double& value)                {value   = scan<double>();}
+void YamlParser::getValue(long double& value)           {value   = scan<long double>();}
+
 void YamlParser::getValue(bool& value)
 {
     char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
@@ -198,55 +228,6 @@ void YamlParser::getValue(bool& value)
     {
         throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not a bool");
     }
-}
-
-void YamlParser::getValue(int& value)
-{
-    char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
-    std::size_t length  = event.data.scalar.length;
-    char*       end;
-    value = std::strtol(buffer, &end, 10);
-    if (buffer + length != end)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not an integer");
-    }
-}
-
-void YamlParser::getValue(double& value)
-{
-    char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
-    std::size_t length  = event.data.scalar.length;
-    char*       end;
-    value = std::strtod(buffer, &end);
-    if (buffer + length != end)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not a float");
-    }
-}
-
-void YamlParser::getValue(std::nullptr_t)
-{
-    char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
-    std::size_t length  = event.data.scalar.length;
-    if ((length == 1  && strncmp(buffer, "~", 1) == 0) || (length == 4 && strncmp(buffer, "null", 4) == 0))
-    {}
-    else
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not a null");
-    }
-}
-
-void YamlParser::getValue(char*& value)
-{
-    std::string const& str = getString();
-
-    char* newValue = new char[str.size() + 1];
-    std::copy(std::begin(str), std::end(str), newValue);
-    newValue[str.size()] = '\0';
-
-    std::swap(newValue, value);
-
-    delete newValue;
 }
 
 void YamlParser::getValue(std::string& value)

@@ -4,6 +4,8 @@
 #include "gtest/gtest.h"
 #include "YamlParser.h"
 
+// enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
+
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 
@@ -16,9 +18,6 @@ TEST(YamlParserTest, ArrayEmpty)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-
-    // Read past the end gets an error
-    EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
 }
 TEST(YamlParserTest, ArrayOneValue)
 {
@@ -218,9 +217,6 @@ TEST(YamlParserTest, MapWithTwoMap)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-
-// Value Test
-
 TEST(YamlParserTest, GetKeyValue)
 {
     std::stringstream   stream(R"({"one": 15})");
@@ -287,21 +283,15 @@ TEST(YamlParserTest, CheckErrorDoesNotRead)
 {
     std::stringstream   stream("][");
     TA::YamlParser      parser(stream);
-    std::cout << "1\n";
+
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
 
     // First Character is an error.
-    std::cout << "1\n";
     EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
 
     // Subsequent read should also be an error.
     // But it should not read from the stream
-    std::cout << "1\n";
     EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
-
-    // char  next;
-    // stream >> next;
-    // EXPECT_EQ('[', next);
 }
 
 TEST(YamlParserTest, getDataFromString)
@@ -319,23 +309,57 @@ TEST(YamlParserTest, getDataFromString)
     );
     EXPECT_EQ("Test", value1);
 
-    int             value2;
+    short             value2a;
     ASSERT_ANY_THROW(
-        parser.getValue(value2)
+        parser.getValue(value2a)
+    );
+    int             value2b;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2b)
+    );
+    long             value2c;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2c)
+    );
+    long long             value2d;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2d)
     );
 
-    double          value3;
+
+    unsigned short             value2e;
     ASSERT_ANY_THROW(
-        parser.getValue(value3)
+        parser.getValue(value2e)
+    );
+    unsigned int             value2f;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2f)
+    );
+    unsigned long             value2g;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2g)
+    );
+    unsigned long long             value2h;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2h)
+    );
+
+    float          value3a;
+    ASSERT_ANY_THROW(
+        parser.getValue(value3a)
+    );
+    double          value3b;
+    ASSERT_ANY_THROW(
+        parser.getValue(value3b)
+    );
+    long double          value3c;
+    ASSERT_ANY_THROW(
+        parser.getValue(value3c)
     );
 
     bool            value4;
     ASSERT_ANY_THROW(
         parser.getValue(value4)
-    );
-
-    ASSERT_ANY_THROW(
-        parser.getValue(nullptr)
     );
 }
 TEST(YamlParserTest, getDataFromInt)
@@ -348,27 +372,71 @@ TEST(YamlParserTest, getDataFromInt)
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
     std::string     value1;
-    parser.getValue(value1);
-
-    int             value2;
     ASSERT_NO_THROW(
-        parser.getValue(value2)
+        parser.getValue(value1)
     );
-    EXPECT_EQ(56, value2);
+    EXPECT_EQ("56", value1);
 
-    double          value3;
+    short             value2a;
     ASSERT_NO_THROW(
-        parser.getValue(value3)
+        parser.getValue(value2a)
     );
-    EXPECT_EQ(56, value3);
+    EXPECT_EQ(56, value2a);
+    int             value2b;
+    ASSERT_NO_THROW(
+        parser.getValue(value2b)
+    );
+    EXPECT_EQ(56, value2b);
+    long             value2c;
+    ASSERT_NO_THROW(
+        parser.getValue(value2c)
+    );
+    EXPECT_EQ(56, value2c);
+    long long             value2d;
+    ASSERT_NO_THROW(
+        parser.getValue(value2d)
+    );
+    EXPECT_EQ(56, value2d);
+    short             value2e;
+    ASSERT_NO_THROW(
+        parser.getValue(value2e)
+    );
+    EXPECT_EQ(56, value2e);
+    int             value2f;
+    ASSERT_NO_THROW(
+        parser.getValue(value2f)
+    );
+    EXPECT_EQ(56, value2f);
+    long             value2g;
+    ASSERT_NO_THROW(
+        parser.getValue(value2g)
+    );
+    EXPECT_EQ(56, value2g);
+    long long             value2h;
+    ASSERT_NO_THROW(
+        parser.getValue(value2h)
+    );
+    EXPECT_EQ(56, value2h);
+
+    float          value3a;
+    ASSERT_NO_THROW(
+        parser.getValue(value3a)
+    );
+    EXPECT_EQ(56, value3a);
+    double          value3b;
+    ASSERT_NO_THROW(
+        parser.getValue(value3b)
+    );
+    EXPECT_EQ(56, value3b);
+    long double          value3c;
+    ASSERT_NO_THROW(
+        parser.getValue(value3c)
+    );
+    EXPECT_EQ(56, value3c);
 
     bool            value4;
     ASSERT_ANY_THROW(
         parser.getValue(value4)
-    );
-
-    ASSERT_ANY_THROW(
-        parser.getValue(nullptr)
     );
 }
 TEST(YamlParserTest, getDataFromFloat)
@@ -381,26 +449,63 @@ TEST(YamlParserTest, getDataFromFloat)
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
     std::string     value1;
-    parser.getValue(value1);
-
-    int             value2;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2)
-    );
-
-    double          value3;
     ASSERT_NO_THROW(
-        parser.getValue(value3)
+        parser.getValue(value1)
     );
-    EXPECT_EQ(123.56, value3);
+    EXPECT_EQ("123.56", value1);
+
+    short             value2a;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2a)
+    );
+    int             value2b;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2b)
+    );
+    long             value2c;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2c)
+    );
+    long long             value2d;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2d)
+    );
+    unsigned short             value2e;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2e)
+    );
+    unsigned int             value2f;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2f)
+    );
+    unsigned long             value2g;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2g)
+    );
+    unsigned long long             value2h;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2h)
+    );
+
+    float          value3a;
+    ASSERT_NO_THROW(
+        parser.getValue(value3a)
+    );
+    EXPECT_EQ(12356, static_cast<int>(value3a*100));
+    double          value3b;
+    ASSERT_NO_THROW(
+        parser.getValue(value3b)
+    );
+    EXPECT_EQ(12356, static_cast<int>(value3b*100));
+    long double          value3c;
+    ASSERT_NO_THROW(
+        parser.getValue(value3c)
+    );
+    EXPECT_EQ(12356, static_cast<int>(value3c*100));
 
     bool            value4;
     ASSERT_ANY_THROW(
         parser.getValue(value4)
-    );
-
-    ASSERT_ANY_THROW(
-        parser.getValue(nullptr)
     );
 }
 TEST(YamlParserTest, getDataFromBool)
@@ -413,16 +518,55 @@ TEST(YamlParserTest, getDataFromBool)
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
     std::string     value1;
-    parser.getValue(value1);
+    ASSERT_NO_THROW(
+        parser.getValue(value1)
+    );
+    EXPECT_EQ("true", value1);
 
-    int             value2;
+    short             value2a;
     ASSERT_ANY_THROW(
-        parser.getValue(value2)
+        parser.getValue(value2a)
+    );
+    int             value2b;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2b)
+    );
+    long             value2c;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2c)
+    );
+    long long             value2d;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2d)
+    );
+    unsigned short             value2e;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2e)
+    );
+    unsigned int             value2f;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2f)
+    );
+    unsigned long             value2g;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2g)
+    );
+    unsigned long long             value2h;
+    ASSERT_ANY_THROW(
+        parser.getValue(value2h)
     );
 
-    double          value3;
+    float          value3a;
     ASSERT_ANY_THROW(
-        parser.getValue(value3)
+        parser.getValue(value3a)
+    );
+    double          value3b;
+    ASSERT_ANY_THROW(
+        parser.getValue(value3b)
+    );
+    long double          value3c;
+    ASSERT_ANY_THROW(
+        parser.getValue(value3c)
     );
 
     bool            value4 = false;
@@ -431,103 +575,11 @@ TEST(YamlParserTest, getDataFromBool)
     );
     EXPECT_EQ(true, value4);
 
-    ASSERT_ANY_THROW(
-        parser.getValue(nullptr)
-    );
-
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
     ASSERT_NO_THROW(
         parser.getValue(value4)
     );
     EXPECT_EQ(false, value4);
-}
-TEST(YamlParserTest, getDataFromNull)
-{
-    std::stringstream   stream(R"([null])");
-    TA::YamlParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    parser.getValue(value1);
-
-    int             value2;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2)
-    );
-
-    double          value3;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3)
-    );
-
-    bool            value4;
-    ASSERT_ANY_THROW(
-        parser.getValue(value4)
-    );
-
-    ASSERT_NO_THROW(
-        parser.getValue(nullptr);
-    );
-}
-TEST(YamlParserTest, getDataFromNullTilda)
-{
-    std::stringstream   stream(R"([~])");
-    TA::YamlParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    parser.getValue(value1);
-
-    int             value2;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2)
-    );
-
-    double          value3;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3)
-    );
-
-    bool            value4;
-    ASSERT_ANY_THROW(
-        parser.getValue(value4)
-    );
-
-    ASSERT_NO_THROW(
-        parser.getValue(nullptr);
-    );
-}
-
-TEST(YamlParserTest, MapAsKey)
-{
-    std::stringstream   stream(R"({{}:15})");
-    TA::YamlParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-
-    ASSERT_ANY_THROW(
-        parser.getToken()
-    );
-}
-
-TEST(YamlParserTest, ArrayAsKey)
-{
-    std::stringstream   stream(R"({[]:15})");
-    TA::YamlParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-
-    ASSERT_ANY_THROW(
-        parser.getToken()
-    );
 }
 
 #endif

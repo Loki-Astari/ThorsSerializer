@@ -152,12 +152,13 @@ class Traits
  * as value types. Other compound types need to use the Serializer/Deserializer
  */
 template<> class Traits<short int>              {public: static constexpr TraitType type = TraitType::Value;};
-template<> class Traits<short unsigned int>     {public: static constexpr TraitType type = TraitType::Value;};
 template<> class Traits<int>                    {public: static constexpr TraitType type = TraitType::Value;};
-template<> class Traits<unsigned long int>      {public: static constexpr TraitType type = TraitType::Value;};
 template<> class Traits<long int>               {public: static constexpr TraitType type = TraitType::Value;};
-template<> class Traits<unsigned long int>      {public: static constexpr TraitType type = TraitType::Value;};
 template<> class Traits<long long int>          {public: static constexpr TraitType type = TraitType::Value;};
+
+template<> class Traits<unsigned short int>     {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<unsigned int>           {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<unsigned long int>      {public: static constexpr TraitType type = TraitType::Value;};
 template<> class Traits<unsigned long long int> {public: static constexpr TraitType type = TraitType::Value;};
 
 template<> class Traits<float>                  {public: static constexpr TraitType type = TraitType::Value;};
