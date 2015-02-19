@@ -3,11 +3,10 @@
 
 #ifdef COVERAGE_TEST
 
-#include "test/SerializeTest.h"
 #include "Serialize.tpp"
 #include "SerUtil.h"
-
 #include "Json.h"
+#include "test/SerializeTest.h"
 
 template void ThorsAnvil::Serialize::Serializer::print<SerializeTestExtra>(SerializeTestExtra const&);
 template void ThorsAnvil::Serialize::Serializer::print<SerializeTestChild>(SerializeTestChild const&);
