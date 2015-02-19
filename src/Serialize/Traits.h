@@ -3,6 +3,7 @@
 #define THORS_ANVIL_SERIALIZE_TRAITS_H
 
 #include <string>
+#include <tuple>
 
 /*
  * Macros for counting the number of arguments
@@ -168,6 +169,7 @@ template<> class Traits<long double>            {public: static constexpr TraitT
 template<> class Traits<bool>                   {public: static constexpr TraitType type = TraitType::Value;};
 
 template<> class Traits<std::string>            {public: static constexpr TraitType type = TraitType::Value;};
+
 
 
     }
