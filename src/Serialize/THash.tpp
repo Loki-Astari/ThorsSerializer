@@ -79,7 +79,7 @@ template<> struct TraitsHash<double>                {std::size_t operator()(std:
 template<> struct TraitsHash<long double>           {std::size_t operator()(std::size_t& start){return thash(start, "LD");}};
 
 template<> struct TraitsHash<bool>                  {std::size_t operator()(std::size_t& start){return thash(start, "B");}};
-template<> struct TraitsHash<std::string>           {std::size_t operator()(std::size_t& start){return thash(start, "S");}};
+template<> struct TraitsHash<std::string>           {std::size_t operator()(std::size_t& start){return thash(start, "String");}};
 
     }
 }
