@@ -1,0 +1,37 @@
+
+#ifndef THORS_ANVIL_SERIALIZE_BINARY_PRINTER_H
+#define THORS_ANVIL_SERIALIZE_BINARY_PRINTER_H
+
+#include "Serialize.h"
+
+namespace ThorsAnvil
+{
+    namespace Serialize
+    {
+
+class BinaryPrinter: public PrinterInterface
+{
+    public:
+        BinaryPrinter(std::ostream& output, OutputType characteristics = OutputType::Default);
+        virtual void openDoc();
+        virtual void closeDoc();
+
+        virtual void openMap()          override;
+        virtual void closeMap()         override;
+        virtual void openArray()        override;
+        virtual void closeArray()       override;
+
+        virtual void addKey(std::string const& key)         override;
+        virtual void addValue(bool value)                   override;
+        virtual void addValue(int value)                    override;
+        virtual void addValue(double value)                 override;
+        virtual void addValue(std::nullptr_t)               override;
+        virtual void addValue(char const* value)            override;
+        virtual void addValue(std::string const& value)     override;
+};
+
+    }
+}
+
+#endif
+
