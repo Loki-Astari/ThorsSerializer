@@ -160,30 +160,24 @@ void YamlPrinter::addKey(std::string const& key)
     }
     emit(key);
 }
-void YamlPrinter::addValue(bool value)
-{
-    emit(value?"true":"false");
-}
-void YamlPrinter::addValue(int value)
-{
-    emit(value);
-}
-void YamlPrinter::addValue(double value)
-{
-    emit(value);
-}
-void YamlPrinter::addValue(std::nullptr_t)
-{
-    emit("null");
-}
-void YamlPrinter::addValue(char const* value)
-{
-    emit(value);
-}
-void YamlPrinter::addValue(std::string const& value)
-{
-    emit(value);
-}
+
+void YamlPrinter::addValue(short int value)                     {emit(value);}
+void YamlPrinter::addValue(int value)                           {emit(value);}
+void YamlPrinter::addValue(long int value)                      {emit(value);}
+void YamlPrinter::addValue(long long int value)                 {emit(value);}
+
+void YamlPrinter::addValue(unsigned short int value)            {emit(value);}
+void YamlPrinter::addValue(unsigned int value)                  {emit(value);}
+void YamlPrinter::addValue(unsigned long int value)             {emit(value);}
+void YamlPrinter::addValue(unsigned long long int value)        {emit(value);}
+
+void YamlPrinter::addValue(float value)                         {emit(value);}
+void YamlPrinter::addValue(double value)                        {emit(value);}
+void YamlPrinter::addValue(long double value)                   {emit(value);}
+
+void YamlPrinter::addValue(bool value)                          {emit(value?"true":"false");}
+
+void YamlPrinter::addValue(std::string const& value)            {emit(value);}
 
 #endif
 

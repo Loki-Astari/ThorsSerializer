@@ -156,28 +156,21 @@ void JsonPrinter::addKey(std::string const& key)
     }
     output << PrefixKey(characteristics, state.size(), state.back()) << '"' << key << '"';
 }
-void JsonPrinter::addValue(bool value)
-{
-    output << PrefixValue(characteristics, state.size(), state.back()) << std::boolalpha << value;
-}
-void JsonPrinter::addValue(int value)
-{
-    output << PrefixValue(characteristics, state.size(), state.back()) << value;
-}
-void JsonPrinter::addValue(double value)
-{
-    output << PrefixValue(characteristics, state.size(), state.back()) << value;
-}
-void JsonPrinter::addValue(std::nullptr_t)
-{
-    output << PrefixValue(characteristics, state.size(), state.back()) << "null";
-}
-void JsonPrinter::addValue(char const* value)
-{
-    output << PrefixValue(characteristics, state.size(), state.back()) << '"' << value << '"';
-}
-void JsonPrinter::addValue(std::string const& value)
-{
-    output << PrefixValue(characteristics, state.size(), state.back()) << '"' << value << '"';
-}
+
+void JsonPrinter::addValue(short value)                 {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(int value)                   {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(long value)                  {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(long long value)             {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+
+void JsonPrinter::addValue(unsigned short value)        {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(unsigned int value)          {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(unsigned long value)         {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(unsigned long long value)    {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+
+void JsonPrinter::addValue(float value)                 {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(double value)                {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(long double value)           {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+
+void JsonPrinter::addValue(bool value)                  {output << PrefixValue(characteristics, state.size(), state.back()) << std::boolalpha << value;}
+void JsonPrinter::addValue(std::string const& value)    {output << PrefixValue(characteristics, state.size(), state.back()) << '"' << value << '"';}
 

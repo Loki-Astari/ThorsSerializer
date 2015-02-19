@@ -28,18 +28,36 @@ class YamlParser: public ParserInterface
     void generateParsingException(std::function<bool ()> test, std::string const& msg);
     void generateParsingException(std::string const& msg);
     ParserToken parsingError();
+
+    template<typename T>
+    T getValue(char* buffer, char** end);
+
+    template<typename T>
+    T scan();
     public:
         YamlParser(std::istream& input);
         virtual ~YamlParser();
 
-        virtual ParserToken     getNextToken()          override;
-        virtual std::string     getKey()                override;
-        virtual void    getValue(bool& value)           override;
-        virtual void    getValue(int& value)            override;
-        virtual void    getValue(double& value)         override;
-        virtual void    getValue(std::nullptr_t)        override;
-        virtual void    getValue(char*& value)          override;
-        virtual void    getValue(std::string& value)    override;
+        virtual ParserToken     getNextToken()                  override;
+        virtual std::string     getKey()                        override;
+
+        virtual void    getValue(short int& value)              override;
+        virtual void    getValue(int& value)                    override;
+        virtual void    getValue(long int& value)               override;
+        virtual void    getValue(long long int& value)          override;
+
+        virtual void    getValue(unsigned short int& value)     override;
+        virtual void    getValue(unsigned int& value)           override;
+        virtual void    getValue(unsigned long int& value)      override;
+        virtual void    getValue(unsigned long long int& value) override;
+
+        virtual void    getValue(float& value)                  override;
+        virtual void    getValue(double& value)                 override;
+        virtual void    getValue(long double& value)            override;
+
+        virtual void    getValue(bool& value)                   override;
+
+        virtual void    getValue(std::string& value)            override;
 };
 
     }

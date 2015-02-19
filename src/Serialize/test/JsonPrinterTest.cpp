@@ -40,16 +40,18 @@ TEST(JsonPrinterTest, ArrayValues)
     printer.openArray();
     printer.addValue(true);
     printer.addValue(false);
+    printer.addValue(static_cast<short>(55));
     printer.addValue(56);
     printer.addValue(78.89);
-    printer.addValue(nullptr);
-    printer.addValue("Astring");
+    printer.addValue(57l);
+    printer.addValue(58ll);
+    printer.addValue(std::string("Astring"));
     printer.closeArray();
     printer.closeDoc();
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
-    EXPECT_EQ(R"([true,false,56,78.89,null,"Astring"])", result);
+    EXPECT_EQ(R"([true,false,55,56,78.89,57,58,"Astring"])", result);
 }
 TEST(JsonPrinterTest, MapValues)
 {
@@ -66,8 +68,6 @@ TEST(JsonPrinterTest, MapValues)
     printer.addValue(56);
     printer.addKey("K4");
     printer.addValue(78.89);
-    printer.addKey("K5");
-    printer.addValue(nullptr);
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
     printer.closeMap();
@@ -75,7 +75,7 @@ TEST(JsonPrinterTest, MapValues)
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
-    EXPECT_EQ(R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K5":null,"K6":"Astring"})", result);
+    EXPECT_EQ(R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K6":"Astring"})", result);
 }
 TEST(JsonPrinterTest, MapWithMapValues)
 {
@@ -97,8 +97,6 @@ TEST(JsonPrinterTest, MapWithMapValues)
     printer.openMap();
     printer.addKey("K4");
     printer.addValue(78.89);
-    printer.addKey("K5");
-    printer.addValue(nullptr);
     printer.closeMap();
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
@@ -107,7 +105,7 @@ TEST(JsonPrinterTest, MapWithMapValues)
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
-    EXPECT_EQ(R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89,"K5":null},"K6":"Astring"})", result);
+    EXPECT_EQ(R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89},"K6":"Astring"})", result);
 }
 TEST(JsonPrinterTest, MapWithArrayValues)
 {
@@ -120,13 +118,18 @@ TEST(JsonPrinterTest, MapWithArrayValues)
     printer.openArray();
     printer.addValue(true);
     printer.addValue(false);
+    printer.addValue(static_cast<unsigned short>(55));
+    printer.addValue(56u);
+    printer.addValue(57ul);
+    printer.addValue(58ull);
+    printer.addValue(60.f);
+    printer.addValue(61.0L);
     printer.closeArray();
     printer.addKey("K3");
     printer.addValue(56);
     printer.addKey("K4");
     printer.openArray();
     printer.addValue(78.89);
-    printer.addValue(nullptr);
     printer.closeArray();
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
@@ -135,7 +138,7 @@ TEST(JsonPrinterTest, MapWithArrayValues)
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
-    EXPECT_EQ(R"({"K1":[true,false],"K3":56,"K4":[78.89,null],"K6":"Astring"})", result);
+    EXPECT_EQ(R"({"K1":[true,false,55,56,57,58,60,61],"K3":56,"K4":[78.89],"K6":"Astring"})", result);
 }
 TEST(JsonPrinterTest, ArrayWithMapValues)
 {
@@ -154,8 +157,6 @@ TEST(JsonPrinterTest, ArrayWithMapValues)
     printer.openMap();
     printer.addKey("K4");
     printer.addValue(78.89);
-    printer.addKey("K5");
-    printer.addValue(nullptr);
     printer.closeMap();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
@@ -163,7 +164,7 @@ TEST(JsonPrinterTest, ArrayWithMapValues)
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
-    EXPECT_EQ(R"([{"K1":true,"K2":false},56,{"K4":78.89,"K5":null},"Astring"])", result);
+    EXPECT_EQ(R"([{"K1":true,"K2":false},56,{"K4":78.89},"Astring"])", result);
 }
 TEST(JsonPrinterTest, ArrayWithArrayValues)
 {
@@ -179,7 +180,6 @@ TEST(JsonPrinterTest, ArrayWithArrayValues)
     printer.addValue(56);
     printer.openArray();
     printer.addValue(78.89);
-    printer.addValue(nullptr);
     printer.closeArray();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
@@ -187,7 +187,7 @@ TEST(JsonPrinterTest, ArrayWithArrayValues)
 
     std::string     result  = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
-    EXPECT_EQ(R"([[true,false],56,[78.89,null],"Astring"])", result);
+    EXPECT_EQ(R"([[true,false],56,[78.89],"Astring"])", result);
 }
 TEST(JsonPrinterTest, CheckStreeamIsCompressed)
 {
@@ -206,8 +206,6 @@ TEST(JsonPrinterTest, CheckStreeamIsCompressed)
     printer.openMap();
     printer.addKey("K4");
     printer.addValue(78.89);
-    printer.addKey("K5");
-    printer.addValue(nullptr);
     printer.closeMap();
     printer.addValue(std::string("Astring"));
     printer.closeArray();

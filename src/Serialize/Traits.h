@@ -132,13 +132,42 @@ class Traits
         // static_asserts sprinkled through the code will provide
         // appropriate error messages based on this being invalid.
         static constexpr TraitType type = TraitType::Invalid;
-};
 
-template<> class Traits<int>        {public: static constexpr TraitType type = TraitType::Value;};
-template<> class Traits<double>     {public: static constexpr TraitType type = TraitType::Value;};
-template<> class Traits<bool>       {public: static constexpr TraitType type = TraitType::Value;};
-template<> class Traits<char*>      {public: static constexpr TraitType type = TraitType::Value;};
-template<> class Traits<std::string>{public: static constexpr TraitType type = TraitType::Value;};
+        // For types that are Map/Array/Parent we can also define
+        // members that need be serialized via types. To achieve this 
+        // they  define a static getMembers() function.
+        // static Members const& getMembers()
+        //
+        // I would have made this a type declaration but I could
+        // not get it to bind correctly without an explicit
+        // instantiation (if you know how please let me know).
+        //
+        // So I use a static member function with a static variable
+        // which can be defined in-line within the traits class and
+        // does not need a separate declaration in a compilation unit.
+} ;
+
+/*
+ * Declare types that can be read/written directly by the parser/printer
+ * as value types. Other compound types need to use the Serializer/Deserializer
+ */
+template<> class Traits<short int>              {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<int>                    {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<long int>               {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<long long int>          {public: static constexpr TraitType type = TraitType::Value;};
+
+template<> class Traits<unsigned short int>     {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<unsigned int>           {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<unsigned long int>      {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<unsigned long long int> {public: static constexpr TraitType type = TraitType::Value;};
+
+template<> class Traits<float>                  {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<double>                 {public: static constexpr TraitType type = TraitType::Value;};
+template<> class Traits<long double>            {public: static constexpr TraitType type = TraitType::Value;};
+
+template<> class Traits<bool>                   {public: static constexpr TraitType type = TraitType::Value;};
+
+template<> class Traits<std::string>            {public: static constexpr TraitType type = TraitType::Value;};
 
 
     }

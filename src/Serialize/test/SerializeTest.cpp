@@ -8,14 +8,14 @@
 #include <string>
 
 
-std::string const testData1 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"aCStringObject":"Help","normalString":"Done"})";
-std::string const testData2 = R"({"theInteger":456,"aNonRealValue":89.101,"test":false,"aCStringObject":"Bend","normalString":"Akinkthatisnotstraight","data1":1,"data2":2})";
-std::string const testData3 = R"({"member1":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"aCStringObject":"Round","normalString":"NotASquareAndOnlyOneSide"})"
-                              R"(,"member2":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"aCStringObject":"Round","normalString":"NotASquareAndOnlyOneSide","data1":67,"data2":11}})";
+std::string const testData1 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done"})";
+std::string const testData2 = R"({"theInteger":456,"aNonRealValue":89.101,"test":false,"normalString":"Akinkthatisnotstraight","data1":1,"data2":2})";
+std::string const testData3 = R"({"member1":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide"})"
+                              R"(,"member2":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide","data1":67,"data2":11}})";
 
 TEST(SerializeTest, SerializeStructureOfValue)
 {
-    SerializeTestExtra        data(34,56.78, true, "Help", "Done");
+    SerializeTestExtra        data(34,56.78, true, "Done");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -41,13 +41,12 @@ TEST(SerializeTest, SerializeStructureOfValue)
     EXPECT_EQ(data.theInteger,      34);
     EXPECT_EQ(data.aNonRealValue,   56.78);
     EXPECT_EQ(data.test,            true);
-    EXPECT_EQ(std::string(data.aCStringObject),  "Help");
     EXPECT_EQ(data.normalString,    "Done");
 }
 
 TEST(SerializeTest, SerializeStructureOfValueAndParents)
 {
-    SerializeTestChild     data(1, 2, 456, 89.101, false, "Bend", "Akinkthatisnotstraight");
+    SerializeTestChild     data(1, 2, 456, 89.101, false, "Akinkthatisnotstraight");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -73,7 +72,6 @@ TEST(SerializeTest, DeSerializeStructureOfValueAndParent)
     EXPECT_EQ(data.theInteger,      456);
     EXPECT_EQ(data.aNonRealValue,   89.101);
     EXPECT_EQ(data.test,            false);
-    EXPECT_EQ(std::string(data.aCStringObject),  "Bend");
     EXPECT_EQ(data.normalString,    "Akinkthatisnotstraight");
     EXPECT_EQ(data.data1,           1);
     EXPECT_EQ(data.data2,           2);
@@ -81,7 +79,7 @@ TEST(SerializeTest, DeSerializeStructureOfValueAndParent)
 
 TEST(SerializeTest, SerializeStructureMemberOfValue)
 {
-    SerializeTestMembers        data(67, 11, 234567, 123.45, true, "Round", "NotASquareAndOnlyOneSide");
+    SerializeTestMembers        data(67, 11, 234567, 123.45, true, "NotASquareAndOnlyOneSide");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -107,12 +105,10 @@ TEST(SerializeTest, DeSerializeStructureMemberOfValue)
     EXPECT_EQ(data.member1.theInteger,      234567);
     EXPECT_EQ(data.member1.aNonRealValue,   123.45);
     EXPECT_EQ(data.member1.test,            true);
-    EXPECT_EQ(std::string(data.member1.aCStringObject),  "Round");
     EXPECT_EQ(data.member1.normalString,    "NotASquareAndOnlyOneSide");
     EXPECT_EQ(data.member2.theInteger,      234567);
     EXPECT_EQ(data.member2.aNonRealValue,   123.45);
     EXPECT_EQ(data.member2.test,            true);
-    EXPECT_EQ(std::string(data.member2.aCStringObject),  "Round");
     EXPECT_EQ(data.member2.normalString,    "NotASquareAndOnlyOneSide");
     EXPECT_EQ(data.member2.data1,           67);
     EXPECT_EQ(data.member2.data2,           11);
