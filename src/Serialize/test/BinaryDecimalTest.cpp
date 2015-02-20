@@ -3,9 +3,7 @@
 
 #include <limits>
 #include <sstream>
-#include <climits>
-#include <cstdint>
-#include <cfloat>
+#include <cmath>
 
 namespace TA=ThorsAnvil::Serialize;
 
@@ -14,6 +12,10 @@ TEST(BinaryDecimalTest, BasicConversionTests)
     std::stringstream       stream;
     double result;
     
+    TA::writeFloatingPoint(stream, std::numeric_limits<double>::quiet_NaN());
+    result = TA::readFloatingPoint<double>(stream);
+    EXPECT_TRUE(std::isnan(result));
+
     TA::writeFloatingPoint(stream, 0.0);
     result = TA::readFloatingPoint<double>(stream);
     EXPECT_EQ(0, result);
