@@ -11,6 +11,7 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+template<typename T>
 class BinaryParser: public ParserInterface
 {
     enum State          {Error}

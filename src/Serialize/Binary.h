@@ -12,10 +12,11 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+template<typename T>
 struct Binary
 {
-    typedef BinaryParser      Parser;
-    typedef BinaryPrinter     Printer;
+    typedef BinaryParser<T>      Parser;
+    typedef BinaryPrinter<T>     Printer;
 };
 
 template<typename T>
@@ -26,7 +27,7 @@ Exporter<Binary, T> jsonExport(T const& value, PrinterInterface::OutputType char
 template<typename T>
 Importer<Binary, T> jsonImport(T& value)
 {
-    return Importer<Binary, T>(value);
+    return Importer<Binary<T>, T>(value);
 }
     }
 }
