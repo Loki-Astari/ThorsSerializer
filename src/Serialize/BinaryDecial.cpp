@@ -1,14 +1,12 @@
 
+#include "BinaryDecial.h"
 #include <limits>
 #include <stdexcept>
-#include <iostream>
-#include <sstream>
-#include <climits>
-#include <cstdint>
-#include <cfloat>
+#include <istream>
+#include <ostream>
 #include <cmath>
 
-static_assert(CHAR_BIT == 8,                                "currently supported only CHAR_BIT = 8");
+static_assert(CHAR_BIT == 8,                                 "currently supported only CHAR_BIT = 8");
 static_assert(std::numeric_limits<float>::radix == 2,        "currently supported only std::numric_limits<float>::radix == 2");
 static_assert(std::numeric_limits<double>::radix == 2,       "currently supported only std::numric_limits<double>::radix == 2");
 static_assert(std::numeric_limits<long double>::radix == 2,  "currently supported only std::numric_limits<long double>::radix == 2");
@@ -27,8 +25,13 @@ static constexpr long long    negativeInfinity    = 0x8000000000000000LL;
 static constexpr long long    positiveInfinity    = 0x7FFFFFFFFFFFFFFFLL;
 static constexpr short        expMarker           = static_cast<short>(0x7FFF);
 
+namespace ThorsAnvil
+{
+    namespace Serialize
+    {
+
 template<typename T>    // T => float/double/long double
-void Double2Bytes(std::ostream& stream, T value)
+inline void writeFloatingPoint(std::ostream& stream, T value)
 {
     if (std::isnan(value))
     {
@@ -68,7 +71,7 @@ void Double2Bytes(std::ostream& stream, T value)
 }
 
 template<typename T>
-T Bytes2Double(std::istream& stream)
+inline T readFloatingPoint(std::istream& stream)
 {
     short       expInt  = 0;
     long long   sigInt  = 0;
@@ -97,48 +100,14 @@ T Bytes2Double(std::istream& stream)
 
     return value;
 }
-
-int main()
-{
-    std::stringstream       stream;
-    double result;
-    
-    Double2Bytes(stream, 0);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, +DBL_MIN);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, -DBL_MIN);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, +1.0);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, -1.0);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, +3.14159269);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, -3.14159269);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, +DBL_MAX);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, -DBL_MAX);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, +INFINITY);
-    result = Bytes2Double<double>(stream);
-
-    Double2Bytes(stream, -INFINITY);
-    result = Bytes2Double<double>(stream);
-
-
-    std::cout << "float DIGITS:  " << std::numeric_limits<float>::digits << "\n";
-    std::cout << "double DIGITS:  " << std::numeric_limits<double>::digits << "\n";
-    std::cout << "long double DIGITS:  " << std::numeric_limits<long double>::digits << "\n";
-    return 0;
+    }
 }
+
+template void           ThorsAnvil::Serialize::writeFloatingPoint<float>(std::ostream& stream, float value);
+template void           ThorsAnvil::Serialize::writeFloatingPoint<double>(std::ostream& stream, double value);
+template void           ThorsAnvil::Serialize::writeFloatingPoint<long double>(std::ostream& stream, long double value);
+
+template float          ThorsAnvil::Serialize::readFloatingPoint<float>(std::istream& stream);
+template double         ThorsAnvil::Serialize::readFloatingPoint<double>(std::istream& stream);
+template long double    ThorsAnvil::Serialize::readFloatingPoint<long double>(std::istream& stream);
+
