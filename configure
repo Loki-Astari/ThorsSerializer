@@ -15603,7 +15603,7 @@ fi
 
     if test "x$enable_binary" != "xno"; then :
 
-            bswap64_function=""
+            networkbyteorderfunction=""
              { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether byte ordering is bigendian" >&5
 $as_echo_n "checking whether byte ordering is bigendian... " >&6; }
 if ${ac_cv_c_bigendian+:} false; then :
@@ -15814,12 +15814,13 @@ fi
 $as_echo "$ac_cv_c_bigendian" >&6; }
  case $ac_cv_c_bigendian in #(
    yes)
-     bswap64_function="identity";; #(
+     networkbyteorderfunction="identity";; #(
    no)
 
                     if test "${with_thors_network_byte_order}" == "yes"; then :
-  bswap64_function="thorsNetworkByteOrder"
+  networkbyteorderfunction="thorsNetworkByteOrder"
 else
+
 
     bswap64_function=""
     for ac_header in sys/endian.h asm/byteorder.h
@@ -15922,6 +15923,8 @@ _ACEOF
 
     fi
 
+                            networkbyteorderfunction = bswap64_function;
+
 
 fi
 
@@ -15936,7 +15939,7 @@ $as_echo "#define AC_APPLE_UNIVERSAL_BUILD 1" >>confdefs.h
  presetting ac_cv_c_bigendian=no (or yes) will help" "$LINENO" 5 ;;
  esac
 
-            if test "x$bswap64_function" != "x"; then :
+            if test "x$networkbyteorderfunction" != "x"; then :
 
 
 $as_echo "#define NETWORK_BYTE_ORDER 1" >>confdefs.h
@@ -15977,7 +15980,9 @@ NOTE:
     The configuration script could not find any of these semi standard formats.
 
     If you want to use a non standard technique (implemented by Loki) you must
-    explicitly ask for it with:
+    explicitly ask for it with (though it is tested as correct it will not be
+    faster than the semi standard ways as they rely on assembler while this code
+    is standard C++ only).
 
         --with-thors-network-byte-order
 
