@@ -1,4 +1,7 @@
 
+#include "../../config.h"
+#ifdef NETWORK_BYTE_ORDER
+
 #include "BinaryDecial.h"
 #include <limits>
 #include <stdexcept>
@@ -116,3 +119,4 @@ template float          ThorsAnvil::Serialize::readFloatingPoint<float>(std::ist
 template double         ThorsAnvil::Serialize::readFloatingPoint<double>(std::istream& stream);
 template long double    ThorsAnvil::Serialize::readFloatingPoint<long double>(std::istream& stream);
 
+#endif

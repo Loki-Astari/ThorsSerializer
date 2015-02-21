@@ -1,3 +1,6 @@
+#include "../../config.h"
+#ifdef NETWORK_BYTE_ORDER
+
 
 #include "gtest/gtest.h"
 #include "BinaryPrinter.h"
@@ -286,4 +289,5 @@ TEST(BinaryPrinterTest, PuttingKeyInArray)
         printer.addKey("This old house");
     );
 }
+#endif
 #endif

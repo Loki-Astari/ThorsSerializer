@@ -2,6 +2,9 @@
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_DECIMAL_H
 #define THORS_ANVIL_SERIALIZE_BINARY_DECIMAL_H
 
+#include "../../config.h"
+#ifdef NETWORK_BYTE_ORDER
+
 #include <istream>
 #include <ostream>
 
@@ -23,5 +26,6 @@ template<> int  readFloatingPoint<int>(std::istream&) = delete;
     }
 }
 
+#endif
 #endif
 

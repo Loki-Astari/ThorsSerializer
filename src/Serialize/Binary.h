@@ -2,6 +2,9 @@
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_H
 #define THORS_ANVIL_SERIALIZE_BINARY_H
 
+#include "../../config.h"
+#ifdef NETWORK_BYTE_ORDER
+
 #include "BinaryParser.h"
 #include "BinaryPrinter.h"
 #include "Exporter.h"
@@ -32,5 +35,6 @@ Importer<Binary, T> jsonImport(T& value)
     }
 }
 
+#endif
 #endif
 

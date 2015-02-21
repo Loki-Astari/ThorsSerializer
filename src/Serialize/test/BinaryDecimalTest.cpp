@@ -1,3 +1,6 @@
+#include "../../config.h"
+#ifdef NETWORK_BYTE_ORDER
+
 #include "gtest/gtest.h"
 #include "BinaryDecial.h"
 
@@ -63,4 +66,5 @@ TEST(BinaryDecimalTest, BasicConversionTests)
     EXPECT_EQ(-std::numeric_limits<double>::infinity(), result);
 }
 
+#endif
 

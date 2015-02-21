@@ -2,6 +2,9 @@
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PRINTER_H
 #define THORS_ANVIL_SERIALIZE_BINARY_PRINTER_H
 
+#include "../../config.h"
+#ifdef NETWORK_BYTE_ORDER
+
 #include "Serialize.h"
 #include "THash.h"
 
@@ -93,5 +96,6 @@ class BinaryPrinter: public PrinterInterface
     }
 }
 
+#endif
 #endif
 

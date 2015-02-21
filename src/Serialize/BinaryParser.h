@@ -2,6 +2,9 @@
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
 #define THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
 
+#include "../../config.h"
+#ifdef NETWORK_BYTE_ORDER
+
 #include "Serialize.h"
 #include <istream>
 #include <string>
@@ -33,5 +36,6 @@ class BinaryParser: public ParserInterface
     }
 }
 
+#endif
 #endif
 
