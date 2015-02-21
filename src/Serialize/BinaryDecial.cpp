@@ -18,6 +18,11 @@ static_assert(std::numeric_limits<long double>::radix == 2,  "currently supporte
   - -infinity: mantissa = 0x8000000000000000, exp = 0x7FFF
   - NaN:       mantissa = 0x0000000000000000, exp = 0x7FFF
   - +/-0:      only one zero supported
+
+    Single: -> Sign: 1 bit Exponent: 8 bits  Significand: 24  bits (23 explicitly stored)
+    Double: -> Sign: 1 bit Exponent: 11 bits Significand: 53  bits (52 explicitly stored)
+    Quad:   -> Sign: 1 bit Exponent: 15 bits Significand: 113 bits (112 explicitly stored)
+
 */
 
 static constexpr long long    notANumber          = 0x0000000000000000LL;
