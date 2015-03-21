@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "BinaryRep.h"
 
-using namespace ThorsAnvil::Serialize;
+using namespace ThorsAnvil::BinaryRep;
 
 template<typename T>
 std::string readValue(T const& value)

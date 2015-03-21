@@ -1,12 +1,12 @@
 
-#ifndef   THORS_ANVIL_SERIALIZE_BINARY_REP_H
-#define   THORS_ANVIL_SERIALIZE_BINARY_REP_H
+#ifndef   THORS_ANVIL_BINARY_REP_BINARY_REP_H
+#define   THORS_ANVIL_BINARY_REP_BINARY_REP_H
 
 
 #include <cmath>
 namespace ThorsAnvil
 {
-    namespace Serialize
+    namespace BinaryRep
     {
 
 static_assert(sizeof(short)       * CHAR_BIT <= 16, "Binary interface assumes short       are not larger than 16 bits");

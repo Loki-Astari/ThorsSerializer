@@ -9,6 +9,7 @@
 #include "THash.h"
 #include "ThorBinaryRep/BinaryRep.h"
 
+namespace TBin  = ThorsAnvil::BinaryRep;
 namespace ThorsAnvil
 {
     namespace Serialize
@@ -17,24 +18,24 @@ namespace ThorsAnvil
 template<typename T>
 class BinaryPrinter: public PrinterInterface
 {
-    void write(UInt128 value)
+    void write(TBin::UInt128 value)
     {
-        UInt128   networkValue    = thor_htobe128(value);
+        TBin::UInt128   networkValue    = TBin::thor_htobe128(value);
         output.write(reinterpret_cast<char const*>(&networkValue), 16);
     }
-    void write(UInt64 value)
+    void write(TBin::UInt64 value)
     {
-        UInt64    networkValue    = thor_htobe64(value);
+        TBin::UInt64    networkValue    = TBin::thor_htobe64(value);
         output.write(reinterpret_cast<char const*>(&networkValue), 8);
     }
-    void write(UInt32 value)
+    void write(TBin::UInt32 value)
     {
-        UInt32    networkValue    = htonl(value);
+        TBin::UInt32    networkValue    = htonl(value);
         output.write(reinterpret_cast<char const*>(&networkValue), 4);
     }
-    void write(UInt16 value)
+    void write(TBin::UInt16 value)
     {
-        UInt16    networkValue    = htons(value);
+        TBin::UInt16    networkValue    = htons(value);
         output.write(reinterpret_cast<char const*>(&networkValue), 2);
     }
     void write(unsigned char value)
@@ -43,7 +44,7 @@ class BinaryPrinter: public PrinterInterface
     }
     void write(std::string const& value)
     {
-        UInt32    size            = value.size();
+        TBin::UInt32    size            = value.size();
         write(size);
         output.write(value.c_str(), size);
     }
@@ -51,7 +52,7 @@ class BinaryPrinter: public PrinterInterface
         BinaryPrinter(std::ostream& output, OutputType characteristics = OutputType::Default)
             : PrinterInterface(output, characteristics)
         {}
-        virtual void openDoc()                              override    {write(static_cast<UInt32>(thash<T>()));}
+        virtual void openDoc()                              override    {write(static_cast<TBin::UInt32>(thash<T>()));}
         virtual void closeDoc()                             override {}
 
         virtual void openMap()                              override {}
@@ -61,19 +62,19 @@ class BinaryPrinter: public PrinterInterface
 
         virtual void addKey(std::string const& key)         override    {write(key);}
 
-        virtual void addValue(short int value)              override    {write(static_cast<UInt16>(value));}
-        virtual void addValue(int value)                    override    {write(static_cast<UInt32>(value));}
-        virtual void addValue(long int value)               override    {write(static_cast<UInt64>(value));}
-        virtual void addValue(long long int value)          override    {write(static_cast<UInt128>(value));}
+        virtual void addValue(short int value)              override    {write(static_cast<TBin::UInt16>(value));}
+        virtual void addValue(int value)                    override    {write(static_cast<TBin::UInt32>(value));}
+        virtual void addValue(long int value)               override    {write(static_cast<TBin::UInt64>(value));}
+        virtual void addValue(long long int value)          override    {write(static_cast<TBin::UInt128>(value));}
 
-        virtual void addValue(unsigned short int value)     override    {write(static_cast<UInt16>(value));}
-        virtual void addValue(unsigned int value)           override    {write(static_cast<UInt32>(value));}
-        virtual void addValue(unsigned long int value)      override    {write(static_cast<UInt64>(value));}
-        virtual void addValue(unsigned long long int value) override    {write(static_cast<UInt128>(value));}
+        virtual void addValue(unsigned short int value)     override    {write(static_cast<TBin::UInt16>(value));}
+        virtual void addValue(unsigned int value)           override    {write(static_cast<TBin::UInt32>(value));}
+        virtual void addValue(unsigned long int value)      override    {write(static_cast<TBin::UInt64>(value));}
+        virtual void addValue(unsigned long long int value) override    {write(static_cast<TBin::UInt128>(value));}
 
-        virtual void addValue(float value)                  override    {write(convertIEEE(value));}
-        virtual void addValue(double value)                 override    {write(convertIEEE(value));}
-        virtual void addValue(long double value)            override    {write(convertIEEE(value));}
+        virtual void addValue(float value)                  override    {write(TBin::convertIEEE(value));}
+        virtual void addValue(double value)                 override    {write(TBin::convertIEEE(value));}
+        virtual void addValue(long double value)            override    {write(TBin::convertIEEE(value));}
 
         virtual void addValue(bool value)                   override    {write(static_cast<unsigned char>(value));}
 
