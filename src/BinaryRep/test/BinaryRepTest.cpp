@@ -180,53 +180,52 @@ TEST(BinaryRepTest, BinForm128HighCheck)
 }
 TEST(BinaryRepTest, BigEndianOrder)
 {
-    BinForm128     value1 = 0x123456789ABCDEF0LL;
-    value1 <<= 64;
-    value1  |= 0xF1E2D3C4B5A69780LL;
+    BinForm128     value  = 0x123456789ABCDEF0LL;
+    value  <<= 64;
+    value   |= 0xF1E2D3C4B5A69780LL;
 
-    BinForm128     value  = host2Net(value1);
     std::string expected("\x12\x34\x56\x78\x9A\xBC\xDE\xF0"  "\xF1\xE2\xD3\xC4\xB5\xA6\x97\x80", 16);
-    checkValue(value, expected);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, FloatConverterTraitFloatNan)
 {
-    BinForm32      value   = host2Net(FloatConverterTrait<float>::notANumber());
+    BinForm32      value   = FloatConverterTrait<float>::notANumber();
     std::string expected("\x7F\x80\x00\x00", 4);
-    checkValue(value, expected);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, FloatConverterTraitDoubleNan)
 {
-    BinForm64      value   = host2Net(FloatConverterTrait<double>::notANumber());
+    BinForm64      value   = FloatConverterTrait<double>::notANumber();
     std::string expected("\x7F\xF0\x00\x00\x00\x00\x00\x00", 8);
-    checkValue(value, expected);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, FloatConverterTraitLongDoubleNan)
 {
-    BinForm128     value   = host2Net(FloatConverterTrait<long double>::notANumber());
+    BinForm128     value   = FloatConverterTrait<long double>::notANumber();
     std::string expected("\x7F\xFF\x00\x00\x00\x00\x00\x00" "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-    checkValue(value, expected);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, convertIEEEFloatNan)
 {
-    BinForm32      value   = host2Net(convertIEEE(std::numeric_limits<float>::quiet_NaN()));
+    float      value   = std::numeric_limits<float>::quiet_NaN();
     std::string expected("\x7F\x80\x00\x00", 4);
-    checkValue(value, expected);
+    checkValue(convertIEEE(value), expected);
 }
 TEST(BinaryRepTest, convertIEEEDoubleNan)
 {
-    BinForm64      value   = host2Net(convertIEEE(std::numeric_limits<double>::quiet_NaN()));
+    double      value   = std::numeric_limits<double>::quiet_NaN();
     std::string expected("\x7F\xF0\x00\x00\x00\x00\x00\x00", 8);
-    checkValue(value, expected);
+    checkValue(convertIEEE(value), expected);
 }
 TEST(BinaryRepTest, convertIEEELongDoubleNan)
 {
-    BinForm128     value   = host2Net(convertIEEE(std::numeric_limits<long double>::quiet_NaN()));
+    long double     value   = std::numeric_limits<long double>::quiet_NaN();
     std::string expected("\x7F\xFF\x00\x00\x00\x00\x00\x00" "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-    checkValue(value, expected);
+    checkValue(convertIEEE(value), expected);
 }
 TEST(BinaryRepTest, convertIEEEFloat42)
 {
-    BinForm32      value   = host2Net(convertIEEE(42.0F));
+    float      value   = 42.0F;
     std::string expected("\x42\x28\x00\x00", 4);
     // http://en.wikipedia.org/wiki/Single-precision_floating-point_format#mediaviewer/File:Float_example.svg
     // S-EEE EEEE E-DDD DDDD DDDD DDDD DDDD DDDD
@@ -238,11 +237,11 @@ TEST(BinaryRepTest, convertIEEEFloat42)
     // Value = 1.0101 * 2^5 => 101010
     //                      => 32 + 8 + 2
     //                      => 42 :-)
-    checkValue(value, expected);
+    checkValue(convertIEEE(value), expected);
 }
 TEST(BinaryRepTest, convertIEEEDouble165p75)
 {
-    BinForm64      value   = host2Net(convertIEEE(165.75));
+    double      value   = 165.75;
     std::string expected("\x40\x64\xB8\x00\x00\x00\x00\x00", 8);
     // http://en.wikipedia.org/wiki/Double-precision_floating-point_format#mediaviewer/File:IEEE_754_Double_Floating_Point_Format.svg
     // S-EEE EEEE EEEE DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD
@@ -254,11 +253,11 @@ TEST(BinaryRepTest, convertIEEEDouble165p75)
     // Value = 1.010010111 * 2^7 => 10100101.11
     //                           => 128 + 32 + 4 + 1 + (1/2) + (1/4)
     //                           => 165.75 :-)
-    checkValue(value, expected);
+    checkValue(convertIEEE(value), expected);
 }
 TEST(BinaryRepTest, convertIEEELongDouble1Million234p875)
 {
-    BinForm128     value   = host2Net(convertIEEE(1000234.875L));
+    long double     value   = 1000234.875L;
     std::string expected("\x40\x12\xE8\x65\x5C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 16);
     // http://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format#mediaviewer/File:IEEE_754_Quadruple_Floating_Point_Format.svg
     // S-EEE EEEE EEEE EEEE DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD DDDD
@@ -270,6 +269,6 @@ TEST(BinaryRepTest, convertIEEELongDouble1Million234p875)
     // Value = 1.1110 1000 0110 0101 0101 1100 * 2^11 => 1111 0100 0011 0010 1010 .1110
     //                                                => 524288 + 262144 + 131072 + 65536 + 16384 + 512 + 256 + 32 + 8 + 2 + 1/2 + 1/4 + 1/8
     //                                                => 1000234.875
-    checkValue(value, expected);
+    checkValue(convertIEEE(value), expected);
 }
 

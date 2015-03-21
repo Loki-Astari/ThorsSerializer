@@ -55,27 +55,27 @@ static_assert(std::numeric_limits<float>::is_iec559,       "Binary interface ass
 template<>  inline BinForm32  convertIEEE<float, true, 4, 24>(float value)
 {
     if (std::isnan(value))
-    {   return FloatConverterTrait<float>::notANumber();
+    {   return host2Net(FloatConverterTrait<float>::notANumber());
     }
-    return *reinterpret_cast<BinForm32*>(&value);
+    return host2Net(*reinterpret_cast<BinForm32*>(&value));
 }
 
 static_assert(std::numeric_limits<double>::is_iec559,      "Binary interface assumes double      is IEEE754");
 template<>  inline BinForm64  convertIEEE<double, true, 8, 53>(double value)
 {
     if (std::isnan(value))
-    {   return FloatConverterTrait<double>::notANumber();
+    {   return host2Net(FloatConverterTrait<double>::notANumber());
     }
-    return *reinterpret_cast<BinForm64*>(&value);
+    return host2Net(*reinterpret_cast<BinForm64*>(&value));
 }
 
 static_assert(std::numeric_limits<long double>::is_iec559, "Binary interface assumes long double is IEEE754");
 template<>  inline BinForm128 convertIEEE<long double, true, 16, 113>(long double value)
 {
     if (std::isnan(value))
-    {   return FloatConverterTrait<long double>::notANumber();
+    {   return host2Net(FloatConverterTrait<long double>::notANumber());
     }
-    return *reinterpret_cast<BinForm128*>(&value);
+    return host2Net(*reinterpret_cast<BinForm128*>(&value));
 }
 template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double value)
 {
@@ -108,7 +108,7 @@ template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double
      *
      */
     if (std::isnan(value))
-    {   return FloatConverterTrait<long double>::notANumber();
+    {   return host2Net(FloatConverterTrait<long double>::notANumber());
     }
 
     /* Split the floating point into a real and an exponent */
@@ -149,7 +149,7 @@ template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double
     sigBits |= BinForm128High(exp);
     sigBits |= sign;
 
-    return sigBits;
+    return host2Net(sigBits);
 }
 
     }
