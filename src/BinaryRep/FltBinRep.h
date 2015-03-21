@@ -47,29 +47,18 @@ template<> struct FloatConverterTrait<long double>
 template<typename T, bool ieee = std::numeric_limits<T>::is_iec559, std::size_t size = sizeof(T), std::size_t decimal = std::numeric_limits<T>::digits>
 typename FloatConverterTrait<T>::StorageType host2NetIEEE(T value);
 
-template<>  inline BinForm32  host2NetIEEE<float, true, 4, 24>(float value)
+template<typename T>
+typename FloatConverterTrait<T>::StorageType host2NetIEEETransport(T value)
 {
     if (std::isnan(value))
-    {   return host2Net(FloatConverterTrait<float>::notANumber());
+    {   return host2Net(FloatConverterTrait<T>::notANumber());
     }
-    return host2Net(*reinterpret_cast<BinForm32*>(&value));
+    return host2Net(*reinterpret_cast<typename FloatConverterTrait<T>::StorageType*>(&value));
 }
 
-template<>  inline BinForm64  host2NetIEEE<double, true, 8, 53>(double value)
-{
-    if (std::isnan(value))
-    {   return host2Net(FloatConverterTrait<double>::notANumber());
-    }
-    return host2Net(*reinterpret_cast<BinForm64*>(&value));
-}
-
-template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 113>(long double value)
-{
-    if (std::isnan(value))
-    {   return host2Net(FloatConverterTrait<long double>::notANumber());
-    }
-    return host2Net(*reinterpret_cast<BinForm128*>(&value));
-}
+template<>  inline BinForm32  host2NetIEEE<float, true, 4, 24>(float value)                 {return host2NetIEEETransport(value);}
+template<>  inline BinForm64  host2NetIEEE<double, true, 8, 53>(double value)               {return host2NetIEEETransport(value);}
+template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 113>(long double value)   {return host2NetIEEETransport(value);}
 
 template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long double value)
 {
