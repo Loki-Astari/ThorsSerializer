@@ -18,9 +18,9 @@ Note: They are not designed as fully functional integer types (don't use them li
 Convert floating point number to/from IEEE transportable format.
 Then converts this to a big endian representation for platform neutral storage.
 
-    inline BinForm32  convertIEEE(float)
-    inline BinForm64  convertIEEE(double)
-    inline BinForm128 convertIEEE(long double)
+    inline BinForm32  host2NetIEEE(float)
+    inline BinForm64  host2NetIEEE(double)
+    inline BinForm128 host2NetIEEE(long double)
 
 ##Integer Functions
 

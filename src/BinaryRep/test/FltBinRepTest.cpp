@@ -27,19 +27,19 @@ TEST(FltBinRepTest, convertIEEEFloatNan)
 {
     float      value   = std::numeric_limits<float>::quiet_NaN();
     std::string expected("\x7F\x80\x00\x00", 4);
-    checkValue(convertIEEE(value), expected);
+    checkValue(host2NetIEEE(value), expected);
 }
 TEST(FltBinRepTest, convertIEEEDoubleNan)
 {
     double      value   = std::numeric_limits<double>::quiet_NaN();
     std::string expected("\x7F\xF0\x00\x00\x00\x00\x00\x00", 8);
-    checkValue(convertIEEE(value), expected);
+    checkValue(host2NetIEEE(value), expected);
 }
 TEST(FltBinRepTest, convertIEEELongDoubleNan)
 {
     long double     value   = std::numeric_limits<long double>::quiet_NaN();
     std::string expected("\x7F\xFF\x00\x00\x00\x00\x00\x00" "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-    checkValue(convertIEEE(value), expected);
+    checkValue(host2NetIEEE(value), expected);
 }
 TEST(FltBinRepTest, convertIEEEFloat42)
 {
@@ -55,7 +55,7 @@ TEST(FltBinRepTest, convertIEEEFloat42)
     // Value = 1.0101 * 2^5 => 101010
     //                      => 32 + 8 + 2
     //                      => 42 :-)
-    checkValue(convertIEEE(value), expected);
+    checkValue(host2NetIEEE(value), expected);
 }
 TEST(FltBinRepTest, convertIEEEDouble165p75)
 {
@@ -71,7 +71,7 @@ TEST(FltBinRepTest, convertIEEEDouble165p75)
     // Value = 1.010010111 * 2^7 => 10100101.11
     //                           => 128 + 32 + 4 + 1 + (1/2) + (1/4)
     //                           => 165.75 :-)
-    checkValue(convertIEEE(value), expected);
+    checkValue(host2NetIEEE(value), expected);
 }
 TEST(FltBinRepTest, convertIEEELongDouble1Million234p875)
 {
@@ -87,6 +87,6 @@ TEST(FltBinRepTest, convertIEEELongDouble1Million234p875)
     // Value = 1.1110 1000 0110 0101 0101 1100 * 2^11 => 1111 0100 0011 0010 1010 .1110
     //                                                => 524288 + 262144 + 131072 + 65536 + 16384 + 512 + 256 + 32 + 8 + 2 + 1/2 + 1/4 + 1/8
     //                                                => 1000234.875
-    checkValue(convertIEEE(value), expected);
+    checkValue(host2NetIEEE(value), expected);
 }
 

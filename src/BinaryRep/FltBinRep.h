@@ -25,7 +25,7 @@ template<> struct FloatConverterTrait<float>
     {   static constexpr BinForm32 value = 0x7f800000ULL;
         return value;
     }
-    typedef BinForm32 OutputType;
+    typedef BinForm32 StorageType;
 };
 template<> struct FloatConverterTrait<double>
 {
@@ -33,7 +33,7 @@ template<> struct FloatConverterTrait<double>
     {   static constexpr BinForm64 value = 0x7FF0000000000000ULL;
         return value;
     }
-    typedef BinForm64 OutputType;
+    typedef BinForm64 StorageType;
 };
 template<> struct FloatConverterTrait<long double>
 {
@@ -41,14 +41,13 @@ template<> struct FloatConverterTrait<long double>
     {   static constexpr BinForm128 value = BinForm128High(0x7FFF000000000000ULL);
         return value;
     }
-    typedef BinForm128 OutputType;
+    typedef BinForm128 StorageType;
 };
 
 template<typename T, bool ieee = std::numeric_limits<T>::is_iec559, std::size_t size = sizeof(T), std::size_t decimal = std::numeric_limits<T>::digits>
-typename FloatConverterTrait<T>::OutputType convertIEEE(T value);
+typename FloatConverterTrait<T>::StorageType host2NetIEEE(T value);
 
-static_assert(std::numeric_limits<float>::is_iec559,       "Binary interface assumes float       is IEEE754");
-template<>  inline BinForm32  convertIEEE<float, true, 4, 24>(float value)
+template<>  inline BinForm32  host2NetIEEE<float, true, 4, 24>(float value)
 {
     if (std::isnan(value))
     {   return host2Net(FloatConverterTrait<float>::notANumber());
@@ -56,8 +55,7 @@ template<>  inline BinForm32  convertIEEE<float, true, 4, 24>(float value)
     return host2Net(*reinterpret_cast<BinForm32*>(&value));
 }
 
-static_assert(std::numeric_limits<double>::is_iec559,      "Binary interface assumes double      is IEEE754");
-template<>  inline BinForm64  convertIEEE<double, true, 8, 53>(double value)
+template<>  inline BinForm64  host2NetIEEE<double, true, 8, 53>(double value)
 {
     if (std::isnan(value))
     {   return host2Net(FloatConverterTrait<double>::notANumber());
@@ -65,15 +63,15 @@ template<>  inline BinForm64  convertIEEE<double, true, 8, 53>(double value)
     return host2Net(*reinterpret_cast<BinForm64*>(&value));
 }
 
-static_assert(std::numeric_limits<long double>::is_iec559, "Binary interface assumes long double is IEEE754");
-template<>  inline BinForm128 convertIEEE<long double, true, 16, 113>(long double value)
+template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 113>(long double value)
 {
     if (std::isnan(value))
     {   return host2Net(FloatConverterTrait<long double>::notANumber());
     }
     return host2Net(*reinterpret_cast<BinForm128*>(&value));
 }
-template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double value)
+
+template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long double value)
 {
     static BinForm128         expMask     =  BinForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
     /* If this function is called it means you have an IEEE-754 integer
