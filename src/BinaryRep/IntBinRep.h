@@ -35,6 +35,11 @@ inline BinForm32    host2Net(BinForm32  value)      {return htonl(value);}
 inline BinForm64    host2Net(BinForm64  value)      {return BESwap(value);}
 inline BinForm128   host2Net(BinForm128 value)      {return BESwap(value);}
 
+inline BinForm16    net2Host(BinForm16  value)      {return ntohs(value);}
+inline BinForm32    net2Host(BinForm32  value)      {return ntohl(value);}
+inline BinForm64    net2Host(BinForm64  value)      {return BESwap(value);}
+inline BinForm128   net2Host(BinForm128 value)      {return BESwap(value);}
+
     }
 }
 

@@ -32,4 +32,9 @@ So that they can be serialized in a platform neutral format.
     inline BinForm64  host2Net(BinForm64  value)
     inline BinForm128 host2Net(BinForm128 value)
 
+    inline BinForm16  net2Host(BinForm16  value)
+    inline BinForm32  net2Host(BinForm32  value)
+    inline BinForm64  net2Host(BinForm64  value)
+    inline BinForm128 net2Host(BinForm128 value)
+
 
