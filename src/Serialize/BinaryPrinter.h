@@ -53,9 +53,9 @@ class BinaryPrinter: public PrinterInterface
         virtual void addValue(unsigned long int value)      override    {write(TBin::host2Net(static_cast<TBin::BinForm64>(value)));}
         virtual void addValue(unsigned long long int value) override    {write(TBin::host2Net(static_cast<TBin::BinForm128>(value)));}
 
-        virtual void addValue(float value)                  override    {write(TBin::convertIEEE(value));}
-        virtual void addValue(double value)                 override    {write(TBin::convertIEEE(value));}
-        virtual void addValue(long double value)            override    {write(TBin::convertIEEE(value));}
+        virtual void addValue(float value)                  override    {write(TBin::host2NetIEEE(value));}
+        virtual void addValue(double value)                 override    {write(TBin::host2NetIEEE(value));}
+        virtual void addValue(long double value)            override    {write(TBin::host2NetIEEE(value));}
 
         virtual void addValue(bool value)                   override    {write(static_cast<unsigned char>(value));}
 
