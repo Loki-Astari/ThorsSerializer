@@ -24,26 +24,16 @@ TEST(BinaryRepTest, CheckByteOrderOf64)
 {
     BinForm64     value   = 0x123456789ABCDEF0LL;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x12\x34\x56\x78\x9A\xBC\xDE\xF0", 8);
-#else
-    ("\xF0\xDE\xBC\x9A\x78\x56\x34\x12", 8);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x12\x34\x56\x78\x9A\xBC\xDE\xF0", 8);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, CheckByteOrderOf128With64Init)
 {
     BinForm128     value   = 0x123456789ABCDEF0LL;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x12\x34\x56\x78\x9A\xBC\xDE\xF0", 16);
-#else
-    ("\xF0\xDE\xBC\x9A\x78\x56\x34\x12"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x12\x34\x56\x78\x9A\xBC\xDE\xF0", 16);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, CheckByteOrderOf128)
@@ -52,13 +42,8 @@ TEST(BinaryRepTest, CheckByteOrderOf128)
     value <<= 64;
     value |=  0x9A12BC34DE56F078;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x12\x34\x56\x78\x9A\xBC\xDE\xF0"  "\x9A\x12\xBC\x34\xDE\x56\xF0\x78", 16);
-#else
-    ("\x78\xF0\x56\xDE\x34\xBC\x12\x9A"  "\xF0\xDE\xBC\x9A\x78\x56\x34\x12", 16);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x12\x34\x56\x78\x9A\xBC\xDE\xF0"  "\x9A\x12\xBC\x34\xDE\x56\xF0\x78", 16);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, ShiftLeftMoreThan64)
@@ -66,13 +51,8 @@ TEST(BinaryRepTest, ShiftLeftMoreThan64)
     BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 68;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x23\x45\x67\x89\xAB\xCD\xEF\x00"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x00\xEF\xCD\xAB\x89\x67\x45\x23", 16);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x23\x45\x67\x89\xAB\xCD\xEF\x00"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, ShiftLeft64)
@@ -80,13 +60,8 @@ TEST(BinaryRepTest, ShiftLeft64)
     BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 64;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x12\x34\x56\x78\x9A\xBC\xDE\xF0"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\xF0\xDE\xBC\x9A\x78\x56\x34\x12", 16);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x12\x34\x56\x78\x9A\xBC\xDE\xF0"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, ShiftLeftLess64)
@@ -94,13 +69,8 @@ TEST(BinaryRepTest, ShiftLeftLess64)
     BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 32;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\x12\x34\x56\x78"  "\x9A\xBC\xDE\xF0\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\xF0\xDE\xBC\x9A"  "\x78\x56\x34\x12\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x00\x00\x00\x00\x12\x34\x56\x78"  "\x9A\xBC\xDE\xF0\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, ShiftRightMoreThan64)
@@ -109,13 +79,8 @@ TEST(BinaryRepTest, ShiftRightMoreThan64)
     value <<= 64;
     value >>= 68;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x01\x23\x45\x67\x89\xAB\xCD\xEF", 16);
-#else
-    ("\xEF\xCD\xAB\x89\x67\x45\x23\x01"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x01\x23\x45\x67\x89\xAB\xCD\xEF", 16);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, ShiftRight64)
@@ -124,13 +89,8 @@ TEST(BinaryRepTest, ShiftRight64)
     value <<= 64;
     value >>= 64;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x12\x34\x56\x78\x9A\xBC\xDE\xF0", 16);
-#else
-    ("\xF0\xDE\xBC\x9A\x78\x56\x34\x12"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x12\x34\x56\x78\x9A\xBC\xDE\xF0", 16);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, ShiftRightLess64)
@@ -139,13 +99,8 @@ TEST(BinaryRepTest, ShiftRightLess64)
     value <<= 64;
     value >>= 32;
 
-    std::string         expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\x12\x34\x56\x78"  "\x9A\xBC\xDE\xF0\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\xF0\xDE\xBC\x9A"  "\x78\x56\x34\x12\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string         expected("\x00\x00\x00\x00\x12\x34\x56\x78"  "\x9A\xBC\xDE\xF0\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 
 TEST(BinaryRepTest, BinaryOrLow)
@@ -155,13 +110,8 @@ TEST(BinaryRepTest, BinaryOrLow)
 
     BinForm128     value   = value1 | value2;
 
-    std::string expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\xFC\x3F\x3C\xFF\x3C\xFF\xBE\x7D", 16);
-#else
-    ("\x7D\xBE\xFF\x3C\xFF\x3C\x3F\xFC"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string expected("\x00\x00\x00\x00\x00\x00\x00\x00"  "\xFC\x3F\x3C\xFF\x3C\xFF\xBE\x7D", 16);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, BinaryOrHigh)
 {
@@ -172,13 +122,8 @@ TEST(BinaryRepTest, BinaryOrHigh)
 
     BinForm128     value   = value1 | value2;
 
-    std::string expected
-#ifdef WORDS_BIGENDIAN
-    ("\xFC\x3F\x3C\xFF\x3C\xFF\xBE\x7D"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x7D\xBE\xFF\x3C\xFF\x3C\x3F\xFC", 16);
-#endif
-    checkValue(value, expected);
+    std::string expected("\xFC\x3F\x3C\xFF\x3C\xFF\xBE\x7D"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, BinaryOrStraddle)
 {
@@ -189,13 +134,8 @@ TEST(BinaryRepTest, BinaryOrStraddle)
 
     BinForm128     value   = value1 | value2;
 
-    std::string expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\xFC\x3F\x3C\xFF"  "\x3C\xFF\xBE\x7D\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\x7D\xBE\xFF\x3C"  "\xFF\x3C\x3F\xFC\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string expected("\x00\x00\x00\x00\xFC\x3F\x3C\xFF"  "\x3C\xFF\xBE\x7D\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, BinaryAndLo)
 {
@@ -204,13 +144,8 @@ TEST(BinaryRepTest, BinaryAndLo)
 
     BinForm128     value   = value1 & value2;
 
-    std::string expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x30\x0C\x3C\x00\x00\x3C\x28\x14", 16);
-#else
-    ("\x14\x28\x3C\x00\x00\x3C\x0C\x30"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string expected("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x30\x0C\x3C\x00\x00\x3C\x28\x14", 16);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, BinaryAndHigh)
 {
@@ -221,13 +156,8 @@ TEST(BinaryRepTest, BinaryAndHigh)
 
     BinForm128     value   = value1 & value2;
 
-    std::string expected
-#ifdef WORDS_BIGENDIAN
-    ("\x30\x0C\x3C\x00\x00\x3C\x28\x14"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\x14\x28\x3C\x00\x00\x3C\x0C\x30", 16);
-#endif
-    checkValue(value, expected);
+    std::string expected("\x30\x0C\x3C\x00\x00\x3C\x28\x14"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, BinaryAndStraddle)
 {
@@ -238,25 +168,15 @@ TEST(BinaryRepTest, BinaryAndStraddle)
 
     BinForm128     value   = value1 & value2;
 
-    std::string expected
-#ifdef WORDS_BIGENDIAN
-    ("\x00\x00\x00\x00\x30\x0C\x3C\x00"  "\x00\x3C\x28\x14\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\x14\x28\x3C\x00"  "\x00\x3C\x0C\x30\x00\x00\x00\x00", 16);
-#endif
-    checkValue(value, expected);
+    std::string expected("\x00\x00\x00\x00\x30\x0C\x3C\x00"  "\x00\x3C\x28\x14\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, BinForm128HighCheck)
 {
     BinForm128     value  = BinForm128High(0x12345678FFFFFFFFLL);
 
-    std::string expected
-#ifdef WORDS_BIGENDIAN
-    ("\x12\x34\x56\x78\xFF\xFF\xFF\xFF"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
-#else
-    ("\x00\x00\x00\x00\x00\x00\x00\x00"  "\xFF\xFF\xFF\xFF\x78\x56\x34\x12", 16);
-#endif
-    checkValue(value, expected);
+    std::string expected("\x12\x34\x56\x78\xFF\xFF\xFF\xFF"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
+    checkValue(host2Net(value), expected);
 }
 TEST(BinaryRepTest, BigEndianOrder)
 {
