@@ -75,52 +75,6 @@ TEST(BinaryPrinterTest, intToken)
                                        "\x00"
                                        , 46));
 
-    /*
-       BinaryPrinterTest.cpp:49: Failure
-       Value of: stream.str().size()
-         Actual: 30
-Expected: 22
-BinaryPrinterTest.cpp:52: Failure
-Value of: stream.str().size()
-  Actual: 32
-Expected: 24
-BinaryPrinterTest.cpp:54: Failure
-Value of: stream.str().size()
-  Actual: 36
-Expected: 28
-BinaryPrinterTest.cpp:56: Failure
-Value of: stream.str().size()
-  Actual: 44
-Expected: 36
-BinaryPrinterTest.cpp:58: Failure
-Value of: stream.str().size()
-  Actual: 60
-Expected: 44
-BinaryPrinterTest.cpp:61: Failure
-Value of: stream.str().size()
-  Actual: 61
-Expected: 45
-BinaryPrinterTest.cpp:63: Failure
-Value of: stream.str().size()
-  Actual: 62
-Expected: 46
-BinaryPrinterTest.cpp:65: Failure
-Value of: result.size()
-  Actual: 62
-  Expected: 46
-  */
-
-    /*
-    [ RUN      ] BinaryPrinterTest.intToken
-    BinaryPrinterTest.cpp:55: Failure
-    Value of: result.size()
-    Actual: 62
-    Expected: 46
-    BinaryPrinterTest.cpp:66: Failure
-    Value of: result.compare(0, 46, "\x45\x67" "\x89\xAB\xCD\xEF" "\x12\x34\x56\x78\x0F\xED\xCB\xA9" "\x12\x34\x56\x78\x0F\xED\xCB\xA9" "\x45\x67" "\x89\xAB\xCD\xEF" "\x12\x34\x56\x78\x0F\xED\xCB\xA9" "\x12\x34\x56\x78\x0F\xED\xCB\xA9" "\x01" "\x00" , 46)
-    Actual: -18
-    Expected: 0
-    */
 }
 TEST(BinaryPrinterTest, stringToken)
 {
@@ -134,57 +88,48 @@ TEST(BinaryPrinterTest, stringToken)
     EXPECT_EQ(39,   result.size());
     EXPECT_EQ(0,    result.compare(0, 39, "\x00\x00\x00\x11The long good bye\x00\x00\x00\x0ELive for a day", 39));
 }
-#if 0
 TEST(BinaryPrinterTest, floatToken)
 {
     std::stringstream                     stream;
     ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
-    printer.addValue(34.0F);    // 4
-    printer.addValue(35.0);     // 8
-    printer.addValue(36.0L);    // 16
+    printer.addValue(34.0F);    // 4    1 0 0 0 1 0. => S 0  E(5) => 1 0 0 0 0 1 0 0                Si 00010000     => 4208 0000
+    printer.addValue(35.0);     // 8    1 0 0 0 1 1. => S 0  E(5) => 1 0 0 0 0 0 0 0 1 0 0          Si 00011000...  => 4041 8000 0000 0000
+    printer.addValue(36.0L);    // 16   1 0 0 1 0 0. -> S 0  E(5) => 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0  Si 00100000...  => 4004 2000 0000 0000 0000 0000 0000 0000
 
 
     std::string     result  = stream.str();
     EXPECT_EQ(28,   result.size());
-    EXPECT_EQ(0,    result.compare(0, 28, "", 28));
-
-    std::cout << "DIG: " << std::numeric_limits<float>::digits << "   RAD: " << std::numeric_limits<float>::radix
-        << "  MIN: " << std::numeric_limits<float>::min_exponent << "  MAX: " << std::numeric_limits<float>::max_exponent << "\n";
-    std::cout << "DIG: " << std::numeric_limits<double>::digits << "   RAD: " << std::numeric_limits<double>::radix
-        << "  MIN: " << std::numeric_limits<double>::min_exponent << "  MAX: " << std::numeric_limits<double>::max_exponent << "\n";
-    std::cout << "DIG: " << std::numeric_limits<long double>::digits << "   RAD: " << std::numeric_limits<long double>::radix
-        << "  MIN: " << std::numeric_limits<long double>::min_exponent << "  MAX: " << std::numeric_limits<long double>::max_exponent << "\n";
+    EXPECT_EQ(0,    result.compare(0, 28, "\x42\x08\x00\x00\x40\x41\x80\x00\x00\x00\x00\x00\x40\x04\x20\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 28));
 }
 TEST(BinaryPrinterTest, MapValues)
 {
     std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream);
+    ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
-    printer.openDoc();
     printer.openMap();
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
     printer.addValue(false);
     printer.addKey("K3");
-    printer.addValue(56);
+    printer.addValue(56);   // 11 1000 0x38
     printer.addKey("K4");
-    printer.addValue(78.89);
+    printer.addValue(35.75); // 0x4041 E000 0000 0000
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
     printer.closeMap();
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K6":"Astring"})", result);
+    EXPECT_EQ(55,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 55, "\x00\x00\x00\x02K1\x01\x00\x00\x00\x02K2\x00\x00\x00\x00\x02K3\x00\x00\x00\x38\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x02K6\x00\x00\x00\x07\x41string", 55));
 }
 TEST(BinaryPrinterTest, MapWithMapValues)
 {
     std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream);
+    ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
-    printer.openDoc();
     printer.openMap();
     printer.addKey("K1");
     printer.openMap();
@@ -198,7 +143,7 @@ TEST(BinaryPrinterTest, MapWithMapValues)
     printer.addKey("K4");
     printer.openMap();
     printer.addKey("K4");
-    printer.addValue(78.89);
+    printer.addValue(35.75);
     printer.closeMap();
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
@@ -206,14 +151,14 @@ TEST(BinaryPrinterTest, MapWithMapValues)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89},"K6":"Astring"})", result);
+    EXPECT_EQ(67,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 67, "\x00\x00\x00\x02K1\x00\x00\x00\x02K1\x01\x00\x00\x00\x02K2\x00\x00\x00\x00\x02K3\x00\x00\x00\x38\x00\x00\x00\x02K4\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x02K6\x00\x00\x00\x07\x41string", 67));
 }
 TEST(BinaryPrinterTest, MapWithArrayValues)
 {
     std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream);
+    ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
-    printer.openDoc();
     printer.openMap();
     printer.addKey("K1");
     printer.openArray();
@@ -223,14 +168,14 @@ TEST(BinaryPrinterTest, MapWithArrayValues)
     printer.addValue(56u);
     printer.addValue(57ul);
     printer.addValue(58ull);
-    printer.addValue(60.f);
-    printer.addValue(61.0L);
+    printer.addValue(60.f);     // V 1 1 1 1 0 0.    S 0  E 1 0 0 0 0 1 0 0                 Si 1110 0000... => 4270 0000
+    printer.addValue(61.0L);    // V 1 1 1 1 0 1.    S 0  E 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0   Si 1110 1000... => 4004 e800 0000 0000 0000 0000 0000 0000
     printer.closeArray();
     printer.addKey("K3");
     printer.addValue(56);
     printer.addKey("K4");
     printer.openArray();
-    printer.addValue(78.89);
+    printer.addValue(35.75);
     printer.closeArray();
     printer.addKey("K6");
     printer.addValue(std::string("Astring"));
@@ -238,14 +183,25 @@ TEST(BinaryPrinterTest, MapWithArrayValues)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(R"({"K1":[true,false,55,56,57,58,60,61],"K3":56,"K4":[78.89],"K6":"Astring"})", result);
+    EXPECT_EQ(99,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 99, "\x00\x00\x00\x02K1"
+                                            "\x01"
+                                            "\x00"
+                                            "\x00\x37"
+                                            "\x00\x00\x00\x38"
+                                            "\x00\x00\x00\x00\x00\x00\x00\x39"
+                                            "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x3a"
+                                            "\x42\x70\x00\x00"
+                                            "\x40\x04\xe8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+                                          "\x00\x00\x00\x02K3\x00\x00\x00\x38"
+                                          "\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00"
+                                          "\x00\x00\x00\x02K6\x00\x00\x00\x07\x41string", 99));
 }
 TEST(BinaryPrinterTest, ArrayWithMapValues)
 {
     std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream);
+    ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
-    printer.openDoc();
     printer.openArray();
     printer.openMap();
     printer.addKey("K1");
@@ -256,21 +212,25 @@ TEST(BinaryPrinterTest, ArrayWithMapValues)
     printer.addValue(56);
     printer.openMap();
     printer.addKey("K4");
-    printer.addValue(78.89);
+    printer.addValue(35.75);
     printer.closeMap();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(R"([{"K1":true,"K2":false},56,{"K4":78.89},"Astring"])", result);
+    EXPECT_EQ(43,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 43, "\x00\x00\x00\x02K1\x01"
+                                          "\x00\x00\x00\x02K2\x00"
+                                          "\x00\x00\x00\x38"
+                                          "\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00"
+                                          "\x00\x00\x00\x07\x41string", 43));
 }
 TEST(BinaryPrinterTest, ArrayWithArrayValues)
 {
     std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream);
+    ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
-    printer.openDoc();
     printer.openArray();
     printer.openArray();
     printer.addValue(true);
@@ -278,21 +238,21 @@ TEST(BinaryPrinterTest, ArrayWithArrayValues)
     printer.closeArray();
     printer.addValue(56);
     printer.openArray();
-    printer.addValue(78.89);
+    printer.addValue(35.75);
     printer.closeArray();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(R"([[true,false],56,[78.89],"Astring"])", result);
+    EXPECT_EQ(25,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 25, "\x01\x00\x00\x00\x00\x38\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x07\x41string", 25));
 }
 TEST(BinaryPrinterTest, CheckStreeamIsCompressed)
 {
     std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
-    printer.openDoc();
     printer.openArray();
     printer.openMap();
     printer.addKey("K1");
@@ -303,48 +263,14 @@ TEST(BinaryPrinterTest, CheckStreeamIsCompressed)
     printer.addValue(56);
     printer.openMap();
     printer.addKey("K4");
-    printer.addValue(78.89);
+    printer.addValue(35.75);
     printer.closeMap();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    int             space   = std::count_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);});
-    EXPECT_EQ(0, space);
+    EXPECT_EQ(43,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 43, "\x00\x00\x00\x02K1\x01\x00\x00\x00\x02K2\x00\x00\x00\x00\x38\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x07\x41string", 43));
 }
-TEST(BinaryPrinterTest, CloseMapWithArray)
-{
-    std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
-
-    printer.openDoc();
-    printer.openMap();
-    ASSERT_ANY_THROW(
-        printer.closeArray();
-    );
-}
-TEST(BinaryPrinterTest, CloseArrayWithMap)
-{
-    std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
-
-    printer.openDoc();
-    printer.openArray();
-    ASSERT_ANY_THROW(
-        printer.closeMap();
-    );
-}
-TEST(BinaryPrinterTest, PuttingKeyInArray)
-{
-    std::stringstream                     stream;
-    ThorsAnvil::Serialize::BinaryPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
-
-    printer.openDoc();
-    printer.openArray();
-    ASSERT_ANY_THROW(
-        printer.addKey("This old house");
-    );
-}
-#endif
 #endif

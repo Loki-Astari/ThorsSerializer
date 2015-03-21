@@ -18,12 +18,12 @@ namespace ThorsAnvil
 template<typename T>
 class BinaryPrinter: public PrinterInterface
 {
-    void write(TBin::BinForm128 value)  {output.write(reinterpret_cast<char const*>(&value), 16);}
-    void write(TBin::BinForm64 value)   {output.write(reinterpret_cast<char const*>(&value), 8); }
-    void write(TBin::BinForm32 value)   {output.write(reinterpret_cast<char const*>(&value), 4); }
-    void write(TBin::BinForm16 value)   {output.write(reinterpret_cast<char const*>(&value), 2); }
-    void write(unsigned char value)     {output.write(reinterpret_cast<char const*>(&value), 1); }
-    void write(std::string const& value)
+    template<typename Out>
+    void write(Out value)
+    {
+        output.write(reinterpret_cast<char const*>(&value), sizeof(Out));
+    }
+    void writeString(std::string const& value)
     {
         TBin::BinForm32    size            = value.size();
         write(TBin::host2Net(size));
@@ -41,7 +41,7 @@ class BinaryPrinter: public PrinterInterface
         virtual void openArray()                            override {}
         virtual void closeArray()                           override {}
 
-        virtual void addKey(std::string const& key)         override    {write(key);}
+        virtual void addKey(std::string const& key)         override    {writeString(key);}
 
         virtual void addValue(short int value)              override    {write(TBin::host2Net(static_cast<TBin::BinForm16>(value)));}
         virtual void addValue(int value)                    override    {write(TBin::host2Net(static_cast<TBin::BinForm32>(value)));}
@@ -59,7 +59,7 @@ class BinaryPrinter: public PrinterInterface
 
         virtual void addValue(bool value)                   override    {write(static_cast<unsigned char>(value));}
 
-        virtual void addValue(std::string const& value)     override    {write(value);}
+        virtual void addValue(std::string const& value)     override    {writeString(value);}
 };
 
     }
