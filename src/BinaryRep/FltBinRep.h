@@ -22,7 +22,7 @@ struct FloatConverterTrait;
 template<> struct FloatConverterTrait<float>
 {
     static  BinForm32  notANumber()
-    {   static constexpr BinForm32 value = 0x7f800000LL;
+    {   static constexpr BinForm32 value = 0x7f800000ULL;
         return value;
     }
     typedef BinForm32 OutputType;
@@ -30,7 +30,7 @@ template<> struct FloatConverterTrait<float>
 template<> struct FloatConverterTrait<double>
 {
     static  BinForm64  notANumber()
-    {   static constexpr BinForm64 value = 0x7FF0000000000000LL;
+    {   static constexpr BinForm64 value = 0x7FF0000000000000ULL;
         return value;
     }
     typedef BinForm64 OutputType;
@@ -38,17 +38,11 @@ template<> struct FloatConverterTrait<double>
 template<> struct FloatConverterTrait<long double>
 {
     static  BinForm128  notANumber()
-    {   static constexpr BinForm128 value = BinForm128High(0x7FFF000000000000LL);
+    {   static constexpr BinForm128 value = BinForm128High(0x7FFF000000000000ULL);
         return value;
     }
     typedef BinForm128 OutputType;
 };
-
-// static constexpr long long    notANumber          = 0x0000000000000000LL;
-// static constexpr long long    negativeInfinity    = 0x8000000000000000LL;
-// static constexpr long long    positiveInfinity    = 0x7FFFFFFFFFFFFFFFLL;
-// static constexpr short        expMarker           = static_cast<short>(0x7FFF);
-
 
 template<typename T, bool ieee = std::numeric_limits<T>::is_iec559, std::size_t size = sizeof(T), std::size_t decimal = std::numeric_limits<T>::digits>
 typename FloatConverterTrait<T>::OutputType convertIEEE(T value);
@@ -92,7 +86,7 @@ template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double
      *
      *  http://en.wikipedia.org/wiki/Extended_precision
      *  80 bit Extended Format:
-     *      s eeeee eeeeeeeeee V vvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR 
+     *      RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR s eeeeeee eeeeeeee V vvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv
      *          s:      1   Sign Bit
      *          e:     15   exponent
      *          V:      1   integer part of significant
