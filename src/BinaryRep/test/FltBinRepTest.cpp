@@ -90,3 +90,34 @@ TEST(FltBinRepTest, convertIEEELongDouble1Million234p875)
     checkValue(host2NetIEEE(value), expected);
 }
 
+TEST(FltBinRepTest, revertIEEEFloatNan)
+{
+    float      value   = std::numeric_limits<float>::quiet_NaN();
+    EXPECT_TRUE(std::isnan(net2HostIEEE<float>(host2NetIEEE(value))));
+}
+TEST(FltBinRepTest, revertIEEEDoubleNan)
+{
+    double      value   = std::numeric_limits<double>::quiet_NaN();
+    EXPECT_TRUE(std::isnan(net2HostIEEE<double>(host2NetIEEE(value))));
+}
+TEST(FltBinRepTest, revertIEEELongDoubleNan)
+{
+    long double     value   = std::numeric_limits<long double>::quiet_NaN();
+    EXPECT_TRUE(std::isnan(net2HostIEEE<long double>(host2NetIEEE(value))));
+}
+TEST(FltBinRepTest, revertIEEEFloat42)
+{
+    float      value   = 42.0F;
+    EXPECT_EQ(net2HostIEEE<float>(host2NetIEEE(value)), value);
+}
+TEST(FltBinRepTest, revertIEEEDouble165p75)
+{
+    double      value   = 165.75;
+    EXPECT_EQ(net2HostIEEE<double>(host2NetIEEE(value)), value);
+}
+TEST(FltBinRepTest, revertIEEELongDouble1Million234p875)
+{
+    long double     value   = 1000234.875L;
+    EXPECT_EQ(net2HostIEEE<long double>(host2NetIEEE(value)), value);
+}
+
