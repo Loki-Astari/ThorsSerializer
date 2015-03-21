@@ -17,7 +17,7 @@ std::string readValue(T const& value)
 
 TEST(BinaryRepTest, CheckByteOrderOf64)
 {
-    UInt64     value   = 0x123456789ABCDEF0LL;
+    BinForm64     value   = 0x123456789ABCDEF0LL;
 
     std::string         result = readValue(value);
     std::string         expected
@@ -33,7 +33,7 @@ TEST(BinaryRepTest, CheckByteOrderOf64)
 
 TEST(BinaryRepTest, CheckByteOrderOf128With64Init)
 {
-    UInt128     value   = 0x123456789ABCDEF0LL;
+    BinForm128     value   = 0x123456789ABCDEF0LL;
 
     std::string         result  = readValue(value);
     std::string         expected
@@ -49,7 +49,7 @@ TEST(BinaryRepTest, CheckByteOrderOf128With64Init)
 
 TEST(BinaryRepTest, CheckByteOrderOf128)
 {
-    UInt128     value   = 0x123456789ABCDEF0LL;
+    BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 64;
     value |=  0x9A12BC34DE56F078;
 
@@ -67,7 +67,7 @@ TEST(BinaryRepTest, CheckByteOrderOf128)
 
 TEST(BinaryRepTest, ShiftLeftMoreThan64)
 {
-    UInt128     value   = 0x123456789ABCDEF0LL;
+    BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 68;
 
     std::string         result  = readValue(value);
@@ -85,7 +85,7 @@ TEST(BinaryRepTest, ShiftLeftMoreThan64)
 
 TEST(BinaryRepTest, ShiftLeft64)
 {
-    UInt128     value   = 0x123456789ABCDEF0LL;
+    BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 64;
 
     std::string         result  = readValue(value);
@@ -103,7 +103,7 @@ TEST(BinaryRepTest, ShiftLeft64)
 
 TEST(BinaryRepTest, ShiftLeftLess64)
 {
-    UInt128     value   = 0x123456789ABCDEF0LL;
+    BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 32;
 
     std::string         result  = readValue(value);
@@ -121,7 +121,7 @@ TEST(BinaryRepTest, ShiftLeftLess64)
 
 TEST(BinaryRepTest, ShiftRightMoreThan64)
 {
-    UInt128     value   = 0x123456789ABCDEF0LL;
+    BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 64;
     value >>= 68;
 
@@ -140,7 +140,7 @@ TEST(BinaryRepTest, ShiftRightMoreThan64)
 
 TEST(BinaryRepTest, ShiftRight64)
 {
-    UInt128     value   = 0x123456789ABCDEF0LL;
+    BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 64;
     value >>= 64;
 
@@ -160,7 +160,7 @@ TEST(BinaryRepTest, ShiftRight64)
 
 TEST(BinaryRepTest, ShiftRightLess64)
 {
-    UInt128     value   = 0x123456789ABCDEF0LL;
+    BinForm128     value   = 0x123456789ABCDEF0LL;
     value <<= 64;
     value >>= 32;
 
@@ -179,10 +179,10 @@ TEST(BinaryRepTest, ShiftRightLess64)
 
 TEST(BinaryRepTest, BinaryOrLow)
 {
-    UInt128     value1  = 0x3C3C3C3C3C3C3C3CLL;
-    UInt128     value2  = 0xF00F3CC300FFAA55LL;
+    BinForm128     value1  = 0x3C3C3C3C3C3C3C3CLL;
+    BinForm128     value2  = 0xF00F3CC300FFAA55LL;
 
-    UInt128     value3  = value1 | value2;
+    BinForm128     value3  = value1 | value2;
 
     std::string result  = readValue(value3);
     std::string expected
@@ -199,12 +199,12 @@ TEST(BinaryRepTest, BinaryOrLow)
 }
 TEST(BinaryRepTest, BinaryOrHigh)
 {
-    UInt128     value1  = 0x3C3C3C3C3C3C3C3CLL;
-    UInt128     value2  = 0xF00F3CC300FFAA55LL;
+    BinForm128     value1  = 0x3C3C3C3C3C3C3C3CLL;
+    BinForm128     value2  = 0xF00F3CC300FFAA55LL;
     value1 <<= 64;
     value2 <<= 64; 
 
-    UInt128     value3  = value1 | value2;
+    BinForm128     value3  = value1 | value2;
 
     std::string result  = readValue(value3);
     std::string expected
@@ -221,12 +221,12 @@ TEST(BinaryRepTest, BinaryOrHigh)
 }
 TEST(BinaryRepTest, BinaryOrStraddle)
 {
-    UInt128     value1  = 0x3C3C3C3C3C3C3C3CLL;
-    UInt128     value2  = 0xF00F3CC300FFAA55LL;
+    BinForm128     value1  = 0x3C3C3C3C3C3C3C3CLL;
+    BinForm128     value2  = 0xF00F3CC300FFAA55LL;
     value1 <<= 32;
     value2 <<= 32; 
 
-    UInt128     value3  = value1 | value2;
+    BinForm128     value3  = value1 | value2;
 
     std::string result  = readValue(value3);
     std::string expected
@@ -243,10 +243,10 @@ TEST(BinaryRepTest, BinaryOrStraddle)
 }
 TEST(BinaryRepTest, BinaryAndLo)
 {
-    UInt128     value1  = 0x3C3C3C3C3C3C3C3CLL;
-    UInt128     value2  = 0xF00F3CC300FFAA55LL;
+    BinForm128     value1  = 0x3C3C3C3C3C3C3C3CLL;
+    BinForm128     value2  = 0xF00F3CC300FFAA55LL;
 
-    UInt128     value3  = value1 & value2;
+    BinForm128     value3  = value1 & value2;
 
     std::string result  = readValue(value3);
     std::string expected
@@ -263,12 +263,12 @@ TEST(BinaryRepTest, BinaryAndLo)
 }
 TEST(BinaryRepTest, BinaryAndHigh)
 {
-    UInt128     value1  = 0x3C3C3C3C3C3C3C3CLL;
-    UInt128     value2  = 0xF00F3CC300FFAA55LL;
+    BinForm128     value1  = 0x3C3C3C3C3C3C3C3CLL;
+    BinForm128     value2  = 0xF00F3CC300FFAA55LL;
     value1 <<= 64;
     value2 <<= 64;
 
-    UInt128     value3  = value1 & value2;
+    BinForm128     value3  = value1 & value2;
 
     std::string result  = readValue(value3);
     std::string expected
@@ -285,12 +285,12 @@ TEST(BinaryRepTest, BinaryAndHigh)
 }
 TEST(BinaryRepTest, BinaryAndStraddle)
 {
-    UInt128     value1  = 0x3C3C3C3C3C3C3C3CLL;
-    UInt128     value2  = 0xF00F3CC300FFAA55LL;
+    BinForm128     value1  = 0x3C3C3C3C3C3C3C3CLL;
+    BinForm128     value2  = 0xF00F3CC300FFAA55LL;
     value1 <<= 32;
     value2 <<= 32;
 
-    UInt128     value3  = value1 & value2;
+    BinForm128     value3  = value1 & value2;
 
     std::string result  = readValue(value3);
     std::string expected
@@ -305,9 +305,9 @@ TEST(BinaryRepTest, BinaryAndStraddle)
         EXPECT_EQ(expected[loop], result[loop]);
     }
 }
-TEST(BinaryRepTest, UInt128HighCheck)
+TEST(BinaryRepTest, BinForm128HighCheck)
 {
-    UInt128     value1 = UInt128High(0x12345678FFFFFFFFLL);
+    BinForm128     value1 = BinForm128High(0x12345678FFFFFFFFLL);
 
     std::string result  = readValue(value1);
     std::string expected
@@ -324,11 +324,11 @@ TEST(BinaryRepTest, UInt128HighCheck)
 }
 TEST(BinaryRepTest, BigEndianOrder)
 {
-    UInt128     value1 = 0x123456789ABCDEF0LL;
+    BinForm128     value1 = 0x123456789ABCDEF0LL;
     value1 <<= 64;
     value1  |= 0xF1E2D3C4B5A69780LL;
 
-    UInt128     value2 = thor_htobe128(value1);
+    BinForm128     value2 = thor_htobe128(value1);
     std::string result  = readValue(value2);
     std::string expected("\x12\x34\x56\x78\x9A\xBC\xDE\xF0"  "\xF1\xE2\xD3\xC4\xB5\xA6\x97\x80", 16);
 
@@ -339,7 +339,7 @@ TEST(BinaryRepTest, BigEndianOrder)
 }
 TEST(BinaryRepTest, FloatConverterTraitFloatNan)
 {
-    UInt32      value1  = htonl(FloatConverterTrait<float>::notANumber());
+    BinForm32      value1  = htonl(FloatConverterTrait<float>::notANumber());
     std::string result  = readValue(value1);
     std::string expected("\x7F\x80\x00\x00", 4);
 
@@ -350,7 +350,7 @@ TEST(BinaryRepTest, FloatConverterTraitFloatNan)
 }
 TEST(BinaryRepTest, FloatConverterTraitDoubleNan)
 {
-    UInt64      value1  = thor_htobe64(FloatConverterTrait<double>::notANumber());
+    BinForm64      value1  = thor_htobe64(FloatConverterTrait<double>::notANumber());
     std::string result  = readValue(value1);
     std::string expected("\x7F\xF0\x00\x00\x00\x00\x00\x00", 8);
 
@@ -361,7 +361,7 @@ TEST(BinaryRepTest, FloatConverterTraitDoubleNan)
 }
 TEST(BinaryRepTest, FloatConverterTraitLongDoubleNan)
 {
-    UInt128     value1  = thor_htobe128(FloatConverterTrait<long double>::notANumber());
+    BinForm128     value1  = thor_htobe128(FloatConverterTrait<long double>::notANumber());
     std::string result  = readValue(value1);
     std::string expected("\x7F\xFF\x00\x00\x00\x00\x00\x00" "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
 
@@ -372,7 +372,7 @@ TEST(BinaryRepTest, FloatConverterTraitLongDoubleNan)
 }
 TEST(BinaryRepTest, convertIEEEFloatNan)
 {
-    UInt32      value1  = htonl(convertIEEE(std::numeric_limits<float>::quiet_NaN()));
+    BinForm32      value1  = htonl(convertIEEE(std::numeric_limits<float>::quiet_NaN()));
     std::string result  = readValue(value1);
     std::string expected("\x7F\x80\x00\x00", 4);
 
@@ -383,7 +383,7 @@ TEST(BinaryRepTest, convertIEEEFloatNan)
 }
 TEST(BinaryRepTest, convertIEEEDoubleNan)
 {
-    UInt64      value1  = thor_htobe64(convertIEEE(std::numeric_limits<double>::quiet_NaN()));
+    BinForm64      value1  = thor_htobe64(convertIEEE(std::numeric_limits<double>::quiet_NaN()));
     std::string result  = readValue(value1);
     std::string expected("\x7F\xF0\x00\x00\x00\x00\x00\x00", 8);
 
@@ -394,7 +394,7 @@ TEST(BinaryRepTest, convertIEEEDoubleNan)
 }
 TEST(BinaryRepTest, convertIEEELongDoubleNan)
 {
-    UInt128     value1  = thor_htobe128(convertIEEE(std::numeric_limits<long double>::quiet_NaN()));
+    BinForm128     value1  = thor_htobe128(convertIEEE(std::numeric_limits<long double>::quiet_NaN()));
     std::string result  = readValue(value1);
     std::string expected("\x7F\xFF\x00\x00\x00\x00\x00\x00" "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
 
@@ -405,7 +405,7 @@ TEST(BinaryRepTest, convertIEEELongDoubleNan)
 }
 TEST(BinaryRepTest, convertIEEEFloat42)
 {
-    UInt32      value1  = htonl(convertIEEE(42.0F));
+    BinForm32      value1  = htonl(convertIEEE(42.0F));
     std::string result  = readValue(value1);
     std::string expected("\x42\x28\x00\x00", 4);
     // http://en.wikipedia.org/wiki/Single-precision_floating-point_format#mediaviewer/File:Float_example.svg
@@ -427,7 +427,7 @@ TEST(BinaryRepTest, convertIEEEFloat42)
 }
 TEST(BinaryRepTest, convertIEEEDouble165p75)
 {
-    UInt64      value1  = thor_htobe64(convertIEEE(165.75));
+    BinForm64      value1  = thor_htobe64(convertIEEE(165.75));
     std::string result  = readValue(value1);
     std::string expected("\x40\x64\xB8\x00\x00\x00\x00\x00", 8);
     // http://en.wikipedia.org/wiki/Double-precision_floating-point_format#mediaviewer/File:IEEE_754_Double_Floating_Point_Format.svg
@@ -448,7 +448,7 @@ TEST(BinaryRepTest, convertIEEEDouble165p75)
 }
 TEST(BinaryRepTest, convertIEEELongDouble1Million234p875)
 {
-    UInt128     value1  = thor_htobe128(convertIEEE(1000234.875L));
+    BinForm128     value1  = thor_htobe128(convertIEEE(1000234.875L));
     std::string result  = readValue(value1);
     std::string expected("\x40\x12\xE8\x65\x5C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 16);
     // http://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format#mediaviewer/File:IEEE_754_Quadruple_Floating_Point_Format.svg

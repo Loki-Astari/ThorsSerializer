@@ -19,27 +19,27 @@ struct FloatConverterTrait;
 */
 template<> struct FloatConverterTrait<float>
 {
-    static  UInt32  notANumber()
-    {   static constexpr UInt32 value = 0x7f800000LL;
+    static  BinForm32  notANumber()
+    {   static constexpr BinForm32 value = 0x7f800000LL;
         return value;
     }
-    typedef UInt32 OutputType;
+    typedef BinForm32 OutputType;
 };
 template<> struct FloatConverterTrait<double>
 {
-    static  UInt64  notANumber()
-    {   static constexpr UInt64 value = 0x7FF0000000000000LL;
+    static  BinForm64  notANumber()
+    {   static constexpr BinForm64 value = 0x7FF0000000000000LL;
         return value;
     }
-    typedef UInt64 OutputType;
+    typedef BinForm64 OutputType;
 };
 template<> struct FloatConverterTrait<long double>
 {
-    static  UInt128  notANumber()
-    {   static constexpr UInt128 value = UInt128High(0x7FFF000000000000LL);
+    static  BinForm128  notANumber()
+    {   static constexpr BinForm128 value = BinForm128High(0x7FFF000000000000LL);
         return value;
     }
-    typedef UInt128 OutputType;
+    typedef BinForm128 OutputType;
 };
 
 // static constexpr long long    notANumber          = 0x0000000000000000LL;
@@ -52,34 +52,34 @@ template<typename T, bool ieee = std::numeric_limits<T>::is_iec559, std::size_t 
 typename FloatConverterTrait<T>::OutputType convertIEEE(T value);
 
 static_assert(std::numeric_limits<float>::is_iec559,       "Binary interface assumes float       is IEEE754");
-template<>  inline UInt32  convertIEEE<float, true, 4, 24>(float value)
+template<>  inline BinForm32  convertIEEE<float, true, 4, 24>(float value)
 {
     if (std::isnan(value))
     {   return FloatConverterTrait<float>::notANumber();
     }
-    return *reinterpret_cast<UInt32*>(&value);
+    return *reinterpret_cast<BinForm32*>(&value);
 }
 
 static_assert(std::numeric_limits<double>::is_iec559,      "Binary interface assumes double      is IEEE754");
-template<>  inline UInt64  convertIEEE<double, true, 8, 53>(double value)
+template<>  inline BinForm64  convertIEEE<double, true, 8, 53>(double value)
 {
     if (std::isnan(value))
     {   return FloatConverterTrait<double>::notANumber();
     }
-    return *reinterpret_cast<UInt64*>(&value);
+    return *reinterpret_cast<BinForm64*>(&value);
 }
 
 static_assert(std::numeric_limits<long double>::is_iec559, "Binary interface assumes long double is IEEE754");
-template<>  inline UInt128 convertIEEE<long double, true, 16, 113>(long double value)
+template<>  inline BinForm128 convertIEEE<long double, true, 16, 113>(long double value)
 {
     if (std::isnan(value))
     {   return FloatConverterTrait<long double>::notANumber();
     }
-    return *reinterpret_cast<UInt128*>(&value);
+    return *reinterpret_cast<BinForm128*>(&value);
 }
-template<>  inline UInt128 convertIEEE<long double, true, 16, 64>(long double value)
+template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double value)
 {
-    static UInt128         expMask     =  UInt128High(0x0000FFFFFFFFFFFFULL) | UInt128(0xFFFFFFFFFFFFFFFFULL);
+    static BinForm128         expMask     =  BinForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
     /* If this function is called it means you have an IEEE-754 integer
      * But it is not one of the interchange formats defined in  IEEE 754-2008
      *
@@ -117,13 +117,13 @@ template<>  inline UInt128 convertIEEE<long double, true, 16, 64>(long double va
 
     // Build the sign bit.
     // Thats bit 127 (1 for negative 0 for positive)
-    UInt128         sign        = significant < 0 ? 1 : 0;
+    BinForm128         sign        = significant < 0 ? 1 : 0;
     sign <<= 127;
 
     // Build the exponent bits
     // Max of 15 bits with a boas of 16383 (2^15-1)
     // Bits: 
-    UInt64           exp         = exponent & 0x7FFF;   // Make sure we only use 15 bits.
+    BinForm64           exp         = exponent & 0x7FFF;   // Make sure we only use 15 bits.
     exp -= 1;                                           // The extended format exponent is one off
     exp += 16383;                                       // Add the bias
     exp <<= (64 - 16);
@@ -133,7 +133,7 @@ template<>  inline UInt128 convertIEEE<long double, true, 16, 64>(long double va
      * So lets examine it as an integer so that we can manipulate the bits
      * in a more logical way
      */
-    UInt128&        sigBits     = *reinterpret_cast<UInt128*>(&significant);
+    BinForm128&        sigBits     = *reinterpret_cast<BinForm128*>(&significant);
 
     /*
      * Remove the 1 bit representing the integer part of the float (this is not stored in the Quad Version).
@@ -146,7 +146,7 @@ template<>  inline UInt128 convertIEEE<long double, true, 16, 64>(long double va
 
 
     // But the 3 part together into a single value.
-    sigBits |= UInt128High(exp);
+    sigBits |= BinForm128High(exp);
     sigBits |= sign;
 
     return sigBits;
