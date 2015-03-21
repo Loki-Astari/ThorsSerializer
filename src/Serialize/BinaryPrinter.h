@@ -7,7 +7,7 @@
 
 #include "Serialize.h"
 #include "THash.h"
-#include "BinaryRep.h"
+#include "ThorBinaryRep/BinaryRep.h"
 
 namespace ThorsAnvil
 {
