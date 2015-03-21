@@ -5,6 +5,20 @@
 
 using namespace ThorsAnvil::BinaryRep;
 
+TEST(IntBinRepTest, CheckByteOrderOf16)
+{
+    BinForm16     value   = 0x1234;
+
+    std::string         expected("\x12\x34", 2);
+    checkValue(host2Net(value), expected);
+}
+TEST(IntBinRepTest, CheckByteOrderOf32)
+{
+    BinForm32     value   = 0x12345678;
+
+    std::string         expected("\x12\x34\x56\x78", 4);
+    checkValue(host2Net(value), expected);
+}
 TEST(IntBinRepTest, CheckByteOrderOf64)
 {
     BinForm64     value   = 0x123456789ABCDEF0LL;
