@@ -2,12 +2,15 @@
 #ThorSerialize
 
 This is a framework for serializing C++ objects to/from stream in some "standard formats" efficiently.
-Standard Formats: Currently supported are Json/Yaml
+Standard Formats: Currently supported are Json/Yaml/Binary
 
 
 It is designed so that no intermediate format it used; data is read directly from the object and placed on the stream, conversely data is read directly from the stream into C++ objects. Note because C++ container con only hold fully formed objects, data is read into temporary object then inserted (moved if possible otherwise copied) into the container.
 
 User defined classes require no additional code to be serialized, only a simple declaration that defines what member need to be serialized. The appropriate declarations for the standard containers has already been provided.
+
+**Note the constructor is not called.**  
+The serialization class reads/writes built-in data by default and reads/writes these values directly into the members of the object. To read/write non built-in types you must define a serialization for that class. (Note: it is possible to get this library to call the constructors and methods (this is how the standard containers are accessed). But I have not documented this procedure yet as I want to get some good use cases together so I can define a consistent interface for its usage).
 
 ##Usage
 
@@ -139,7 +142,7 @@ For each implementation we expect to see:
 
     File:               Class:              Description:
     ====================================================
-    <Name>Printea.h     <Name>Printer       A class that implements the PrinterInterface (defined in Serialize.h)
+    <Name>Printer.h     <Name>Printer       A class that implements the PrinterInterface (defined in Serialize.h)
     <Name>Parser.h      <Name>Parser        A class that implements the ParserInterface (defined in Serialize.h)
     <Name>.h            Name                A class "Name" that defines the names of the printer and parser types.
                         <name>Import        Import/Export function that simply wrap the Import/Export functions
