@@ -328,7 +328,7 @@ TEST(BinaryRepTest, BigEndianOrder)
     value1 <<= 64;
     value1  |= 0xF1E2D3C4B5A69780LL;
 
-    BinForm128     value2 = thor_htobe128(value1);
+    BinForm128     value2 = host2Net(value1);
     std::string result  = readValue(value2);
     std::string expected("\x12\x34\x56\x78\x9A\xBC\xDE\xF0"  "\xF1\xE2\xD3\xC4\xB5\xA6\x97\x80", 16);
 
@@ -339,7 +339,7 @@ TEST(BinaryRepTest, BigEndianOrder)
 }
 TEST(BinaryRepTest, FloatConverterTraitFloatNan)
 {
-    BinForm32      value1  = htonl(FloatConverterTrait<float>::notANumber());
+    BinForm32      value1  = host2Net(FloatConverterTrait<float>::notANumber());
     std::string result  = readValue(value1);
     std::string expected("\x7F\x80\x00\x00", 4);
 
@@ -350,7 +350,7 @@ TEST(BinaryRepTest, FloatConverterTraitFloatNan)
 }
 TEST(BinaryRepTest, FloatConverterTraitDoubleNan)
 {
-    BinForm64      value1  = thor_htobe64(FloatConverterTrait<double>::notANumber());
+    BinForm64      value1  = host2Net(FloatConverterTrait<double>::notANumber());
     std::string result  = readValue(value1);
     std::string expected("\x7F\xF0\x00\x00\x00\x00\x00\x00", 8);
 
@@ -361,7 +361,7 @@ TEST(BinaryRepTest, FloatConverterTraitDoubleNan)
 }
 TEST(BinaryRepTest, FloatConverterTraitLongDoubleNan)
 {
-    BinForm128     value1  = thor_htobe128(FloatConverterTrait<long double>::notANumber());
+    BinForm128     value1  = host2Net(FloatConverterTrait<long double>::notANumber());
     std::string result  = readValue(value1);
     std::string expected("\x7F\xFF\x00\x00\x00\x00\x00\x00" "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
 
@@ -372,7 +372,7 @@ TEST(BinaryRepTest, FloatConverterTraitLongDoubleNan)
 }
 TEST(BinaryRepTest, convertIEEEFloatNan)
 {
-    BinForm32      value1  = htonl(convertIEEE(std::numeric_limits<float>::quiet_NaN()));
+    BinForm32      value1  = host2Net(convertIEEE(std::numeric_limits<float>::quiet_NaN()));
     std::string result  = readValue(value1);
     std::string expected("\x7F\x80\x00\x00", 4);
 
@@ -383,7 +383,7 @@ TEST(BinaryRepTest, convertIEEEFloatNan)
 }
 TEST(BinaryRepTest, convertIEEEDoubleNan)
 {
-    BinForm64      value1  = thor_htobe64(convertIEEE(std::numeric_limits<double>::quiet_NaN()));
+    BinForm64      value1  = host2Net(convertIEEE(std::numeric_limits<double>::quiet_NaN()));
     std::string result  = readValue(value1);
     std::string expected("\x7F\xF0\x00\x00\x00\x00\x00\x00", 8);
 
@@ -394,7 +394,7 @@ TEST(BinaryRepTest, convertIEEEDoubleNan)
 }
 TEST(BinaryRepTest, convertIEEELongDoubleNan)
 {
-    BinForm128     value1  = thor_htobe128(convertIEEE(std::numeric_limits<long double>::quiet_NaN()));
+    BinForm128     value1  = host2Net(convertIEEE(std::numeric_limits<long double>::quiet_NaN()));
     std::string result  = readValue(value1);
     std::string expected("\x7F\xFF\x00\x00\x00\x00\x00\x00" "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
 
@@ -405,7 +405,7 @@ TEST(BinaryRepTest, convertIEEELongDoubleNan)
 }
 TEST(BinaryRepTest, convertIEEEFloat42)
 {
-    BinForm32      value1  = htonl(convertIEEE(42.0F));
+    BinForm32      value1  = host2Net(convertIEEE(42.0F));
     std::string result  = readValue(value1);
     std::string expected("\x42\x28\x00\x00", 4);
     // http://en.wikipedia.org/wiki/Single-precision_floating-point_format#mediaviewer/File:Float_example.svg
@@ -427,7 +427,7 @@ TEST(BinaryRepTest, convertIEEEFloat42)
 }
 TEST(BinaryRepTest, convertIEEEDouble165p75)
 {
-    BinForm64      value1  = thor_htobe64(convertIEEE(165.75));
+    BinForm64      value1  = host2Net(convertIEEE(165.75));
     std::string result  = readValue(value1);
     std::string expected("\x40\x64\xB8\x00\x00\x00\x00\x00", 8);
     // http://en.wikipedia.org/wiki/Double-precision_floating-point_format#mediaviewer/File:IEEE_754_Double_Floating_Point_Format.svg
@@ -448,7 +448,7 @@ TEST(BinaryRepTest, convertIEEEDouble165p75)
 }
 TEST(BinaryRepTest, convertIEEELongDouble1Million234p875)
 {
-    BinForm128     value1  = thor_htobe128(convertIEEE(1000234.875L));
+    BinForm128     value1  = host2Net(convertIEEE(1000234.875L));
     std::string result  = readValue(value1);
     std::string expected("\x40\x12\xE8\x65\x5C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 16);
     // http://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format#mediaviewer/File:IEEE_754_Quadruple_Floating_Point_Format.svg

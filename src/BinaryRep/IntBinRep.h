@@ -8,7 +8,7 @@ namespace ThorsAnvil
     namespace BinaryRep
     {
 
-inline BinForm64 thor_htobe64(BinForm64 value)
+inline BinForm64 BESwap(BinForm64 value)
 {
 #if !WORDS_BIGENDIAN
     BinForm32*   pointerToValue  = reinterpret_cast<BinForm32*>(&value);
@@ -18,16 +18,21 @@ inline BinForm64 thor_htobe64(BinForm64 value)
 #endif
     return value;
 }
-inline BinForm128 thor_htobe128(BinForm128 value)
+inline BinForm128 BESwap(BinForm128 value)
 {
 #if !WORDS_BIGENDIAN
     BinForm64*   pointerToValue  = reinterpret_cast<BinForm64*>(&value);
-    pointerToValue[0]   = thor_htobe64(pointerToValue[0]);
-    pointerToValue[1]   = thor_htobe64(pointerToValue[1]);
+    pointerToValue[0]   = BESwap(pointerToValue[0]);
+    pointerToValue[1]   = BESwap(pointerToValue[1]);
     std::swap(pointerToValue[0], pointerToValue[1]);
 #endif
     return value;
 }
+
+inline BinForm16    host2Net(BinForm16  value)      {return htons(value);}
+inline BinForm32    host2Net(BinForm32  value)      {return htonl(value);}
+inline BinForm64    host2Net(BinForm64  value)      {return BESwap(value);}
+inline BinForm128   host2Net(BinForm128 value)      {return BESwap(value);}
 
     }
 }
