@@ -2,6 +2,7 @@
 #ifndef   THORS_ANVIL_BINARY_REP_INT_BIN_REP_H
 #define   THORS_ANVIL_BINARY_REP_INT_BIN_REP_H
 
+#include "BinaryFormat.h"
 
 namespace ThorsAnvil
 {

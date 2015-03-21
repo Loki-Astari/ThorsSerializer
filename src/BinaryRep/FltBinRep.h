@@ -4,6 +4,8 @@
 
 
 #include <cmath>
+#include "BinaryFormat.h"
+#include "IntBinRep.h"
 namespace ThorsAnvil
 {
     namespace BinaryRep
