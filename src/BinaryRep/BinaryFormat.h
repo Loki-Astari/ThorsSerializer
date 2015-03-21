@@ -50,6 +50,18 @@ struct BinForm128
         , hi(hiWord(value))
     {}
 #endif
+    friend bool operator==(BinForm128 const& lhs, BinForm128 const& rhs)
+    {
+        return lhs.lo == rhs.lo && lhs.hi == rhs.hi;
+    }
+    friend bool operator!=(BinForm128 const& lhs, BinForm128 const& rhs)
+    {
+        return !(lhs == rhs);
+    }
+    explicit operator int()
+    {
+        return lo;
+    }
     BinForm128  operator<<(std::size_t move)     {BinForm128 result(*this); return result <<= move;}
     BinForm128& operator<<=(std::size_t move)
     {
