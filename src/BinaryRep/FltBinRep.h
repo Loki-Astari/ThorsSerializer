@@ -187,7 +187,7 @@ template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm12
     }
     BinForm128  sigBits = net2Host(value);
     bool   negative     = (sigBits >> (128 - 1)) == 0 ? false : true;
-    int    exp          = static_cast<int>(sigBits >> (128 - 16) & 0x7FFF);
+    int    exp          = static_cast<unsigned long long int>(sigBits >> (128 - 16) & 0x7FFF);
     exp -= 16383;
     exp += 1;
 

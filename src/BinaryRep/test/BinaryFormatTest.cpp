@@ -11,7 +11,7 @@ void checkValue(T const& value, std::string const& expected);
 TEST(BinaryFormatTest, Construct128)
 {
     BinForm128  value   = 0xFF; // 16 byte
-    EXPECT_EQ(0xFF, static_cast<int>(value));
+    EXPECT_EQ(0xFF, static_cast<unsigned long long int>(value));
 }
 
 TEST(BinaryFormatTest, Equality128)
