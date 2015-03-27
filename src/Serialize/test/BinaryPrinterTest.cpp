@@ -31,8 +31,8 @@ TEST(BinaryPrinterTest, MapTokens)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(4, result.size());
-    EXPECT_EQ(0, result.compare(0, 4, "\0\0\0I", 4));
+    EXPECT_EQ(8, result.size());
+    EXPECT_EQ(0, result.compare(0, 8, "\0\0\0I\0\0\0\0", 8));
 }
 TEST(BinaryPrinterTest, intToken)
 {
@@ -85,8 +85,8 @@ TEST(BinaryPrinterTest, stringToken)
     printer.addKey(std::string("Live for a day"));
 
     std::string     result  = stream.str();
-    EXPECT_EQ(39,   result.size());
-    EXPECT_EQ(0,    result.compare(0, 39, "\x00\x00\x00\x11The long good bye\x00\x00\x00\x0ELive for a day", 39));
+    EXPECT_EQ(21,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 21, "\x00\x00\x00\x11The long good bye", 21));
 }
 TEST(BinaryPrinterTest, floatToken)
 {
@@ -122,8 +122,8 @@ TEST(BinaryPrinterTest, MapValues)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(55,   result.size());
-    EXPECT_EQ(0,    result.compare(0, 55, "\x00\x00\x00\x02K1\x01\x00\x00\x00\x02K2\x00\x00\x00\x00\x02K3\x00\x00\x00\x38\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x02K6\x00\x00\x00\x07\x41string", 55));
+    EXPECT_EQ(25,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 25, "\x01\x00\x00\x00\x00\x38\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x07\x41string", 25));
 }
 TEST(BinaryPrinterTest, MapWithMapValues)
 {
@@ -151,8 +151,8 @@ TEST(BinaryPrinterTest, MapWithMapValues)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(67,   result.size());
-    EXPECT_EQ(0,    result.compare(0, 67, "\x00\x00\x00\x02K1\x00\x00\x00\x02K1\x01\x00\x00\x00\x02K2\x00\x00\x00\x00\x02K3\x00\x00\x00\x38\x00\x00\x00\x02K4\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x02K6\x00\x00\x00\x07\x41string", 67));
+    EXPECT_EQ(25,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 25, "\x01\x00\x00\x00\x00\x38\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x07\x41string", 25));
 }
 TEST(BinaryPrinterTest, MapWithArrayValues)
 {
@@ -183,8 +183,8 @@ TEST(BinaryPrinterTest, MapWithArrayValues)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(99,   result.size());
-    EXPECT_EQ(0,    result.compare(0, 99, "\x00\x00\x00\x02K1"
+    EXPECT_EQ(83,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 83,   "\x00\x00\x00\x08"
                                             "\x01"
                                             "\x00"
                                             "\x00\x37"
@@ -193,9 +193,9 @@ TEST(BinaryPrinterTest, MapWithArrayValues)
                                             "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x3a"
                                             "\x42\x70\x00\x00"
                                             "\x40\x04\xe8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
-                                          "\x00\x00\x00\x02K3\x00\x00\x00\x38"
-                                          "\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00"
-                                          "\x00\x00\x00\x02K6\x00\x00\x00\x07\x41string", 99));
+                                          "\x00\x00\x00\x38"
+                                          "\x00\x00\x00\x01\x40\x41\xE0\x00\x00\x00\x00\x00"
+                                          "\x00\x00\x00\x07\x41string", 83));
 }
 TEST(BinaryPrinterTest, ArrayWithMapValues)
 {
@@ -219,12 +219,13 @@ TEST(BinaryPrinterTest, ArrayWithMapValues)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(43,   result.size());
-    EXPECT_EQ(0,    result.compare(0, 43, "\x00\x00\x00\x02K1\x01"
-                                          "\x00\x00\x00\x02K2\x00"
+    EXPECT_EQ(29,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 29, "\x00\x00\x00\x04"
+                                          "\x01"
+                                          "\x00"
                                           "\x00\x00\x00\x38"
-                                          "\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00"
-                                          "\x00\x00\x00\x07\x41string", 43));
+                                          "\x40\x41\xE0\x00\x00\x00\x00\x00"
+                                          "\x00\x00\x00\x07\x41string", 29));
 }
 TEST(BinaryPrinterTest, ArrayWithArrayValues)
 {
@@ -245,8 +246,8 @@ TEST(BinaryPrinterTest, ArrayWithArrayValues)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(25,   result.size());
-    EXPECT_EQ(0,    result.compare(0, 25, "\x01\x00\x00\x00\x00\x38\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x07\x41string", 25));
+    EXPECT_EQ(37,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 37, "\x00\x00\x00\x04\x00\x00\x00\x02\x01\x00\x00\x00\x00\x38\x00\x00\x00\x01\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x07\x41string", 37));
 }
 TEST(BinaryPrinterTest, CheckStreeamIsCompressed)
 {
@@ -270,7 +271,7 @@ TEST(BinaryPrinterTest, CheckStreeamIsCompressed)
     printer.closeDoc();
 
     std::string     result  = stream.str();
-    EXPECT_EQ(43,   result.size());
-    EXPECT_EQ(0,    result.compare(0, 43, "\x00\x00\x00\x02K1\x01\x00\x00\x00\x02K2\x00\x00\x00\x00\x38\x00\x00\x00\x02K4\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x07\x41string", 43));
+    EXPECT_EQ(29,   result.size());
+    EXPECT_EQ(0,    result.compare(0, 29, "\x00\x00\x00\x04\x01\x00\x00\x00\x00\x38\x40\x41\xE0\x00\x00\x00\x00\x00\x00\x00\x00\x07\x41string", 29));
 }
 #endif

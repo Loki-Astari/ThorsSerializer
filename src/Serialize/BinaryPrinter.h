@@ -41,7 +41,7 @@ class BinaryPrinter: public PrinterInterface
         virtual void openArray(std::size_t size)            override    {write(TBin::host2Net(static_cast<TBin::BinForm32>(size)));}
         virtual void closeArray()                           override    {}
 
-        virtual void addKey(std::string const& key)         override    {writeString(key);}
+        virtual void addKey(std::string const& key)         override    {}
 
         virtual void addValue(short int value)              override    {write(TBin::host2Net(static_cast<TBin::BinForm16>(value)));}
         virtual void addValue(int value)                    override    {write(TBin::host2Net(static_cast<TBin::BinForm32>(value)));}
