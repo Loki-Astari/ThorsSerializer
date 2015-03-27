@@ -34,12 +34,12 @@ class BinaryPrinter: public PrinterInterface
             : PrinterInterface(output, characteristics)
         {}
         virtual void openDoc()                              override    {write(TBin::host2Net(static_cast<TBin::BinForm32>(thash<T>())));}
-        virtual void closeDoc()                             override {}
+        virtual void closeDoc()                             override    {}
 
-        virtual void openMap()                              override {}
-        virtual void closeMap()                             override {}
-        virtual void openArray()                            override {}
-        virtual void closeArray()                           override {}
+        virtual void openMap()                              override    {}
+        virtual void closeMap()                             override    {}
+        virtual void openArray(std::size_t size)            override    {write(TBin::host2Net(static_cast<TBin::BinForm32>(size)));}
+        virtual void closeArray()                           override    {}
 
         virtual void addKey(std::string const& key)         override    {writeString(key);}
 

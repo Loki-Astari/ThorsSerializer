@@ -133,7 +133,7 @@ void JsonPrinter::closeMap()
     state.pop_back();
     output << PrefixMapClose(characteristics, state.size(), state.back()) << "}";
 }
-void JsonPrinter::openArray()
+void JsonPrinter::openArray(std::size_t)
 {
     output << PrefixArray(characteristics, state.size(), state.back()) << "[";
     state.emplace_back(0, TraitType::Array);

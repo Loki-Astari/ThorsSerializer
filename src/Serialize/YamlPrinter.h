@@ -27,12 +27,12 @@ class YamlPrinter: public PrinterInterface
     public:
         YamlPrinter(std::ostream& output, OutputType characteristics = OutputType::Default);
         ~YamlPrinter();
-        virtual void openDoc()      override;
-        virtual void closeDoc()     override;
-        virtual void openMap()      override;
-        virtual void closeMap()     override;
-        virtual void openArray()    override;
-        virtual void closeArray()   override;
+        virtual void openDoc()                              override;
+        virtual void closeDoc()                             override;
+        virtual void openMap()                              override;
+        virtual void closeMap()                             override;
+        virtual void openArray(std::size_t size)            override;
+        virtual void closeArray()                           override;
 
         virtual void addKey(std::string const& key)         override;
 

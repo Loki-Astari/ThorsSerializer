@@ -26,7 +26,7 @@ TEST(BinaryPrinterTest, MapTokens)
     ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
     printer.openDoc();
-    printer.openArray();
+    printer.openArray(0);
     printer.closeArray();
     printer.closeDoc();
 
@@ -161,7 +161,7 @@ TEST(BinaryPrinterTest, MapWithArrayValues)
 
     printer.openMap();
     printer.addKey("K1");
-    printer.openArray();
+    printer.openArray(8);
     printer.addValue(true);
     printer.addValue(false);
     printer.addValue(static_cast<unsigned short>(55));
@@ -174,7 +174,7 @@ TEST(BinaryPrinterTest, MapWithArrayValues)
     printer.addKey("K3");
     printer.addValue(56);
     printer.addKey("K4");
-    printer.openArray();
+    printer.openArray(1);
     printer.addValue(35.75);
     printer.closeArray();
     printer.addKey("K6");
@@ -202,7 +202,7 @@ TEST(BinaryPrinterTest, ArrayWithMapValues)
     std::stringstream                     stream;
     ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
-    printer.openArray();
+    printer.openArray(4);
     printer.openMap();
     printer.addKey("K1");
     printer.addValue(true);
@@ -231,13 +231,13 @@ TEST(BinaryPrinterTest, ArrayWithArrayValues)
     std::stringstream                     stream;
     ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream);
 
-    printer.openArray();
-    printer.openArray();
+    printer.openArray(4);
+    printer.openArray(2);
     printer.addValue(true);
     printer.addValue(false);
     printer.closeArray();
     printer.addValue(56);
-    printer.openArray();
+    printer.openArray(1);
     printer.addValue(35.75);
     printer.closeArray();
     printer.addValue(std::string("Astring"));
@@ -253,7 +253,7 @@ TEST(BinaryPrinterTest, CheckStreeamIsCompressed)
     std::stringstream                     stream;
     ThorsAnvil::Serialize::BinaryPrinter<int>  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
-    printer.openArray();
+    printer.openArray(4);
     printer.openMap();
     printer.addKey("K1");
     printer.addValue(true);
