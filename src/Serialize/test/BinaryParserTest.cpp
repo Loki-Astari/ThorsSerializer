@@ -1,16 +1,67 @@
+#include "../../config.h"
 #ifdef NETWORK_BYTE_ORDER
 
 #include "gtest/gtest.h"
 #include "BinaryParser.h"
+#include "SerUtil.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 
-#if 0
+class MapEmptyTest {};
+class MapOneValue
+{
+    public:
+        int     One;
+};
+class MapTwoValue
+{
+    public:
+        int one;
+        int two;
+};
+class MapThreeValue
+{
+    public:
+        int one;
+        int two;
+        int three;
+};
+class MapWithArray
+{
+    public:
+        std::vector<int>    one;
+};
+class MapWithTwoArray
+{
+    public:
+        std::vector<int>        one;
+        std::vector<int>        two;
+};
+class MapWithMap
+{
+    public:
+        MapEmptyTest    one;
+};
+class MapWithTwoMap
+{
+    public:
+        MapEmptyTest        one;
+        MapEmptyTest        two;
+};
+ThorsAnvil_MakeTrait(MapEmptyTest);
+ThorsAnvil_MakeTrait(MapOneValue, One);
+ThorsAnvil_MakeTrait(MapTwoValue, one, two);
+ThorsAnvil_MakeTrait(MapThreeValue, one, two, three);
+ThorsAnvil_MakeTrait(MapWithArray, one);
+ThorsAnvil_MakeTrait(MapWithTwoArray, one, two);
+ThorsAnvil_MakeTrait(MapWithMap, one);
+ThorsAnvil_MakeTrait(MapWithTwoMap, one, two);
+
 TEST(BinaryParserTest, ArrayEmpty)
 {
-    std::stringstream   stream("[]");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x00", 4)); // []
+    TA::BinaryParser<std::vector<int>>    parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -19,8 +70,8 @@ TEST(BinaryParserTest, ArrayEmpty)
 }
 TEST(BinaryParserTest, ArrayOneValue)
 {
-    std::stringstream   stream("[12]");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x01\x00\x00\x00\x0c", 8)); // [12]
+    TA::BinaryParser<std::vector<int>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -30,8 +81,8 @@ TEST(BinaryParserTest, ArrayOneValue)
 }
 TEST(BinaryParserTest, ArrayTwoValue)
 {
-    std::stringstream   stream("[12,13]");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x02\x00\x00\x00\x0c\x00\x00\x00\x0d",12)); // [12,13]
+    TA::BinaryParser<std::vector<int>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -42,8 +93,8 @@ TEST(BinaryParserTest, ArrayTwoValue)
 }
 TEST(BinaryParserTest, ArrayThreeValue)
 {
-    std::stringstream   stream("[12,13,14]");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x03\x00\x00\x00\x0c\x00\x00\x00\x0d\x00\x00\x00\x0e", 16));    // [12,13,14]
+    TA::BinaryParser<std::vector<int>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -55,8 +106,8 @@ TEST(BinaryParserTest, ArrayThreeValue)
 }
 TEST(BinaryParserTest, ArrayWithArray)
 {
-    std::stringstream   stream("[[]]");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x01\x00\x00\x00\x00", 8)); // [[]]
+    TA::BinaryParser<std::vector<std::vector<int>>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -67,8 +118,8 @@ TEST(BinaryParserTest, ArrayWithArray)
 }
 TEST(BinaryParserTest, ArrayWithTwoArray)
 {
-    std::stringstream   stream("[[],[]]");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00", 12)); // [[],[]]
+    TA::BinaryParser<std::vector<std::vector<int>>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -81,8 +132,8 @@ TEST(BinaryParserTest, ArrayWithTwoArray)
 }
 TEST(BinaryParserTest, ArrayWithMap)
 {
-    std::stringstream   stream("[{}]");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x01", 4)); // [{}]
+    TA::BinaryParser<std::vector<MapEmptyTest>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -93,8 +144,8 @@ TEST(BinaryParserTest, ArrayWithMap)
 }
 TEST(BinaryParserTest, ArrayWithTwoMap)
 {
-    std::stringstream   stream("[{},{}]");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x02", 4)); // [{},{}]
+    TA::BinaryParser<std::vector<MapEmptyTest>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -107,8 +158,8 @@ TEST(BinaryParserTest, ArrayWithTwoMap)
 }
 TEST(BinaryParserTest, MapEmpty)
 {
-    std::stringstream   stream("{}");
-    TA::JsonParser      parser(stream);
+    std::stringstream               stream("");
+    TA::BinaryParser<MapEmptyTest>  parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -117,8 +168,8 @@ TEST(BinaryParserTest, MapEmpty)
 }
 TEST(BinaryParserTest, MapOneValue)
 {
-    std::stringstream   stream(R"({"One": 12})");
-    TA::JsonParser      parser(stream);
+    std::stringstream               stream(std::string("\x00\x00\x00\x0c", 4));
+    TA::BinaryParser<MapOneValue>   parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -129,8 +180,8 @@ TEST(BinaryParserTest, MapOneValue)
 }
 TEST(BinaryParserTest, MapTwoValue)
 {
-    std::stringstream   stream(R"({"one": 12, "two": 13})");
-    TA::JsonParser      parser(stream);
+    std::stringstream               stream(std::string("\x00\x00\x00\x0c\x00\x00\x00\x0d",8));
+    TA::BinaryParser<MapTwoValue>   parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -143,8 +194,8 @@ TEST(BinaryParserTest, MapTwoValue)
 }
 TEST(BinaryParserTest, MapThreeValue)
 {
-    std::stringstream   stream(R"({"one":12, "two": 13, "three": 14})");
-    TA::JsonParser      parser(stream);
+    std::stringstream               stream(std::string("\x00\x00\x00\x0c\x00\x00\x00\x0d\x00\x00\x00\x0e", 12));
+    TA::BinaryParser<MapThreeValue> parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -159,8 +210,8 @@ TEST(BinaryParserTest, MapThreeValue)
 }
 TEST(BinaryParserTest, MapWithArray)
 {
-    std::stringstream   stream(R"({"one": []})");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x00", 4)); // {"one": []}
+    TA::BinaryParser<MapWithArray>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -172,8 +223,8 @@ TEST(BinaryParserTest, MapWithArray)
 }
 TEST(BinaryParserTest, MapWithTwoArray)
 {
-    std::stringstream   stream(R"({"one": [], "two": []}])");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x00\x00\x00\x00\x00", 8)); // {"one": [], "two": []}
+    TA::BinaryParser<MapWithTwoArray>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -188,8 +239,8 @@ TEST(BinaryParserTest, MapWithTwoArray)
 }
 TEST(BinaryParserTest, MapWithMap)
 {
-    std::stringstream   stream(R"({"one": {}})");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(""); // R"({"one": {}})"
+    TA::BinaryParser<MapWithMap>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -201,8 +252,8 @@ TEST(BinaryParserTest, MapWithMap)
 }
 TEST(BinaryParserTest, MapWithTwoMap)
 {
-    std::stringstream   stream(R"({"one": {}, "two": {}})");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(""); // {"one": {}, "two": {}}
+    TA::BinaryParser<MapWithTwoMap>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -217,15 +268,15 @@ TEST(BinaryParserTest, MapWithTwoMap)
 }
 TEST(BinaryParserTest, GetKeyValue)
 {
-    std::stringstream   stream(R"({"one": 15})");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x0F",4)); // {"One": 15}
+    TA::BinaryParser<MapOneValue>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
 
     std::string key     = parser.getKey();
-    EXPECT_EQ("one", key);
+    EXPECT_EQ("One", key);
 
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
@@ -236,10 +287,10 @@ TEST(BinaryParserTest, GetKeyValue)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(BinaryParserTest, GetArrayValues)
+TEST(BinaryParserTest, GetArrayBoolValues)
 {
-    std::stringstream   stream(R"([true, false, 123, 123.4, "A String"])");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x02\x01\x00", 6)); // [true, false]
+    TA::BinaryParser<std::vector<bool>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -255,6 +306,16 @@ TEST(BinaryParserTest, GetArrayValues)
     parser.getValue(test2);
     EXPECT_EQ(false, test2);
 
+    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
+}
+TEST(BinaryParserTest, GetArrayIntValues)
+{
+    std::stringstream   stream(std::string("\x00\x00\x00\x03\x00\x00\x00\x7b\x00\x00\x01\x7b\x00\x00\x99\x7b", 16)); // [123, 379, 39291]
+    TA::BinaryParser<std::vector<int>>      parser(stream);
+
+    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
     int    test3   = 0;
@@ -263,323 +324,88 @@ TEST(BinaryParserTest, GetArrayValues)
 
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    double test4   = 80;
-    parser.getValue(test4);
-    EXPECT_EQ(1234, (int)(test4*10));
-
+    parser.getValue(test3);
+    EXPECT_EQ(379, test3);
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    std::string    test5;
-    parser.getValue(test5);
-    EXPECT_EQ("A String", test5);
+    parser.getValue(test3);
+    EXPECT_EQ(39291, test3);
+
+    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
+}
+TEST(BinaryParserTest, GetArrayFloatValues)
+{
+    std::stringstream   stream(std::string("\x00\x00\x00\x03"
+                                            "\x40\x5e\xe0\x00\x00\x00\x00\x00"      // 123.5
+                                            "\x40\x8a\xdd\x00\x00\x00\x00\x00"      // 859.625
+                                            "\x40\x6d\x5c\x00\x00\x00\x00\x00"      // 234.875
+                                            , 28)); // [123.5, 859.625, 234.875]
+    TA::BinaryParser<std::vector<double>>      parser(stream);
+
+    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
+
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    double test4   = 80;
+    parser.getValue(test4);
+    EXPECT_EQ(1235, (int)(test4*10));
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    parser.getValue(test4);
+    EXPECT_EQ(859625, (int)(test4*1000));
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    parser.getValue(test4);
+    EXPECT_EQ(234875, (int)(test4*1000));
 
 
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(BinaryParserTest, CheckErrorDoesNotRead)
+TEST(BinaryParserTest, GetArrayStringValues)
 {
-    std::stringstream   stream("][");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string( "\x00\x00\x00\x03"
+                                            "\x00\x00\x00\x08" "A String"
+                                            "\x00\x00\x00\x05" "Blurb"
+                                            "\x00\x00\x00\x0e" "Risk The world",
+                                            4 + (4 + 8) + (4 + 5) + (4 + 14))); // ["A String", "Blurb", "Risk The world"]
+    TA::BinaryParser<std::vector<std::string>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
 
-    // First Character is an error.
-    EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
+    std::string    test5;
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    parser.getValue(test5);
+    EXPECT_EQ("A String", test5);
 
-    // Subsequent read should also be an error.
-    // But it should not read from the stream
-    EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    parser.getValue(test5);
+    EXPECT_EQ("Blurb", test5);
 
-    char  next;
-    stream >> next;
-    EXPECT_EQ('[', next);
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    parser.getValue(test5);
+    EXPECT_EQ("Risk The world", test5);
+
+    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-
 TEST(BinaryParserTest, getDataFromString)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
+    std::stringstream   stream(std::string("\x00\x00\x00\x01\x00\x00\x00\x04" "Test", 12)); // ["Test"]
+    TA::BinaryParser<std::vector<std::string>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
     std::string     value1;
-    ASSERT_NO_THROW(
-        parser.getValue(value1);
-    );
+    parser.getValue(value1);
     EXPECT_EQ("Test", value1);
 
-    short             value2a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2a)
-    );
-    int             value2b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2b)
-    );
-    long             value2c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2c)
-    );
-    long long             value2d;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2d)
-    );
-
-
-    unsigned short             value2e;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2e)
-    );
-    unsigned int             value2f;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2f)
-    );
-    unsigned long             value2g;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2g)
-    );
-    unsigned long long             value2h;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2h)
-    );
-
-    float          value3a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3a)
-    );
-    double          value3b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3b)
-    );
-    long double          value3c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3c)
-    );
-
     bool            value4;
     ASSERT_ANY_THROW(
         parser.getValue(value4)
     );
 }
-TEST(BinaryParserTest, getDataFromInt)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    ASSERT_ANY_THROW(
-        parser.getValue(value1)
-    );
-
-    short             value2a;
-    ASSERT_NO_THROW(
-        parser.getValue(value2a)
-    );
-    EXPECT_EQ(56, value2a);
-    int             value2b;
-    ASSERT_NO_THROW(
-        parser.getValue(value2b)
-    );
-    EXPECT_EQ(56, value2b);
-    long             value2c;
-    ASSERT_NO_THROW(
-        parser.getValue(value2c)
-    );
-    EXPECT_EQ(56, value2c);
-    long long             value2d;
-    ASSERT_NO_THROW(
-        parser.getValue(value2d)
-    );
-    EXPECT_EQ(56, value2d);
-    short             value2e;
-    ASSERT_NO_THROW(
-        parser.getValue(value2e)
-    );
-    EXPECT_EQ(56, value2e);
-    int             value2f;
-    ASSERT_NO_THROW(
-        parser.getValue(value2f)
-    );
-    EXPECT_EQ(56, value2f);
-    long             value2g;
-    ASSERT_NO_THROW(
-        parser.getValue(value2g)
-    );
-    EXPECT_EQ(56, value2g);
-    long long             value2h;
-    ASSERT_NO_THROW(
-        parser.getValue(value2h)
-    );
-    EXPECT_EQ(56, value2h);
-
-    float          value3a;
-    ASSERT_NO_THROW(
-        parser.getValue(value3a)
-    );
-    EXPECT_EQ(56, value3a);
-    double          value3b;
-    ASSERT_NO_THROW(
-        parser.getValue(value3b)
-    );
-    EXPECT_EQ(56, value3b);
-    long double          value3c;
-    ASSERT_NO_THROW(
-        parser.getValue(value3c)
-    );
-    EXPECT_EQ(56, value3c);
-
-    bool            value4;
-    ASSERT_ANY_THROW(
-        parser.getValue(value4)
-    );
-}
-TEST(BinaryParserTest, getDataFromFloat)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    ASSERT_ANY_THROW(
-        parser.getValue(value1)
-    );
-
-    short             value2a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2a)
-    );
-    int             value2b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2b)
-    );
-    long             value2c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2c)
-    );
-    long long             value2d;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2d)
-    );
-    unsigned short             value2e;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2e)
-    );
-    unsigned int             value2f;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2f)
-    );
-    unsigned long             value2g;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2g)
-    );
-    unsigned long long             value2h;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2h)
-    );
-
-    float          value3a;
-    ASSERT_NO_THROW(
-        parser.getValue(value3a)
-    );
-    EXPECT_EQ(12356, static_cast<int>(value3a*100));
-    double          value3b;
-    ASSERT_NO_THROW(
-        parser.getValue(value3b)
-    );
-    EXPECT_EQ(12356, static_cast<int>(value3b*100));
-    long double          value3c;
-    ASSERT_NO_THROW(
-        parser.getValue(value3c)
-    );
-    EXPECT_EQ(12356, static_cast<int>(value3c*100));
-
-    bool            value4;
-    ASSERT_ANY_THROW(
-        parser.getValue(value4)
-    );
-}
-TEST(BinaryParserTest, getDataFromBool)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    ASSERT_ANY_THROW(
-        parser.getValue(value1)
-    );
-
-    short             value2a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2a)
-    );
-    int             value2b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2b)
-    );
-    long             value2c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2c)
-    );
-    long long             value2d;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2d)
-    );
-    unsigned short             value2e;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2e)
-    );
-    unsigned int             value2f;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2f)
-    );
-    unsigned long             value2g;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2g)
-    );
-    unsigned long long             value2h;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2h)
-    );
-
-    float          value3a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3a)
-    );
-    double          value3b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3b)
-    );
-    long double          value3c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3c)
-    );
-
-    bool            value4 = false;
-    ASSERT_NO_THROW(
-        parser.getValue(value4)
-    );
-    EXPECT_EQ(true, value4);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    ASSERT_NO_THROW(
-        parser.getValue(value4)
-    );
-    EXPECT_EQ(false, value4);
-}
-#endif
 #endif
 
