@@ -9,6 +9,7 @@
 #include "THash.h"
 #include "ThorBinaryRep/BinaryRep.h"
 #include <iostream>
+#include <vector>
 
 namespace TBin  = ThorsAnvil::BinaryRep;
 namespace ThorsAnvil
@@ -170,8 +171,8 @@ class BinaryParserUtil<T, TraitType::Array>: public BinaryParserUtilBase
                                     ParserInterface::ParserToken::Value)
         {}
         std::size_t readSize(ParserInterface&)      override;
-        std::string getKeyFor(std::size_t position) override {throw std::runtime_error("Should Never Get Here");}
-        ParserToken pushNextState(std::size_t position, ParserInterface& parser, std::vector<std::unique_ptr<BinaryParserUtilBase>>& state, ParserToken norm) override
+        std::string getKeyFor(std::size_t) override {throw std::runtime_error("Should Never Get Here");}
+        ParserToken pushNextState(std::size_t, ParserInterface& parser, std::vector<std::unique_ptr<BinaryParserUtilBase>>& state, ParserToken norm) override
         {
             typedef typename T::value_type       ChildType;
             if (    ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Map 
@@ -195,8 +196,8 @@ class BinaryParserUtil<T, TraitType::Value>: public BinaryParserUtilBase
                                     ParserInterface::ParserToken::Error)
         {}
         std::size_t readSize(ParserInterface&)      override    {return 0;}
-        std::string getKeyFor(std::size_t position) override    {return "";}
-        ParserToken pushNextState(std::size_t position, ParserInterface& parser, std::vector<std::unique_ptr<BinaryParserUtilBase>>& state, ParserToken norm) override
+        std::string getKeyFor(std::size_t)          override    {return "";}
+        ParserToken pushNextState(std::size_t, ParserInterface&, std::vector<std::unique_ptr<BinaryParserUtilBase>>&, ParserToken norm) override
         {   return norm;
         }
 };
