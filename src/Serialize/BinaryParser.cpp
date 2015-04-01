@@ -17,7 +17,7 @@ BinaryParserUtilBase::BinaryParserUtilBase(bool root, ParserToken first, ParserT
     , finished(false)
 {}
 
-BinaryParserUtilBase::ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, std::vector<std::unique_ptr<BinaryParserUtilBase>>& state)
+ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserState& state)
 {
     if (!started)
     {
@@ -66,6 +66,16 @@ BinaryParserUtilBase::ParserToken BinaryParserUtilBase::getNextToken(ParserInter
 
 #include "BinaryParser.tpp"
 #include "test/BinaryParserTest.h"
+
+template ThorsAnvil::Serialize::BinaryParserUtil<MapWithMap, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<MapOneValue, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<MapTwoValue, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<MapEmptyTest, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<MapWithArray, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<MapThreeValue, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<MapWithTwoMap, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<MapWithTwoArray, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+
 
 #endif
 

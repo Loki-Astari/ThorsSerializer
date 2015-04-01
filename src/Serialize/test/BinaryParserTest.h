@@ -2,6 +2,8 @@
 #ifndef THORS_ANVIL_SERIALIZE_TEST_BINARY_PARSER_TEST_H
 #define THORS_ANVIL_SERIALIZE_TEST_BINARY_PARSER_TEST_H
 
+#include "../SerUtil.h"
+
 class MapEmptyTest {};
 class MapOneValue
 {

@@ -20,12 +20,13 @@ namespace ThorsAnvil
 
 template<typename T>
 class BinaryParser;
+class BinaryParserUtilBase;
+
+typedef ParserInterface::ParserToken                        ParserToken;
+typedef std::vector<std::unique_ptr<BinaryParserUtilBase>>  ParserState;
 
 class BinaryParserUtilBase
 {
-    public:
-    typedef ParserInterface::ParserToken    ParserToken;
-
     private:
     ParserToken         nextToken;
     ParserToken         objClose;
@@ -39,12 +40,12 @@ class BinaryParserUtilBase
     public:
         virtual ~BinaryParserUtilBase();
         BinaryParserUtilBase(bool root, ParserToken first, ParserToken last, ParserToken nextValue);
-        virtual ParserToken getNextToken(ParserInterface& parser, std::vector<std::unique_ptr<BinaryParserUtilBase>>& state);
+        virtual ParserToken getNextToken(ParserInterface& parser, ParserState& state);
 
                 std::string getKey()                            {return getKeyFor(position);}
         virtual std::size_t readSize(ParserInterface&)          = 0;
         virtual std::string getKeyFor(std::size_t position)     = 0;
-        virtual ParserToken pushNextState(std::size_t position, ParserInterface& parser, std::vector<std::unique_ptr<BinaryParserUtilBase>>& state, ParserToken norm)    = 0;
+        virtual ParserToken pushNextState(std::size_t position, ParserInterface& parser, ParserState& state, ParserToken norm)    = 0;
 };
 
 // Default: Functions specific to Map
@@ -52,58 +53,20 @@ template<typename T, TraitType traitSpec = ThorsAnvil::Serialize::Traits<typenam
 class BinaryParserUtil: public BinaryParserUtilBase
 {
     using Traits   = ThorsAnvil::Serialize::Traits<typename std::remove_reference<T>::type>;
-    std::vector<std::string>                            keys;
-    std::vector<std::unique_ptr<BinaryParserUtilBase>>  utils;
+    std::vector<std::string>    keys;
+    ParserState                 utils;
 
-        template<typename P>
-        void addMember(std::pair<char const*, P> const& token)
-        {
-            keys.emplace_back(token.first);
-            typedef decltype(((T*)nullptr)->*(token.second))            DestTypeBase;
-            typedef typename std::remove_reference<DestTypeBase>::type  DestType;
+                             void addMember(void*) {}
+        template<typename P> void addMember(std::pair<char const*, P> const& token);
 
-            if (    ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Map 
-                ||  ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Array
-                ||  ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Parent)
-            {
-                utils.emplace_back(new BinaryParserUtil<DestType>(false));
-            }
-            else
-            {
-                utils.emplace_back(nullptr);
-            }
-        }
-        void addMember(void*) {}
-        template<typename Tuple, std::size_t... Seq>
-        void fillMembers(Tuple const& members, std::index_sequence<Seq...> const&)
-        {
-            std::make_tuple((addMember(std::get<Seq>(members)),1)...);
-        }
-        template<typename... M>
-        void fill(std::tuple<M...> const& members)
-        {
-            fillMembers(members, std::make_index_sequence<sizeof...(M)>());
-        }
+        template<typename Tuple, std::size_t... Seq> void fillMembers(Tuple const& members, std::index_sequence<Seq...> const&);
+        template<typename... M>                      void fill(std::tuple<M...> const& members);
     public:
-        BinaryParserUtil(bool root = true)
-            : BinaryParserUtilBase( root,
-                                    ParserInterface::ParserToken::MapStart,
-                                    ParserInterface::ParserToken::MapEnd,
-                                    ParserInterface::ParserToken::Key)
-        {
-            fill(Traits::getMembers());
-        }
+        BinaryParserUtil(bool root = true);
+
         std::size_t readSize(ParserInterface&)      override {return keys.size();}
         std::string getKeyFor(std::size_t position) override {return keys[position];}
-        ParserToken pushNextState(std::size_t position, ParserInterface& parser, std::vector<std::unique_ptr<BinaryParserUtilBase>>& state, ParserToken norm) override
-        {
-            if (utils[position].get())
-            {
-                state.push_back(std::move(utils[position]));
-                return state.back()->getNextToken(parser, state);
-            }
-            return norm;
-        }
+        ParserToken pushNextState(std::size_t position, ParserInterface& parser, ParserState& state, ParserToken norm) override;
 };
 
 // Functions specific to Array
@@ -114,13 +77,13 @@ class BinaryParserUtil<T, TraitType::Array>: public BinaryParserUtilBase
     public:
         BinaryParserUtil(bool root = true)
             : BinaryParserUtilBase( root,
-                                    ParserInterface::ParserToken::ArrayStart,
-                                    ParserInterface::ParserToken::ArrayEnd,
-                                    ParserInterface::ParserToken::Value)
+                                    ParserToken::ArrayStart,
+                                    ParserToken::ArrayEnd,
+                                    ParserToken::Value)
         {}
         std::size_t readSize(ParserInterface&)      override;
         std::string getKeyFor(std::size_t) override {throw std::runtime_error("Should Never Get Here");}
-        ParserToken pushNextState(std::size_t, ParserInterface& parser, std::vector<std::unique_ptr<BinaryParserUtilBase>>& state, ParserToken norm) override
+        ParserToken pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm) override
         {
             typedef typename T::value_type       ChildType;
             if (    ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Map 
@@ -139,13 +102,13 @@ class BinaryParserUtil<T, TraitType::Value>: public BinaryParserUtilBase
     public:
         BinaryParserUtil(bool root = true)
             : BinaryParserUtilBase( root,
-                                    ParserInterface::ParserToken::Error,
-                                    ParserInterface::ParserToken::Error,
-                                    ParserInterface::ParserToken::Error)
+                                    ParserToken::Error,
+                                    ParserToken::Error,
+                                    ParserToken::Error)
         {}
         std::size_t readSize(ParserInterface&)      override    {return 0;}
         std::string getKeyFor(std::size_t)          override    {return "";}
-        ParserToken pushNextState(std::size_t, ParserInterface&, std::vector<std::unique_ptr<BinaryParserUtilBase>>&, ParserToken norm) override
+        ParserToken pushNextState(std::size_t, ParserInterface&, ParserState&, ParserToken norm) override
         {   return norm;
         }
 };
@@ -155,7 +118,7 @@ class BinaryParser: public ParserInterface
 {
     using Traits   = ThorsAnvil::Serialize::Traits<T>;
 
-    std::vector<std::unique_ptr<BinaryParserUtilBase>>  state;
+    ParserState  state;
 
     template<typename Obj>
     Obj read()
@@ -211,13 +174,6 @@ class BinaryParser: public ParserInterface
 
         virtual void    getValue(std::string& value)           override {value = readString();};
 };
-template<typename T>
-std::size_t BinaryParserUtil<T, TraitType::Array>::readSize(ParserInterface& parent)
-{
-    unsigned int    result;
-    parent.getValue(result);
-    return result;
-}
 
     }
 }

@@ -3,7 +3,6 @@
 
 #include "gtest/gtest.h"
 #include "BinaryParser.h"
-#include "SerUtil.h"
 #include "test/BinaryParserTest.h"
 
 namespace TA=ThorsAnvil::Serialize;

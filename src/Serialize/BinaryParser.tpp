@@ -10,8 +10,72 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+template<typename T, TraitType traitSpec>
+BinaryParserUtil<T, traitSpec>::BinaryParserUtil(bool root)
+    : BinaryParserUtilBase( root,
+                            ParserToken::MapStart,
+                            ParserToken::MapEnd,
+                            ParserToken::Key)
+{
+    fill(Traits::getMembers());
+}
 
+template<typename T, TraitType traitSpec>
+template<typename P>
+void BinaryParserUtil<T, traitSpec>::addMember(std::pair<char const*, P> const& token)
+{
+    keys.emplace_back(token.first);
+    typedef decltype(((T*)nullptr)->*(token.second))            DestTypeBase;
+    typedef typename std::remove_reference<DestTypeBase>::type  DestType;
 
+    if (    ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Map 
+        ||  ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Array
+        ||  ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Parent)
+    {
+        utils.emplace_back(new BinaryParserUtil<DestType>(false));
+    }
+    else
+    {
+        utils.emplace_back(nullptr);
+    }
+}
+
+template<typename T, TraitType traitSpec>
+template<typename Tuple, std::size_t... Seq>
+void BinaryParserUtil<T, traitSpec>::fillMembers(Tuple const& members, std::index_sequence<Seq...> const&)
+{
+    std::make_tuple((addMember(std::get<Seq>(members)),1)...);
+}
+
+template<typename T, TraitType traitSpec>
+template<typename... M>
+void BinaryParserUtil<T, traitSpec>::fill(std::tuple<M...> const& members)
+{
+    fillMembers(members, std::make_index_sequence<sizeof...(M)>());
+}
+
+template<typename T>
+std::size_t BinaryParserUtil<T, TraitType::Array>::readSize(ParserInterface& parent)
+{
+    unsigned int    result;
+    parent.getValue(result);
+    return result;
+}
+
+template<typename T, TraitType traitSpec>
+ParserToken BinaryParserUtil<T, traitSpec>
+    ::pushNextState(    std::size_t         position,
+                        ParserInterface&    parser,
+                        ParserState&        state,
+                        ParserToken         norm)
+{
+    if (utils[position].get())
+    {
+        state.push_back(std::move(utils[position]));
+        return state.back()->getNextToken(parser, state);
+    }
+    return norm;
+}
     }
 }
 
