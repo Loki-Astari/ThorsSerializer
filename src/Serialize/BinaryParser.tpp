@@ -76,6 +76,30 @@ ParserToken BinaryParserUtil<T, traitSpec>
     }
     return norm;
 }
+
+template<typename T>
+BinaryParserUtil<T, TraitType::Array>::BinaryParserUtil(bool root)
+    : BinaryParserUtilBase( root,
+                            ParserToken::ArrayStart,
+                            ParserToken::ArrayEnd,
+                            ParserToken::Value)
+{}
+
+template<typename T>
+ParserToken BinaryParserUtil<T, TraitType::Array>
+    ::pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm)
+{
+    typedef typename T::value_type       ChildType;
+    if (    ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Map 
+        ||  ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Array
+        ||  ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Parent)
+    {
+        state.emplace_back(new BinaryParserUtil<ChildType>(false));
+        return state.back()->getNextToken(parser, state);
+    }
+    return norm;
+}
+
     }
 }
 

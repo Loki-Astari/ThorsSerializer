@@ -75,15 +75,15 @@ class BinaryParserUtil<T, TraitType::Array>: public BinaryParserUtilBase
 {
     using Traits   = ThorsAnvil::Serialize::Traits<T>;
     public:
-        BinaryParserUtil(bool root = true)
+        BinaryParserUtil(bool root = true);/*
             : BinaryParserUtilBase( root,
                                     ParserToken::ArrayStart,
                                     ParserToken::ArrayEnd,
                                     ParserToken::Value)
-        {}
+        {}*/
         std::size_t readSize(ParserInterface&)      override;
         std::string getKeyFor(std::size_t) override {throw std::runtime_error("Should Never Get Here");}
-        ParserToken pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm) override
+        ParserToken pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm) override;/*
         {
             typedef typename T::value_type       ChildType;
             if (    ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Map 
@@ -94,7 +94,7 @@ class BinaryParserUtil<T, TraitType::Array>: public BinaryParserUtilBase
                 return state.back()->getNextToken(parser, state);
             }
             return norm;
-        }
+        }*/
 };
 template<typename T>
 class BinaryParserUtil<T, TraitType::Value>: public BinaryParserUtilBase
