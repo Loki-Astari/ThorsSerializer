@@ -249,8 +249,8 @@ template<typename T>
 class SerializerForBlock<TraitType::Value, T>
 {
     public:
-         SerializerForBlock(PrinterInterface&)  {}
-        ~SerializerForBlock()                   {}
+         SerializerForBlock(PrinterInterface&,T const&) {}
+        ~SerializerForBlock()                           {}
 };
 
 template<typename T>
@@ -258,8 +258,8 @@ class SerializerForBlock<TraitType::Map, T>
 {
     PrinterInterface& printer;
     public:
-        SerializerForBlock(PrinterInterface& printer): printer(printer)     {printer.openMap(); }
-        ~SerializerForBlock()                                               {printer.closeMap();}
+        SerializerForBlock(PrinterInterface& printer, T const&): printer(printer)   {printer.openMap(); }
+        ~SerializerForBlock()                                                       {printer.closeMap();}
 };
 
 template<typename T>
@@ -267,8 +267,8 @@ class SerializerForBlock<TraitType::Array, T>
 {
     PrinterInterface& printer;
     public:
-        SerializerForBlock(PrinterInterface& printer): printer(printer)     {printer.openArray();}
-        ~SerializerForBlock()                                               {printer.closeArray();}
+        SerializerForBlock(PrinterInterface& printer, T const& o): printer(printer) {printer.openArray(o.size());}
+        ~SerializerForBlock()                                                       {printer.closeArray();}
 };
 
 template<typename T>
@@ -348,7 +348,7 @@ inline void Serializer::printMembers(T const& object, Action action)
 template<typename T>
 inline void Serializer::print(T const& object)
 {
-    SerializerForBlock<Traits<T>::type, T>     block(printer);
+    SerializerForBlock<Traits<T>::type, T>     block(printer, object);
     printObjectMembers(object);
 }
 

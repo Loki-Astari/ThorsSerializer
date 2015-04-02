@@ -103,7 +103,7 @@ void YamlPrinter::closeMap()
             "yaml_mapping_end_event_initialize");
     state.pop_back();
 }
-void YamlPrinter::openArray()
+void YamlPrinter::openArray(std::size_t)
 {
     yaml_sequence_style_t    style;
     switch(this->characteristics)

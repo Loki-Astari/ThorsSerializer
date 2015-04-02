@@ -9,7 +9,7 @@
  * Macros for counting the number of arguments
  * Currently set up for a max of 20.
  */
-#define NUM_ARGS(...)          NUM_ARGS_(0, __VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 09, 08, 07, 06, 05, 04, 03, 02, 01)
+#define NUM_ARGS(...)          NUM_ARGS_(0, ##__VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 09, 08, 07, 06, 05, 04, 03, 02, 01, 00)
 #define NUM_ARGS_(Zero, I1, I2, I3, I4 ,I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16, I17, I18, I19, I20, A, ...)  A
 
 /*
@@ -33,9 +33,9 @@
  *
  * Because NUM_ARGS is limited to 20, This expansion is also limited to 20
  */
-#define REP_N(Act, P1, ...)             REP_OF_N(Act, P1, NUM_ARGS(__VA_ARGS__), __VA_ARGS__)
-#define REP_OF_N(Act, P1, Count, ...)   REP_OF_N_(Act, P1, Count, __VA_ARGS__)
-#define REP_OF_N_(Act, P1, Count, ...)  REP_OF_ ## Count(Act, P1, __VA_ARGS__)
+#define REP_N(Act, P1, ...)             REP_OF_N(Act, P1, NUM_ARGS(__VA_ARGS__), ##__VA_ARGS__)
+#define REP_OF_N(Act, P1, Count, ...)   REP_OF_N_(Act, P1, Count, ##__VA_ARGS__)
+#define REP_OF_N_(Act, P1, Count, ...)  REP_OF_ ## Count(Act, P1, ##__VA_ARGS__)
 
 #define REP_OF_20(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_19(Act, P1, __VA_ARGS__)
 #define REP_OF_19(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_18(Act, P1, __VA_ARGS__)
@@ -57,6 +57,7 @@
 #define REP_OF_03(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_02(Act, P1, __VA_ARGS__)
 #define REP_OF_02(Act, P1, P2, ...)     EXPAND(Act, P1, P2), REP_OF_01(Act, P1, __VA_ARGS__)
 #define REP_OF_01(Act, P1, P2)          EXPAND(Act, P1, P2)
+#define REP_OF_00(Act, P1)              Last_ ## Act(P1)
 
 
 /* 
@@ -68,6 +69,8 @@
  */
 #define TypeAction(Type, Member)        std::pair<char const*, decltype(&Type::Member)>
 #define ValueAction(Type, Member)       { QUOTE(Member), &Type::Member }
+#define Last_TypeAction(Type)           void*
+#define Last_ValueAction(Type)          {nullptr}
 
 
 /*
@@ -83,13 +86,13 @@ class ::ThorsAnvil::Serialize::Traits<DataType>                         \
         Parent                                                          \
                                                                         \
         using Members = std::tuple<                                     \
-                        REP_N(TypeAction, DataType, __VA_ARGS__)        \
+                        REP_N(TypeAction, DataType, ##__VA_ARGS__)        \
                                     >;                                  \
                                                                         \
         static Members const& getMembers()                              \
         {                                                               \
             static constexpr Members members{                           \
-                        REP_N(ValueAction, DataType, __VA_ARGS__)       \
+                        REP_N(ValueAction, DataType, ##__VA_ARGS__)       \
                                             };                          \
             return members;                                             \
         }                                                               \
@@ -101,7 +104,7 @@ static_assert(                                                                  
 )
 
 #define ThorsAnvil_MakeTrait(DataType, ...)                             \
-    ThorsAnvil_MakeTrait_Base(DataType, , Map, __VA_ARGS__)
+    ThorsAnvil_MakeTrait_Base(DataType, , Map, ##__VA_ARGS__)
 
 #define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)               \
     static_assert(                                                      \
@@ -111,7 +114,7 @@ static_assert(                                                                  
         ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
-    ThorsAnvil_MakeTrait_Base(DataType, typedef ParentType Parent;, Parent, __VA_ARGS__)
+    ThorsAnvil_MakeTrait_Base(DataType, typedef ParentType Parent;, Parent, ##__VA_ARGS__)
 
 
 /*

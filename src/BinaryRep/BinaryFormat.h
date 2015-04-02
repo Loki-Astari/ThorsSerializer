@@ -38,6 +38,10 @@ struct BinForm128
 #if WORDS_BIGENDIAN
     BinForm64    hi;
     BinForm64    lo;
+    constexpr BinForm128()
+        : hi(0)
+        , lo(0)
+    {}
     constexpr BinForm128(long long int value)
         : hi(hiWord(value))
         , lo(loWord(value))
@@ -45,63 +49,75 @@ struct BinForm128
 #else
     BinForm64    lo;
     BinForm64    hi;
+    constexpr BinForm128()
+        : lo(0)
+        , hi(0)
+    {}
     constexpr BinForm128(long long int value)
         : lo(loWord(value))
         , hi(hiWord(value))
     {}
 #endif
-    BinForm128  operator<<(std::size_t move)     {BinForm128 result(*this); return result <<= move;}
-    BinForm128& operator<<=(std::size_t move)
+    friend bool operator==(BinForm128 const& lhs, BinForm128 const& rhs)
+    {
+        return lhs.lo == rhs.lo && lhs.hi == rhs.hi;
+    }
+    friend bool operator!=(BinForm128 const& lhs, BinForm128 const& rhs)
+    {
+        return !(lhs == rhs);
+    }
+    friend BinForm128  operator<<(BinForm128 const& lhs, std::size_t move)     {BinForm128 result(lhs); return result <<= move;}
+    friend BinForm128& operator<<=(BinForm128& lhs, std::size_t move)
     {
         if (move >= 64)
         {
-            hi  = lo;
-            lo  = 0;
-            hi  <<= (move - 64);
+            lhs.hi  = lhs.lo;
+            lhs.lo  = 0;
+            lhs.hi  <<= (move - 64);
         }
         else
         {
-            BinForm64  overflow    = (lo >> (64 - move));
-            lo  <<= move;
-            hi  <<= move;
-            hi  |= overflow;
+            BinForm64  overflow    = (lhs.lo >> (64 - move));
+            lhs.lo  <<= move;
+            lhs.hi  <<= move;
+            lhs.hi  |= overflow;
         }
-        return *this;
+        return lhs;
     }
-    BinForm128  operator>>(std::size_t move)     {BinForm128 result(*this); return result >>= move;}
-    BinForm128& operator>>=(std::size_t move)
+    friend BinForm128  operator>>(BinForm128 const& lhs, std::size_t move)     {BinForm128 result(lhs); return result >>= move;}
+    friend BinForm128& operator>>=(BinForm128& lhs, std::size_t move)
     {
         if (move >= 64)
         {
-            lo  = hi;
-            hi  = 0;
-            lo  >>= (move - 64);
+            lhs.lo  = lhs.hi;
+            lhs.hi  = 0;
+            lhs.lo  >>= (move - 64);
         }
         else
         {
-            BinForm64  overflow    = (hi << (64 - move));
-            hi  >>= move;
-            lo  = (lo >> move) | overflow;
+            BinForm64  overflow    = (lhs.hi << (64 - move));
+            lhs.hi  >>= move;
+            lhs.lo  = (lhs.lo >> move) | overflow;
         }
-        return *this;
+        return lhs;
     }
-    BinForm128  operator|(BinForm128 const& value)    {BinForm128 result(*this); return result |= value;}
-    BinForm128& operator|=(BinForm128 const& value)
+    friend BinForm128  operator|(BinForm128 const& lhs, BinForm128 const& value)    {BinForm128 result(lhs); return result |= value;}
+    friend BinForm128& operator|=(BinForm128& lhs, BinForm128 const& value)
     {
-        lo  |= value.lo;
-        hi  |= value.hi;
-        return *this;
+        lhs.lo  |= value.lo;
+        lhs.hi  |= value.hi;
+        return lhs;
     }
-    BinForm128  operator&(BinForm128 const& value)    {BinForm128 result(*this); return result &= value;}
-    BinForm128& operator&=(BinForm128 const& value)
+    friend BinForm128  operator&(BinForm128 const& lhs, BinForm128 const& value)    {BinForm128 result(lhs); return result &= value;}
+    friend BinForm128& operator&=(BinForm128& lhs, BinForm128 const& value)
     {
-        lo  &= value.lo;
-        hi  &= value.hi;
-        return *this;
+        lhs.lo  &= value.lo;
+        lhs.hi  &= value.hi;
+        return lhs;
     }
-    explicit operator BinForm64()
+    explicit operator unsigned long long()
     {
-        return lo;
+        return ((static_cast<unsigned long long>(hi) << 32) << 32) + lo;
     }
     private:
     friend constexpr BinForm128 BinForm128High(BinForm64 value);

@@ -22,12 +22,12 @@ struct Yaml
 };
 
 template<typename T>
-Exporter<Yaml, T> jsonExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default)
+Exporter<Yaml, T> yamlExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default)
 {
     return Exporter<Yaml, T>(value, characteristics);
 }
 template<typename T>
-Importer<Yaml, T> jsonImport(T& value)
+Importer<Yaml, T> yamlImport(T& value)
 {
     return Importer<Yaml, T>(value);
 }

@@ -4,6 +4,8 @@
 
 
 #include <cmath>
+#include "BinaryFormat.h"
+#include "IntBinRep.h"
 namespace ThorsAnvil
 {
     namespace BinaryRep
@@ -20,64 +22,61 @@ struct FloatConverterTrait;
 template<> struct FloatConverterTrait<float>
 {
     static  BinForm32  notANumber()
-    {   static constexpr BinForm32 value = 0x7f800000LL;
+    {   static constexpr BinForm32 value = 0x7f800000ULL;
         return value;
     }
-    typedef BinForm32 OutputType;
+    typedef BinForm32 StorageType;
 };
 template<> struct FloatConverterTrait<double>
 {
     static  BinForm64  notANumber()
-    {   static constexpr BinForm64 value = 0x7FF0000000000000LL;
+    {   static constexpr BinForm64 value = 0x7FF0000000000000ULL;
         return value;
     }
-    typedef BinForm64 OutputType;
+    typedef BinForm64 StorageType;
 };
 template<> struct FloatConverterTrait<long double>
 {
     static  BinForm128  notANumber()
-    {   static constexpr BinForm128 value = BinForm128High(0x7FFF000000000000LL);
+    {   static constexpr BinForm128 value = BinForm128High(0x7FFF000000000000ULL);
         return value;
     }
-    typedef BinForm128 OutputType;
+    typedef BinForm128 StorageType;
 };
 
-// static constexpr long long    notANumber          = 0x0000000000000000LL;
-// static constexpr long long    negativeInfinity    = 0x8000000000000000LL;
-// static constexpr long long    positiveInfinity    = 0x7FFFFFFFFFFFFFFFLL;
-// static constexpr short        expMarker           = static_cast<short>(0x7FFF);
-
-
 template<typename T, bool ieee = std::numeric_limits<T>::is_iec559, std::size_t size = sizeof(T), std::size_t decimal = std::numeric_limits<T>::digits>
-typename FloatConverterTrait<T>::OutputType convertIEEE(T value);
+typename FloatConverterTrait<T>::StorageType host2NetIEEE(T value);
+template<typename T, bool ieee = std::numeric_limits<T>::is_iec559, std::size_t size = sizeof(T), std::size_t decimal = std::numeric_limits<T>::digits>
+T net2HostIEEE(typename FloatConverterTrait<T>::StorageType value);
 
-static_assert(std::numeric_limits<float>::is_iec559,       "Binary interface assumes float       is IEEE754");
-template<>  inline BinForm32  convertIEEE<float, true, 4, 24>(float value)
+template<typename T>
+typename FloatConverterTrait<T>::StorageType host2NetIEEETransport(T value)
 {
     if (std::isnan(value))
-    {   return host2Net(FloatConverterTrait<float>::notANumber());
+    {   return host2Net(FloatConverterTrait<T>::notANumber());
     }
-    return host2Net(*reinterpret_cast<BinForm32*>(&value));
+    return host2Net(*reinterpret_cast<typename FloatConverterTrait<T>::StorageType*>(&value));
+}
+template<typename T>
+T net2HostIEEETransport(typename FloatConverterTrait<T>::StorageType value)
+{
+    static const typename FloatConverterTrait<T>::StorageType notANum    = host2Net(FloatConverterTrait<T>::notANumber());
+    if (value == notANum)
+    {   return std::numeric_limits<T>::quiet_NaN();
+    }
+    typename FloatConverterTrait<T>::StorageType result = net2Host(value);
+    return *reinterpret_cast<T*>(&result);
 }
 
-static_assert(std::numeric_limits<double>::is_iec559,      "Binary interface assumes double      is IEEE754");
-template<>  inline BinForm64  convertIEEE<double, true, 8, 53>(double value)
-{
-    if (std::isnan(value))
-    {   return host2Net(FloatConverterTrait<double>::notANumber());
-    }
-    return host2Net(*reinterpret_cast<BinForm64*>(&value));
-}
+template<>  inline BinForm32  host2NetIEEE<float, true, 4, 24>(float value)                 {return host2NetIEEETransport(value);}
+template<>  inline BinForm64  host2NetIEEE<double, true, 8, 53>(double value)               {return host2NetIEEETransport(value);}
+template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 113>(long double value)   {return host2NetIEEETransport(value);}
 
-static_assert(std::numeric_limits<long double>::is_iec559, "Binary interface assumes long double is IEEE754");
-template<>  inline BinForm128 convertIEEE<long double, true, 16, 113>(long double value)
-{
-    if (std::isnan(value))
-    {   return host2Net(FloatConverterTrait<long double>::notANumber());
-    }
-    return host2Net(*reinterpret_cast<BinForm128*>(&value));
-}
-template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double value)
+template<>  inline float        net2HostIEEE<float, true, 4, 24>(BinForm32 value)           {return net2HostIEEETransport<float>(value);}
+template<>  inline double       net2HostIEEE<double, true, 8, 53>(BinForm64 value)          {return net2HostIEEETransport<double>(value);}
+template<>  inline long double  net2HostIEEE<long double, true, 16, 113>(BinForm128 value)  {return net2HostIEEETransport<long double>(value);}
+
+template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long double value)
 {
     static BinForm128         expMask     =  BinForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
     /* If this function is called it means you have an IEEE-754 integer
@@ -90,7 +89,7 @@ template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double
      *
      *  http://en.wikipedia.org/wiki/Extended_precision
      *  80 bit Extended Format:
-     *      s eeeee eeeeeeeeee V vvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR 
+     *      RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR s eeeeeee eeeeeeee V vvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv
      *          s:      1   Sign Bit
      *          e:     15   exponent
      *          V:      1   integer part of significant
@@ -150,6 +149,62 @@ template<>  inline BinForm128 convertIEEE<long double, true, 16, 64>(long double
     sigBits |= sign;
 
     return host2Net(sigBits);
+}
+
+template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm128 value)
+{
+    static BinForm128         expMask     =  BinForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
+    /* If this function is called it means you have an IEEE-754 integer
+     * But it is not one of the interchange formats defined in  IEEE 754-2008
+     *
+     * This means we are using an extended format IEEE-754 (this is non transportable)
+     *
+     * The size of 64 means you are using IEEE-754 Extended 80 bit floating point format.
+     * This function converts from 80 bits to 128 bits.
+     *
+     *  http://en.wikipedia.org/wiki/Extended_precision
+     *  80 bit Extended Format:
+     *      RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR s eeeeeee eeeeeeee V vvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv
+     *          s:      1   Sign Bit
+     *          e:     15   exponent
+     *          V:      1   integer part of significant
+     *          v:     63   fraction part of significant
+     *          R:     48   Random junk on the end of the word
+     *
+     * http://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format
+     * 128 bit Quad format binary128
+     *      s eeeee eeeeeeeeee vv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv vvvvvvvvvv
+     *          s:      1   Sign Bit
+     *          e:     15   exponent
+     *          v:    112   fraction part of significant
+     *
+     *      Note: The Extended format uses an integer bit that is implied by the Quad precision value.
+     *
+     */
+    static const BinForm128 notANum    = host2Net(FloatConverterTrait<long double>::notANumber());
+    if (value == notANum)
+    {   return std::numeric_limits<long double>::quiet_NaN();
+    }
+    BinForm128  sigBits = net2Host(value);
+    bool   negative     = (sigBits >> (128 - 1)) == 0 ? false : true;
+    int    exp          = static_cast<unsigned long long int>(sigBits >> (128 - 16) & 0x7FFF);
+    exp -= 16383;
+    exp += 1;
+
+    sigBits &= expMask;                     // Mask out everything but the significant
+    sigBits >>= 48;                         // Move the significant down to correct place
+
+    sigBits >>= 1;                          // This rep has an extra bit represent the integer part
+    sigBits |= 0x8000000000000000ULL;       // that is always one so put it back.
+
+    sigBits |= BinForm128High(0x3FFE);      // The significant should be just above one so add the
+                                            // correct bias to make that happen.
+
+    // Put it all back together.
+    long double significant = (negative ? -1 : 1) * (*reinterpret_cast<long double*>(&sigBits));
+    long double result      = std::ldexp(significant, exp);
+
+    return result;
 }
 
     }
