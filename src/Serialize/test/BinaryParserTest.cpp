@@ -358,5 +358,31 @@ TEST(BinaryParserTest, getDataFromString)
         parser.getValue(value4)
     );
 }
+
+TEST(BinaryParserTest, TestParentDeSerilization)
+{
+    std::stringstream   stream(std::string( "\x00\x00\x00\x00\x00\x00\x00\x00"      // ace
+                                            "\x00\x00\x00\x00\x00\x00\x00\x00"      // val
+                                            "\x00\x00\x00\x00\x00\x00\x00\x00"      // der
+                                            "\x00\x00\x00\x00\x00\x00\x00\x00",     // flt
+                                            32));
+
+    TA::BinaryParser<Derived>   parser(stream);
+
+    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
+}
+
+
 #endif
 
