@@ -76,6 +76,7 @@ template ThorsAnvil::Serialize::BinaryParserUtil<MapThreeValue,   (ThorsAnvil::S
 template ThorsAnvil::Serialize::BinaryParserUtil<MapWithTwoMap,   (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<MapWithTwoArray, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
 
+template ThorsAnvil::Serialize::BinaryParserUtil<Base,            (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<Derived,         (ThorsAnvil::Serialize::TraitType)1>::BinaryParserUtil(bool);
 
 // Array Specialization

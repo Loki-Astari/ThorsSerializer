@@ -4,6 +4,7 @@
 #ifdef COVERAGE_TEST
 #include "THash.tpp"
 #include "test/THashTest.h"
+#include "test/BinaryParserTest.h"
 
 
 template std::size_t ThorsAnvil::Serialize::thash<D1>();
@@ -26,6 +27,11 @@ template std::size_t ThorsAnvil::Serialize::thash<float>();
 
 template std::size_t ThorsAnvil::Serialize::thash<bool>();
 template std::size_t ThorsAnvil::Serialize::thash<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >();
+
+template std::size_t ThorsAnvil::Serialize::thash<Base>();
+template std::size_t ThorsAnvil::Serialize::thash<Derived>();
+
+template std::size_t ThorsAnvil::Serialize::thash<std::vector<int>>();
 
 template struct ThorsAnvil::Serialize::TraitsHash<short>;
 template struct ThorsAnvil::Serialize::TraitsHash<int>;

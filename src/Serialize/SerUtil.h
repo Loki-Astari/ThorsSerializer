@@ -4,6 +4,7 @@
 
 #include "Traits.h"
 #include "Serialize.h"
+#include "THash.h"
 #include <utility>
 #include <string>
 #include <map>
@@ -132,6 +133,10 @@ class ContainerMemberExtractor
 {
     public:
         constexpr ContainerMemberExtractor() {}
+        constexpr std::size_t getHash(std::size_t start) const
+        {
+            return (start * 37  + thash<C>()) * 37 + thash<V>();
+        }
         void operator()(PrinterInterface& printer, C const& object) const
         {
             PutValueType<V>     valuePutter(printer);

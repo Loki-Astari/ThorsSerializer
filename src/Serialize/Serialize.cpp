@@ -7,10 +7,16 @@
 #include "SerUtil.h"
 #include "Json.h"
 #include "test/SerializeTest.h"
+#include "test/BinaryParserTest.h"
 
 template void ThorsAnvil::Serialize::Serializer::print<SerializeTestExtra>(SerializeTestExtra const&);
 template void ThorsAnvil::Serialize::Serializer::print<SerializeTestChild>(SerializeTestChild const&);
 template void ThorsAnvil::Serialize::Serializer::print<SerializeTestMembers>(SerializeTestMembers const&);
+
+template void ThorsAnvil::Serialize::Serializer::print<Base>(Base const&);
+template void ThorsAnvil::Serialize::Serializer::print<Derived>(Derived const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<Base>(Base&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<Derived>(Derived&);
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestExtra>(SerializeTestExtra&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestChild>(SerializeTestChild&);
