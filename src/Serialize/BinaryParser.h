@@ -161,6 +161,12 @@ class BinaryParser: public ParserInterface
         BinaryParser(std::istream& stream)
             : ParserInterface(stream)
         {
+            std::size_t hash   = TBin::net2Host(read<TBin::BinForm32>());
+            std::size_t expect = std::uint32_t(thash<T>());
+            if (hash != expect) {
+                throw "Fail";
+            }
+            
             state.emplace_back(new BinaryParserUtil<T>());
         }
         virtual ParserToken     getNextToken()                 override

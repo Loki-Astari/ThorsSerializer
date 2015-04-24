@@ -30,11 +30,11 @@ class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Parent>
     public:
     void operator()(BinaryParserMapParentCommon& obj)
     {   
-        using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;
-        obj.fill(Traits::getMembers());
-
         MemberAdder<typename Traits::Parent>    addParent;
         addParent(obj);
+
+        using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;
+        obj.fill(Traits::getMembers());
     }
 };
 
