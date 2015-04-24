@@ -29,8 +29,8 @@ TEST(RoundTripTest, BinaryMap)
 
     Base    base2 {};
     stream >> TA::binImport(base2);
-    EXPECT_EQ(10,   base.ace);
-    EXPECT_EQ(1024, base.val);
+    EXPECT_EQ(10,   base2.ace);
+    EXPECT_EQ(1024, base2.val);
 }
 
 TEST(RoundTripTest, BinaryParent)
@@ -70,10 +70,10 @@ TEST(RoundTripTest, BinaryParent)
 
     Derived             deri2 {};
     stream >> TA::binImport(deri2);
-    EXPECT_EQ(10,       deri.ace);
-    EXPECT_EQ(1024,     deri.val);
-    EXPECT_EQ(56789,    deri.der);
-    EXPECT_EQ(234.875,  deri.flt);
+    EXPECT_EQ(10,       deri2.ace);     // 56789
+    EXPECT_EQ(1024,     deri2.val);     // 1131077632
+    EXPECT_EQ(56789,    deri2.der);     // 10
+    EXPECT_EQ(234.875,  deri2.flt);     // 1.43493e-42
 }
 TEST(RoundTripTest, BinaryArray)
 {
@@ -82,7 +82,7 @@ TEST(RoundTripTest, BinaryArray)
 
     stream << TA::binExport(data);
 
-    std::string expected("\x1c\xa2\x7d\xce"     // THash of vector<int>
+    std::string expected("\xea\xb0\x50\x2f"     // THash of vector<int>
                          "\x00\x00\x00\x06"     // data.size()
                          "\x00\x00\x00\x0a"     // 10
                          "\x00\x00\x04\x00"     // 1024
@@ -100,12 +100,12 @@ TEST(RoundTripTest, BinaryArray)
 
     std::vector<int>    data2 {};
     stream >> TA::binImport(data2);
-    EXPECT_EQ(10,     data[0]);
-    EXPECT_EQ(1024,   data[1]);
-    EXPECT_EQ(9,      data[2]);
-    EXPECT_EQ(367,    data[3]);
-    EXPECT_EQ(12,     data[4]);
-    EXPECT_EQ(34,     data[5]);
+    EXPECT_EQ(10,     data2[0]);
+    EXPECT_EQ(1024,   data2[1]);
+    EXPECT_EQ(9,      data2[2]);
+    EXPECT_EQ(367,    data2[3]);
+    EXPECT_EQ(12,     data2[4]);
+    EXPECT_EQ(34,     data2[5]);
 }
 TEST(RoundTripTest, BinaryValue)
 {
