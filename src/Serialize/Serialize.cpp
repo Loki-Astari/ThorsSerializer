@@ -7,6 +7,14 @@
 #include "SerUtil.h"
 #include "Json.h"
 #include "test/SerializeTest.h"
+#include "test/BinaryParserTest.h"
+
+template void ThorsAnvil::Serialize::Serializer::print<Base>(Base const&);
+template void ThorsAnvil::Serialize::Serializer::print<Derived>(Derived const&);
+
+template void ThorsAnvil::Serialize::DeSerializer::parse<Base>(Base&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<Derived>(Derived&);
+
 
 template void ThorsAnvil::Serialize::Serializer::print<SerializeTestExtra>(SerializeTestExtra const&);
 template void ThorsAnvil::Serialize::Serializer::print<SerializeTestChild>(SerializeTestChild const&);
@@ -28,7 +36,6 @@ template void ThorsAnvil::Serialize::Serializer::print<std::__1::map<int, double
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::multimap<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > > >(std::__1::multimap<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > > const&);
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, double, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, double> > > >(std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, double, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, double> > > const&);
 template void ThorsAnvil::Serialize::Serializer::print<std::__1::multimap<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, double, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, double> > > >(std::__1::multimap<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, double, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, double> > > const&);
-
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::array<int, 0ul> >(std::__1::array<int, 0ul>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::array<int, 12ul> >(std::__1::array<int, 12ul>&);

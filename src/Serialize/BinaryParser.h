@@ -48,10 +48,14 @@ class BinaryParserUtilBase
         virtual ParserToken pushNextState(std::size_t position, ParserInterface& parser, ParserState& state, ParserToken norm)    = 0;
 };
 
-// Default: Functions specific to Map
-template<typename T, TraitType traitSpec = ThorsAnvil::Serialize::Traits<typename std::remove_reference<T>::type>::type>
-class BinaryParserUtil: public BinaryParserUtilBase
+template<typename T>
+class BinaryParserMapParentCommon: public BinaryParserUtilBase
 {
+    protected:
+        template<typename R, TraitType traitSpec = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>::type>
+        class MemberAdder;
+
+    private:
     using Traits   = ThorsAnvil::Serialize::Traits<typename std::remove_reference<T>::type>;
     std::vector<std::string>    keys;
     ParserState                 utils;
@@ -62,40 +66,53 @@ class BinaryParserUtil: public BinaryParserUtilBase
         template<typename Tuple, std::size_t... Seq> void fillMembers(Tuple const& members, std::index_sequence<Seq...> const&);
         template<typename... M>                      void fill(std::tuple<M...> const& members);
     public:
-        BinaryParserUtil(bool root = true);
+        BinaryParserMapParentCommon(bool root, ParserToken first, ParserToken last, ParserToken nextValue);
 
         std::size_t readSize(ParserInterface&)      override {return keys.size();}
         std::string getKeyFor(std::size_t position) override {return keys[position];}
         ParserToken pushNextState(std::size_t position, ParserInterface& parser, ParserState& state, ParserToken norm) override;
 };
 
+// Duck Class type for Map/Parent/Array/Value
+// Each has a specialization that understands the interface:
+//      readSize()
+//      getKeyFor()
+//      pushNextState()
+//
+//      Map/Parent Use the common base BinaryParserMapParentCommon to do the heavy lifting.
+//      Array works slightly differently (and implements its own versions)
+//      Value basically does nothing and is just required to compile.
+template<typename T, TraitType traitSpec = ThorsAnvil::Serialize::Traits<typename std::remove_reference<T>::type>::type>
+class BinaryParserUtil;
+
+// Functions specific to Map
+template<typename T>
+class BinaryParserUtil<T, TraitType::Map>: public BinaryParserMapParentCommon<T>
+{
+    public:
+        BinaryParserUtil(bool root = true);
+};
+
+// Functions specific to Parent (Slightly complicated Map)
+template<typename T>
+class BinaryParserUtil<T, TraitType::Parent>: public BinaryParserMapParentCommon<T>
+{
+    public:
+        BinaryParserUtil(bool root = true);
+};
+
 // Functions specific to Array
 template<typename T>
 class BinaryParserUtil<T, TraitType::Array>: public BinaryParserUtilBase
 {
-    using Traits   = ThorsAnvil::Serialize::Traits<T>;
+    using Traits   = ThorsAnvil::Serialize::Traits<typename std::remove_reference<T>::type>;
     public:
-        BinaryParserUtil(bool root = true);/*
-            : BinaryParserUtilBase( root,
-                                    ParserToken::ArrayStart,
-                                    ParserToken::ArrayEnd,
-                                    ParserToken::Value)
-        {}*/
+        BinaryParserUtil(bool root = true);
         std::size_t readSize(ParserInterface&)      override;
         std::string getKeyFor(std::size_t) override {throw std::runtime_error("Should Never Get Here");}
-        ParserToken pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm) override;/*
-        {
-            typedef typename T::value_type       ChildType;
-            if (    ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Map 
-                ||  ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Array
-                ||  ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Parent)
-            {
-                state.emplace_back(new BinaryParserUtil<ChildType>(false));
-                return state.back()->getNextToken(parser, state);
-            }
-            return norm;
-        }*/
+        ParserToken pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm) override;
 };
+
 template<typename T>
 class BinaryParserUtil<T, TraitType::Value>: public BinaryParserUtilBase
 {
@@ -144,6 +161,12 @@ class BinaryParser: public ParserInterface
         BinaryParser(std::istream& stream)
             : ParserInterface(stream)
         {
+            std::size_t hash   = TBin::net2Host(read<TBin::BinForm32>());
+            std::size_t expect = std::uint32_t(thash<T>());
+            if (hash != expect) {
+                throw "Fail";
+            }
+            
             state.emplace_back(new BinaryParserUtil<T>());
         }
         virtual ParserToken     getNextToken()                 override

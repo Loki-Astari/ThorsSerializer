@@ -10,7 +10,7 @@ namespace ThorsAnvil
     {
 
 template<typename T>
-std::size_t thash();
+std::size_t thash(std::size_t restul = 0);
 
     }
 }

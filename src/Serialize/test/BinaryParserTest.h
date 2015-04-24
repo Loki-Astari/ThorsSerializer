@@ -45,6 +45,18 @@ class MapWithTwoMap
         MapEmptyTest        one;
         MapEmptyTest        two;
 };
+class Base
+{
+    public:
+        int                 ace;
+        int                 val;
+};
+class Derived: public Base
+{
+    public:
+        int                 der;
+        float               flt;
+};
 ThorsAnvil_MakeTrait(MapEmptyTest);
 ThorsAnvil_MakeTrait(MapOneValue, One);
 ThorsAnvil_MakeTrait(MapTwoValue, one, two);
@@ -53,6 +65,8 @@ ThorsAnvil_MakeTrait(MapWithArray, one);
 ThorsAnvil_MakeTrait(MapWithTwoArray, one, two);
 ThorsAnvil_MakeTrait(MapWithMap, one);
 ThorsAnvil_MakeTrait(MapWithTwoMap, one, two);
+ThorsAnvil_MakeTrait(Base, ace, val);
+ThorsAnvil_ExpandTrait(Base, Derived, der, flt);
 
 #endif
 

@@ -23,12 +23,12 @@ struct Binary
 };
 
 template<typename T>
-Exporter<Binary, T> binExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default)
+Exporter<Binary<T>, T> binExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default)
 {
-    return Exporter<Binary, T>(value, characteristics);
+    return Exporter<Binary<T>, T>(value, characteristics);
 }
 template<typename T>
-Importer<Binary, T> binImport(T& value)
+Importer<Binary<T>, T> binImport(T& value)
 {
     return Importer<Binary<T>, T>(value);
 }

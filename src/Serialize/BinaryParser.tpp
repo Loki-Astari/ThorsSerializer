@@ -10,19 +10,46 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
-template<typename T, TraitType traitSpec>
-BinaryParserUtil<T, traitSpec>::BinaryParserUtil(bool root)
-    : BinaryParserUtilBase( root,
-                            ParserToken::MapStart,
-                            ParserToken::MapEnd,
-                            ParserToken::Key)
+
+template<typename T>
+template<typename R>
+class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Map>
 {
-    fill(Traits::getMembers());
+    public:
+    void operator()(BinaryParserMapParentCommon& obj)
+    {   
+        using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;
+        obj.fill(Traits::getMembers());
+    }
+};
+
+template<typename T>
+template<typename R>
+class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Parent>
+{
+    public:
+    void operator()(BinaryParserMapParentCommon& obj)
+    {   
+        MemberAdder<typename Traits::Parent>    addParent;
+        addParent(obj);
+
+        using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;
+        obj.fill(Traits::getMembers());
+    }
+};
+
+template<typename T>
+BinaryParserMapParentCommon<T>::BinaryParserMapParentCommon(bool root, ParserToken first, ParserToken last, ParserToken nextValue)
+    : BinaryParserUtilBase( root, first, last, nextValue)
+{
+    MemberAdder<T>  addMembers;
+    addMembers(*this);
 }
 
-template<typename T, TraitType traitSpec>
+
+template<typename T>
 template<typename P>
-void BinaryParserUtil<T, traitSpec>::addMember(std::pair<char const*, P> const& token)
+void BinaryParserMapParentCommon<T>::addMember(std::pair<char const*, P> const& token)
 {
     keys.emplace_back(token.first);
     typedef decltype(((T*)nullptr)->*(token.second))            DestTypeBase;
@@ -40,30 +67,22 @@ void BinaryParserUtil<T, traitSpec>::addMember(std::pair<char const*, P> const& 
     }
 }
 
-template<typename T, TraitType traitSpec>
+template<typename T>
 template<typename Tuple, std::size_t... Seq>
-void BinaryParserUtil<T, traitSpec>::fillMembers(Tuple const& members, std::index_sequence<Seq...> const&)
+void BinaryParserMapParentCommon<T>::fillMembers(Tuple const& members, std::index_sequence<Seq...> const&)
 {
     std::make_tuple((addMember(std::get<Seq>(members)),1)...);
 }
 
-template<typename T, TraitType traitSpec>
+template<typename T>
 template<typename... M>
-void BinaryParserUtil<T, traitSpec>::fill(std::tuple<M...> const& members)
+void BinaryParserMapParentCommon<T>::fill(std::tuple<M...> const& members)
 {
     fillMembers(members, std::make_index_sequence<sizeof...(M)>());
 }
 
 template<typename T>
-std::size_t BinaryParserUtil<T, TraitType::Array>::readSize(ParserInterface& parent)
-{
-    unsigned int    result;
-    parent.getValue(result);
-    return result;
-}
-
-template<typename T, TraitType traitSpec>
-ParserToken BinaryParserUtil<T, traitSpec>
+ParserToken BinaryParserMapParentCommon<T>
     ::pushNextState(    std::size_t         position,
                         ParserInterface&    parser,
                         ParserState&        state,
@@ -78,12 +97,36 @@ ParserToken BinaryParserUtil<T, traitSpec>
 }
 
 template<typename T>
+BinaryParserUtil<T, TraitType::Map>::BinaryParserUtil(bool root)
+    : BinaryParserMapParentCommon<T>(root,
+                                    ParserToken::MapStart,
+                                    ParserToken::MapEnd,
+                                    ParserToken::Key)
+{}
+
+template<typename T>
+BinaryParserUtil<T, TraitType::Parent>::BinaryParserUtil(bool root)
+    : BinaryParserMapParentCommon<T>(root,
+                                    ParserToken::MapStart,
+                                    ParserToken::MapEnd,
+                                    ParserToken::Key)
+{}
+
+template<typename T>
 BinaryParserUtil<T, TraitType::Array>::BinaryParserUtil(bool root)
     : BinaryParserUtilBase( root,
                             ParserToken::ArrayStart,
                             ParserToken::ArrayEnd,
                             ParserToken::Value)
 {}
+
+template<typename T>
+std::size_t BinaryParserUtil<T, TraitType::Array>::readSize(ParserInterface& parent)
+{
+    unsigned int    result;
+    parent.getValue(result);
+    return result;
+}
 
 template<typename T>
 ParserToken BinaryParserUtil<T, TraitType::Array>
