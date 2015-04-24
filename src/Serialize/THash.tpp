@@ -41,9 +41,8 @@ inline std::size_t thash(std::size_t start, std::pair<char const*, M T::*> const
 }
 
 template<typename T>
-inline std::size_t thash()
+inline std::size_t thash(std::size_t result)
 {
-    std::size_t     result = 0;
     TraitsHash<T>   hasher;
     return hasher(result);
 }
@@ -62,6 +61,10 @@ struct TraitsHash
     std::size_t makeTraitsHash(std::size_t start, std::tuple<std::pair<char const*, Members>...>const& members)
     {
         return makeTraitsHashValue(start, members, std::make_index_sequence<sizeof...(Members)>());
+    }
+    std::size_t makeTraitsHash(std::size_t start, std::tuple<void*> const&)
+    {
+        return thash(start, "Empty");
     }
     template<typename Action>
     std::size_t makeTraitsHash(std::size_t start, Action const& action)
@@ -89,9 +92,11 @@ template<> struct TraitsHash<bool>                  {std::size_t operator()(std:
 template<> struct TraitsHash<std::string>           {std::size_t operator()(std::size_t start){return thash(start, "String");}};
 
 template<typename T, std::size_t S>
-struct TraitsHash<std::array<T, S>>      {std::size_t operator()(std::size_t start){return thash(thash<T>(start), "std::array");}};
+struct TraitsHash<std::array<T, S>>      {std::size_t operator()(std::size_t start){return thash(thash<T>(start + S), "std::array");}};
 template<typename T>
 struct TraitsHash<std::list<T>>          {std::size_t operator()(std::size_t start){return thash(thash<T>(start), "std::list");}};
+template<typename T>
+struct TraitsHash<std::vector<T>>        {std::size_t operator()(std::size_t start){return thash(thash<T>(start), "std::vector");}};
 template<typename T>
 struct TraitsHash<std::deque<T>>         {std::size_t operator()(std::size_t start){return thash(thash<T>(start), "std::dequeu");}};
 template<typename K, typename V>

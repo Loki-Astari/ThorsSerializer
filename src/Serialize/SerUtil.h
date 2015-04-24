@@ -135,7 +135,7 @@ class ContainerMemberExtractor
         constexpr ContainerMemberExtractor() {}
         constexpr std::size_t getHash(std::size_t start) const
         {
-            return (start * 37  + thash<C>()) * 37 + thash<V>();
+            return thash<C>(start);
         }
         void operator()(PrinterInterface& printer, C const& object) const
         {
