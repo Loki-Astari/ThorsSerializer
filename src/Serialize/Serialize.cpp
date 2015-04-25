@@ -9,11 +9,14 @@
 #include "test/SerializeTest.h"
 #include "test/BinaryParserTest.h"
 
+
 template void ThorsAnvil::Serialize::Serializer::print<Base>(Base const&);
 template void ThorsAnvil::Serialize::Serializer::print<Derived>(Derived const&);
+template void ThorsAnvil::Serialize::Serializer::print<int>(int const&);
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<Base>(Base&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<Derived>(Derived&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<int>(int&);
 
 
 template void ThorsAnvil::Serialize::Serializer::print<SerializeTestExtra>(SerializeTestExtra const&);
@@ -49,6 +52,8 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::map<int, doub
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::multimap<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > > >(std::__1::multimap<int, double, std::__1::less<int>, std::__1::allocator<std::__1::pair<int const, double> > >&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, bool, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, bool> > > >(std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, bool, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, bool> > >&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::multimap<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, bool, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, bool> > > >(std::__1::multimap<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, bool, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, bool> > >&);
+
+
 
 void fake_Serialize_Force_Initializeation_For_Coverage_Test()
 {

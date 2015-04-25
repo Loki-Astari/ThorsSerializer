@@ -109,6 +109,22 @@ TEST(RoundTripTest, BinaryArray)
 }
 TEST(RoundTripTest, BinaryValue)
 {
+    int                 data = 68456231;
+    std::stringstream   stream;
+
+    stream << TA::binExport(data);
+
+    std::string expected("\x00\x00\x00\x49" "\x04\x14\x8F\x27", 8);
+    EXPECT_EQ(expected.size(), stream.str().size());
+    for(int loop =0;loop < expected.size(); ++loop)
+    {
+        std::cout << "Loop: " << loop << "   E(" << std::hex << ((int)expected[loop]) << ")  A(" << std::hex << ((int)stream.str()[loop]) << ")\n";
+        EXPECT_EQ(expected[loop], stream.str()[loop]);
+    }
+
+    int                 data2;
+    stream >> TA::binImport(data2);
+    EXPECT_EQ(68456231, data2);
 }
 #endif
 

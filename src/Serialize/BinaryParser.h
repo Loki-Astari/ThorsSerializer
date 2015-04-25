@@ -117,12 +117,7 @@ template<typename T>
 class BinaryParserUtil<T, TraitType::Value>: public BinaryParserUtilBase
 {
     public:
-        BinaryParserUtil(bool root = true)
-            : BinaryParserUtilBase( root,
-                                    ParserToken::Error,
-                                    ParserToken::Error,
-                                    ParserToken::Error)
-        {}
+        BinaryParserUtil(bool root = true);
         std::size_t readSize(ParserInterface&)      override    {return 0;}
         std::string getKeyFor(std::size_t)          override    {return "";}
         ParserToken pushNextState(std::size_t, ParserInterface&, ParserState&, ParserToken norm) override

@@ -121,6 +121,14 @@ BinaryParserUtil<T, TraitType::Array>::BinaryParserUtil(bool root)
 {}
 
 template<typename T>
+BinaryParserUtil<T, TraitType::Value>::BinaryParserUtil(bool root)
+    : BinaryParserUtilBase( root,
+                            ParserToken::Error,
+                            ParserToken::DocEnd,
+                            ParserToken::Error)
+{}
+
+template<typename T>
 std::size_t BinaryParserUtil<T, TraitType::Array>::readSize(ParserInterface& parent)
 {
     unsigned int    result;
