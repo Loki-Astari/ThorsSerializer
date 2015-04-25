@@ -2,8 +2,9 @@
 
 #include "gtest/gtest.h"
 #include "test/BinaryParserTest.h"
-#include "Binary.h"
-#include "Json.h"
+#include "../Binary.h"
+#include "../Json.h"
+#include "../Yaml.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
@@ -226,4 +227,104 @@ TEST(RoundTripTest, JsonValue)
     stream >> TA::jsonImport(data2);
     EXPECT_EQ(68456231, data2);
 }
+#ifdef HAVE_YAML
+TEST(RoundTripTest, YamlMap)
+{   
+    Base                base    { 10, 1024};
+    std::stringstream   stream;
 
+    stream << TA::yamlExport(base, TA::PrinterInterface::OutputType::Stream);
+
+    std::string expected("--- {ace: 10, val: 1024}\n...\n");
+    std::cout << "EX: " << expected << "\n"
+              << "AX: " << stream.str() << "\n";
+
+    EXPECT_EQ(expected.size(), stream.str().size());
+    for(int loop =0;loop < expected.size(); ++loop)
+    {
+        EXPECT_EQ(expected[loop], stream.str()[loop]);
+    }
+
+    Base    base2 {};
+    stream >> TA::yamlImport(base2);
+    EXPECT_EQ(10,   base2.ace);
+    EXPECT_EQ(1024, base2.val);
+}
+
+TEST(RoundTripTest, YamlParent)
+{
+    Derived             deri;
+    deri.ace    = 10;
+    deri.val    = 1024;
+    deri.der    = 56789;
+    deri.flt    = 234.875;
+    std::stringstream   stream;
+
+    stream << TA::yamlExport(deri, TA::PrinterInterface::OutputType::Stream);
+
+    std::string expected("--- {ace: 10, val: 1024, der: 56789, flt: 234.875}\n...\n");
+    std::cout << "EX: " << expected << "\n"
+              << "AX: " << stream.str() << "\n";
+
+    EXPECT_EQ(expected.size(), stream.str().size());
+    for(int loop =0;loop < expected.size(); ++loop)
+    {
+        EXPECT_EQ(expected[loop], stream.str()[loop]);
+    }
+
+    Derived             deri2 {};
+    stream >> TA::yamlImport(deri2);
+    EXPECT_EQ(10,       deri2.ace);     // 56789
+    EXPECT_EQ(1024,     deri2.val);     // 1131077632
+    EXPECT_EQ(56789,    deri2.der);     // 10
+    EXPECT_EQ(234.875,  deri2.flt);     // 1.43493e-42
+}
+TEST(RoundTripTest, YamlArray)
+{
+    std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
+    std::stringstream   stream;
+
+    stream << TA::yamlExport(data, TA::PrinterInterface::OutputType::Stream);
+
+    std::string expected("--- [10, 1024, 9, 367, 12, 34]\n...\n");
+    std::cout << "EX: " << expected << "\n"
+              << "AX: " << stream.str() << "\n";
+
+    EXPECT_EQ(expected.size(), stream.str().size());
+    for(int loop =0;loop < expected.size(); ++loop)
+    {
+        EXPECT_EQ(expected[loop], stream.str()[loop]);
+    }
+
+    std::vector<int>    data2 {};
+    stream >> TA::yamlImport(data2);
+    EXPECT_EQ(10,     data2[0]);
+    EXPECT_EQ(1024,   data2[1]);
+    EXPECT_EQ(9,      data2[2]);
+    EXPECT_EQ(367,    data2[3]);
+    EXPECT_EQ(12,     data2[4]);
+    EXPECT_EQ(34,     data2[5]);
+}
+TEST(RoundTripTest, YamlValue)
+{
+    int                 data = 68456231;
+    std::stringstream   stream;
+
+    stream << TA::yamlExport(data, TA::PrinterInterface::OutputType::Stream);
+
+    std::string expected("--- 68456231\n...\n");
+    std::cout << "EX: " << expected << "\n"
+              << "AX: " << stream.str() << "\n";
+    EXPECT_EQ(expected.size(), stream.str().size());
+    for(int loop =0;loop < expected.size(); ++loop)
+    {
+        std::cout << "Loop: " << loop << "   E(" << std::hex << ((int)expected[loop]) << ")  A(" << std::hex << ((int)stream.str()[loop]) << ")\n";
+        EXPECT_EQ(expected[loop], stream.str()[loop]);
+    }
+
+    int                 data2;
+    stream >> TA::yamlImport(data2);
+    EXPECT_EQ(68456231, data2);
+}
+
+#endif
