@@ -5,7 +5,7 @@
 
 #include "Serialize.tpp"
 #include "SerUtil.h"
-#include "Json.h"
+#include "JsonThor.h"
 #include "test/SerializeTest.h"
 #include "test/BinaryParserTest.h"
 
@@ -54,17 +54,6 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::map<std::__1:
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::__1::multimap<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, bool, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, bool> > > >(std::__1::multimap<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, bool, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, bool> > >&);
 
 
-
-void fake_Serialize_Force_Initializeation_For_Coverage_Test()
-{
-    ThorsAnvil::Serialize::JsonPrinter  printer(std::cout);
-    ThorsAnvil::Serialize::Serializer   serializer(printer);
-
-    ThorsAnvil::Serialize::JsonParser   parser(std::cin);
-    ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
-
-    parser.pushBackToken(ThorsAnvil::Serialize::ParserInterface::ParserToken::Value);
-}
 
 #endif
 

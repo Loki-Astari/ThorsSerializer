@@ -4,7 +4,7 @@
 
 #include "Traits.h"
 #include "Serialize.h"
-#include "THash.h"
+#include "BinaryTHash.h"
 #include <utility>
 #include <string>
 #include <map>

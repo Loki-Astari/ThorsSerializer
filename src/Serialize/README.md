@@ -24,7 +24,7 @@ The object part of the above declaration is any object that has a type with Thor
 A simple example of usage would be (link against libThorSerialize14.dynlib)
     
     #include "ThorSerialize/SerUtil.h"
-    #include "ThorSerialize/Json.h"
+    #include "ThorSerialize/JsonThor.h"
     #include <vector>
 
     namespace TS = ThorsAnvil::Serialize;
@@ -70,7 +70,7 @@ A simple example of a traits class definition for a user defined type.
 This is all that is need to make a class serialize-able.
 
     #include "ThorSerialize/SerUtil.h"
-    #include "ThorSerialize/Json.h"
+    #include "ThorSerialize/JsonThor.h"
     #include <vector>
 
     namespace TS = ThorsAnvil::Serialize;
@@ -86,7 +86,7 @@ This is all that is need to make a class serialize-able.
 A serialize-able class can be a member/parent or contained in another serialize-able with no additional work.
 
     #include "ThorSerialize/SerUtil.h"
-    #include "ThorSerialize/Json.h"
+    #include "ThorSerialize/JsonThor.h"
     #include <vector>
 
     namespace TS = ThorsAnvil::Serialize;
@@ -144,7 +144,7 @@ For each implementation we expect to see:
     ====================================================
     <Name>Printer.h     <Name>Printer       A class that implements the PrinterInterface (defined in Serialize.h)
     <Name>Parser.h      <Name>Parser        A class that implements the ParserInterface (defined in Serialize.h)
-    <Name>.h            Name                A class "Name" that defines the names of the printer and parser types.
+    <Name>Thor.h        Name                A class "Name" that defines the names of the printer and parser types.
                         <name>Import        Import/Export function that simply wrap the Import/Export functions
                         <name>Export        generic function (using "Name") as input.
 
@@ -199,8 +199,8 @@ Usage:
 For simplicity we have stream adapters.
 
     #include "Serialize.h"
-    #include "Json.h"
-    #include "Yaml.h"
+    #include "JsonThor.h"
+    #include "YamlThor.h"
 
     namespace TS = ThorsAnvil::Serialize;
 

@@ -1,8 +1,8 @@
 
-#include "THash.h"
+#include "BinaryTHash.h"
 
 #ifdef COVERAGE_TEST
-#include "THash.tpp"
+#include "BinaryTHash.tpp"
 #include "test/THashTest.h"
 #include "test/BinaryParserTest.h"
 

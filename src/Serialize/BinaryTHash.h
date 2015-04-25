@@ -16,7 +16,7 @@ std::size_t thash(std::size_t restul = 0);
 }
 
 #ifndef COVERAGE_TEST
-#include "THash.tpp"
+#include "BinaryTHash.tpp"
 #endif
 
 #endif

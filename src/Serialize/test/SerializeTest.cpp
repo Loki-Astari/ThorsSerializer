@@ -3,7 +3,7 @@
 #include "test/SerializeTest.h"
 #include "Serialize.h"
 #include "Traits.h"
-#include "Json.h"
+#include "JsonThor.h"
 #include <cstring>
 #include <string>
 

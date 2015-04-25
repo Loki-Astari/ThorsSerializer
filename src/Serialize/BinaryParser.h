@@ -6,7 +6,7 @@
 #ifdef NETWORK_BYTE_ORDER
 
 #include "Serialize.h"
-#include "THash.h"
+#include "BinaryTHash.h"
 #include "ThorBinaryRep/BinaryRep.h"
 #include <iostream>
 #include <vector>
