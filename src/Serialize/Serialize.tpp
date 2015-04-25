@@ -109,6 +109,10 @@ class DeSerializationForBlock<TraitType::Value, T>
         {}
         void scanObject(T& object)
         {
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+            if (tokenType != ParserInterface::ParserToken::Value)
+            {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Value>::DeSerializationForBlock: Invalid Object");
+            }
             parser.getValue(object);
         }
 };

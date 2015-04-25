@@ -15,7 +15,7 @@ namespace ThorsAnvil
 
 class JsonParser: public ParserInterface
 {
-    enum State          {Error, Init, OpenM, Key, Colon, ValueM, CommaM, CloseM, OpenA, ValueA, CommaA, CloseA, Done};
+    enum State          {Error, Init, OpenM, Key, Colon, ValueM, CommaM, CloseM, OpenA, ValueA, CommaA, CloseA, ValueD, Done};
 
     JsonLexerFlexLexer  lexer;
     std::vector<State>  parrentState;

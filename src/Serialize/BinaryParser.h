@@ -118,7 +118,7 @@ class BinaryParserUtil<T, TraitType::Value>: public BinaryParserUtilBase
 {
     public:
         BinaryParserUtil(bool root = true);
-        std::size_t readSize(ParserInterface&)      override    {return 0;}
+        std::size_t readSize(ParserInterface&)      override    {return 1;}
         std::string getKeyFor(std::size_t)          override    {return "";}
         ParserToken pushNextState(std::size_t, ParserInterface&, ParserState&, ParserToken norm) override
         {   return norm;

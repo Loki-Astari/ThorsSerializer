@@ -123,7 +123,7 @@ BinaryParserUtil<T, TraitType::Array>::BinaryParserUtil(bool root)
 template<typename T>
 BinaryParserUtil<T, TraitType::Value>::BinaryParserUtil(bool root)
     : BinaryParserUtilBase( root,
-                            ParserToken::Error,
+                            ParserToken::Value,
                             ParserToken::DocEnd,
                             ParserToken::Error)
 {}

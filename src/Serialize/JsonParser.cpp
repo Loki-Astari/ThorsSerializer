@@ -57,7 +57,7 @@ ParserToken JsonParser::getNextToken()
     {
         /* Token   ->   0,      1,      2,      3,      4,      5,      6,      7,      8,      9,      10,     11,     12 */
         /* Error */ {   Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error   },
-        /* Init  */ {   Error,  OpenM,  Error,  OpenA,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error   },
+        /* Init  */ {   Error,  OpenM,  Error,  OpenA,  Error,  Error,  Error,  ValueD, ValueD, ValueD, ValueD, ValueD, ValueD  },
         /* OpenM */ {   Error,  Error,  CloseM, Error,  Error,  Error,  Error,  Error,  Error,  Error,  Key,    Error,  Error   },
         /* Key   */ {   Error,  Error,  Error,  Error,  Error,  Error,  Colon,  Error,  Error,  Error,  Error,  Error,  Error   },
         /* Colon */ {   Error,  OpenM,  Error,  OpenA,  Error,  Error,  Error,  ValueM, ValueM, ValueM, ValueM, ValueM, ValueM  },
@@ -68,6 +68,7 @@ ParserToken JsonParser::getNextToken()
         /* ValueA*/ {   Error,  Error,  Error,  Error,  CloseA, CommaA, Error,  Error,  Error,  Error,  Error,  Error,  Error   },
         /* CommaA*/ {   Error,  OpenM,  Error,  OpenA,  Error,  Error,  Error,  ValueA, ValueA, ValueA, ValueA, ValueA, ValueA  },
         /* CloseA*/ {   Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error   },
+        /* ValueD*/ {   Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error   },
         /* Done  */ {   Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error   },
     };
 
@@ -86,6 +87,7 @@ ParserToken JsonParser::getNextToken()
         case Key:       return ParserToken::Key;
         case ValueM:    return ParserToken::Value;
         case ValueA:    return ParserToken::Value;
+        case ValueD:    currentState = Done; return ParserToken::Value;
         // Punctuation.
         // Parse it but it is not the actual result
         // So try and get the next token.
