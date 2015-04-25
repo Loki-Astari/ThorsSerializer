@@ -52,21 +52,20 @@ class ApplyActionToParent<TraitType::Parent, T, I>
 };
 /* ------------ DeSerializationForBlock ------------------------- */
 
-template<typename T>
-class DeSerializationForBlock<TraitType::Value, T>
+template<TraitType traitType, typename T>
+class DeSerializationForBlock
 {
-    public:
-         DeSerializationForBlock(ParserInterface&)  {}
-};
-
-template<typename T>
-class DeSerializationForBlock<TraitType::Map, T>
-{
+    static_assert(
+        traitType != TraitType::Invalid,
+        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
+    );
+    DeSerializer&    parent;
     ParserInterface& parser;
     std::string      key;
     public:
-        DeSerializationForBlock(ParserInterface& parser)
-            : parser(parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
         {
             ParserInterface::ParserToken    tokenType = parser.getToken();
 
@@ -75,6 +74,13 @@ class DeSerializationForBlock<TraitType::Map, T>
             }
         }
 
+        void scanObject(T& object)
+        {
+            while(hasMoreValue())
+            {
+                parent.scanObjectMembers(key, object);
+            }
+        }
         bool hasMoreValue()
         {
             ParserInterface::ParserToken    tokenType = parser.getToken();
@@ -89,20 +95,38 @@ class DeSerializationForBlock<TraitType::Map, T>
 
             return result;
         }
-        std::string const& getIndex() const
+};
+
+template<typename T>
+class DeSerializationForBlock<TraitType::Value, T>
+{
+    DeSerializer&       parent;
+    ParserInterface&    parser;
+    public:
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
+        {}
+        void scanObject(T& object)
         {
-            return key;
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+            if (tokenType != ParserInterface::ParserToken::Value)
+            {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Value>::DeSerializationForBlock: Invalid Object");
+            }
+            parser.getValue(object);
         }
 };
 
 template<typename T>
 class DeSerializationForBlock<TraitType::Array, T>
 {
+    DeSerializer&    parent;
     ParserInterface& parser;
     std::size_t      index;
     public:
-        DeSerializationForBlock(ParserInterface& parser)
-            : parser(parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
             , index(-1)
         {
             ParserInterface::ParserToken    tokenType = parser.getToken();
@@ -112,6 +136,13 @@ class DeSerializationForBlock<TraitType::Array, T>
             }
         }
 
+        void scanObject(T& object)
+        {
+            while(hasMoreValue())
+            {
+                parent.scanObjectMembers(index, object);
+            }
+        }
         bool hasMoreValue()
         {
             ParserInterface::ParserToken    tokenType = parser.getToken();
@@ -123,19 +154,7 @@ class DeSerializationForBlock<TraitType::Array, T>
             }
             return result;
         }
-        std::size_t const& getIndex() const
-        {
-            return index;
-        }
 };
-
-template<typename T>
-class DeSerializationForBlock<TraitType::Parent, T>: public DeSerializationForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>
-{
-    public:
-        using DeSerializationForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>::DeSerializationForBlock;
-};
-
 
 /* ------------ DeSerializeMember ------------------------- */
 
@@ -235,47 +254,80 @@ inline void DeSerializer::scanObjectMembers(I const& key, T& object)
 template<typename T>
 inline void DeSerializer::parse(T& object)
 {
-    DeSerializationForBlock<Traits<T>::type, T>     block(parser);
-
-    while(block.hasMoreValue())
-    {
-        scanObjectMembers(block.getIndex(), object);
-    }
+    DeSerializationForBlock<Traits<T>::type, T>     block(*this, parser);
+    block.scanObject(object);
 }
 
 /* ------------ SerializerForBlock ------------------------- */
 
-template<typename T>
-class SerializerForBlock<TraitType::Value, T>
+template<TraitType traitType, typename T>
+class SerializerForBlock
 {
+    static_assert(
+        traitType != TraitType::Invalid,
+        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
+    );
+
+    Serializer&         parent;
+    PrinterInterface&   printer;
+    T const&            object;
     public:
-         SerializerForBlock(PrinterInterface&,T const&) {}
-        ~SerializerForBlock()                           {}
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer, T const& object)
+            : parent(parent)
+            , printer(printer)
+            , object(object)
+        {
+            printer.openMap();
+        }
+        ~SerializerForBlock()
+        {
+            printer.closeMap();
+        }
+        void printMembers()
+        {
+            parent.printObjectMembers(object);
+        }
 };
 
 template<typename T>
-class SerializerForBlock<TraitType::Map, T>
+class SerializerForBlock<TraitType::Value, T>
 {
-    PrinterInterface& printer;
+    PrinterInterface&   printer;
+    T const&            object;
     public:
-        SerializerForBlock(PrinterInterface& printer, T const&): printer(printer)   {printer.openMap(); }
-        ~SerializerForBlock()                                                       {printer.closeMap();}
+        SerializerForBlock(Serializer&, PrinterInterface& printer,T const& object)
+            : printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()   {}
+        void printMembers()
+        {
+            printer.addValue(object);
+        }
 };
 
 template<typename T>
 class SerializerForBlock<TraitType::Array, T>
 {
+    Serializer&         parent;
     PrinterInterface& printer;
+    T const&            object;
     public:
-        SerializerForBlock(PrinterInterface& printer, T const& o): printer(printer) {printer.openArray(o.size());}
-        ~SerializerForBlock()                                                       {printer.closeArray();}
-};
-
-template<typename T>
-class SerializerForBlock<TraitType::Parent, T>: public SerializerForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>
-{
-    public:
-        using SerializerForBlock<Traits<typename Traits<T>::Parent>::type, typename Traits<T>::Parent>::SerializerForBlock;
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer, T const& object)
+            : parent(parent)
+            , printer(printer)
+            , object(object)
+        {
+            printer.openArray(object.size());
+        }
+        ~SerializerForBlock()
+        {
+            printer.closeArray();
+        }
+        void printMembers()
+        {
+            parent.printObjectMembers(object);
+        }
 };
 
 /* ------------ SerializeMember ------------------------- */
@@ -348,8 +400,8 @@ inline void Serializer::printMembers(T const& object, Action action)
 template<typename T>
 inline void Serializer::print(T const& object)
 {
-    SerializerForBlock<Traits<T>::type, T>     block(printer, object);
-    printObjectMembers(object);
+    SerializerForBlock<Traits<T>::type, T>     block(*this, printer, object);
+    block.printMembers();
 }
 
 template<TraitType type>

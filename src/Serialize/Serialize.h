@@ -121,15 +121,6 @@ class ApplyActionToParent
         void scanParentMember(DeSerializer&, I const&, T&)        {}
 };
 
-template<TraitType traitType, typename T>
-class DeSerializationForBlock
-{
-    static_assert(
-        traitType != TraitType::Invalid,
-        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
-    );
-};
-
 template<typename T, typename M, TraitType type = Traits<M>::type>
 class DeSerializeMember
 {
@@ -161,15 +152,6 @@ class DeSerializer
 
         template<typename T, typename I>
         void scanObjectMembers(I const& key, T& object);
-};
-
-template<TraitType traitType, typename T>
-class SerializerForBlock
-{
-    static_assert(
-        traitType != TraitType::Invalid,
-        "Invalid Serialize TraitType. This usually means you have not define ThorsAnvil::Serialize::Traits<Your Type>"
-    );
 };
 
 template<typename T, typename M, TraitType type = Traits<typename std::remove_cv<M>::type>::type>
