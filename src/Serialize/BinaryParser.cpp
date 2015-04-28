@@ -1,5 +1,6 @@
 
 #include "BinaryParser.h"
+#include <sstream>
 
 using namespace ThorsAnvil::Serialize;
 
@@ -46,7 +47,13 @@ ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserSt
                 ++position;
                 return pushNextState(position - 1, parser, state, ParserToken::Value);
             default:
-                throw std::runtime_error("KKK");
+            {
+                std::stringstream  message;
+                message << "ThorsAnvil::Serialize::BinaryParserUtilBase::getNextToken:"
+                        << " Was expecting Key/Value"
+                        << " Got: ParserToken(" << static_cast<int>(nextToken) << ")";
+                throw std::runtime_error(message.str());
+            }
         }
     }
     if (!finished)
