@@ -12,7 +12,7 @@ before_install:
     - sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
     - rm gitmodules.old
 install:
-    - ./configure
+    - ./configure --with-thors-network-byte-order
 script:
     - make 
 branches:
