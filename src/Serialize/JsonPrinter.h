@@ -1,6 +1,10 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_JSON_PRINTER_H
 #define THORS_ANVIL_SERIALIZE_JSON_PRINTER_H
+/*
+ * JsonaryPrinter<T>
+ *  See documentation in JsonParser.h
+ */
 
 #include "Serialize.h"
 #include <vector>

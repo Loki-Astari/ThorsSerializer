@@ -1,6 +1,22 @@
 
 #ifndef THORS_ANIVL_SERIALIZE_YAML_PARSER_H
 #define THORS_ANIVL_SERIALIZE_YAML_PARSER_H
+/*
+ * YamlParser<T>
+ *      This is used in conjunction with YamlPrinter<T> 
+ *
+ *      Together these provide an implementation of:
+ *          the ParserInterface for type T
+ *          and PrinterInterface for type T
+ *
+ *      These Interfaces are used by Serializer and DeSerializer (see Serialize.h)
+ *
+ *      It uses ThorsAnvil::Serialize::Traits<T> to know what objects to pull from the stream.
+ *      For arrays order is important.
+ *      For Objects the order of elements is not important. It looks up the key in the Traits<T>
+ *      information to understand which member is being de-serialized but unspecified elements
+ *      will not cause an error.
+ */
 
 #include "../../config.h"
 #ifdef HAVE_YAML

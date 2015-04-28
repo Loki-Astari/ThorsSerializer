@@ -1,6 +1,27 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
 #define THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
+/*
+ * BinaryParser<T>
+ *      This is used in conjunction with BinaryPrinter<T> 
+ *
+ *      Together these provide an implementation of:
+ *          the ParserInterface for type T
+ *          and PrinterInterface for type T
+ *
+ *      These Interfaces are used by Serializer and DeSerializer (see Serialize.h)
+ *
+ *      It uses ThorsAnvil::Serialize::Traits<T> to know what objects to pull from the stream.
+ *      The binary representation stores only the data (no member names); because of this the
+ *      data is stored/read in a particular order. To make sure that the data being read matches
+ *      the data being stored a hash based on the Traits is generated and stored as a prefix to
+ *      the data. This allows the parser to validate it is reading the same object that was stored.
+ *      
+ *      This uses BinaryParserUtil<T> to do that actual work of parsing and generating the appropriate
+ *      tokens needed by a user of the ParserInterface. If an member is a serializeable user type `U` we
+ *      push BinaryParserUtil<U> onto the stack for generating tokens. When all tokens have been generated
+ *      the object is popped from the stack.
+ */
 
 #include "../../config.h"
 #ifdef NETWORK_BYTE_ORDER

@@ -1,6 +1,10 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_IMPORTER_H
 #define THORS_ANVIL_SERIALIZE_IMPORTER_H
+/*
+ * The Importer simply wrap an object of type T so that when de-serialized
+ * it creates an object of type DeSerializer and calls it appropriately.
+ */
 
 #include "Serialize.h"
 

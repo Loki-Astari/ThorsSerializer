@@ -1,6 +1,23 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_UNICODE_ITERATOR_H
 #define THORS_ANVIL_SERIALIZE_UNICODE_ITERATOR_H
+/*
+ * An iterator used to scan the inside of a quoted string.
+ * It will convert all escaped characters into the actual UTF-8 character.
+ *
+ * ie \n    Will be converted to the actual newline character code.
+ *    \uxxx Will be converted into the unicode code point xxxx encoded in UTF-8
+ *          Note: (which may take be more than one character lone).
+ *
+ * Usage:
+ *
+ *  std::string     input    = readQuotedTextFromInput();
+ *  std::string     text1(make_UnicodeWrapperIterator(std::begin(input)), make_UnicodeWrapperIterator(std::end(input)));
+ *
+ *  // Or
+ *  std::string     text;
+ *  std::copy(std::bin(input), std::end(input), make_UnicodePushBackIterator(text));
+ */
 
 #include <iterator>
 

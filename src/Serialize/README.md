@@ -2,8 +2,7 @@
 #ThorSerialize
 
 This is a framework for serializing C++ objects to/from stream in some "standard formats" efficiently.
-Standard Formats: Currently supported are Json/Yaml/Binary
-
+Standard Formats: Currently supported are Json/Yaml/Binary(Experimental)
 
 It is designed so that no intermediate format it used; data is read directly from the object and placed on the stream, conversely data is read directly from the stream into C++ objects. Note because C++ container con only hold fully formed objects, data is read into temporary object then inserted (moved if possible otherwise copied) into the container.
 
@@ -15,14 +14,14 @@ The serialization class reads/writes built-in data by default and reads/writes t
 ##Usage
 
 There are two main functions for export and import that can be used with streams.
-
+```C++ XXX
     <formatName>Export(<object>)    eg   jsonExport(o)
     <formatNAme>Import(<object>)    eg   jsonImport(o)
-
+```
 The object part of the above declaration is any object that has a type with ThorsAnvil::Serialize::Traits<> declaration defined for that type. Traits declarations are already provided for all std:: container types and it is simple to provide declarations for user defined types (See below).
 
 A simple example of usage would be (link against libThorSerialize14.dynlib)
-    
+```C++
     #include "ThorSerialize/SerUtil.h"
     #include "ThorSerialize/JsonThor.h"
     #include <vector>
@@ -35,13 +34,16 @@ A simple example of usage would be (link against libThorSerialize14.dynlib)
         std::cout << TS::jsonExport(data) << "\n";
     }
 
+    // Output
+    [1, 2, 3, 4, 5, 6, 7, 8]
+```
 ##User declared Types
 
 User defined classes can be made serialize-able by defining a specialization of the class ThorsAnvil::Serialize::Traits<>.
 The macros `ThorsAnvil_MakeTrait` is provided to simplify this for most standard situations. Yes I know macros are nasty. But the idea is to make usage easier and hide the real work. So the macro takes the names of the members (and generates that appropriate type information from the names). A more detailed explanation of how to build a Traits class by hand is provided below.
 
 A simple example of a traits class definition for a user defined type.
-
+```C++
     #include "ThorSerialize/Traits.h"
     
     namespace TS = ThorsAnvil::Serialize;
@@ -66,9 +68,10 @@ A simple example of a traits class definition for a user defined type.
     // This macros crates the appropriate Traits class specialized for the
     // user defined class allowing it to be used by jsonImport() and jsonExport()
     ThorsAnvil_MakeTrait(MyClass, member1, data2, name);
+```
 
 This is all that is need to make a class serialize-able.
-
+```C++
     #include "ThorSerialize/SerUtil.h"
     #include "ThorSerialize/JsonThor.h"
     #include <vector>
@@ -81,6 +84,9 @@ This is all that is need to make a class serialize-able.
         std::cout << TS::jsonExport(object) << "\n";
     }
 
+    // Output
+    {"member1":15, "data2": 100.123, "name":"A string"}
+```
 ## Members
 
 A serialize-able class can be a member/parent or contained in another serialize-able with no additional work.
@@ -96,6 +102,9 @@ A serialize-able class can be a member/parent or contained in another serialize-
         std::vector<MyClass>    vec1{ {23, 89.99, "obj1"}, {67, 89.98. "obj2"}, {32, 23.45, "obj3"}};
         std::cout << TS::jsonExport(vec1) << "\n";
     }
+
+    // Output
+    [{"member1":23, "data2": 89.99, "name":"obj1"}, {"member1":67, "data2": 89.98, "name":"obj2"}, {"member1":32, "data2": 23.45, "name":"obj3"}]
 
 ## Inheriting
 
@@ -131,9 +140,7 @@ The only real difference is exchanging the `ThorsAnvil_MakeTrait` for `ThorsAnvi
 
 ## Serialization Formats
 
-Currently the framework exposes two specific format types (Json/Yaml). But it has been designed to be easily extended to support other formats that may be useful. The basis for other formats is defined via the ParserInterface and PrinterInterface classes.
-
-
+Currently the framework exposes three specific format types (Json/Yaml/Binary). But it has been designed to be easily extended to support other formats that may be useful. The basis for other formats is defined via the ParserInterface and PrinterInterface classes.
 
 
 A framework for implementing parsers onto.
