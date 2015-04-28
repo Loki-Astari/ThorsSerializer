@@ -27,36 +27,18 @@ Yet another JSON serialization library for C++
 
 https://gist.github.com/Loki-Astari/8201956
 
-###Build instructions (SIMPLE)
-
-    make -f MakeSimple
-    # Note this build a Serialize.a library
-    #       No tests are run and no coverage test are done.
-    #       The serialize library are mostly header files so you will still need these
-    #       to include these from your own files.
-
 ###Building Notes:
-    This project can also use ThorMaker (which is just a set of makefiles) to build
-    This not only builds the code but runs unit tests and checks the code coverage of the unit tests.
+
+    I have moved away from trying to install tools/libs that are needed.
+    Rather I am using auto-tools to validate the state of the system for tools/libs required.
+    If you are missing any dependencies then this should generate errors during configuration
+    that you must resolve.
 
     Build instructions:
     ###################
-
-    # Set up required 3rd party libraries boost/gtest
-    cd third
-    ./setup
-
-
-    # The following builds the Json parser and installs the
-    # release and debug libraries into build/lib and external headers into build/include
-    cd ../Json
+    ./configure
+    make test
     make install
-
-    # The following builds the Serialization libs and installs the
-    # release and debug libraries into build/lib and external headers into build/include
-    cd ../Serialize
-    make install
-
 
 ###Example: C++11 (see code in test.cpp for full code)
 
