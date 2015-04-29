@@ -1,6 +1,10 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_EXPORTER_H
 #define THORS_ANVIL_SERIALIZE_EXPORTER_H
+/*
+ * The Exporter simply wrap an object of type T so that when serialized
+ * it creates an object of type Serializer and calls it appropriately.
+ */
 
 #include "Serialize.h"
 

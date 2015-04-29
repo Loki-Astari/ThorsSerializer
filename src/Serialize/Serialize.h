@@ -2,6 +2,36 @@
 #ifndef THORS_ANVIL_SERIALIZE_SERIALIZE_H
 #define THORS_ANVIL_SERIALIZE_SERIALIZE_H
 
+/*
+ * This is the guts of the serialization code.
+ *
+ * It uses template meta programming to generate the appropriate code to
+ * serialize a type T. Thus most of the code required is generated at compile
+ * time (there is a small run time overhead for Json/Yaml and a smaller
+ * overhead for Binary).
+ *
+ * The type ThorsAnvil::Serialize::Traits<T> is used to generate the code to
+ * serialize an object of type T. If there is not specializations of the
+ * Traits<T> for the type T the default version will generate a compile time
+ * error (with hopefully a useful message).
+ *
+ * The code is Symetrical for Serialization and DeSerialization
+ *
+ *      Serialization                       DeSerialization                 Description
+ *      =======================             =======================         ===========================
+ *      PrinterInterface                    ParserInterface                 Implemented by a particular format.
+ *                                                                          The Printer is passed a set of Open/Close/Values
+ *                                                                          The Parser generates a set of Open/Close/Values
+ *      Serializer                          DeSerializer                    The base class the calls the Printer/Parser
+ *                                                                          Serializer will print an object by generating the
+ *                                                                          appropriate calls to the Printer based on the shape
+ *                                                                          of the object. Deserializer ask the parser for a
+ *                                                                          sequence of events from the input stream and converts
+ *                                                                          these into updates on the object.
+ *      SerializeMember                     DeSerializeMember               Generated (at compile time) from the Traits<T> information
+ *                                                                          for each member that needs to be printed/parsed
+ */
+
 #include <iostream>
 #include "Traits.h"
 

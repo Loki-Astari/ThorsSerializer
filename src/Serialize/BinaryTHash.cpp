@@ -1,8 +1,12 @@
 
-#include "THash.h"
+#include "BinaryTHash.h"
 
 #ifdef COVERAGE_TEST
-#include "THash.tpp"
+/*
+ * This code is only compiled into the unit tests for code coverage purposes
+ * It is not part of the live code.
+ */
+#include "BinaryTHash.tpp"
 #include "test/THashTest.h"
 #include "test/BinaryParserTest.h"
 

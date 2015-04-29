@@ -1,12 +1,33 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
 #define THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
+/*
+ * BinaryParser<T>
+ *      This is used in conjunction with BinaryPrinter<T> 
+ *
+ *      Together these provide an implementation of:
+ *          the ParserInterface for type T
+ *          and PrinterInterface for type T
+ *
+ *      These Interfaces are used by Serializer and DeSerializer (see Serialize.h)
+ *
+ *      It uses ThorsAnvil::Serialize::Traits<T> to know what objects to pull from the stream.
+ *      The binary representation stores only the data (no member names); because of this the
+ *      data is stored/read in a particular order. To make sure that the data being read matches
+ *      the data being stored a hash based on the Traits is generated and stored as a prefix to
+ *      the data. This allows the parser to validate it is reading the same object that was stored.
+ *      
+ *      This uses BinaryParserUtil<T> to do that actual work of parsing and generating the appropriate
+ *      tokens needed by a user of the ParserInterface. If an member is a serializeable user type `U` we
+ *      push BinaryParserUtil<U> onto the stack for generating tokens. When all tokens have been generated
+ *      the object is popped from the stack.
+ */
 
 #include "../../config.h"
 #ifdef NETWORK_BYTE_ORDER
 
 #include "Serialize.h"
-#include "THash.h"
+#include "BinaryTHash.h"
 #include "ThorBinaryRep/BinaryRep.h"
 #include <iostream>
 #include <vector>
@@ -109,7 +130,7 @@ class BinaryParserUtil<T, TraitType::Array>: public BinaryParserUtilBase
     public:
         BinaryParserUtil(bool root = true);
         std::size_t readSize(ParserInterface&)      override;
-        std::string getKeyFor(std::size_t) override {throw std::runtime_error("Should Never Get Here");}
+        std::string getKeyFor(std::size_t) override {throw std::runtime_error("ThorsAnvil::Serialize::BinaryParserUtil<Array>::getKey: ForShould Never Get Here");}
         ParserToken pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm) override;
 };
 
@@ -139,7 +160,7 @@ class BinaryParser: public ParserInterface
         input.read(reinterpret_cast<char*>(&netwworkValue), sizeof(Obj));
         if (!input || input.gcount() != sizeof(Obj))
         {
-            throw std::runtime_error("Unexpected read failure");
+            throw std::runtime_error("ThorsAnvil::Serialize::BinaryParser::read: Unexpected read failure");
         }
         return netwworkValue;
     }
@@ -159,7 +180,7 @@ class BinaryParser: public ParserInterface
             std::size_t hash   = TBin::net2Host(read<TBin::BinForm32>());
             std::size_t expect = std::uint32_t(thash<T>());
             if (hash != expect) {
-                throw "Fail";
+                throw std::runtime_error("ThorsAnvil::Serialize::BinaryParser::BinaryParser: input hash for binary object did not match");
             }
             
             state.emplace_back(new BinaryParserUtil<T>());

@@ -1,6 +1,22 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_JSON_PARSER_H
 #define THORS_ANVIL_SERIALIZE_JSON_PARSER_H
+/*
+ * JsonParser<T>
+ *      This is used in conjunction with JsonPrinter<T> 
+ *
+ *      Together these provide an implementation of:
+ *          the ParserInterface for type T
+ *          and PrinterInterface for type T
+ *
+ *      These Interfaces are used by Serializer and DeSerializer (see Serialize.h)
+ *
+ *      It uses ThorsAnvil::Serialize::Traits<T> to know what objects to pull from the stream.
+ *      For arrays order is important.
+ *      For Objects the order of elements is not important. It looks up the key in the Traits<T>
+ *      information to understand which member is being de-serialized but unspecified elements
+ *      will not cause an error.
+ */
 
 #include "Serialize.h"
 #include "JsonLexer.h"

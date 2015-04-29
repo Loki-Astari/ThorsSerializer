@@ -1,6 +1,19 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_TRAITS_H
 #define THORS_ANVIL_SERIALIZE_TRAITS_H
+/*
+ *  This file is all about defineing the template type Traits<T>
+ *
+ *  Two macros are provides to facilitate the building of Traits<T>
+ *  specializations for user defined types.
+ *
+ *      ThorsAnvil_MakeTrait(DataType, ...)
+ *      ThorsAnvil_ExpandTrait(ParentType, DataType, ...)
+ *
+ * See README.md for examples.
+ */
+
+
 
 #include <string>
 #include <tuple>
@@ -86,13 +99,13 @@ class ::ThorsAnvil::Serialize::Traits<DataType>                         \
         Parent                                                          \
                                                                         \
         using Members = std::tuple<                                     \
-                        REP_N(TypeAction, DataType, ##__VA_ARGS__)        \
+                        REP_N(TypeAction, DataType, ##__VA_ARGS__)      \
                                     >;                                  \
                                                                         \
         static Members const& getMembers()                              \
         {                                                               \
             static constexpr Members members{                           \
-                        REP_N(ValueAction, DataType, ##__VA_ARGS__)       \
+                        REP_N(ValueAction, DataType, ##__VA_ARGS__)     \
                                             };                          \
             return members;                                             \
         }                                                               \

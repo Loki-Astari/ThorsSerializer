@@ -12,9 +12,7 @@ before_install:
     - sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
     - rm gitmodules.old
 install:
-    - pushd third
-    - ./setup
-    - popd
+    - ./configure
 script:
     - make 
 branches:

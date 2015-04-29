@@ -2,9 +2,9 @@
 
 #include "gtest/gtest.h"
 #include "test/BinaryParserTest.h"
-#include "../Binary.h"
-#include "../Json.h"
-#include "../Yaml.h"
+#include "BinaryThor.h"
+#include "JsonThor.h"
+#include "YamlThor.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;

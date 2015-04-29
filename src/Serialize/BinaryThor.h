@@ -1,6 +1,16 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_H
 #define THORS_ANVIL_SERIALIZE_BINARY_H
+/*
+ * Defines the Binary Serialization interface
+ *      ThorsAnvil::Serialize::Binary
+ *      ThorsAnvil::Serialize::binExport
+ *      ThorsAnvil::Serialize::binImport
+ *
+ * Usage:
+ *      std::cout << binExport(object); // converts object to Binary on an output stream
+ *      std::cin  >> binImport(object); // converts Binary to a C++ object from an input stream
+ */
 
 #include "../../config.h"
 #ifdef NETWORK_BYTE_ORDER

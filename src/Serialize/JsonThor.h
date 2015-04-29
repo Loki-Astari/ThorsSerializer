@@ -1,6 +1,16 @@
 
 #ifndef THORS_ANVIL_SERIALIZE_JSON_H
 #define THORS_ANVIL_SERIALIZE_JSON_H
+/*
+ * Defines the Json Serialization interface
+ *      ThorsAnvil::Serialize::Json
+ *      ThorsAnvil::Serialize::jsonExport
+ *      ThorsAnvil::Serialize::jsonImport
+ *
+ * Usage:
+ *      std::cout << jsonExport(object); // converts object to Json on an output stream
+ *      std::cin  >> jsonImport(object); // converts Json to a C++ object from an input stream
+ */
 
 #include "JsonParser.h"
 #include "JsonPrinter.h"

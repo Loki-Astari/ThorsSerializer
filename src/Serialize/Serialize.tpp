@@ -52,6 +52,10 @@ class ApplyActionToParent<TraitType::Parent, T, I>
 };
 /* ------------ DeSerializationForBlock ------------------------- */
 
+/*
+ * The default Block is a mapping of "Map" to "Object"
+ * We expect an OpenMap followed by a set of Key/Value pairs followed by CloseMap
+ */
 template<TraitType traitType, typename T>
 class DeSerializationForBlock
 {
@@ -97,6 +101,11 @@ class DeSerializationForBlock
         }
 };
 
+/*
+ * Specialization for Value.
+ * This is only used at the top level.
+ * There is no open or close. Just a single value is expected.
+ */
 template<typename T>
 class DeSerializationForBlock<TraitType::Value, T>
 {
@@ -117,6 +126,12 @@ class DeSerializationForBlock<TraitType::Value, T>
         }
 };
 
+/*
+ * Specialization for Array.
+ * It is like Map expect that there are no Keys.
+ * This made it different enough that combining this into a single
+ * function was messy.
+ */
 template<typename T>
 class DeSerializationForBlock<TraitType::Array, T>
 {

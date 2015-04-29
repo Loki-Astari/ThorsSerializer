@@ -1,7 +1,7 @@
 
 
 #include "gtest/gtest.h"
-#include "Json.h"
+#include "JsonThor.h"
 #include "SerUtil.h"
 #include <algorithm>
 

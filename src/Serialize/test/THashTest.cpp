@@ -1,7 +1,7 @@
 
 #include "gtest/gtest.h"
 #include "THashTest.h"
-#include "THash.h"
+#include "BinaryTHash.h"
 
 namespace TS=ThorsAnvil::Serialize;
 
