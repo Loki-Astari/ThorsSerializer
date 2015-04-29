@@ -4086,6 +4086,9 @@ fi
 rm -f conftest.l $LEX_OUTPUT_ROOT.c
 
 fi
+if test "${LEX}" != "flex"; then
+        as_fn_error $? "This package needs flex (please install)" "$LINENO" 5
+fi
 case `pwd` in
   *\ * | *\	*)
     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5

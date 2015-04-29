@@ -12,6 +12,9 @@ AC_CONFIG_SRCDIR([src/Serialize/JsonParser.cpp])
 AC_PROG_CXX
 AX_THOR_PROG_COV
 AC_PROG_LEX
+if test "${LEX}" != "flex"; then
+        AC_MSG_ERROR([This package needs flex (please install)])
+fi
 LT_INIT
 
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], [])
