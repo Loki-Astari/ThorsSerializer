@@ -30,7 +30,7 @@ template std::size_t ThorsAnvil::Serialize::thash<long double>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<float>(std::size_t);
 
 template std::size_t ThorsAnvil::Serialize::thash<bool>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<std::string>(std::size_t);
 
 template std::size_t ThorsAnvil::Serialize::thash<Base>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<Derived>(std::size_t);
