@@ -8,6 +8,7 @@
 #include "Serialize.h"
 #include <yaml.h>
 #include <vector>
+#include <memory>
 
 namespace ThorsAnvil
 {

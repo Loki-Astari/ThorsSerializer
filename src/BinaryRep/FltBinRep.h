@@ -3,9 +3,10 @@
 #define   THORS_ANVIL_BINARY_REP_FLT_BIN_REP_H
 
 
-#include <cmath>
 #include "BinaryFormat.h"
 #include "IntBinRep.h"
+#include <cmath>
+#include <limits>
 namespace ThorsAnvil
 {
     namespace BinaryRep

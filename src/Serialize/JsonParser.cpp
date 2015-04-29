@@ -4,6 +4,7 @@
 #include "UnicodeIterator.h"
 #include <map>
 #include <cstdlib>
+#include <cstring>
 
 // enum class ParserToken {Error, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
 using namespace ThorsAnvil::Serialize;
@@ -126,7 +127,7 @@ ParserToken JsonParser::getNextToken()
     // If we hit anything else there was a serious problem in the
     // parser itself.
     throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Reached an Unnamed State");
-};
+}
 
 std::string JsonParser::getString()
 {
@@ -172,11 +173,11 @@ void JsonParser::getValue(long double& value)                   {value = scan<lo
 
 void JsonParser::getValue(bool& value)
 {
-    if (lexer.YYLeng() == 4 && strncmp(lexer.YYText(), "true", 4) == 0)
+    if (lexer.YYLeng() == 4 && std::strncmp(lexer.YYText(), "true", 4) == 0)
     {
         value = true;
     }
-    else if (lexer.YYLeng() == 5 && strncmp(lexer.YYText(), "false", 5) == 0)
+    else if (lexer.YYLeng() == 5 && std::strncmp(lexer.YYText(), "false", 5) == 0)
     {
         value = false;
     }

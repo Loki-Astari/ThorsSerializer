@@ -6,6 +6,7 @@
 #include "JsonThor.h"
 #include <cstring>
 #include <string>
+#include <algorithm>
 
 
 std::string const testData1 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done"})";

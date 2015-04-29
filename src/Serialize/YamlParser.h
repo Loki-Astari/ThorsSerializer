@@ -25,6 +25,7 @@
 #include <yaml.h>
 #include <istream>
 #include <vector>
+#include <functional>
 
 namespace ThorsAnvil
 {

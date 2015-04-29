@@ -31,6 +31,7 @@
 #include "ThorBinaryRep/BinaryRep.h"
 #include <iostream>
 #include <vector>
+#include <memory>
 
 namespace TBin  = ThorsAnvil::BinaryRep;
 namespace ThorsAnvil

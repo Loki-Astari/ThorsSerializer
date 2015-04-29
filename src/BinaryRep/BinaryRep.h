@@ -5,6 +5,7 @@
 #include "BinaryFormat.h"
 #include "IntBinRep.h"
 #include "FltBinRep.h"
+#include <climits>
 
 namespace ThorsAnvil
 {
