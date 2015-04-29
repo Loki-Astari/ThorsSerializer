@@ -5,6 +5,8 @@
 #include "../../config.h"
 #ifdef NETWORK_BYTE_ORDER
 
+#include "Traits.h"
+
 namespace ThorsAnvil
 {
     namespace Serialize
@@ -16,7 +18,7 @@ template<typename R>
 class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Map>
 {
     public:
-    void operator()(BinaryParserMapParentCommon& obj)
+    void operator()(BinaryParserMapParentCommon<T>& obj)
     {   
         using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;
         obj.fill(Traits::getMembers());
@@ -28,9 +30,9 @@ template<typename R>
 class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Parent>
 {
     public:
-    void operator()(BinaryParserMapParentCommon& obj)
+    void operator()(BinaryParserMapParentCommon<T>& obj)
     {   
-        MemberAdder<typename Traits::Parent>    addParent;
+        MemberAdder<typename ThorsAnvil::Serialize::Traits<T>::Parent>    addParent;
         addParent(obj);
 
         using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;

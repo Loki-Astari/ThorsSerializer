@@ -91,8 +91,9 @@
  * Lists the members of the type that can be serialized.
  */
 #define ThorsAnvil_MakeTrait_Base(DataType, Parent, TType, ...)         \
+namespace ThorsAnvil { namespace Serialize {                            \
 template<>                                                              \
-class ::ThorsAnvil::Serialize::Traits<DataType>                         \
+class Traits<DataType>                                                  \
 {                                                                       \
     public:                                                             \
         static constexpr TraitType type = TraitType::TType;             \
@@ -110,7 +111,7 @@ class ::ThorsAnvil::Serialize::Traits<DataType>                         \
             return members;                                             \
         }                                                               \
 };                                                                      \
-                                                                        \
+}}                                                                      \
 static_assert(                                                                                      \
     ::ThorsAnvil::Serialize::Traits<DataType>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."                            \
