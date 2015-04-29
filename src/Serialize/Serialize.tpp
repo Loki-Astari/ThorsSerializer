@@ -242,7 +242,8 @@ inline DeSerializer::~DeSerializer()
 template<typename T, typename Members, std::size_t... Seq>
 inline void DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    std::make_tuple(make_DeSerializeMember(parser, key, object, std::get<Seq>(member))...);
+    auto discard = {(make_DeSerializeMember(parser, key, object, std::get<Seq>(member)),1)...};
+    (void)discard;
 }
 
 template<typename T, typename... Members>
@@ -261,7 +262,7 @@ template<typename T, typename I>
 inline void DeSerializer::scanObjectMembers(I const& key, T& object)
 {
     ApplyActionToParent<Traits<T>::type, T, I>     parentScanner;
-    
+
     parentScanner.scanParentMember(*this, key, object);
     scanMembers(key, object, Traits<T>::getMembers());
 }
@@ -397,7 +398,8 @@ inline Serializer::~Serializer()
 template<typename T, typename Members, std::size_t... Seq>
 inline void Serializer::printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    std::make_tuple(make_SerializeMember(printer, object, std::get<Seq>(member))...);
+    auto discard = {(make_SerializeMember(printer, object, std::get<Seq>(member)),1)...};
+    (void)discard;
 }
 
 template<typename T, typename... Members>
