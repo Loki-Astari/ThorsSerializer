@@ -27,10 +27,11 @@ typedef     std::uint64_t       BinForm64;
 typedef     std::uint128_t      BinForm128;
 std::uint128_t BinForm128High(long long int)    {return value << 64;}
 #else
-template<int cmp = sizeof(long long int) <= 8>
+constexpr bool isBigEnough() {return sizeof(long long int) > 8;}
+template<bool cmp = isBigEnough()>
 inline constexpr BinForm64 hiWord(long long int value);
-template<> inline constexpr BinForm64 hiWord<true >(long long int)            {return 0;}
-template<> inline constexpr BinForm64 hiWord<false>(long long int value)      {return value >> 64;}
+template<> inline constexpr BinForm64 hiWord<false>(long long int)            {return 0;}
+template<> inline constexpr BinForm64 hiWord<true >(long long int value)      {return value >> (isBigEnough() ? 64 : 0);}
            inline constexpr BinForm64 loWord(long long int value)             {return value;}
 
 struct BinForm128
