@@ -35,6 +35,6 @@ int main() {
 
 
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([ src/Serialize/SerializeConfig.h src/BinaryRep/BinaryRepConfig.h ])
 AC_CONFIG_FILES([Makefile.extra Makefile.config])
 AC_OUTPUT

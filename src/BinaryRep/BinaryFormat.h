@@ -2,6 +2,8 @@
 #ifndef   THORS_ANVIL_BINARY_REP_BINARY_FORMAT_H
 #define   THORS_ANVIL_BINARY_REP_BINARY_FORMAT_H
 
+#include "BinaryRepConfig.h"
+
 /*
  *  We want to represent up to 128 bit values.
  *

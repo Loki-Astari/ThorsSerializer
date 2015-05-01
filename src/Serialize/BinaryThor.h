@@ -12,7 +12,7 @@
  *      std::cin  >> binImport(object); // converts Binary to a C++ object from an input stream
  */
 
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 
 #include "BinaryParser.h"

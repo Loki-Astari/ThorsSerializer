@@ -2,7 +2,7 @@
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PARSER_TPP
 #define THORS_ANVIL_SERIALIZE_BINARY_PARSER_TPP
 
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 
 #include "Traits.h"

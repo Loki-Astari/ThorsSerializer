@@ -1,4 +1,4 @@
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 
 #include "gtest/gtest.h"

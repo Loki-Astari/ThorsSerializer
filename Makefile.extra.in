@@ -106,7 +106,8 @@ DIST_COMMON = $(srcdir)/Makefile.extra.am $(top_srcdir)/configure \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_HEADER = config.h
+CONFIG_HEADER = $(top_builddir)/src/Serialize/SerializeConfig.h \
+	$(top_builddir)/src/BinaryRep/BinaryRepConfig.h
 CONFIG_CLEAN_FILES = Makefile.config
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
@@ -144,8 +145,7 @@ am__recursive_targets = \
   $(am__extra_recursive_targets)
 AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \
 	cscope distdir dist dist-all distcheck
-am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) \
-	$(LISP)config.h.in
+am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
 # *not* preserved.
@@ -167,13 +167,15 @@ CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.config.in \
-	$(srcdir)/Makefile.extra.in $(srcdir)/config.h.in \
+	$(srcdir)/Makefile.extra.in \
 	$(top_srcdir)/build/autotools/build/compile \
 	$(top_srcdir)/build/autotools/build/config.guess \
 	$(top_srcdir)/build/autotools/build/config.sub \
 	$(top_srcdir)/build/autotools/build/install-sh \
 	$(top_srcdir)/build/autotools/build/ltmain.sh \
 	$(top_srcdir)/build/autotools/build/missing \
+	$(top_srcdir)/src/BinaryRep/BinaryRepConfig.h.in \
+	$(top_srcdir)/src/Serialize/SerializeConfig.h.in \
 	build/autotools/build/ar-lib build/autotools/build/compile \
 	build/autotools/build/config.guess \
 	build/autotools/build/config.sub \
@@ -360,8 +362,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src
-all: config.h
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+all: all-recursive
 
 .SUFFIXES:
 am--refresh: Makefile.extra
@@ -398,20 +399,28 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
 
-config.h: stamp-h1
-	@test -f $@ || rm -f stamp-h1
-	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) stamp-h1
+src/Serialize/SerializeConfig.h: src/Serialize/stamp-h1
+	@test -f $@ || rm -f src/Serialize/stamp-h1
+	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) src/Serialize/stamp-h1
 
-stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
-	@rm -f stamp-h1
-	cd $(top_builddir) && $(SHELL) ./config.status config.h
-$(srcdir)/config.h.in:  $(am__configure_deps) 
+src/Serialize/stamp-h1: $(top_srcdir)/src/Serialize/SerializeConfig.h.in $(top_builddir)/config.status
+	@rm -f src/Serialize/stamp-h1
+	cd $(top_builddir) && $(SHELL) ./config.status src/Serialize/SerializeConfig.h
+$(top_srcdir)/src/Serialize/SerializeConfig.h.in:  $(am__configure_deps) 
 	($(am__cd) $(top_srcdir) && $(AUTOHEADER))
-	rm -f stamp-h1
+	rm -f src/Serialize/stamp-h1
 	touch $@
 
+src/BinaryRep/BinaryRepConfig.h: src/BinaryRep/stamp-h2
+	@test -f $@ || rm -f src/BinaryRep/stamp-h2
+	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) src/BinaryRep/stamp-h2
+
+src/BinaryRep/stamp-h2: $(top_srcdir)/src/BinaryRep/BinaryRepConfig.h.in $(top_builddir)/config.status
+	@rm -f src/BinaryRep/stamp-h2
+	cd $(top_builddir) && $(SHELL) ./config.status src/BinaryRep/BinaryRepConfig.h
+
 distclean-hdr:
-	-rm -f config.h stamp-h1
+	-rm -f src/Serialize/SerializeConfig.h src/Serialize/stamp-h1 src/BinaryRep/BinaryRepConfig.h src/BinaryRep/stamp-h2
 Makefile.config: $(top_builddir)/config.status $(srcdir)/Makefile.config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
@@ -720,7 +729,7 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-recursive
-all-am: Makefile.extra config.h
+all-am: Makefile.extra
 installdirs: installdirs-recursive
 installdirs-am:
 install: install-recursive
@@ -823,7 +832,7 @@ ps-am:
 
 uninstall-am:
 
-.MAKE: $(am__recursive_targets) all install-am install-strip
+.MAKE: $(am__recursive_targets) install-am install-strip
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--refresh check check-am clean clean-cscope clean-generic \
