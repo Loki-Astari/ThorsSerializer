@@ -2,6 +2,21 @@
 #ifndef   THORS_ANVIL_BINARY_REP_FLT_BIN_REP_H
 #define   THORS_ANVIL_BINARY_REP_FLT_BIN_REP_H
 
+/*
+undefined reference to
+
+FltBinRepTest.cpp:42
+FltBinRepTest.cpp:90
+FltBinRepTest.cpp:106
+FltBinRepTest.cpp:121
+ThorsAnvil::BinaryRep::FloatConverterTrait<long double>::StorageType ThorsAnvil::BinaryRep::host2NetIEEE<long double, true, 12u, 64u>(long double)
+
+FltBinRepTest.cpp:106
+FltBinRepTest.cpp:121
+long double ThorsAnvil::BinaryRep::net2HostIEEE<long double, true, 12u, 64u>(ThorsAnvil::BinaryRep::FloatConverterTrait<long double>::StorageType)
+*/
+
+
 
 #include "BinaryFormat.h"
 #include "IntBinRep.h"
@@ -20,6 +35,7 @@ struct FloatConverterTrait;
     Double: -> Sign: 1 bit Exponent: 11 bits Significand: 53  bits (52 explicitly stored)
     Quad:   -> Sign: 1 bit Exponent: 15 bits Significand: 113 bits (112 explicitly stored)
 */
+//#error 1
 template<> struct FloatConverterTrait<float>
 {
     static  BinForm32  notANumber()
@@ -151,7 +167,18 @@ template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long doubl
 
     return host2Net(sigBits);
 }
-
+template<>  inline BinForm128 host2NetIEEE<long double, true, 12, 64>(long double value)
+{
+    /* If this function is called it means you have an IEEE-754 integer
+     * But it is not one of the interchange formats defined in  IEEE 754-2008
+     *
+     * This means we are using an extended format IEEE-754 (this is non transportable)
+     *
+     * The size of 64 means you are using IEEE-754 Extended 80 bit floating point format.
+     * This function converts from 80 bits to 128 bits.
+     */
+     return host2NetIEEE<long double, true, 16, 64>(value);
+}
 template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm128 value)
 {
     static BinForm128         expMask     =  BinForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
@@ -206,6 +233,10 @@ template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm12
     long double result      = std::ldexp(significant, exp);
 
     return result;
+}
+template<>  inline long double net2HostIEEE<long double, true, 12, 64>(BinForm128 value)
+{
+	return net2HostIEEE<long double, true, 16,64>(value);
 }
 
     }
