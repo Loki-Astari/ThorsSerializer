@@ -125,8 +125,13 @@ struct BinForm128
     private:
     friend constexpr BinForm128 BinForm128High(BinForm64 value);
     constexpr BinForm128(BinForm64 hi, BinForm64 lo)
+#if WORDS_BIGENDIAN
         : hi(hi)
         , lo(lo)
+#else
+        : lo(lo)
+        , hi(hi)
+#endif
     {}
 };
 inline constexpr BinForm128 BinForm128High(BinForm64 value)
