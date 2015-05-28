@@ -491,17 +491,17 @@ TEST(YamlParserTest, getDataFromFloat)
     ASSERT_NO_THROW(
         parser.getValue(value3a)
     );
-    EXPECT_EQ(12356, static_cast<int>(value3a*100));
+    EXPECT_EQ(12356, static_cast<int>(value3a * 100 + .5));
     double          value3b;
     ASSERT_NO_THROW(
         parser.getValue(value3b)
     );
-    EXPECT_EQ(12356, static_cast<int>(value3b*100));
+    EXPECT_EQ(12356, static_cast<int>(value3b * 100 + .5));
     long double          value3c;
     ASSERT_NO_THROW(
         parser.getValue(value3c)
     );
-    EXPECT_EQ(12356, static_cast<int>(value3c*100));
+    EXPECT_EQ(12356, static_cast<int>(value3c * 100 + .5));
 
     bool            value4;
     ASSERT_ANY_THROW(

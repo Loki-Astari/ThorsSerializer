@@ -2,21 +2,6 @@
 #ifndef   THORS_ANVIL_BINARY_REP_FLT_BIN_REP_H
 #define   THORS_ANVIL_BINARY_REP_FLT_BIN_REP_H
 
-/*
-undefined reference to
-
-FltBinRepTest.cpp:42
-FltBinRepTest.cpp:90
-FltBinRepTest.cpp:106
-FltBinRepTest.cpp:121
-ThorsAnvil::BinaryRep::FloatConverterTrait<long double>::StorageType ThorsAnvil::BinaryRep::host2NetIEEE<long double, true, 12u, 64u>(long double)
-
-FltBinRepTest.cpp:106
-FltBinRepTest.cpp:121
-long double ThorsAnvil::BinaryRep::net2HostIEEE<long double, true, 12u, 64u>(ThorsAnvil::BinaryRep::FloatConverterTrait<long double>::StorageType)
-*/
-
-
 
 #include "BinaryFormat.h"
 #include "IntBinRep.h"
@@ -35,7 +20,7 @@ struct FloatConverterTrait;
     Double: -> Sign: 1 bit Exponent: 11 bits Significand: 53  bits (52 explicitly stored)
     Quad:   -> Sign: 1 bit Exponent: 15 bits Significand: 113 bits (112 explicitly stored)
 */
-//#error 1
+
 template<> struct FloatConverterTrait<float>
 {
     static  BinForm32  notANumber()
