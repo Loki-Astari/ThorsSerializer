@@ -5,12 +5,22 @@ os:
     - linux
     - osx
 compiler:
-    - gcc
+#    - gcc
     - clang
 before_install:
     - mv .gitmodules gitmodules.old
     - sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
     - rm gitmodules.old
+    - if [ "$TRAVIS_OS_NAME" == "linux" ];                        then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y;fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" ];                        then sudo apt-get update;fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" ];                        then sudo apt-get install -qq g++-4.9;fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "g++" ];     then sudo update-alternatives --install /usr/bin/gcc  gcc  /usr/bin/gcc-4.9  90;fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "g++" ];     then sudo update-alternatives --install /usr/bin/g++  g++  /usr/bin/g++-4.9  90;fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "g++" ];     then sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 90;fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then a=$(sudo find / -name llvm-cov | head -1);sudo ln -s ${a} /usr/bin/llvm-cov;fi
+#    - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then if [ "$CXX" == "g++" ];     then g++ --version;     fi; fi
+#    - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then if [ "$CXX" == "clang++" ]; then sudo ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-cov /usr/local/bin/llvm-cov; fi; fi
+#    - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then brew update; fi
 install:
     - ./configure --with-thors-network-byte-order
 script:

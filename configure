@@ -3315,7 +3315,7 @@ fi
 fi
 
 fi
-    ${COV} --version 2>&1 > /dev/null
+    ${COV} --version 2>&1 | grep version > /dev/null
     if test $? != 0; then :
   as_fn_error $? "
 
