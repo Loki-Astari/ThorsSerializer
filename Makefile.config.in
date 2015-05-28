@@ -14,8 +14,3 @@ bindir?=@bindir@
 libdir?=@libdir@
 includedir?=@includedir@
 
-PREFIX=${prefix}
-PREFIX_BIN=${bindir}
-PREFIX_LIB=${libdir}
-PREFIX_INC=${includedir}
-
