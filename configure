@@ -684,7 +684,8 @@ StdFlag17
 StdFlag14
 StdFlag11
 CXXMaxLanguage
-SERIALIZATION_EXTERN_LOC
+yaml_ROOT_LIB
+yaml_ROOT_DIR
 SERIALIZATION_EXTERN_LIBS
 CXXCPP
 CPP
@@ -15522,7 +15523,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-
 # Check whether --with-yamlroot was given.
 if test "${with_yamlroot+set}" = set; then :
   withval=$with_yamlroot;
@@ -15534,10 +15534,11 @@ if test "${enable_yaml+set}" = set; then :
 fi
 
     if test "x$enable_yaml" != "xno"; then :
-  ORIG_LDFLAGS="${LDFLAGS}"
-        if test "${with_yamlroot}" != ""; then
-            LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
+  if test "${with_yamlroot}" == ""; then
+            with_yamlroot="/usr/local"
         fi
+        ORIG_LDFLAGS="${LDFLAGS}"
+        LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
 
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
 $as_echo_n "checking for yaml_parser_initialize in -lyaml... " >&6; }
@@ -15580,7 +15581,10 @@ if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes; then :
 
 $as_echo "#define HAVE_YAML 1" >>confdefs.h
 
-                with_yamllib=-lyaml
+                yaml_ROOT_DIR=$with_yamlroot
+
+                yaml_ROOT_LIB=yaml
+
 
 else
   as_fn_error 1 "
@@ -16012,8 +16016,6 @@ fi
 
 
 SERIALIZATION_EXTERN_LIBS="$with_yamllib  $SERIALIZATION_EXTERN_LIBS"
-
-SERIALIZATION_EXTERN_LOC="$with_yamlroot $SERIALIZATION_EXTERN_LOC"
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -ansi" >&5

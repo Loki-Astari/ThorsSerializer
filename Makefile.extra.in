@@ -298,7 +298,6 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
 SED = @SED@
 SERIALIZATION_EXTERN_LIBS = @SERIALIZATION_EXTERN_LIBS@
-SERIALIZATION_EXTERN_LOC = @SERIALIZATION_EXTERN_LOC@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -361,6 +360,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+yaml_ROOT_DIR = @yaml_ROOT_DIR@
+yaml_ROOT_LIB = @yaml_ROOT_LIB@
 SUBDIRS = src
 all: all-recursive
 

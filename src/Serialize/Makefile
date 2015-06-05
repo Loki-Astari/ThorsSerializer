@@ -1,12 +1,15 @@
 
-THORSANVIL_ROOT				= $(realpath ../../)
+THORSANVIL_ROOT				?= $(realpath ../../)
 
 TARGET						= ThorSerialize.slib
 
-CPPFLAGS					+= -I/Users/myork/Repository/TS.old/build/include/
+#
+# Note: SERIALIZATION_EXTERN_LIBS
+#▸  ▸   Is set up in the config for any external libraries that we need.
+#
+
 FILE_WARNING_FLAGS			+= -Wno-deprecated-register
-LDLIBS						+= $(patsubst %,-L%/lib,$(SERIALIZATION_EXTERN_LOC))  $(SERIALIZATION_EXTERN_LIBS)
-UNITTEST_RUNTIME_PATH		+= $(patsubst %,%/lib,$(SERIALIZATION_EXTERN_LOC))
+LDLIBS_EXTERN_BUILD			+= $(yaml_ROOT_LIB)
 %/JsonLexer.lex.o:			FILE_WARNING_FLAGS	+= -Wno-sign-compare
 %/JsonLexer1.lex.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-register
 
