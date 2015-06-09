@@ -95,6 +95,7 @@ template ThorsAnvil::Serialize::BinaryParserUtil<int,             (ThorsAnvil::S
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<MapEmptyTest>,     (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<std::string>,      (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<std::vector<int>>, (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<int>,              (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<bool>,             (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<double>,           (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 #endif
