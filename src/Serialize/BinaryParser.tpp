@@ -2,8 +2,10 @@
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PARSER_TPP
 #define THORS_ANVIL_SERIALIZE_BINARY_PARSER_TPP
 
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
+
+#include "Traits.h"
 
 namespace ThorsAnvil
 {
@@ -16,7 +18,7 @@ template<typename R>
 class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Map>
 {
     public:
-    void operator()(BinaryParserMapParentCommon& obj)
+    void operator()(BinaryParserMapParentCommon<T>& obj)
     {   
         using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;
         obj.fill(Traits::getMembers());
@@ -28,9 +30,9 @@ template<typename R>
 class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Parent>
 {
     public:
-    void operator()(BinaryParserMapParentCommon& obj)
+    void operator()(BinaryParserMapParentCommon<T>& obj)
     {   
-        MemberAdder<typename Traits::Parent>    addParent;
+        MemberAdder<typename ThorsAnvil::Serialize::Traits<T>::Parent>    addParent;
         addParent(obj);
 
         using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;
@@ -71,7 +73,8 @@ template<typename T>
 template<typename Tuple, std::size_t... Seq>
 void BinaryParserMapParentCommon<T>::fillMembers(Tuple const& members, std::index_sequence<Seq...> const&)
 {
-    std::make_tuple((addMember(std::get<Seq>(members)),1)...);
+    auto discard = {(addMember(std::get<Seq>(members)),1)...};
+    (void)discard;
 }
 
 template<typename T>

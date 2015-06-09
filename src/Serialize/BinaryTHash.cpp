@@ -30,7 +30,7 @@ template std::size_t ThorsAnvil::Serialize::thash<long double>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<float>(std::size_t);
 
 template std::size_t ThorsAnvil::Serialize::thash<bool>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<std::string>(std::size_t);
 
 template std::size_t ThorsAnvil::Serialize::thash<Base>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<Derived>(std::size_t);
@@ -54,19 +54,19 @@ template struct ThorsAnvil::Serialize::TraitsHash<long double>;
 template struct ThorsAnvil::Serialize::TraitsHash<bool>;
 template struct ThorsAnvil::Serialize::TraitsHash<std::string>;
 
-template unsigned long ThorsAnvil::Serialize::thash<MapWithMap>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<MapOneValue>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<MapTwoValue>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<MapEmptyTest>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<MapWithArray>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<MapThreeValue>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<MapWithTwoMap>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<MapWithTwoArray>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<std::vector<MapEmptyTest>>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<std::vector<std::string>>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<std::vector<std::vector<int>>>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<std::vector<bool>>(unsigned long);
-template unsigned long ThorsAnvil::Serialize::thash<std::vector<double>>(unsigned long);
+template std::size_t ThorsAnvil::Serialize::thash<MapWithMap>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<MapOneValue>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<MapTwoValue>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<MapEmptyTest>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<MapWithArray>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<MapThreeValue>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<MapWithTwoMap>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<MapWithTwoArray>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<std::vector<MapEmptyTest>>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<std::vector<std::string>>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<std::vector<std::vector<int>>>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<std::vector<bool>>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<std::vector<double>>(std::size_t);
 
 #endif
 

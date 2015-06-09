@@ -1,5 +1,5 @@
 
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef HAVE_YAML
 #include "YamlParser.h"
 

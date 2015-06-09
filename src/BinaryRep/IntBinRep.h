@@ -3,6 +3,7 @@
 #define   THORS_ANVIL_BINARY_REP_INT_BIN_REP_H
 
 #include "BinaryFormat.h"
+#include <arpa/inet.h>
 
 namespace ThorsAnvil
 {

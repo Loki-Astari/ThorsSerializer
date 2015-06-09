@@ -48,7 +48,7 @@ long convertHexToDec(char x)
         }
 
 template<typename C>
-struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, ptrdiff_t, char*,char&>
+struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, std::ptrdiff_t, char*,char&>
 {
     C&       cont;
     bool     lastWasSlash;
@@ -165,7 +165,7 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, pt
 };
 
 template<typename I>
-struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, ptrdiff_t, char*,char&>
+struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std::ptrdiff_t, char*,char&>
 {
     I                   iter;
     std::vector<char>   cont;

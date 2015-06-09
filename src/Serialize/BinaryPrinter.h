@@ -6,7 +6,7 @@
  *  See documentation in BinaryParser.h
  */
 
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 
 #include "Serialize.h"

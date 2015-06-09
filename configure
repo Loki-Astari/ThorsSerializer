@@ -684,7 +684,8 @@ StdFlag17
 StdFlag14
 StdFlag11
 CXXMaxLanguage
-SERIALIZATION_EXTERN_LOC
+yaml_ROOT_LIB
+yaml_ROOT_DIR
 SERIALIZATION_EXTERN_LIBS
 CXXCPP
 CPP
@@ -4086,6 +4087,23 @@ fi
 rm -f conftest.l $LEX_OUTPUT_ROOT.c
 
 fi
+
+
+    if test "${LEX}" != "flex"; then
+        as_fn_error $? "
+
+Error: This package uses flex (and is not compatible with lex).
+Please make sure flex is installed.
+
+If it is installed an autotools is picking the wrong lex you explicitly specify it via
+the environment variable LEX.
+
+Eg.
+    LEX=<path to flex> ./configure <other flags>
+
+    " "$LINENO" 5
+    fi
+
 case `pwd` in
   *\ * | *\	*)
     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
@@ -15505,7 +15523,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-
 # Check whether --with-yamlroot was given.
 if test "${with_yamlroot+set}" = set; then :
   withval=$with_yamlroot;
@@ -15517,10 +15534,11 @@ if test "${enable_yaml+set}" = set; then :
 fi
 
     if test "x$enable_yaml" != "xno"; then :
-  ORIG_LDFLAGS="${LDFLAGS}"
-        if test "${with_yamlroot}" != ""; then
-            LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
+  if test "${with_yamlroot}" == ""; then
+            with_yamlroot="/usr/local"
         fi
+        ORIG_LDFLAGS="${LDFLAGS}"
+        LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
 
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
 $as_echo_n "checking for yaml_parser_initialize in -lyaml... " >&6; }
@@ -15563,7 +15581,10 @@ if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes; then :
 
 $as_echo "#define HAVE_YAML 1" >>confdefs.h
 
-                with_yamllib=-lyaml
+                yaml_ROOT_DIR=$with_yamlroot
+
+                yaml_ROOT_LIB=yaml
+
 
 else
   as_fn_error 1 "
@@ -15996,8 +16017,6 @@ fi
 
 SERIALIZATION_EXTERN_LIBS="$with_yamllib  $SERIALIZATION_EXTERN_LIBS"
 
-SERIALIZATION_EXTERN_LOC="$with_yamlroot $SERIALIZATION_EXTERN_LOC"
-
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -ansi" >&5
 $as_echo_n "checking whether C compiler accepts -ansi... " >&6; }
@@ -16318,6 +16337,56 @@ Error: Need C++${minLangFeature} but the compiler only supports ${CXXMaxLanguage
 fi
 
 fi
+
+
+
+        if test "
+#include <utility>
+int main() {
+    std::index_sequence<1,2,3,4>    seq;
+}" != ""; then :
+
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking Checking Compiler Compatibility ${CXX} ${CXX_STD_FLAG}" >&5
+$as_echo_n "checking Checking Compiler Compatibility ${CXX} ${CXX_STD_FLAG}... " >&6; }
+                ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+                CXXFLAGS_SAVE="${CXXFLAGS}"
+                CXXFLAGS=${CXX_STD_FLAG}
+
+                cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <utility>
+int main() {
+    std::index_sequence<1,2,3,4>    seq;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: good" >&5
+$as_echo "good" >&6; }
+
+else
+
+                    as_fn_error $? "
+
+Error: Your compiler does not seem to support the language features required.
+       Try updating your compiler to use a more recent version.
+
+       Compiler used: ${CXX} ${CXX_STD_FLAG}
+                    " "$LINENO" 5
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+                CXXFLAGS=${CXXFLAGS_SAVE}
+
+
+fi
+
 
 
 
@@ -17175,7 +17244,7 @@ END
   fi
 fi
 
-ac_config_headers="$ac_config_headers config.h"
+ac_config_headers="$ac_config_headers src/Serialize/SerializeConfig.h src/BinaryRep/BinaryRepConfig.h"
 
 ac_config_files="$ac_config_files Makefile.extra Makefile.config"
 
@@ -18290,7 +18359,8 @@ do
   case $ac_config_target in
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
-    "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
+    "src/Serialize/SerializeConfig.h") CONFIG_HEADERS="$CONFIG_HEADERS src/Serialize/SerializeConfig.h" ;;
+    "src/BinaryRep/BinaryRepConfig.h") CONFIG_HEADERS="$CONFIG_HEADERS src/BinaryRep/BinaryRepConfig.h" ;;
     "Makefile.extra") CONFIG_FILES="$CONFIG_FILES Makefile.extra" ;;
     "Makefile.config") CONFIG_FILES="$CONFIG_FILES Makefile.config" ;;
 

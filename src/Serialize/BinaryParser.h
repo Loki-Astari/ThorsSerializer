@@ -23,7 +23,7 @@
  *      the object is popped from the stack.
  */
 
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 
 #include "Serialize.h"
@@ -31,6 +31,7 @@
 #include "ThorBinaryRep/BinaryRep.h"
 #include <iostream>
 #include <vector>
+#include <memory>
 
 namespace TBin  = ThorsAnvil::BinaryRep;
 namespace ThorsAnvil

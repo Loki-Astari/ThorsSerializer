@@ -92,11 +92,11 @@ template ThorsAnvil::Serialize::BinaryParserUtil<Derived,         (ThorsAnvil::S
 template ThorsAnvil::Serialize::BinaryParserUtil<int,             (ThorsAnvil::Serialize::TraitType)2>::BinaryParserUtil(bool);
 
 // Array Specialization
-template ThorsAnvil::Serialize::BinaryParserUtil<std::__1::vector<MapEmptyTest, std::__1::allocator<MapEmptyTest> >, (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<std::__1::vector<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, std::__1::allocator<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > > >, (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<std::__1::vector<std::__1::vector<int, std::__1::allocator<int> >, std::__1::allocator<std::__1::vector<int, std::__1::allocator<int> > > >, (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<std::__1::vector<bool, std::__1::allocator<bool> >,     (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<std::__1::vector<double, std::__1::allocator<double> >, (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<MapEmptyTest>,     (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<std::string>,      (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<std::vector<int>>, (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<bool>,             (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<double>,           (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 #endif
 
 

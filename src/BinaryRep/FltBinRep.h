@@ -3,9 +3,10 @@
 #define   THORS_ANVIL_BINARY_REP_FLT_BIN_REP_H
 
 
-#include <cmath>
 #include "BinaryFormat.h"
 #include "IntBinRep.h"
+#include <cmath>
+#include <limits>
 namespace ThorsAnvil
 {
     namespace BinaryRep
@@ -19,6 +20,7 @@ struct FloatConverterTrait;
     Double: -> Sign: 1 bit Exponent: 11 bits Significand: 53  bits (52 explicitly stored)
     Quad:   -> Sign: 1 bit Exponent: 15 bits Significand: 113 bits (112 explicitly stored)
 */
+
 template<> struct FloatConverterTrait<float>
 {
     static  BinForm32  notANumber()
@@ -44,6 +46,18 @@ template<> struct FloatConverterTrait<long double>
     typedef BinForm128 StorageType;
 };
 
+template<typename T>
+struct Mixer
+{
+    typedef typename FloatConverterTrait<T>::StorageType StorageType;
+
+    char        binValue[16];
+    void*       getDataArea() {return binValue;}
+
+    StorageType& getStorage() {return *reinterpret_cast<StorageType*>(getDataArea());}
+    T&           getFloat()   {return *reinterpret_cast<T*>(getDataArea());}
+};
+
 template<typename T, bool ieee = std::numeric_limits<T>::is_iec559, std::size_t size = sizeof(T), std::size_t decimal = std::numeric_limits<T>::digits>
 typename FloatConverterTrait<T>::StorageType host2NetIEEE(T value);
 template<typename T, bool ieee = std::numeric_limits<T>::is_iec559, std::size_t size = sizeof(T), std::size_t decimal = std::numeric_limits<T>::digits>
@@ -55,7 +69,10 @@ typename FloatConverterTrait<T>::StorageType host2NetIEEETransport(T value)
     if (std::isnan(value))
     {   return host2Net(FloatConverterTrait<T>::notANumber());
     }
-    return host2Net(*reinterpret_cast<typename FloatConverterTrait<T>::StorageType*>(&value));
+    Mixer<T>         tmp;
+    tmp.getFloat()    = value;
+
+    return host2Net(tmp.getStorage());
 }
 template<typename T>
 T net2HostIEEETransport(typename FloatConverterTrait<T>::StorageType value)
@@ -64,8 +81,10 @@ T net2HostIEEETransport(typename FloatConverterTrait<T>::StorageType value)
     if (value == notANum)
     {   return std::numeric_limits<T>::quiet_NaN();
     }
-    typename FloatConverterTrait<T>::StorageType result = net2Host(value);
-    return *reinterpret_cast<T*>(&result);
+    Mixer<T>    tmp;
+    tmp.getStorage() = net2Host(value);
+
+    return tmp.getFloat();
 }
 
 template<>  inline BinForm32  host2NetIEEE<float, true, 4, 24>(float value)                 {return host2NetIEEETransport(value);}
@@ -132,7 +151,9 @@ template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long doubl
      * So lets examine it as an integer so that we can manipulate the bits
      * in a more logical way
      */
-    BinForm128&        sigBits     = *reinterpret_cast<BinForm128*>(&significant);
+    Mixer<long double>  data;
+    data.getFloat() = significant;
+    BinForm128&        sigBits     = data.getStorage();
 
     /*
      * Remove the 1 bit representing the integer part of the float (this is not stored in the Quad Version).
@@ -150,7 +171,18 @@ template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long doubl
 
     return host2Net(sigBits);
 }
-
+template<>  inline BinForm128 host2NetIEEE<long double, true, 12, 64>(long double value)
+{
+    /* If this function is called it means you have an IEEE-754 integer
+     * But it is not one of the interchange formats defined in  IEEE 754-2008
+     *
+     * This means we are using an extended format IEEE-754 (this is non transportable)
+     *
+     * The size of 64 means you are using IEEE-754 Extended 80 bit floating point format.
+     * This function converts from 80 bits to 128 bits.
+     */
+     return host2NetIEEE<long double, true, 16, 64>(value);
+}
 template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm128 value)
 {
     static BinForm128         expMask     =  BinForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
@@ -185,7 +217,10 @@ template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm12
     if (value == notANum)
     {   return std::numeric_limits<long double>::quiet_NaN();
     }
-    BinForm128  sigBits = net2Host(value);
+    Mixer<long double>  data;
+    BinForm128&  sigBits = data.getStorage();
+
+    sigBits             = net2Host(value);
     bool   negative     = (sigBits >> (128 - 1)) == 0 ? false : true;
     int    exp          = static_cast<unsigned long long int>(sigBits >> (128 - 16) & 0x7FFF);
     exp -= 16383;
@@ -201,10 +236,14 @@ template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm12
                                             // correct bias to make that happen.
 
     // Put it all back together.
-    long double significant = (negative ? -1 : 1) * (*reinterpret_cast<long double*>(&sigBits));
+    long double significant = (negative ? -1 : 1) * data.getFloat();
     long double result      = std::ldexp(significant, exp);
 
     return result;
+}
+template<>  inline long double net2HostIEEE<long double, true, 12, 64>(BinForm128 value)
+{
+	return net2HostIEEE<long double, true, 16,64>(value);
 }
 
     }

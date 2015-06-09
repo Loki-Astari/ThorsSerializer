@@ -1,4 +1,4 @@
-#include "../../config.h"
+#include "SerializeConfig.h"
 
 #include "gtest/gtest.h"
 #include "test/BinaryParserTest.h"
@@ -120,7 +120,6 @@ TEST(RoundTripTest, BinaryValue)
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
     {
-        std::cout << "Loop: " << loop << "   E(" << std::hex << ((int)expected[loop]) << ")  A(" << std::hex << ((int)stream.str()[loop]) << ")\n";
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 
@@ -137,8 +136,6 @@ TEST(RoundTripTest, JsonMap)
     stream << TA::jsonExport(base, TA::PrinterInterface::OutputType::Stream);
 
     std::string expected(R"({"ace":10,"val":1024})");
-    std::cout << "EX: " << expected << "\n"
-              << "AX: " << stream.str() << "\n";
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -164,8 +161,6 @@ TEST(RoundTripTest, JsonParent)
     stream << TA::jsonExport(deri, TA::PrinterInterface::OutputType::Stream);
 
     std::string expected(R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
-    std::cout << "EX: " << expected << "\n"
-              << "AX: " << stream.str() << "\n";
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -188,8 +183,6 @@ TEST(RoundTripTest, JsonArray)
     stream << TA::jsonExport(data, TA::PrinterInterface::OutputType::Stream);
 
     std::string expected(R"([10,1024,9,367,12,34])");
-    std::cout << "EX: " << expected << "\n"
-              << "AX: " << stream.str() << "\n";
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -214,12 +207,9 @@ TEST(RoundTripTest, JsonValue)
     stream << TA::jsonExport(data, TA::PrinterInterface::OutputType::Stream);
 
     std::string expected("68456231");
-    std::cout << "EX: " << expected << "\n"
-              << "AX: " << stream.str() << "\n";
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
     {
-        std::cout << "Loop: " << loop << "   E(" << std::hex << ((int)expected[loop]) << ")  A(" << std::hex << ((int)stream.str()[loop]) << ")\n";
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 
@@ -236,8 +226,6 @@ TEST(RoundTripTest, YamlMap)
     stream << TA::yamlExport(base, TA::PrinterInterface::OutputType::Stream);
 
     std::string expected("--- {ace: 10, val: 1024}\n...\n");
-    std::cout << "EX: " << expected << "\n"
-              << "AX: " << stream.str() << "\n";
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -263,8 +251,6 @@ TEST(RoundTripTest, YamlParent)
     stream << TA::yamlExport(deri, TA::PrinterInterface::OutputType::Stream);
 
     std::string expected("--- {ace: 10, val: 1024, der: 56789, flt: 234.875}\n...\n");
-    std::cout << "EX: " << expected << "\n"
-              << "AX: " << stream.str() << "\n";
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -287,8 +273,6 @@ TEST(RoundTripTest, YamlArray)
     stream << TA::yamlExport(data, TA::PrinterInterface::OutputType::Stream);
 
     std::string expected("--- [10, 1024, 9, 367, 12, 34]\n...\n");
-    std::cout << "EX: " << expected << "\n"
-              << "AX: " << stream.str() << "\n";
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -313,12 +297,9 @@ TEST(RoundTripTest, YamlValue)
     stream << TA::yamlExport(data, TA::PrinterInterface::OutputType::Stream);
 
     std::string expected("--- 68456231\n...\n");
-    std::cout << "EX: " << expected << "\n"
-              << "AX: " << stream.str() << "\n";
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
     {
-        std::cout << "Loop: " << loop << "   E(" << std::hex << ((int)expected[loop]) << ")  A(" << std::hex << ((int)stream.str()[loop]) << ")\n";
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 

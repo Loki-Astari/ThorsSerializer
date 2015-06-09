@@ -2,12 +2,13 @@
 #ifndef THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
 #define THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
 
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef  HAVE_YAML
 
 #include "Serialize.h"
 #include <yaml.h>
 #include <vector>
+#include <memory>
 
 namespace ThorsAnvil
 {

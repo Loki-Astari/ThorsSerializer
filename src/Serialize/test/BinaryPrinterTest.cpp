@@ -1,4 +1,4 @@
-#include "../../config.h"
+#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 
 
@@ -43,7 +43,7 @@ TEST(BinaryPrinterTest, intToken)
     EXPECT_EQ(2, stream.str().size());
     printer.addValue(0x89ABCDEF);                   // 4
     EXPECT_EQ(6, stream.str().size());
-    printer.addValue(0x123456780FEDCBA9L);          // 8
+    printer.addValue(0x0FEDCBA9L);          // 8
     EXPECT_EQ(14, stream.str().size());
     printer.addValue(0x123456780FEDCBA9LL);         // 16
     EXPECT_EQ(30, stream.str().size());
@@ -52,7 +52,7 @@ TEST(BinaryPrinterTest, intToken)
     EXPECT_EQ(32, stream.str().size());
     printer.addValue(0x89ABCDEFU);
     EXPECT_EQ(36, stream.str().size());
-    printer.addValue(0x123456780FEDCBA9UL);
+    printer.addValue(0x0FEDCBA9UL);
     EXPECT_EQ(44, stream.str().size());
     printer.addValue(0x123456780FEDCBA9ULL);
     EXPECT_EQ(60, stream.str().size());
@@ -65,11 +65,11 @@ TEST(BinaryPrinterTest, intToken)
     EXPECT_EQ(62, result.size());
     EXPECT_EQ(0, result.compare(0, 46, "\x45\x67"
                                        "\x89\xAB\xCD\xEF"
-                                       "\x12\x34\x56\x78\x0F\xED\xCB\xA9"
+                                       "\x00\x00\x00\x00\x0F\xED\xCB\xA9"
                                        "\x00\x00\x00\x00\x00\x00\x00\x00\x12\x34\x56\x78\x0F\xED\xCB\xA9"
                                        "\x45\x67"
                                        "\x89\xAB\xCD\xEF"
-                                       "\x12\x34\x56\x78\x0F\xED\xCB\xA9"
+                                       "\x00\x00\x00\x00\x0F\xED\xCB\xA9"
                                        "\x00\x00\x00\x00\x00\x00\x00\x00\x12\x34\x56\x78\x0F\xED\xCB\xA9"
                                        "\x01"
                                        "\x00"
