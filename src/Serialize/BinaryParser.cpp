@@ -1,4 +1,5 @@
 
+#ifdef NETWORK_BYTE_ORDER
 #include "BinaryParser.h"
 #include <sstream>
 
@@ -99,5 +100,5 @@ template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<int>,              
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<bool>,             (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<double>,           (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 #endif
-
+#endif
 
