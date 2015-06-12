@@ -2,11 +2,11 @@ git:
     submodules: false
 language: cpp
 os:
-    - linux
-#    - osx
+#    - linux
+    - osx
 compiler:
-#    - gcc
-    - clang
+    - gcc
+#    - clang
 before_install:
     - mv .gitmodules gitmodules.old
     - sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
