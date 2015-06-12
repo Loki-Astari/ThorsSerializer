@@ -217,6 +217,77 @@ class Serializer
         void printObjectMembers(T const& object);
 };
 
+/* ------------ ParserInterface ------------------------- */
+inline ParserInterface::ParserToken ParserInterface::getToken()
+{
+    ParserToken result  = ParserToken::Error;
+
+    if (pushBack != ParserToken::Error)
+    {
+        std::swap(pushBack, result);
+    }
+    else
+    {
+        result = this->getNextToken();
+    }
+    return result;
+}
+inline void ParserInterface::pushBackToken(ParserToken token)
+{
+    if (pushBack != ParserToken::Error)
+    {
+        throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::pushBackToken: Push only allows for single push back. More than one token has been pushed back between reads.");
+    }
+    pushBack    = token;
+}
+/* ------------ DeSerializer ------------------------- */
+
+inline DeSerializer::DeSerializer(ParserInterface& parser, bool root)
+    : parser(parser)
+    , root(root)
+{
+    if (root)
+    {
+        // Note:
+        //  Note: all "root" elements are going to have a DocStart/DocEnd pair
+        //  Just the outer set. So that is something that we will need to deal with
+        //
+        //  Note: We also need to take care of arrays at the top level
+        //  We will get that in the next version
+        if (parser.getToken() != ParserToken::DocStart)
+        {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializer::DeSerializer: Invalid Doc Start");
+        }
+    }
+}
+inline DeSerializer::~DeSerializer()
+{
+    if (root)
+    {
+        if (parser.getToken() != ParserToken::DocEnd)
+        {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializer::~DeSerializer: Expected Doc End");
+        }
+    }
+}
+
+/* ------------ Serializer ------------------------- */
+
+inline Serializer::Serializer(PrinterInterface& printer, bool root)
+    : printer(printer)
+    , root(root)
+{
+    if (root)
+    {
+        printer.openDoc();
+    }
+}
+inline Serializer::~Serializer()
+{
+    if (root)
+    {
+        printer.closeDoc();
+    }
+}
+
     }
 }
 
