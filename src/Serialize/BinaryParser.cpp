@@ -1,4 +1,5 @@
 
+#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 #include "BinaryParser.h"
 #include <sstream>
