@@ -2,10 +2,10 @@ git:
     submodules: false
 language: cpp
 os:
-#    - linux
+    - linux
     - osx
 compiler:
- #   - gcc
+    - gcc
     - clang
 before_install:
     - mv .gitmodules gitmodules.old
@@ -24,11 +24,7 @@ before_install:
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then sudo update-alternatives --install /usr/bin/clang++  clang++  /usr/bin/clang++-3.5  90;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then a=$(sudo find / -name llvm-cov | grep 3.5 | head -1);sudo ln -s ${a} /usr/bin/llvm-cov;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then a=$(sudo find / -name llvm-cov | grep 3.4 | head -1);sudo mv ${a} ${a}.old;fi
-#   - sudo rm -rf /var/lib/apt/lists/*
-#   - sudo apt-get update
-#    - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then if [ "$CXX" == "g++" ];     then g++ --version;     fi; fi
-    - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then if [ "$CXX" == "clang++" ]; then sudo ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-cov /usr/local/bin/llvm-cov; fi; fi
-#    - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then brew update; fi
+    - if [ "$TRAVIS_OS_NAME" == "osx"   -a "$CXX" == "clang++" ]; then sudo ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-cov /usr/local/bin/llvm-cov; fi
 install:
     - ./configure --with-thors-network-byte-order
 script:
