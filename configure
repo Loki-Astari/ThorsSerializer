@@ -3315,7 +3315,7 @@ fi
 fi
 
 fi
-    ${COV} --version 2>&1 | grep -Eo "(\d+\.)+\d+" > /dev/null
+    ${COV} --version 2>&1 | grep -Eo '(\d+\.)+\d+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
     if test $? != 0; then :
   as_fn_error $? "
 
