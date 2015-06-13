@@ -1,6 +1,8 @@
 #include "ThorSerialize/Traits.h"
 #include "ThorSerialize/JsonThor.h"
 
+namespace X
+{
 struct Color
 {
     int     red;
@@ -24,17 +26,18 @@ class TeamMember
         // Members.
         friend class ThorsAnvil::Serialize::Traits<TeamMember>;
 };
+}
 
 // Declare the traits.
 // Specifying what members need to be serialized.
-ThorsAnvil_MakeTrait(Color, red, green, blue);
-ThorsAnvil_MakeTrait(TeamMember, name, score, damage, team);
+ThorsAnvil_MakeTrait(X::Color, red, green, blue);
+ThorsAnvil_MakeTrait(X::TeamMember, name, score, damage, team);
 
 int main()
 {
     using ThorsAnvil::Serialize::jsonExport;
 
-    TeamMember          mark("mark", 10, 5, Color{255,0,0});
+    X::TeamMember          mark("mark", 10, 5, X::Color{255,0,0});
     // Use the export function to serialize
     std::cout << jsonExport(mark) << "\n";
 }
