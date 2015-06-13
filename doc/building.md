@@ -6,11 +6,11 @@
 
 #Building Instructions:
 ````bash
-    git clone git@github.com:Loki-Astari/ThorsSerializer.git
-    cd ThorsSerializer
-    ./configure --disable-binary
-    make
-    sudo make install
+    > git clone git@github.com:Loki-Astari/ThorsSerializer.git
+    > cd ThorsSerializer
+    > ./configure --disable-binary
+    > make
+    > sudo make install
 ````
 ## Description
 
