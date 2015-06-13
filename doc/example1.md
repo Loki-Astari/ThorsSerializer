@@ -3,7 +3,7 @@
 
 ![ThorStream](https://raw.github.com/Loki-Astari/ThorsSerializer/ReWriteDocumentation/img/stream.jpg)
 
-##Simple Example
+##Example-1 [See doc/example1.cpp](example1.cpp)
 
 ````c++
     #include "ThorSerialize/Traits.h"

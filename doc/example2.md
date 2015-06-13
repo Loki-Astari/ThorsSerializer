@@ -4,11 +4,12 @@
 ![ThorStream](https://raw.github.com/Loki-Astari/ThorsSerializer/ReWriteDocumentation/img/stream.jpg)
 
 
-##Example: C++11 (see code in test.cpp for full code)
+##Example-2: [see doc/example2.cpp](example2.cpp)
 
 ````c++
     #include <string>
     #include "ThorSerialize/Traits.h"
+    #include "ThorSerialize/SerUtil.h"
     #include "ThorSerialize/JsonThor.h"
 
     /* A class that you want to serialize. */
