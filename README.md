@@ -2,17 +2,17 @@
 [![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
 
 
-Yet another JSON serialization library for C++
+Yet another JSON/YAML/Binary serialization library for C++
 
 ###Objective:
 
     The objective is to make serialization/de-serialization of C++ object to/from
-    JSON trivial.
+    JSON/YAML/Binary trivial.
 
     This means:
-        1) does not build a JSON object. Reads data directly into C++ object.
+        1) does not build a JSON/YAML object. Reads data directly into C++ object.
         2) In normal usage there should be NO need to write any code.
-        3) User should not need to understand JSON or validate its input.
+        3) User should not need to understand JSON/YAML or validate its input.
         4) Should work seamlessly with streams.
         5) Standard containers should automatically work
 
@@ -25,67 +25,62 @@ Yet another JSON serialization library for C++
 
 ###Example Usage with ThorsStream
 
-https://gist.github.com/Loki-Astari/8201956
+````c++
+    #include "ThorSerialize/Traits.h"
+    #include "ThorSerialize/JsonThor.h"
 
-###Building Notes:
+    struct Color
+    {
+        int     red;
+        int     green;
+        int     blue;
+    };    
+    class TeamMember
+    {
+        std::string     name;
+        int             score;
+        int             damage;
+        Color           team;
+        public:
+            TeamMember(std::string const& name, int score, int damage, Color const& team)
+                : name(name)
+                , score(score)
+                , damage(damage)
+                , team(team)
+            {}
+            // Define the trait as a friend to get accesses to private
+            // Members.
+            friend class ThorsAnvil::Serialize::Traits<TeamMember>;
+    };
 
-    I have moved away from trying to install tools/libs that are needed.
-    Rather I am using auto-tools to validate the state of the system for tools/libs required.
-    If you are missing any dependencies then this should generate errors during configuration
-    that you must resolve.
+    // Declare the traits.
+    // Specifying what members need to be serialized.
+    ThorsAnvil_MakeTrait(Color, red, green, blue);
+    ThorsAnvil_MakeTrait(TeamMember, name, score, damage, team);
 
-    Build instructions:
-    ###################
-    ./configure
-    make test
-    make install
+    int main()
+    {
+        using ThorsAnvil::Serialize::jsonExport;
 
-###Example: C++11 (see code in test.cpp for full code)
+        TeamMember          mark("mark", 10, 5, Color{255,0,0});
+        // Use the export function to serialize
+        std::cout << jsonExport(mark) << "\n";
+    }
+````
 
-    /* A class that you want to serialize. */
-    class MyClass
-    {   
-        int         data1;
-        float       data2;
-        std::string data3;
-
-        // This is only required if the members are private.
-        friend struct ThorsAnvil::Serialize::Json::JsonSerializeTraits<MyClass>;
-    };  
-
-
-    /*  
-     * Though there is no code involved, you do need to set up
-     * this structure to tell the library what fields need to be serialized.
-     * To do this use the macro:  JsonSerializeTraits_MAKE()
-     * Specifying parents to serialize(or void), your class, a list of members to serialize.
-     */  
-    JsonSerializeTraits_MAKE(void, MyClass, data1, data2, data3)
-    
-This allows us to import and export object of the above class really easily.
-
-    MyCLass   data;
-    data.data1  = 56;
-    data.data2  = 23.456;
-    data.data3  = "Hi there";
-    
-    std::cout << ThorsAnvil::Serializer::jsonExport(data) << "\n";
-
-This generates:
-
-    {"data1": 56 ,"data2": 23.456 ,"data3": "Hi there" }
-
-It will also handle all standard containers automaticaly:
-
-    std::vector<MyClass>   vec(4, data);
-    std::cout << ThorsAnvil::Serializer::jsonExport(vec) << "\n";
-    
-    // Results in:
-    [{"data1": 56 ,"data2": 23.456 ,"data3": "Hi there" }, {"data1": 56 ,"data2": 23.456 ,"data3": "Hi there" }, {"data1": 56 ,"data2": 23.456 ,"data3": "Hi there" }, {"data1": 56 ,"data2": 23.456 ,"data3": "Hi there" } ]
-    
-    
-
-
-
-
-
+###Build and run
+````json
+    > g++ -std=c++14 main.cpp -lThorSerialize14
+    > ./a.out 
+    { 
+        "name": "mark", 
+        "score": 10, 
+        "damage": 5, 
+        "team": 
+        { 
+            "red": 255, 
+            "green": 0, 
+            "blue": 0
+        }
+    }
+````
