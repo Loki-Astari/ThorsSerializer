@@ -4,10 +4,10 @@
 ![ThorStream](https://raw.github.com/Loki-Astari/ThorsSerializer/ReWriteDocumentation/img/stream.jpg)
 
 
-##Marking your class as Serializeable
+##Marking your class Serializeable/Deserializable
 
 * Include the header file: `ThorSerialize/Traits.h`
-* Use the macro to declare your type as serializable
+* Use one of these macros to declare your type as serializable
  * `ThorsAnvil_MakeTrait(<Type>, <members>...)`
  * `ThorsAnvil_ExpandTrait(<Parent-Type>, <Type>, <members>...)`
 
@@ -15,8 +15,10 @@
     Type:           The name of a class (includeing namespace) of the type
                     you want to be able to serialize at some point.
     Parent-Type:    The name of a class that has previously been declared
-                    using `ThorsAnvil_MakeTrait` and the parent of `Type`
-    members:        A list of member (names) of the class `Type` that need to be serialized.
+                    using `ThorsAnvil_MakeTrait` or `ThorsAnvil_ExpandTrait`
+                    and the parent of `Type`
+    members:        A list of member (names) of the class `Type` that need
+                    to be serialized.
 ````
 
 The two macros above build a template specialization of the class `ThorsAnvil::Serialize::Traits<Type>` specific to your class. As a consequence these macros should not be placed inside any namespace blocks.
@@ -87,7 +89,7 @@ The appropriate declarations for all the standard containers are provided. You s
  * `jsonExport(<YourObject>, characteristics = Default);`
  * `jsonImport(<YourObject>);`
 
-Both these methods return an object that simply contains a reference to `YourObject` (no actual serialization happens). When this object is serialized to a stream using `operator<<` or `operator>>` respectively then will read the appropriate members and serialize them to the stream. Because the returned object contains a reference to the object that needs to be serialized there lifespan should be shorted than `YourObject` to avoid a dangling reference. Therefore it is usually best to just use them directly in the stream operation.
+Both these methods return an object that simply contains a reference to `YourObject` (no actual serialization happens). When this object is serialized to a stream using `operator<<` or `operator>>` respectively then the code will read/write the appropriate members and serialize/deserialzie them to/from the stream. Because the returned object contains a reference to the object that needs to be serialized; the lifespan should be shorted than `YourObject` to avoid a dangling reference. Therefore it is usually best to just use them directly in the stream operation.
 
 ````c++
     std::vector<int>        data{1,2,3,4,5,6};
@@ -96,17 +98,29 @@ Both these methods return an object that simply contains a reference to `YourObj
     std::cin  >> jsonImport(data);
 ````
 
-On export there is a second parameter that allows some simple control on serialization (it basically affects white space to make debugging easier). Values are:
-
-```bash
+On export there is a second parameter `characteristics` that allows some simple control on serialization (it basically affects white space to make debugging easier). Values are:
+````bash
      Default:     What ever the implementation likes.
-                  Currently this means `Config` but I have plans for an application level setting that is checked.
+                  Currently this means `Config` but I have plans for an
+                  application level setting that is checked.
      Stream:      Compressed for over the wire protocol.            ie. No Space.
-     Config:      Human readable                                    Potentially config file like
+     Config:      Human readable                                    Potentially config file like.
 ````
 
 ###Yaml/Binary
 
 The description above is for Json Serialization/Deserialization. But the exact same description can be used for Yaml or Binary versions. Simply replace Json with Yaml or Binary and replace json with yaml or binary.
+
+The export parameter `characteristics` has slightly different meaning for printing yaml (and has no affect on binary). See the libyaml documentation for the meaning of these flags.
+````bash
+     Default:     What ever the implementation likes.
+                  Currently this means YAML_BLOCK_MAPPING_STYLE but I have plans for an
+                  application level setting that is checked.
+     Stream:      YAML_FLOW_MAPPING_STYLE
+     Config:      YAML_BLOCK_MAPPING_STYLE
+````
+
+##Notes on std::map
+
 
 
