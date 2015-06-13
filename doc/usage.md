@@ -107,11 +107,11 @@ On export there is a second parameter `characteristics` that allows some simple 
      Config:      Human readable                                    Potentially config file like.
 ````
 
-###Yaml/Binary
+###Yaml
 
-The description above is for Json Serialization/Deserialization. But the exact same description can be used for Yaml or Binary versions. Simply replace Json with Yaml or Binary and replace json with yaml or binary.
+The description above is for Json Serialization/Deserialization. But the exact same description can be used for Yaml. Simply replace Json with Yaml and replace json with yaml.
 
-The export parameter `characteristics` has slightly different meaning for printing yaml (and has no affect on binary). See the libyaml documentation for the meaning of these flags.
+The export parameter `characteristics` has slightly different meaning for printing yaml. See the [libyaml documentation](http://libyaml.sourcearchive.com/documentation/0.1.1/group__styles_g1efef592e2e3df6f00432c04ef77d98f.html) for the meaning of these flags.
 ````bash
      Default:     What ever the implementation likes.
                   Currently this means YAML_BLOCK_MAPPING_STYLE but I have plans for an
@@ -119,8 +119,26 @@ The export parameter `characteristics` has slightly different meaning for printi
      Stream:      YAML_FLOW_MAPPING_STYLE
      Config:      YAML_BLOCK_MAPPING_STYLE
 ````
+###Binary
 
-##Notes on std::map
+The description above is for Json Serialization/Deserialization. But the exact same description can be used for Binary versions. Simply replace Json with Binary and replace json with binary.
+
+The export parameter `characteristics` has no affect on binary.
+
+##Notes on std::map (Json)
+
+The JSON "Object" is a set of "name"/"value" pairs. But the name part is always a "String". If you use a `std::map<Key, Value>` where the "Key" is a `std::string` then the `std::map<>` will be represented by a JSON "Object". If any other type is used as the "Key" then `std::map<>` will be represented as a Json "Array" where each member of the array is `std::pair<Key,Value>`.
+
+````c++
+    // Example:
+    int main()
+    {
+        std::map<std::string, int>      data1{{"M": 1}};
+        std::cout << jsonExport(data1) << "\n";             // {"M":1}
+
+        std::map<int,int>               data2{{15,2}};
+        std::cout << jsonExport(data2) << "\n";             // [{"first":15, "second":2}]
+    }
 
 
 
