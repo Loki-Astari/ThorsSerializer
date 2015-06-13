@@ -5,13 +5,13 @@
 
 
 #Building Instructions:
-
+````bash
     git clone git@github.com:Loki-Astari/ThorsSerializer.git
     cd ThorsSerializer
     ./configure --disable-binary
     make
     sudo make install
-
+````
 ## Description
 
 By default installation will be in `/usr/local/\[include/lib\]`. You can override this with the normal auto-tools defaults. Use `./configure --help` to get details.
