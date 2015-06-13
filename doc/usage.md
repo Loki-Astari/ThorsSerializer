@@ -8,12 +8,14 @@
 
 * Include the header file: `ThorSerialize/Traits.h`
 * Use the macro to declare your type as serializable
- * ThorsAnvil_MakeTrait(<Type>, <members>...)
- * ThorsAnvil_ExpandTrait(<Parent-Type>, <Type>, <members>...)
+ * `ThorsAnvil_MakeTrait(<Type>, <members>...)`
+ * `ThorsAnvil_ExpandTrait(<Parent-Type>, <Type>, <members>...)`
 
 ````bash
-    Type:           The name of a class (includeing namespace) of the type you want to be able to serialize at some point.
-    Parent-Type:    The name of a class that has previously been declared using `ThorsAnvil_MakeTrait` and the parent of `Type`
+    Type:           The name of a class (includeing namespace) of the type
+                    you want to be able to serialize at some point.
+    Parent-Type:    The name of a class that has previously been declared
+                    using `ThorsAnvil_MakeTrait` and the parent of `Type`
     members:        A list of member (names) of the class `Type` that need to be serialized.
 ````
 
@@ -38,7 +40,7 @@ The two macros above build a template specialization of the class `ThorsAnvil::S
 ````
 
 ##Private Members
-If any members of the class that need to be serialized are private you must define a friendship to allow the `Traits<X>` class to access private members.
+If any members of the class that need to be serialized are private you must define a friendship to allow the `Traits<X>` class to have access to the private members.
 
 ````c++
     #include "ThorSerialize/Traits.h"
@@ -62,6 +64,7 @@ If any members of the class that need to be serialized are private you must defi
 ##Standard containers
 The appropriate declarations for all the standard containers are provided. You simply need to include "ThorSerialize/SerUtil.h" to include these declarations.
 
+````c++
     #include "ThorSerialize/SerUtil.h"
     #include "ThorSerialize/JsonThor.h"
     #include <vector>
@@ -74,16 +77,15 @@ The appropriate declarations for all the standard containers are provided. You s
         std::vector<int>    data {1,2,3,4,5};
         std::cout << ThorsAnvil::Serialize::jsonExport(data, PrinterInterface::OutputType::Stream);
     }
+````
 
 ##Serialization
 
 ###Json
-Include the header file "ThorSerialize/JsonThor.h".
-
-There are two functions in the namespace `ThorsAnvil::Serialize`.
-
-* `jsonExport(<YourObject>, characteristics = Default);`
-* `jsonImport(<YourObject>);`
+* Include the header file "ThorSerialize/JsonThor.h".
+* There are two functions in the namespace `ThorsAnvil::Serialize`.
+ * `jsonExport(<YourObject>, characteristics = Default);`
+ * `jsonImport(<YourObject>);`
 
 Both these methods return an object that simply contains a reference to `YourObject` (no actual serialization happens). When this object is serialized to a stream using `operator<<` or `operator>>` respectively then will read the appropriate members and serialize them to the stream. Because the returned object contains a reference to the object that needs to be serialized there lifespan should be shorted than `YourObject` to avoid a dangling reference. Therefore it is usually best to just use them directly in the stream operation.
 
@@ -92,6 +94,7 @@ Both these methods return an object that simply contains a reference to `YourObj
 
     std::cout << jsonExport(data);
     std::cin  >> jsonImport(data);
+````
 
 On export there is a second parameter that allows some simple control on serialization (it basically affects white space to make debugging easier). Values are:
 
