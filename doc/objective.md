@@ -4,7 +4,6 @@
 ![ThorStream](../img/stream.jpg)
 
 ###Objective:
-
     The objective is to make serialization/de-serialization of C++ object to/from
     JSON/YAML/Binary trivial.
 
@@ -17,8 +16,7 @@
 
     I am not concerned about speed.
     Though my trivial test work just fine in terms of speed.
-    
+
     The design was done with the primary goal of communicating with WEB-Servers
     that speak JSON. The main envisioned usage was for mobile devices were many
     small JSON objects are transfered in both directions.
-

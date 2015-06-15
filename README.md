@@ -13,4 +13,3 @@ Unlike other libraries this one does not require you to build DOM of you object 
 * [Building](doc/building.md)
 * [Documentation Usage](doc/usage.md)
 * [Documentation Internal](doc/internal.md)
-

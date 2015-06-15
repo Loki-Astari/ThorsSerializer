@@ -4,7 +4,6 @@
 ![ThorStream](../img/stream.jpg)
 
 ##Example-1 [See doc/example1.cpp](example1.cpp)
-
 ````c++
     #include "ThorSerialize/Traits.h"
     #include "ThorSerialize/JsonThor.h"

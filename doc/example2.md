@@ -3,9 +3,7 @@
 
 ![ThorStream](../img/stream.jpg)
 
-
 ##Example-2: [see doc/example2.cpp](example2.cpp)
-
 ````c++
     #include <string>
     #include "ThorSerialize/Traits.h"
@@ -38,9 +36,7 @@
      */
     ThorsAnvil_MakeTrait(MyClass, data1, data2, data3);
 ````
-    
 This allows us to import and export object of the above class really easily.
-
 ````c++
     int main()
     {
