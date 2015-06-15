@@ -32,6 +32,6 @@ script:
 branches:
   only:
       - master
-      - /^feature-*$/
-      - /^version-*$/
+      - /^feature-.*$/
+      - /^version-.*$/
 
