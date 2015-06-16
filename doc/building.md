@@ -15,10 +15,10 @@
 By default installation will be in `/usr/local/[include/lib]`. You can override this with the normal auto-tools defaults. Use `./configure --help` to get details.
 
 ###What is installed:
-* /usr/local/include/ThorSerialize/*
-* /usr/local/include/ThorBinaryRep/*
-* /use/local/lib/libThorSerialize14.so
-* /use/local/lib/libThorSerialize14D.so
+* `/usr/local/include/ThorSerialize/*`
+* `/usr/local/include/ThorBinaryRep/*`
+* `/usr/local/lib/libThorSerialize14.so`
+* `/usr/local/lib/libThorSerialize14D.so`
 
 Note:
 libThorSerialize14.so is build using -O3 and thus is fully optimized and debug symbols have been stripped.  
