@@ -4,6 +4,12 @@
 
 #include "../Traits.h"
 
+enum RGB { Red, Green, Blue };
+struct EumHolder
+{
+    RGB value;
+};
+
 class SerializeTestExtra
 {
     public:
@@ -61,6 +67,8 @@ class SerializeTestMembers
         {}
 };
 
+ThorsAnvil_MakeEnum(RGB, Red, Green, Blue);
+ThorsAnvil_MakeTrait(EumHolder, value);
 ThorsAnvil_MakeTrait(SerializeTestExtra, theInteger, aNonRealValue, test, normalString);
 ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeTestChild, data1, data2);
 ThorsAnvil_MakeTrait(SerializeTestMembers, member1, member2);

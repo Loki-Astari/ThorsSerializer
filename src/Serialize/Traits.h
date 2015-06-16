@@ -82,8 +82,10 @@
  */
 #define TypeAction(Type, Member)        std::pair<char const*, decltype(&Type::Member)>
 #define ValueAction(Type, Member)       { QUOTE(Member), &Type::Member }
+#define NameAction(Type, Member)        #Member
 #define Last_TypeAction(Type)           void*
 #define Last_ValueAction(Type)          {nullptr}
+#define Last_NameAction(Type)           nullptr
 
 
 /*
@@ -133,6 +135,39 @@ static_assert(                                                                  
 #define ThorsAnvil_ExpandTrait(ParentType, ...)                         \
     ThorsAnvil_ExpandTrait_With_Ext(ParentType, __VA_ARGS__, 1)
 
+#define ThorsAnvil_MakeEnum(enumName, ...)                              \
+namespace ThorsAnvil { namespace Serialize {                            \
+template<>                                                              \
+class Traits<enumName>                                                  \
+{                                                                       \
+    public:                                                             \
+        static constexpr    TraitType       type = TraitType::Enum;     \
+        static char const* const* getValues()                           \
+        {                                                               \
+            static constexpr char const* values[] = {                   \
+                        REP_N(NameAction, 0, __VA_ARGS__, 1)            \
+                                                    };                  \
+            return values;                                              \
+        }                                                               \
+        static std::size_t getSize()                                    \
+        {                                                               \
+            return NUM_ARGS(__VA_ARGS__, 1);                            \
+        }                                                               \
+        static enumName getValue(std::string const& val, std::string const& msg) \
+        {                                                               \
+            char const* const* values = getValues();                    \
+            std::size_t        size   = getSize();                      \
+            for(std::size_t loop = 0;loop < size; ++loop)               \
+            {                                                           \
+                if (val == values[loop]) {                              \
+                    return static_cast<enumName>(loop);                 \
+                }                                                       \
+            }                                                           \
+            throw std::runtime_error(msg + " Invalid Enum Value");      \
+        }                                                               \
+};                                                                      \
+}}
+
 
 /*
  * Defines the generic type that all serialization types can expand on
@@ -142,7 +177,7 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
-enum class TraitType {Invalid, Parent, Value, Map, Array};
+enum class TraitType {Invalid, Parent, Value, Map, Array, Enum};
 template<typename T>
 class Traits
 {
