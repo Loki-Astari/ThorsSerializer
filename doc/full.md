@@ -28,6 +28,7 @@
 * Use one of these macros to declare your type as serializable
  * `ThorsAnvil_MakeTrait(<Type>, <members>...)`
  * `ThorsAnvil_ExpandTrait(<Parent-Type>, <Type>, <members>...)`
+ * `ThorsAnvil_MakeEnum(<EnumType>, <EnumMembers>...)`
 
 ````bash
     Type:           The name of a class (includeing namespace) of the type

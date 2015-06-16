@@ -56,6 +56,10 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::multimap<int, doub
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::map<std::string, bool>>(std::map<std::string, bool>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::multimap<std::string, bool>>(std::multimap<std::string, bool>&);
 
+template void ThorsAnvil::Serialize::Serializer::print<RGB>(RGB const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<RGB>(RGB&);
+template void ThorsAnvil::Serialize::Serializer::print<EumHolder>(EumHolder const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<EumHolder>(EumHolder&);
 
 
 #endif

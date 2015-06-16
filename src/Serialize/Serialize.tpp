@@ -102,6 +102,33 @@ class DeSerializationForBlock<TraitType::Value, T>
             parser.getValue(object);
         }
 };
+/*
+ * Specialization for Enum.
+ * This is only used at the top level.
+ * There is no open or close. Just a single value is expected.
+ */
+template<typename T>
+class DeSerializationForBlock<TraitType::Enum, T>
+{
+    DeSerializer&       parent;
+    ParserInterface&    parser;
+    public:
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
+        {}
+        void scanObject(T& object)
+        {
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+            if (tokenType != ParserInterface::ParserToken::Value)
+            {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Enum>::DeSerializationForBlock: Invalid Object");
+            }
+            std::string     objectValue;
+            parser.getValue(objectValue);
+
+            object = Traits<T>::getValue(objectValue, "ThorsAnvil::Serialize::DeSerializationForBlock<Enum>::DeSerializationForBlock:");
+        }
+};
 
 /*
  * Specialization for Array.
@@ -177,6 +204,25 @@ class DeSerializeMember<T, M, TraitType::Value>
                 }
 
                 parser.getValue(object.*(memberInfo.second));
+            }
+        }
+};
+template<typename T, typename M>
+class DeSerializeMember<T, M, TraitType::Enum>
+{
+    public:
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+        {
+            if (key.compare(memberInfo.first) == 0)
+            {
+                ParserInterface::ParserToken tokenType = parser.getToken();
+                if (tokenType != ParserInterface::ParserToken::Value)
+                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
+                }
+                std::string     objectValue;
+                parser.getValue(objectValue);
+
+                object.*(memberInfo.second) = Traits<M>::getValue(objectValue, "ThorsAnvil::Serialize::DeSerializeMember<T,M,Enum>::DeSerializeMember:");
             }
         }
 };
@@ -268,6 +314,23 @@ class SerializerForBlock<TraitType::Value, T>
         void printMembers()
         {
             printer.addValue(object);
+        }
+};
+
+template<typename T>
+class SerializerForBlock<TraitType::Enum, T>
+{
+    PrinterInterface&   printer;
+    T const&            object;
+    public:
+        SerializerForBlock(Serializer&, PrinterInterface& printer,T const& object)
+            : printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()   {}
+        void printMembers()
+        {
+            printer.addValue(std::string(Traits<T>::getValues()[static_cast<int>(object)]));
         }
 };
 
