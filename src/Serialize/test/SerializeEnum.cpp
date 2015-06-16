@@ -3,6 +3,7 @@
 #include "JsonThor.h"
 #include "Serialize.h"
 #include "test/SerializeTest.h"
+#include <algorithm>
 
 std::string stripspace(std::string const& value)
 {
