@@ -9,7 +9,7 @@ done
 
 echo "https://codecov.io/upload/v2?service=travis-org&branch=$TRAVIS_BRANCH&commit=$TRAVIS_COMMIT&build=$TRAVIS_JOB_NUMBER&pull_request=$TRAVIS_PULL_REQUEST&job=$TRAVIS_JOB_ID&slug=$TRAVIS_REPO_SLUG"
 
-cat upload | tr '\n' ' ' | tr -s ' ' | \
+cat upload | \
     curl -X POST \
          --silent \
          --data-binary @- \
