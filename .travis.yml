@@ -30,7 +30,7 @@ install:
 script:
     - make 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+    - ./uploadcodecovrage
 branches:
   only:
       - master
