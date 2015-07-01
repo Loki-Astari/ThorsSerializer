@@ -1,10 +1,10 @@
 #!/bin/bash
 
-find src -type f -not -path '*test*' '(' -name '*.cpp' -or -name '*.h' -or -name '*.tpp' ')' > upload
+find src -type f -not -path '*/test/*' '(' -name '*.cpp' -or -name '*.tpp' ')' | awk -F/ '{print $NF}' > upload
 
 for file in $(find src -type f -name '*.gcov'); do
     echo "<<<<<< EOF" >> upload
-    cat "$file" >> upload
+    cat "$file" | sed -e 's/\(0:[A-Za-z]*\):[A-Za-z]*\//\1:/' >> upload
 done
 
 echo "https://codecov.io/upload/v2?service=travis-org&branch=$TRAVIS_BRANCH&commit=$TRAVIS_COMMIT&build=$TRAVIS_JOB_NUMBER&pull_request=$TRAVIS_PULL_REQUEST&job=$TRAVIS_JOB_ID&slug=$TRAVIS_REPO_SLUG"
