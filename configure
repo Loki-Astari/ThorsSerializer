@@ -2986,7 +2986,30 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
     git submodule init
-    git submodule update
+    if git submodule update; then :
+
+else
+  as_fn_error $? "
+
+
+git submodule updated failed:
+
+Currently all Loki-Astari submodules are retrieved using ssh.
+If the above command failed it probably means that you have not registered your \"public key\" with github.com
+
+See this article on StackOverflow for simple instructions:
+http://stackoverflow.com/questions/25828483/github-permission-denied-publickey
+
+
+Once you have installed the keys you can restart the configuration with:
+git submodule update
+./configure <Same Flags You had before>
+
+        " "$LINENO" 5
+
+fi
+
+
     pushd build/third
     ./setup "$CXX" || as_fn_error 1 "Failed to set up the test utilities" "$LINENO" 5
     popd
