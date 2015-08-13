@@ -31,3 +31,8 @@ Note: I use ssh to communicate with github. Thus all subprojects (updated with `
 
     Permission denied (publickey).
     fatal: The remote end hung up unexpectedly
+
+If you are unsure what this means you can test that you test by downloading this using the ssh url
+
+    git clone git@github.com:Loki-Astari/ThorsSerializer.git
+    
