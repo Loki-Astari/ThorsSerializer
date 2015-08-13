@@ -25,3 +25,9 @@ Unlike other libraries this one does not require you to build DOM of you object 
 
 -----
 [One Page](doc/full.md)
+
+-----
+Note: I use ssh to communicate with github. Thus all subprojects (updated with `git submodule update`) also use ssh. This requires you to have registered your public key with github.com Otherwise you will generate the error:
+
+    Permission denied (publickey).
+    fatal: The remote end hung up unexpectedly
