@@ -1,7 +1,7 @@
 
 THORSANVIL_ROOT				= $(realpath ../)
 
-TARGET						= BinaryRep Serialize
+TARGET						= $(BINARY_REP) Serialize
 
 include $(THORSANVIL_ROOT)/build/tools/Project.Makefile
 

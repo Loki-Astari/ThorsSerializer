@@ -18,6 +18,12 @@ AC_SUBST([SERIALIZATION_EXTERN_LIBS], [])
 
 AX_THOR_FUNC_USE_YAML
 AX_THOR_FUNC_USE_BINARY
+AS_IF(
+      [test "x$enable_binary" != "xno"],
+      [
+        AC_SUBST([BINARY_REP], [BinaryRep])
+      ]
+)
 
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], ["$with_yamllib  $SERIALIZATION_EXTERN_LIBS"])
 

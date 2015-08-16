@@ -14,3 +14,5 @@ bindir?=@bindir@
 libdir?=@libdir@
 includedir?=@includedir@
 
+BINARY_REP=@BINARY_REP@
+

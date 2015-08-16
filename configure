@@ -684,6 +684,7 @@ StdFlag17
 StdFlag14
 StdFlag11
 CXXMaxLanguage
+BINARY_REP
 yaml_ROOT_LIB
 yaml_ROOT_DIR
 SERIALIZATION_EXTERN_LIBS
@@ -16037,6 +16038,13 @@ fi
 
 fi
 
+if test "x$enable_binary" != "xno"; then :
+
+        BINARY_REP=BinaryRep
+
+
+
+fi
 
 SERIALIZATION_EXTERN_LIBS="$with_yamllib  $SERIALIZATION_EXTERN_LIBS"
 
