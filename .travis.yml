@@ -26,9 +26,9 @@ before_install:
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then a=$(sudo find / -name llvm-cov | grep 3.4 | head -1);sudo mv ${a} ${a}.old;fi
     - if [ "$TRAVIS_OS_NAME" == "osx"   -a "$CXX" == "clang++" ]; then sudo ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-cov /usr/local/bin/llvm-cov; fi
 install:
-    - ./configure --with-thors-network-byte-order
+    - ./configure --with-thors-network-byte-order --with-thor-build-local-vera
 script:
-    - make 
+    - PATH=${PATH}:$(pwd)/build/bin make 
 after_success:
     - ./uploadcodecovrage
 branches:

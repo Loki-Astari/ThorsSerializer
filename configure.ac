@@ -5,6 +5,7 @@ AC_PREREQ([2.65])
 # Set up the build system
 AC_CONFIG_MACRO_DIR([build/autotools/m4])
 AX_THOR_FUNC_BUILD
+AX_THOR_FUNC_USE_INSTALL_LOCAL_VERA
 AC_CONFIG_AUX_DIR([build/autotools/build])
 
 
