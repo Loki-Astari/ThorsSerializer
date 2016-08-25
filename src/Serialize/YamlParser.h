@@ -3,7 +3,7 @@
 #define THORS_ANIVL_SERIALIZE_YAML_PARSER_H
 /*
  * YamlParser<T>
- *      This is used in conjunction with YamlPrinter<T> 
+ *      This is used in conjunction with YamlPrinter<T>
  *
  *      Together these provide an implementation of:
  *          the ParserInterface for type T
@@ -36,7 +36,7 @@ class YamlParser: public ParserInterface
 {
     enum class State {Open, Map, Array};
     std::vector<std::pair<State, int>>  state;
-    yaml_parser_t       parser;   
+    yaml_parser_t       parser;
     yaml_event_t        event;
     bool                first;
     bool                error;

@@ -3,7 +3,7 @@
 #define THORS_ANVIL_SERIALIZE_JSON_PARSER_H
 /*
  * JsonParser<T>
- *      This is used in conjunction with JsonPrinter<T> 
+ *      This is used in conjunction with JsonPrinter<T>
  *
  *      Together these provide an implementation of:
  *          the ParserInterface for type T

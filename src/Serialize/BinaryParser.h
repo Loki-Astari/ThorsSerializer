@@ -3,7 +3,7 @@
 #define THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
 /*
  * BinaryParser<T>
- *      This is used in conjunction with BinaryPrinter<T> 
+ *      This is used in conjunction with BinaryPrinter<T>
  *
  *      Together these provide an implementation of:
  *          the ParserInterface for type T
@@ -16,7 +16,7 @@
  *      data is stored/read in a particular order. To make sure that the data being read matches
  *      the data being stored a hash based on the Traits is generated and stored as a prefix to
  *      the data. This allows the parser to validate it is reading the same object that was stored.
- *      
+ *
  *      This uses BinaryParserUtil<T> to do that actual work of parsing and generating the appropriate
  *      tokens needed by a user of the ParserInterface. If an member is a serializeable user type `U` we
  *      push BinaryParserUtil<U> onto the stack for generating tokens. When all tokens have been generated
@@ -183,7 +183,7 @@ class BinaryParser: public ParserInterface
             if (hash != expect) {
                 throw std::runtime_error("ThorsAnvil::Serialize::BinaryParser::BinaryParser: input hash for binary object did not match");
             }
-            
+
             state.emplace_back(new BinaryParserUtil<T>());
         }
         virtual ParserToken     getNextToken()                 override

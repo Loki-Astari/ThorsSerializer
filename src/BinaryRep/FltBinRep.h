@@ -140,7 +140,7 @@ template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long doubl
 
     // Build the exponent bits
     // Max of 15 bits with a boas of 16383 (2^15-1)
-    // Bits: 
+    // Bits:
     BinForm64           exp         = exponent & 0x7FFF;   // Make sure we only use 15 bits.
     exp -= 1;                                           // The extended format exponent is one off
     exp += 16383;                                       // Add the bias

@@ -19,7 +19,7 @@ class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Map>
 {
     public:
     void operator()(BinaryParserMapParentCommon<T>& obj)
-    {   
+    {
         using Traits = ThorsAnvil::Serialize::Traits<typename std::remove_reference<R>::type>;
         obj.fill(Traits::getMembers());
     }
@@ -31,7 +31,7 @@ class BinaryParserMapParentCommon<T>::MemberAdder<R, TraitType::Parent>
 {
     public:
     void operator()(BinaryParserMapParentCommon<T>& obj)
-    {   
+    {
         MemberAdder<typename ThorsAnvil::Serialize::Traits<T>::Parent>    addParent;
         addParent(obj);
 
@@ -57,7 +57,7 @@ void BinaryParserMapParentCommon<T>::addMember(std::pair<char const*, P> const& 
     typedef decltype(((T*)nullptr)->*(token.second))            DestTypeBase;
     typedef typename std::remove_reference<DestTypeBase>::type  DestType;
 
-    if (    ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Map 
+    if (    ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Map
         ||  ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Array
         ||  ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Parent)
     {
@@ -144,7 +144,7 @@ ParserToken BinaryParserUtil<T, TraitType::Array>
     ::pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm)
 {
     typedef typename T::value_type       ChildType;
-    if (    ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Map 
+    if (    ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Map
         ||  ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Array
         ||  ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Parent)
     {

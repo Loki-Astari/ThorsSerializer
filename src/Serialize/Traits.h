@@ -74,7 +74,7 @@
 #define REP_OF_00(Act, P1, One)         Last_ ## Act(P1)
 
 
-/* 
+/*
  * The actions we apply with REP_*
  *
  * TypeAction:      Declares a type to hold the name and a pointer to the internal object.
@@ -195,7 +195,7 @@ class Traits
         static constexpr TraitType type = TraitType::Invalid;
 
         // For types that are Map/Array/Parent we can also define
-        // members that need be serialized via types. To achieve this 
+        // members that need be serialized via types. To achieve this
         // they  define a static getMembers() function.
         // static Members const& getMembers()
         //
