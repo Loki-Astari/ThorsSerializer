@@ -1,11 +1,13 @@
 *.o
 *.lex.cpp
+*.lex.h
 .*.swp
 unittest
 coverage/
 debug/
 release/
 profile/
+vera/
 makefile_tmp
 Makefile.extra
 Makefile.config
@@ -15,5 +17,5 @@ autom4te.cache/
 config.log
 config.status
 libtool
-stamp-h1
+stamp-h[0-9]
 confdefs.h

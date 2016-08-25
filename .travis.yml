@@ -3,6 +3,7 @@ git:
 language: cpp
 os:
     - linux
+futureos:
     - osx
 compiler:
     - gcc
@@ -25,10 +26,11 @@ before_install:
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then a=$(sudo find / -name llvm-cov | grep 3.5 | head -1);sudo ln -s ${a} /usr/bin/llvm-cov;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then a=$(sudo find / -name llvm-cov | grep 3.4 | head -1);sudo mv ${a} ${a}.old;fi
     - if [ "$TRAVIS_OS_NAME" == "osx"   -a "$CXX" == "clang++" ]; then sudo ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-cov /usr/local/bin/llvm-cov; fi
+    - sudo apt-get install libboost-all-dev
 install:
-    - ./configure --with-thors-network-byte-order --with-thor-build-local-vera
+    - ./configure --with-thor-build-on-travis --with-thors-network-byte-order
 script:
-    - PATH=${PATH}:$(pwd)/build/bin make 
+    - export PATH=${PATH}:$(pwd)/build/bin;make 
 after_success:
     - ./uploadcodecovrage
 branches:
