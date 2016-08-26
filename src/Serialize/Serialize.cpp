@@ -1,4 +1,3 @@
-
 #include "Serialize.h"
 
 #ifdef COVERAGE_TEST
@@ -63,5 +62,3 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<EumHolder>(EumHolder&);
 
 
 #endif
-
-

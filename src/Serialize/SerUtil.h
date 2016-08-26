@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_SER_UTIL_H
 #define THORS_ANVIL_SERIALIZE_SER_UTIL_H
 
@@ -140,7 +139,7 @@ class ContainerMemberExtractor
         void operator()(PrinterInterface& printer, C const& object) const
         {
             PutValueType<V>     valuePutter(printer);
-            for(auto const& loop: object)
+            for (auto const& loop: object)
             {
                 valuePutter.putValue(loop);
             }
@@ -385,7 +384,7 @@ class Traits<std::map<std::string, Value>>
                 void operator()(PrinterInterface& printer, std::map<std::string, Value> const& object) const
                 {
                     PutValueType<Value>     valuePutter(printer);
-                    for(auto const& loop: object)
+                    for (auto const& loop: object)
                     {
                         printer.addKey(loop.first);
                         valuePutter.putValue(loop.second);
@@ -447,7 +446,7 @@ class Traits<std::multimap<std::string, Value>>
                 void operator()(PrinterInterface& printer, std::multimap<std::string, Value> const& object) const
                 {
                     PutValueType<Value>     valuePutter(printer);
-                    for(auto const& loop: object)
+                    for (auto const& loop: object)
                     {
                         printer.addKey(loop.first);
                         valuePutter.putValue(loop.second);
@@ -473,4 +472,3 @@ class Traits<std::multimap<std::string, Value>>
 }
 
 #endif
-

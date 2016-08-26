@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
 #define THORS_ANVIL_SERIALIZE_BINARY_PARSER_H
 /*
@@ -180,7 +179,8 @@ class BinaryParser: public ParserInterface
         {
             std::size_t hash   = TBin::net2Host(read<TBin::BinForm32>());
             std::size_t expect = std::uint32_t(thash<T>());
-            if (hash != expect) {
+            if (hash != expect)
+            {
                 throw std::runtime_error("ThorsAnvil::Serialize::BinaryParser::BinaryParser: input hash for binary object did not match");
             }
 
@@ -220,4 +220,3 @@ class BinaryParser: public ParserInterface
 
 #endif
 #endif
-

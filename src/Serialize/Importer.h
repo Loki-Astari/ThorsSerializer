@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_IMPORTER_H
 #define THORS_ANVIL_SERIALIZE_IMPORTER_H
 /*
@@ -42,4 +41,3 @@ Importer<Format, T> Import(T const& value)
 }
 
 #endif
-

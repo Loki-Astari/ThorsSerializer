@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_JSON_PARSER_H
 #define THORS_ANVIL_SERIALIZE_JSON_PARSER_H
 /*
@@ -70,4 +69,3 @@ class JsonParser: public ParserInterface
 }
 
 #endif
-

@@ -1,4 +1,3 @@
-
 #include "SerializeConfig.h"
 #ifdef HAVE_YAML
 #include "YamlPrinter.h"
@@ -83,7 +82,7 @@ void YamlPrinter::closeDoc()
 void YamlPrinter::openMap()
 {
     yaml_mapping_style_t    style;
-    switch(this->characteristics)
+    switch (this->characteristics)
     {
         case PrinterInterface::OutputType::Stream:  style   = YAML_FLOW_MAPPING_STYLE;  break;
         case PrinterInterface::OutputType::Config:  style   = YAML_BLOCK_MAPPING_STYLE; break;
@@ -106,7 +105,7 @@ void YamlPrinter::closeMap()
 void YamlPrinter::openArray(std::size_t)
 {
     yaml_sequence_style_t    style;
-    switch(this->characteristics)
+    switch (this->characteristics)
     {
         case PrinterInterface::OutputType::Stream:  style   = YAML_FLOW_SEQUENCE_STYLE; break;
         case PrinterInterface::OutputType::Config:  style   = YAML_BLOCK_SEQUENCE_STYLE;break;
@@ -180,4 +179,3 @@ void YamlPrinter::addValue(bool value)                          {emit(value?"tru
 void YamlPrinter::addValue(std::string const& value)            {emit(value);}
 
 #endif
-

@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_TRAITS_H
 #define THORS_ANVIL_SERIALIZE_TRAITS_H
 /*
@@ -13,8 +12,6 @@
  *
  * See README.md for examples.
  */
-
-
 
 #include <string>
 #include <tuple>
@@ -158,7 +155,7 @@ class Traits<EnumName>                                                  \
         {                                                               \
             char const* const* values = getValues();                    \
             std::size_t        size   = getSize();                      \
-            for(std::size_t loop = 0;loop < size; ++loop)               \
+            for (std::size_t loop = 0;loop < size; ++loop)              \
             {                                                           \
                 if (val == values[loop]) {                              \
                     return static_cast<EnumName>(loop);                 \
@@ -206,7 +203,7 @@ class Traits
         // So I use a static member function with a static variable
         // which can be defined in-line within the traits class and
         // does not need a separate declaration in a compilation unit.
-} ;
+};
 
 /*
  * Declare types that can be read/written directly by the parser/printer
@@ -230,10 +227,7 @@ template<> class Traits<bool>                   {public: static constexpr TraitT
 
 template<> class Traits<std::string>            {public: static constexpr TraitType type = TraitType::Value;};
 
-
-
     }
 }
 
 #endif
-

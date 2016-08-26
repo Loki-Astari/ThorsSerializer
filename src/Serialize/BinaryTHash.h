@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_THASH_H
 #define THORS_ANVIL_SERIALIZE_THASH_H
 /*
@@ -26,5 +25,3 @@ std::size_t thash(std::size_t restul = 0);
 #endif
 
 #endif
-
-

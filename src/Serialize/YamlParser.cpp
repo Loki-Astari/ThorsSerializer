@@ -1,4 +1,3 @@
-
 #include "SerializeConfig.h"
 #ifdef HAVE_YAML
 #include "YamlParser.h"
@@ -65,7 +64,7 @@ ParserInterface::ParserToken YamlParser::getNextToken()
         return parsingError();
     }
 
-    switch(event.type)
+    switch (event.type)
     {
         case YAML_STREAM_START_EVENT:   generateParsingException("ThorsAnvil::Serialize::YamlParser: Start should only happen as first event");
         case YAML_ALIAS_EVENT:          generateParsingException("ThorsAnvil::Serialize::YamlParser: Alias not supported");
@@ -236,4 +235,3 @@ void YamlParser::getValue(std::string& value)
 }
 
 #endif
-

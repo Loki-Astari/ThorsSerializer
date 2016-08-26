@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_JSON_PRINTER_H
 #define THORS_ANVIL_SERIALIZE_JSON_PRINTER_H
 /*
@@ -52,4 +51,3 @@ class JsonPrinter: public PrinterInterface
 }
 
 #endif
-

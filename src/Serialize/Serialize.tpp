@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_SERIALIZE_TPP
 #define THORS_ANVIL_SERIALIZE_SERIALIZE_TPP
 
@@ -57,7 +56,7 @@ class DeSerializationForBlock
 
         void scanObject(T& object)
         {
-            while(hasMoreValue())
+            while (hasMoreValue())
             {
                 parent.scanObjectMembers(key, object);
             }
@@ -157,7 +156,7 @@ class DeSerializationForBlock<TraitType::Array, T>
 
         void scanObject(T& object)
         {
-            while(hasMoreValue())
+            while (hasMoreValue())
             {
                 parent.scanObjectMembers(index, object);
             }
@@ -451,4 +450,3 @@ inline void Serializer::printObjectMembers(T const& object)
 }
 
 #endif
-

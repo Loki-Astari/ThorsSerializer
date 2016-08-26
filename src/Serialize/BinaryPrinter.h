@@ -1,4 +1,3 @@
-
 #ifdef NETWORK_BYTE_ORDER
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PRINTER_H
 #define THORS_ANVIL_SERIALIZE_BINARY_PRINTER_H
@@ -73,4 +72,3 @@ class BinaryPrinter: public PrinterInterface
 #endif
 #endif
 #endif
-

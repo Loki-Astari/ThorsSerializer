@@ -1,4 +1,3 @@
-
 #ifndef   THORS_ANVIL_BINARY_REP_FLT_BIN_REP_H
 #define   THORS_ANVIL_BINARY_REP_FLT_BIN_REP_H
 
@@ -27,7 +26,7 @@ template<> struct FloatConverterTrait<float>
     {   static constexpr BinForm32 value = 0x7f800000ULL;
         return value;
     }
-    typedef BinForm32 StorageType;
+    using StorageType = BinForm32;
 };
 template<> struct FloatConverterTrait<double>
 {
@@ -35,15 +34,15 @@ template<> struct FloatConverterTrait<double>
     {   static constexpr BinForm64 value = 0x7FF0000000000000ULL;
         return value;
     }
-    typedef BinForm64 StorageType;
+    using StorageType = BinForm64;
 };
 template<> struct FloatConverterTrait<long double>
 {
     static  BinForm128  notANumber()
-    {   static constexpr BinForm128 value = BinForm128High(0x7FFF000000000000ULL);
+    {   static constexpr BinForm128 value = binForm128High(0x7FFF000000000000ULL);
         return value;
     }
-    typedef BinForm128 StorageType;
+    using StorageType = BinForm128;
 };
 
 template<typename T>
@@ -97,7 +96,7 @@ template<>  inline long double  net2HostIEEE<long double, true, 16, 113>(BinForm
 
 template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long double value)
 {
-    static BinForm128         expMask     =  BinForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
+    static BinForm128         expMask     =  binForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
     /* If this function is called it means you have an IEEE-754 integer
      * But it is not one of the interchange formats defined in  IEEE 754-2008
      *
@@ -166,7 +165,7 @@ template<>  inline BinForm128 host2NetIEEE<long double, true, 16, 64>(long doubl
 
 
     // But the 3 part together into a single value.
-    sigBits |= BinForm128High(exp);
+    sigBits |= binForm128High(exp);
     sigBits |= sign;
 
     return host2Net(sigBits);
@@ -185,7 +184,7 @@ template<>  inline BinForm128 host2NetIEEE<long double, true, 12, 64>(long doubl
 }
 template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm128 value)
 {
-    static BinForm128         expMask     =  BinForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
+    static BinForm128         expMask     =  binForm128High(0x0000FFFFFFFFFFFFULL) | BinForm128(0xFFFFFFFFFFFFFFFFULL);
     /* If this function is called it means you have an IEEE-754 integer
      * But it is not one of the interchange formats defined in  IEEE 754-2008
      *
@@ -232,7 +231,7 @@ template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm12
     sigBits >>= 1;                          // This rep has an extra bit represent the integer part
     sigBits |= 0x8000000000000000ULL;       // that is always one so put it back.
 
-    sigBits |= BinForm128High(0x3FFE);      // The significant should be just above one so add the
+    sigBits |= binForm128High(0x3FFE);      // The significant should be just above one so add the
                                             // correct bias to make that happen.
 
     // Put it all back together.
@@ -243,11 +242,10 @@ template<>  inline long double net2HostIEEE<long double, true, 16, 64>(BinForm12
 }
 template<>  inline long double net2HostIEEE<long double, true, 12, 64>(BinForm128 value)
 {
-	return net2HostIEEE<long double, true, 16,64>(value);
+    return net2HostIEEE<long double, true, 16,64>(value);
 }
 
     }
 }
 
 #endif
-

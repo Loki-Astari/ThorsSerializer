@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_UNICODE_ITERATOR_H
 #define THORS_ANVIL_SERIALIZE_UNICODE_ITERATOR_H
 /*
@@ -26,10 +25,7 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
-        namespace
-        {
-
-long convertHexToDec(char x)
+inline long convertHexToDec(char x)
 {
     if (x >= '0' && x <= '9')
     {
@@ -45,7 +41,6 @@ long convertHexToDec(char x)
     }
     throw std::runtime_error("ThorsAnvil::Serialize::UnicodeIterator: Invalid Hex Digit in unicode string");
 }
-        }
 
 template<typename C>
 struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, std::ptrdiff_t, char*,char&>
@@ -136,7 +131,7 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, st
         }
         else if (lastWasSlash)
         {
-            switch(x)
+            switch (x)
             {
                 case '"':   cont.push_back('"');    break;
                 case '\\':  cont.push_back('\\');   break;
@@ -211,7 +206,7 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
                 ++iter;
                 char next   = *iter;
 
-                switch(next)
+                switch (next)
                 {
                     case '"':   cont[0] = '"';    break;
                     case '\\':  cont[0] = '\\';   break;
@@ -295,7 +290,7 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
     {
         long unicodeValue   = 0;
 
-        for(int loop=0;loop < 4;++loop)
+        for (int loop=0;loop < 4;++loop)
         {
             ++iter;
             char x = *iter;
@@ -314,4 +309,3 @@ template<typename I> UnicodeWrapperIterator<I>  make_UnicodeWrapperIterator(I it
 }
 
 #endif
-

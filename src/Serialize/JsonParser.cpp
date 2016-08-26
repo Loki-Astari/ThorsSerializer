@@ -1,4 +1,3 @@
-
 #include "JsonParser.h"
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
@@ -78,7 +77,7 @@ ParserToken JsonParser::getNextToken()
     int index   = tokenIndex[token];
 
     currentState    = stateTable[currentState][index];
-    switch(currentState)
+    switch (currentState)
     {
         // These states should be impossible to get too
         case Init:      throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Got into Init State");
@@ -191,4 +190,3 @@ void JsonParser::getValue(std::string& value)
 {
     value = getString();
 }
-

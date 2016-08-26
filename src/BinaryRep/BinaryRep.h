@@ -1,4 +1,3 @@
-
 #ifndef   THORS_ANVIL_BINARY_REP_BINARY_REP_H
 #define   THORS_ANVIL_BINARY_REP_BINARY_REP_H
 
@@ -28,4 +27,3 @@ static_assert(static_cast<unsigned char>(false) == '\x00',    "Binary interface 
 }
 
 #endif
-

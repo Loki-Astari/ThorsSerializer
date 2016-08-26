@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANIVL_SERIALIZE_YAML_PARSER_H
 #define THORS_ANIVL_SERIALIZE_YAML_PARSER_H
 /*
@@ -82,4 +81,3 @@ class YamlParser: public ParserInterface
 
 #endif
 #endif
-

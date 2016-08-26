@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_H
 #define THORS_ANVIL_SERIALIZE_BINARY_H
 /*
@@ -47,4 +46,3 @@ Importer<Binary<T>, T> binImport(T& value)
 
 #endif
 #endif
-

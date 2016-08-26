@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
 #define THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
 
@@ -61,4 +60,3 @@ class YamlPrinter: public PrinterInterface
 
 #endif
 #endif
-

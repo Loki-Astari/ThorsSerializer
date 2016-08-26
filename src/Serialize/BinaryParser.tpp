@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_BINARY_PARSER_TPP
 #define THORS_ANVIL_SERIALIZE_BINARY_PARSER_TPP
 
@@ -159,4 +158,3 @@ ParserToken BinaryParserUtil<T, TraitType::Array>
 
 #endif
 #endif
-

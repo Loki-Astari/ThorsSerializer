@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_EXPORTER_H
 #define THORS_ANVIL_SERIALIZE_EXPORTER_H
 /*
@@ -47,4 +46,3 @@ Exporter<Format, T> Export(T const& value, PrinterInterface::OutputType characte
 }
 
 #endif
-

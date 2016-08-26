@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_JSON_H
 #define THORS_ANVIL_SERIALIZE_JSON_H
 /*
@@ -42,4 +41,3 @@ Importer<Json, T> jsonImport(T& value)
 }
 
 #endif
-

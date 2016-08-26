@@ -1,4 +1,3 @@
-
 #ifndef   THORS_ANVIL_BINARY_REP_BINARY_FORMAT_H
 #define   THORS_ANVIL_BINARY_REP_BINARY_FORMAT_H
 
@@ -22,12 +21,12 @@ namespace ThorsAnvil
     namespace BinaryRep
     {
 
-typedef     std::uint16_t       BinForm16;
-typedef     std::uint32_t       BinForm32;
-typedef     std::uint64_t       BinForm64;
+using BinForm16 = std::uint16_t;
+using BinForm32 = std::uint32_t;
+using BinForm64 = std::uint64_t;
 #if HAVE_UINT_128
 typedef     std::uint128_t      BinForm128;
-std::uint128_t BinForm128High(long long int)    {return value << 64;}
+std::uint128_t binForm128High(long long int)    {return value << 64;}
 #else
 constexpr bool isBigEnough() {return sizeof(long long int) > 8;}
 template<bool cmp = isBigEnough()>
@@ -123,7 +122,7 @@ struct BinForm128
         return ((static_cast<unsigned long long>(hi) << 32) << 32) + lo;
     }
     private:
-    friend constexpr BinForm128 BinForm128High(BinForm64 value);
+    friend constexpr BinForm128 binForm128High(BinForm64 value);
     constexpr BinForm128(BinForm64 hi, BinForm64 lo)
 #if WORDS_BIGENDIAN
         : hi(hi)
@@ -134,7 +133,7 @@ struct BinForm128
 #endif
     {}
 };
-inline constexpr BinForm128 BinForm128High(BinForm64 value)
+inline constexpr BinForm128 binForm128High(BinForm64 value)
 {
     return BinForm128(value, 0LL);
 }
@@ -144,4 +143,3 @@ inline constexpr BinForm128 BinForm128High(BinForm64 value)
 }
 
 #endif
-

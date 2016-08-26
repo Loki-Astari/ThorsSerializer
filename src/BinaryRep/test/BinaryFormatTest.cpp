@@ -158,7 +158,7 @@ TEST(BinaryFormatTest, BinaryAndStraddle)
 }
 TEST(BinaryFormatTest, BinForm128HighCheck)
 {
-    BinForm128     value  = BinForm128High(0x12345678FFFFFFFFLL);
+    BinForm128     value  = binForm128High(0x12345678FFFFFFFFLL);
 
     std::string expected("\x12\x34\x56\x78\xFF\xFF\xFF\xFF"  "\x00\x00\x00\x00\x00\x00\x00\x00", 16);
     checkValue(host2Net(value), expected);

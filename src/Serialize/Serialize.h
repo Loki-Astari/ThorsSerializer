@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_SERIALIZE_H
 #define THORS_ANVIL_SERIALIZE_SERIALIZE_H
 
@@ -296,4 +295,3 @@ inline Serializer::~Serializer()
 #endif
 
 #endif
-

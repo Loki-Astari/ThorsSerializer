@@ -1,4 +1,3 @@
-
 #include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 #include "BinaryParser.h"
@@ -39,7 +38,7 @@ ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserSt
     }
     if (position < end)
     {
-        switch(nextToken)
+        switch (nextToken)
         {
             case ParserToken::Key:
                 nextToken = ParserToken::Value;
@@ -102,4 +101,3 @@ template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<bool>,             
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<double>,           (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 #endif
 #endif
-

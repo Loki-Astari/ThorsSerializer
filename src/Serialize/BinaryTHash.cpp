@@ -1,4 +1,3 @@
-
 #include "BinaryTHash.h"
 
 #ifdef COVERAGE_TEST
@@ -69,5 +68,3 @@ template std::size_t ThorsAnvil::Serialize::thash<std::vector<bool>>(std::size_t
 template std::size_t ThorsAnvil::Serialize::thash<std::vector<double>>(std::size_t);
 
 #endif
-
-

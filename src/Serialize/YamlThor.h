@@ -1,4 +1,3 @@
-
 #ifndef THORS_ANVIL_SERIALIZE_YAML_H
 #define THORS_ANVIL_SERIALIZE_YAML_H
 /*
@@ -46,4 +45,3 @@ Importer<Yaml, T> yamlImport(T& value)
 
 #endif
 #endif
-
