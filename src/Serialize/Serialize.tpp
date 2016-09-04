@@ -205,6 +205,18 @@ class DeSerializeMember<T, M, TraitType::Value>
                 parser.getValue(object.*(memberInfo.second));
             }
         }
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+        {
+            if (key.compare(memberInfo.first) == 0)
+            {
+                ParserInterface::ParserToken tokenType = parser.getToken();
+                if (tokenType != ParserInterface::ParserToken::Value)
+                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
+                }
+
+                parser.getValue(*(memberInfo.second));
+            }
+        }
 };
 template<typename T, typename M>
 class DeSerializeMember<T, M, TraitType::Enum>
@@ -225,6 +237,12 @@ class DeSerializeMember<T, M, TraitType::Enum>
             }
         }
 };
+
+template<typename T, typename M>
+DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M*> const& memberInfo)
+{
+    return DeSerializeMember<T, M>(parser, key, object, memberInfo);
+}
 
 template<typename T, typename M>
 DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
@@ -379,8 +397,18 @@ class SerializeMember<T, M, TraitType::Value>
             printer.addKey(memberInfo.first);
             printer.addValue(object.*(memberInfo.second));
         }
+        SerializeMember(PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+        {
+            printer.addKey(memberInfo.first);
+            printer.addValue(*(memberInfo.second));
+        }
 };
 
+template<typename T, typename M>
+SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M*> const& memberInfo)
+{
+    return SerializeMember<T,M>(printer, object, memberInfo);
+}
 template<typename T, typename M>
 SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
