@@ -73,7 +73,7 @@
 #define REP_OF_03(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_02(Act, P1, __VA_ARGS__)
 #define REP_OF_02(Act, P1, P2, ...)     EXPAND(Act, P1, P2), REP_OF_01(Act, P1, __VA_ARGS__)
 #define REP_OF_01(Act, P1, P2, One)     EXPAND(Act, P1, P2)
-#define REP_OF_00(Act, P1, One)         Last_ ## Act(P1)
+#define REP_OF_00(Act, P1, One)         LAST_ ## Act(P1)
 
 #define ALT_REP_N(Act, P1, ...)             ALT_REP_OF_N(Act, P1, NUM_ARGS(__VA_ARGS__), __VA_ARGS__)
 #define ALT_REP_OF_N(Act, P1, Count, ...)   ALT_REP_OF_N_(Act, P1, Count, __VA_ARGS__)
@@ -99,7 +99,7 @@
 #define ALT_REP_OF_03(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_02(Act, P1, __VA_ARGS__)
 #define ALT_REP_OF_02(Act, P1, P2, ...)     ALT_EXPAND(Act, P1, P2), ALT_REP_OF_01(Act, P1, __VA_ARGS__)
 #define ALT_REP_OF_01(Act, P1, P2, One)     ALT_EXPAND(Act, P1, P2)
-#define ALT_REP_OF_00(Act, P1, One)         Last_ ## Act(P1)
+#define ALT_REP_OF_00(Act, P1, One)         LAST_ ## Act(P1)
 
 #define TEST_IF_ARG(TF, TValue, FValue)          TEST_IF_ARG_(TF, TValue, FValue)
 #define TEST_IF_ARG_(TF, TValue, FValue)         TEST_IF_ARG_BOOL_ ## TF(TValue, FValue)
@@ -110,27 +110,27 @@
 /*
  * The actions we apply with REP_*
  *
- * TypeAction:      Declares a type to hold the name and a pointer to the internal object.
- * ValueAction:     Declares an initialization of the Type putting the name and the pointer
+ * THOR_TYPEACTION:      Declares a type to hold the name and a pointer to the internal object.
+ * THOR_VALUEACTION:     Declares an initialization of the Type putting the name and the pointer
  *                  into the object
  */
 #define THOR_TEMPLATE_PARAM
-#define BuildTemplateTypeParamExp           BuildTemplateTypeParam(TypeNameParamAction, 0, THOR_TEMPLATE_PARAM 1)
-#define BUILDTEMPLATETYPEVALUEEXP           BuildTemplateTypeValue(TypeNameValueAction, 0, THOR_TEMPLATE_PARAM 1)
-#define BuildTemplateTypeParam(Act, Type, ...)  REP_N(Act, Type, __VA_ARGS__)
-#define BuildTemplateTypeValue(Act, Type, ...)  TEST_IF_ARG(BOOL_ARGS(__VA_ARGS__), <,) ALT_REP_N(Act, Type, __VA_ARGS__) TEST_IF_ARG(BOOL_ARGS(__VA_ARGS__), >,)
+#define BUILDTEMPLATETYPEPARAMEXP           BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, 0, THOR_TEMPLATE_PARAM 1)
+#define BUILDTEMPLATETYPEVALUEEXP           BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, 0, THOR_TEMPLATE_PARAM 1)
+#define BUILDTEMPLATETYPEPARAM(Act, Type, ...)  REP_N(Act, Type, __VA_ARGS__)
+#define BUILDTEMPLATETYPEVALUE(Act, Type, ...)  TEST_IF_ARG(BOOL_ARGS(__VA_ARGS__), <,) ALT_REP_N(Act, Type, __VA_ARGS__) TEST_IF_ARG(BOOL_ARGS(__VA_ARGS__), >,)
 
 
-#define TypeAction(Type, Member)            std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUEEXP ::Member)>
-#define ValueAction(Type, Member)           { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUEEXP ::Member }
-#define NameAction(Type, Member)            #Member
-#define TypeNameParamAction(Type, Member)   typename Member
-#define TypeNameValueAction(Type, Member)   Member
-#define Last_TypeAction(Type)               void*
-#define Last_ValueAction(Type)              {nullptr}
-#define Last_NameAction(Type)               nullptr
-#define Last_TypeNameParamAction(Type)
-#define Last_TypeNameValueAction(Type)
+#define THOR_TYPEACTION(Type, Member)            std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUEEXP ::Member)>
+#define THOR_VALUEACTION(Type, Member)           { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUEEXP ::Member }
+#define THOR_NAMEACTION(Type, Member)            #Member
+#define THOR_TYPENAMEPARAMACTION(Type, Member)   typename Member
+#define THOR_TYPENAMEVALUEACTION(Type, Member)   Member
+#define LAST_THOR_TYPEACTION(Type)               void*
+#define LAST_THOR_VALUEACTION(Type)              {nullptr}
+#define LAST_THOR_NAMEACTION(Type)               nullptr
+#define LAST_THOR_TYPENAMEPARAMACTION(Type)
+#define LAST_THOR_TYPENAMEVALUEACTION(Type)
 
 /*
  * Defines a trait for a user defined type.
@@ -138,7 +138,7 @@
  */
 #define ThorsAnvil_MakeTrait_Base(Parent, TType, DataType, ...)         \
 namespace ThorsAnvil { namespace Serialize {                            \
-template<BuildTemplateTypeParamExp>                                     \
+template<BUILDTEMPLATETYPEPARAMEXP>                                     \
 class Traits<DataType BUILDTEMPLATETYPEVALUEEXP >                       \
 {                                                                       \
     public:                                                             \
@@ -146,13 +146,13 @@ class Traits<DataType BUILDTEMPLATETYPEVALUEEXP >                       \
         Parent                                                          \
                                                                         \
         using Members = std::tuple<                                     \
-                        REP_N(TypeAction, DataType, __VA_ARGS__)        \
+                        REP_N(THOR_TYPEACTION, DataType, __VA_ARGS__)        \
                                     >;                                  \
                                                                         \
         static Members const& getMembers()                              \
         {                                                               \
             static constexpr Members members{                           \
-                        REP_N(ValueAction, DataType, __VA_ARGS__)       \
+                        REP_N(THOR_VALUEACTION, DataType, __VA_ARGS__)       \
                                             };                          \
             return members;                                             \
         }                                                               \
@@ -192,7 +192,7 @@ class Traits<EnumName>                                                  \
         static char const* const* getValues()                           \
         {                                                               \
             static constexpr char const* values[] = {                   \
-                        REP_N(NameAction, 0, __VA_ARGS__, 1)            \
+                        REP_N(THOR_NAMEACTION, 0, __VA_ARGS__, 1)            \
                                                     };                  \
             return values;                                              \
         }                                                               \
