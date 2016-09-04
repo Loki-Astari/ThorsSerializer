@@ -305,6 +305,7 @@ STRIP = @STRIP@
 StdFlag11 = @StdFlag11@
 StdFlag14 = @StdFlag14@
 StdFlag17 = @StdFlag17@
+THOR_TARGETLIBS = @THOR_TARGETLIBS@
 TestVera = @TestVera@
 UNZIP = @UNZIP@
 VERA = @VERA@

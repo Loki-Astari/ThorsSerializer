@@ -1,7 +1,7 @@
 
 THORSANVIL_ROOT				?= $(realpath ../../)
 
-TARGET						= ThorSerialize.slib
+TARGET						= ThorSerialize.lib
 
 #
 # Note: SERIALIZATION_EXTERN_LIBS
