@@ -23,6 +23,9 @@
 #define NUM_ARGS(...)          NUM_ARGS_(0, __VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 09, 08, 07, 06, 05, 04, 03, 02, 01, 00, Ignore)
 #define NUM_ARGS_(Zero, One, I1, I2, I3, I4 ,I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16, I17, I18, I19, I20, A, ...)  A
 
+#define BOOL_ARGS(...)          BOOL_ARGS_(0, __VA_ARGS__, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, F, Ignore)
+#define BOOL_ARGS_(Zero, One, I1, I2, I3, I4 ,I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16, I17, I18, I19, I20, A, ...)  A
+
 /*
  * Macros to quote the parameter
  * Used below by the actions.
@@ -36,6 +39,8 @@
  */
 #define EXPAND_(Result)                 Result
 #define EXPAND(Act, P1, P2)             EXPAND_(Act(P1, P2))
+#define ALT_EXPAND_(Result)             Result
+#define ALT_EXPAND(Act, P1, P2)         EXPAND_(Act(P1, P2))
 
 /*
  * Macros that that applies the action `Act` (a two parameter macro)
@@ -70,6 +75,37 @@
 #define REP_OF_01(Act, P1, P2, One)     EXPAND(Act, P1, P2)
 #define REP_OF_00(Act, P1, One)         Last_ ## Act(P1)
 
+#define ALT_REP_N(Act, P1, ...)             ALT_REP_OF_N(Act, P1, NUM_ARGS(__VA_ARGS__), __VA_ARGS__)
+#define ALT_REP_OF_N(Act, P1, Count, ...)   ALT_REP_OF_N_(Act, P1, Count, __VA_ARGS__)
+#define ALT_REP_OF_N_(Act, P1, Count, ...)  ALT_REP_OF_ ## Count(Act, P1, __VA_ARGS__)
+
+#define ALT_REP_OF_20(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_19(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_19(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_18(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_18(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_17(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_17(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_16(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_16(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_15(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_15(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_14(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_14(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_13(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_13(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_12(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_12(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_11(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_11(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_10(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_10(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_09(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_09(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_08(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_08(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_07(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_07(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_06(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_06(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_05(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_05(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_04(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_04(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_03(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_03(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_02(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_02(Act, P1, P2, ...)     ALT_EXPAND(Act, P1, P2), ALT_REP_OF_01(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_01(Act, P1, P2, One)     ALT_EXPAND(Act, P1, P2)
+#define ALT_REP_OF_00(Act, P1, One)         Last_ ## Act(P1)
+
+#define TEST_IF_ARG(TF, TValue, FValue)          TEST_IF_ARG_(TF, TValue, FValue)
+#define TEST_IF_ARG_(TF, TValue, FValue)         TEST_IF_ARG_BOOL_ ## TF(TValue, FValue)
+#define TEST_IF_ARG_BOOL_T(TValue, FValue)       TValue
+#define TEST_IF_ARG_BOOL_F(TValue, FValue)       FValue
+
 
 /*
  * The actions we apply with REP_*
@@ -78,13 +114,23 @@
  * ValueAction:     Declares an initialization of the Type putting the name and the pointer
  *                  into the object
  */
-#define TypeAction(Type, Member)        std::pair<char const*, decltype(&Type::Member)>
-#define ValueAction(Type, Member)       { QUOTE(Member), &Type::Member }
-#define NameAction(Type, Member)        #Member
-#define Last_TypeAction(Type)           void*
-#define Last_ValueAction(Type)          {nullptr}
-#define Last_NameAction(Type)           nullptr
+#define THOR_TEMPLATE_PARAM
+#define BuildTemplateTypeParamExp           BuildTemplateTypeParam(TypeNameParamAction, 0, THOR_TEMPLATE_PARAM 1)
+#define BUILDTEMPLATETYPEVALUEEXP           BuildTemplateTypeValue(TypeNameValueAction, 0, THOR_TEMPLATE_PARAM 1)
+#define BuildTemplateTypeParam(Act, Type, ...)  REP_N(Act, Type, __VA_ARGS__)
+#define BuildTemplateTypeValue(Act, Type, ...)  TEST_IF_ARG(BOOL_ARGS(__VA_ARGS__), <,) ALT_REP_N(Act, Type, __VA_ARGS__) TEST_IF_ARG(BOOL_ARGS(__VA_ARGS__), >,)
 
+
+#define TypeAction(Type, Member)            std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUEEXP ::Member)>
+#define ValueAction(Type, Member)           { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUEEXP ::Member }
+#define NameAction(Type, Member)            #Member
+#define TypeNameParamAction(Type, Member)   typename Member
+#define TypeNameValueAction(Type, Member)   Member
+#define Last_TypeAction(Type)               void*
+#define Last_ValueAction(Type)              {nullptr}
+#define Last_NameAction(Type)               nullptr
+#define Last_TypeNameParamAction(Type)
+#define Last_TypeNameValueAction(Type)
 
 /*
  * Defines a trait for a user defined type.
@@ -92,8 +138,8 @@
  */
 #define ThorsAnvil_MakeTrait_Base(Parent, TType, DataType, ...)         \
 namespace ThorsAnvil { namespace Serialize {                            \
-template<>                                                              \
-class Traits<DataType>                                                  \
+template<BuildTemplateTypeParamExp>                                     \
+class Traits<DataType BUILDTEMPLATETYPEVALUEEXP >                       \
 {                                                                       \
     public:                                                             \
         static constexpr TraitType type = TraitType::TType;             \
@@ -112,9 +158,12 @@ class Traits<DataType>                                                  \
         }                                                               \
 };                                                                      \
 }}                                                                      \
-static_assert(                                                                                      \
+TEST_IF_ARG(BOOL_ARGS(THOR_TEMPLATE_PARAM 1), ,DO_ASSERT(DataType))
+
+#define DO_ASSERT(DataType)                                             \
+static_assert(                                                          \
     ::ThorsAnvil::Serialize::Traits<DataType>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
-    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."                            \
+    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
 )
 
 #define ThorsAnvil_MakeTrait(...)                                       \
