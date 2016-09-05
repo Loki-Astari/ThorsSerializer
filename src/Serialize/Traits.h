@@ -132,10 +132,10 @@ static_assert(                                                          \
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
 )
 
-#define ThorsAnvil_MakeTrait_Base(Parent, TType, Count, DataType, ...)         \
+#define ThorsAnvil_MakeTrait_Base(Parent, TType, Count, DataType, ...)  \
 namespace ThorsAnvil { namespace Serialize {                            \
-template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>                                   \
-class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) >                       \
+template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
+class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
 {                                                                       \
     public:                                                             \
         static constexpr TraitType type = TraitType::TType;             \
@@ -156,7 +156,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
 }}                                                                      \
 ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
 
-#define ThorsAnvil_MakeTraitEx(...)                                       \
+#define ThorsAnvil_MakeTraitEx(...)                                     \
     ThorsAnvil_MakeTrait_Base( , Map, 1, __VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeTrait(...)                                       \
@@ -185,7 +185,7 @@ class Traits<EnumName>                                                  \
         static char const* const* getValues()                           \
         {                                                               \
             static constexpr char const* values[] = {                   \
-                        REP_N(THOR_NAMEACTION, 0, 0, __VA_ARGS__, 1)       \
+                        REP_N(THOR_NAMEACTION, 0, 0, __VA_ARGS__, 1)    \
                                                     };                  \
             return values;                                              \
         }                                                               \
