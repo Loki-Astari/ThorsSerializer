@@ -71,4 +71,7 @@ template void ThorsAnvil::Serialize::Serializer::print<std::unordered_map<int, d
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_map<std::string, bool>>(std::unordered_map<std::string, bool>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_map<int, double>>(std::unordered_map<int, double>&);
 
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_multiset<int>>(std::unordered_multiset<int> const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_multiset<int>>(std::unordered_multiset<int>&);
+
 #endif

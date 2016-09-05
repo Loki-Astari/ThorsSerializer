@@ -37,6 +37,7 @@
  * C++ 14 Containers
  * Traits<std::tuple<Args...>>
  * Traits<std::unordered_set<K,V>>
+ * Traits<std::unordered_multiset<K>>
  * Traits<std::unordered_map<K,V>>
  *      Traits<std::unordered_map<std::string,V>>
  *
@@ -369,6 +370,34 @@ class Traits<std::multiset<Key, Compare, Allocator>>
     public:
         static constexpr TraitType type = TraitType::Array;
         typedef ContainerMemberExtractor<std::multiset<Key, Compare, Allocator>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
+
+/* ------------------------------- Traits<std::unordered_multiset<Key>> ------------------------------- */
+template<typename Key, typename Hash, typename KeyEqual, typename Allocator>
+class MemberInserter<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>
+{
+    std::unordered_multiset<Key, Hash, KeyEqual, Allocator>& container;
+    public:
+        MemberInserter(std::unordered_multiset<Key, Hash, KeyEqual, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, Key&& value)
+        {
+            container.insert(std::forward<Key>(value));
+        }
+};
+
+template<typename Key, typename Hash, typename KeyEqual, typename Allocator>
+class Traits<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractor<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
