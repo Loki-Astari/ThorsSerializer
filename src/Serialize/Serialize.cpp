@@ -65,4 +65,10 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::tuple<int, double>
 
 template void ThorsAnvil::Serialize::Serializer::print<std::unordered_set<int>>(std::unordered_set<int> const&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_set<int>>(std::unordered_set<int>&);
+
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_map<std::string, double>>(std::unordered_map<std::string, double> const&);
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_map<int, double>>(std::unordered_map<int, double> const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_map<std::string, bool>>(std::unordered_map<std::string, bool>&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_map<int, double>>(std::unordered_map<int, double>&);
+
 #endif
