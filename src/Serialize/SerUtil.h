@@ -8,10 +8,12 @@
 #include <string>
 #include <map>
 #include <set>
+#include <unordered_set>
 #include <vector>
 #include <deque>
 #include <list>
 #include <array>
+#include <tuple>
 
 /*
  * GetValueType
@@ -314,6 +316,33 @@ class Traits<std::set<Key, Compare, Allocator>>
         }
 };
 
+template<typename Key, typename Hash, typename KeyEqual, typename Allocator>
+class MemberInserter<std::unordered_set<Key, Hash, KeyEqual, Allocator>>
+{
+    std::unordered_set<Key, Hash, KeyEqual, Allocator>& container;
+    public:
+        MemberInserter(std::unordered_set<Key, Hash, KeyEqual, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, Key&& value)
+        {
+            container.insert(std::forward<Key>(value));
+        }
+};
+
+template<typename Key, typename Hash, typename KeyEqual, typename Allocator>
+class Traits<std::unordered_set<Key, Hash, KeyEqual, Allocator>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractor<std::unordered_set<Key, Hash, KeyEqual, Allocator>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
+
 /* ------------------------------- Traits<std::multiset<Key>> ------------------------------- */
 template<typename Key, typename Compare, typename Allocator>
 class MemberInserter<std::multiset<Key, Compare, Allocator>>
@@ -470,6 +499,7 @@ class Traits<std::multimap<std::string, Value>>
         }
 };
 
+/* ------------------------------- Traits<std::tupple<Type...>> ------------------------------- */
 
 /* Since we treat a tupple like an array.
  * We need some way to get the size of the expected array.
