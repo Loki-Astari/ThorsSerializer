@@ -60,5 +60,8 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<RGB>(RGB&);
 template void ThorsAnvil::Serialize::Serializer::print<EumHolder>(EumHolder const&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<EumHolder>(EumHolder&);
 
+template void ThorsAnvil::Serialize::Serializer::print<std::tuple<int, double>>(std::tuple<int, double> const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::tuple<int, double>>(std::tuple<int, double>&);
+
 
 #endif

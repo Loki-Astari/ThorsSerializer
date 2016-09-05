@@ -31,6 +31,9 @@
  * Traits<std::multimap<K,V>>
  *      Traits<std::multimap<std::string,V>>
  *
+ * C++ 14 Containers
+ * Traits<std::tuple>
+ *
  */
 
 namespace ThorsAnvil
@@ -464,6 +467,86 @@ class Traits<std::multimap<std::string, Value>>
         {
             static constexpr MemberExtractor    memberExtractor;
             return memberExtractor;
+        }
+};
+
+
+/* Since we treat a tupple like an array.
+ * We need some way to get the size of the expected array.
+ */
+template<typename... Args>
+class SerializeArraySize<std::tuple<Args...>>
+{
+    public:
+        static std::size_t size(std::tuple<Args...> const&)
+        {
+            return sizeof...(Args);
+        }
+};
+
+/*
+ * This is the object that parses/prints data from/to the stream
+ */
+template<typename... Args>
+class ContainerTuppleExtractor
+{
+        using C = std::tuple<Args...>;
+
+        template<std::size_t index, typename V>
+        void printTupleValue(PrinterInterface& printer, C const& object) const
+        {
+            PutValueType<V>     valuePutter(printer);
+            valuePutter.putValue(std::get<index>(object));
+        }
+        template<std::size_t... index>
+        void printTupleValues(PrinterInterface& printer, C const& object, std::index_sequence<index...> const&) const
+        {
+            auto discard = {(printTupleValue<index, typename std::tuple_element_t<index, C>>(printer, object),1)...};
+            (void)discard;
+        }
+        template<std::size_t index, typename V>
+        void parseTupleValue(ParserInterface& parser, C& object) const
+        {
+            V&                  data(std::get<index>(object));
+            GetValueType<V>     valueGetter(parser, data);
+        }
+        template<std::size_t... index>
+        void parseTupleValues(ParserInterface& parser, std::size_t const& id, C& object,  std::index_sequence<index...> const&) const
+        {
+            static auto parseTuppleValue = {&ContainerTuppleExtractor::parseTupleValue<index, typename std::tuple_element_t<index, C>>...};
+            auto iteratorToFunction = parseTuppleValue.begin() + id;
+            auto function = *iteratorToFunction;
+            (this->*function)(parser, object);
+        }
+    public:
+        constexpr ContainerTuppleExtractor() {}
+        constexpr std::size_t getHash(std::size_t start) const
+        {
+            return thash<int>(start);
+        }
+        void operator()(PrinterInterface& printer, C const& object) const
+        {
+            printTupleValues(printer, object, std::make_index_sequence<sizeof...(Args)>());
+        }
+        void operator()(ParserInterface& parser, std::size_t const& index, C& object) const
+        {
+            parseTupleValues(parser, index, object, std::make_index_sequence<sizeof...(Args)>());
+        }
+};
+
+/*
+ * A traits class for tupple that uses the above ContainerTuppleExtractor
+ */
+template<typename... Args>
+class Traits<std::tuple<Args...>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        
+        static ContainerTuppleExtractor<Args...> const& getMembers()
+        {
+            static constexpr ContainerTuppleExtractor<Args...> members;
+            return members;
         }
 };
 
