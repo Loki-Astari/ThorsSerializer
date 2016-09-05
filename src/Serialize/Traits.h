@@ -8,6 +8,8 @@
  *
  *      ThorsAnvil_MakeTrait(DataType, ...)
  *      ThorsAnvil_ExpandTrait(ParentType, DataType, ...)
+ *      ThorsAnvil_Template_MakeTrait(TemplateParameterCount, DataType, ...)
+ *      ThorsAnvil_Template_ExpandTrait(TemplateParameterCount, ParentType, DataType, ...)
  *      ThorsAnvil_MakeEnum(<EnumType>, <EnumValues>...)
  *
  * See README.md for examples.
@@ -156,13 +158,13 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
 }}                                                                      \
 ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
 
-#define ThorsAnvil_MakeTraitEx(...)                                     \
-    ThorsAnvil_MakeTrait_Base( , Map, 1, __VA_ARGS__, 1)
+#define ThorsAnvil_Template_MakeTrait(Count, ...)                       \
+    ThorsAnvil_MakeTrait_Base( , Map, Count, __VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeTrait(...)                                       \
     ThorsAnvil_MakeTrait_Base( , Map, 0, __VA_ARGS__, 1)
 
-#define ThorsAnvil_ExpandTrait_With_Ext(ParentType, DataType, ...)      \
+#define ThorsAnvil_ExpandTrait_With_Ext(Count, ParentType, DataType, ...)      \
     static_assert(                                                      \
         std::is_base_of<ParentType, DataType>::value,                   \
         "ParentType must be a base class of DataType");                 \
@@ -170,10 +172,13 @@ ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
         ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
-    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, 0, DataType, __VA_ARGS__)
+    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, Count, DataType, __VA_ARGS__)
+
+#define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
+    ThorsAnvil_ExpandTrait_With_Ext(Count, ParentType, __VA_ARGS__, 1)
 
 #define ThorsAnvil_ExpandTrait(ParentType, ...)                         \
-    ThorsAnvil_ExpandTrait_With_Ext(ParentType, __VA_ARGS__, 1)
+    ThorsAnvil_ExpandTrait_With_Ext(0, ParentType, __VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
 namespace ThorsAnvil { namespace Serialize {                            \

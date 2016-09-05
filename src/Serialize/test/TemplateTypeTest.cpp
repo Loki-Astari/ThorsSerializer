@@ -15,7 +15,7 @@ struct TemplateType
     std::vector<T>   templateMember;
 };
 
-ThorsAnvil_MakeTraitEx(TemplateType, templateMember); 
+ThorsAnvil_Template_MakeTrait(1, TemplateType, templateMember); 
 
 TEST(TemplateTypeTest, serializeTypeTest)
 {
