@@ -15,6 +15,7 @@
 #include <list>
 #include <array>
 #include <tuple>
+#include <initializer_list>
 
 /*
  * GetValueType
@@ -42,6 +43,7 @@
  *      Traits<std::unordered_map<std::string,V>>
  * Traits<std::unordered_multimap<K,V>>
  *      Traits<std::unordered_multimap<std::string,V>>
+ * Traits<std::initializer_list<T>>
  *
  */
 
@@ -180,6 +182,34 @@ class Traits<std::pair<F, S>>
         {
             static constexpr Members members{ REP_N(THOR_VALUEACTION, 0, Self, first, second, 1) };
             return members;
+        }
+};
+
+/* ------------------------------- Traits<std::initializer_list<T>> ------------------------------- */
+template<typename T>
+class MemberInserter<std::initializer_list<T>>
+{
+    std::initializer_list<T>& container;
+    public:
+        MemberInserter(std::initializer_list<T>& container)
+            : container(container)
+        {}
+        void add(std::size_t const& , T&& )
+        {
+            //static_assert(false, "Can not de-serialize and initializer list");
+        }
+};
+
+template<typename T>
+class Traits<std::initializer_list<T>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractor<std::initializer_list<T>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
         }
 };
 
