@@ -34,7 +34,8 @@
  *      Traits<std::multimap<std::string,V>>
  *
  * C++ 14 Containers
- * Traits<std::tuple>
+ * Traits<std::tuple<Args...>>
+ * Traits<std::unordered_set<K,V>>
  *
  */
 
