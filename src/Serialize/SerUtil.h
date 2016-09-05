@@ -40,6 +40,8 @@
  * Traits<std::unordered_multiset<K>>
  * Traits<std::unordered_map<K,V>>
  *      Traits<std::unordered_map<std::string,V>>
+ * Traits<std::unordered_multimap<K,V>>
+ *      Traits<std::unordered_multimap<std::string,V>>
  *
  */
 
@@ -523,6 +525,68 @@ class Traits<std::unordered_map<std::string, Value>>
                     }
                 }
                 void operator()(ParserInterface& parser, std::string const& key, std::unordered_map<std::string, Value>& object) const
+                {
+                    Value                   data;
+                    GetValueType<Value>     valueGetter(parser, data);
+                    object.insert(std::make_pair(std::move(key), std::move(data)));
+                }
+        };
+
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
+
+/* ------------------------------- Traits<std::unordered_multimap<Key, Value>> ------------------------------- */
+template<typename Key,typename T, typename Hash, typename KeyEqual, typename Allocator>
+class MemberInserter<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>>
+{
+    std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>& container;
+    public:
+        MemberInserter(std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, std::pair<Key, T>&& value)
+        {
+            container.insert(std::forward<std::pair<Key, T>>(value));
+        }
+};
+
+template<typename Key, typename T, typename Hash, typename KeyEqual, typename Allocator>
+class Traits<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractor<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
+
+template<typename Value>
+class Traits<std::unordered_multimap<std::string, Value>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Map;
+
+        class MemberExtractor
+        {
+            public:
+                constexpr MemberExtractor(){}
+                void operator()(PrinterInterface& printer, std::unordered_multimap<std::string, Value> const& object) const
+                {
+                    PutValueType<Value>     valuePutter(printer);
+                    for (auto const& loop: object)
+                    {
+                        printer.addKey(loop.first);
+                        valuePutter.putValue(loop.second);
+                    }
+                }
+                void operator()(ParserInterface& parser, std::string const& key, std::unordered_multimap<std::string, Value>& object) const
                 {
                     Value                   data;
                     GetValueType<Value>     valueGetter(parser, data);
