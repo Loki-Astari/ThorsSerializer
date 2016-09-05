@@ -8,6 +8,8 @@
  *
  *      ThorsAnvil_MakeTrait(DataType, ...)
  *      ThorsAnvil_ExpandTrait(ParentType, DataType, ...)
+ *      ThorsAnvil_Template_MakeTrait(TemplateParameterCount, DataType, ...)
+ *      ThorsAnvil_Template_ExpandTrait(TemplateParameterCount, ParentType, DataType, ...)
  *      ThorsAnvil_MakeEnum(<EnumType>, <EnumValues>...)
  *
  * See README.md for examples.
@@ -35,7 +37,9 @@
  * Used by REP_*
  */
 #define EXPAND_(Result)                 Result
-#define EXPAND(Act, P1, P2)             EXPAND_(Act(P1, P2))
+#define EXPAND(Act, TC, P1, P2)         EXPAND_(Act(TC, P1, P2))
+#define ALT_EXPAND_(Result)             Result
+#define ALT_EXPAND(Act, Ex, Id)         EXPAND_(Act(Ex, Id))
 
 /*
  * Macros that that applies the action `Act` (a two parameter macro)
@@ -44,83 +48,126 @@
  *
  * Because NUM_ARGS is limited to 20, This expansion is also limited to 20
  */
-#define REP_N(Act, P1, ...)             REP_OF_N(Act, P1, NUM_ARGS(__VA_ARGS__), __VA_ARGS__)
-#define REP_OF_N(Act, P1, Count, ...)   REP_OF_N_(Act, P1, Count, __VA_ARGS__)
-#define REP_OF_N_(Act, P1, Count, ...)  REP_OF_ ## Count(Act, P1, __VA_ARGS__)
+#define REP_N(Act, TC, P1, ...)             REP_OF_N(Act, TC, P1, NUM_ARGS(__VA_ARGS__), __VA_ARGS__)
+#define REP_OF_N(Act, TC, P1, Count, ...)   REP_OF_N_(Act, TC, P1, Count, __VA_ARGS__)
+#define REP_OF_N_(Act, TC, P1, Count, ...)  REP_OF_ ## Count(Act, TC, P1, __VA_ARGS__)
 
-#define REP_OF_20(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_19(Act, P1, __VA_ARGS__)
-#define REP_OF_19(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_18(Act, P1, __VA_ARGS__)
-#define REP_OF_18(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_17(Act, P1, __VA_ARGS__)
-#define REP_OF_17(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_16(Act, P1, __VA_ARGS__)
-#define REP_OF_16(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_15(Act, P1, __VA_ARGS__)
-#define REP_OF_15(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_14(Act, P1, __VA_ARGS__)
-#define REP_OF_14(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_13(Act, P1, __VA_ARGS__)
-#define REP_OF_13(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_12(Act, P1, __VA_ARGS__)
-#define REP_OF_12(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_11(Act, P1, __VA_ARGS__)
-#define REP_OF_11(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_10(Act, P1, __VA_ARGS__)
-#define REP_OF_10(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_09(Act, P1, __VA_ARGS__)
-#define REP_OF_09(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_08(Act, P1, __VA_ARGS__)
-#define REP_OF_08(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_07(Act, P1, __VA_ARGS__)
-#define REP_OF_07(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_06(Act, P1, __VA_ARGS__)
-#define REP_OF_06(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_05(Act, P1, __VA_ARGS__)
-#define REP_OF_05(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_04(Act, P1, __VA_ARGS__)
-#define REP_OF_04(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_03(Act, P1, __VA_ARGS__)
-#define REP_OF_03(Act, P1, P2, ...)     EXPAND(Act, P1 ,P2), REP_OF_02(Act, P1, __VA_ARGS__)
-#define REP_OF_02(Act, P1, P2, ...)     EXPAND(Act, P1, P2), REP_OF_01(Act, P1, __VA_ARGS__)
-#define REP_OF_01(Act, P1, P2, One)     EXPAND(Act, P1, P2)
-#define REP_OF_00(Act, P1, One)         Last_ ## Act(P1)
+#define REP_OF_20(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_19(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_19(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_18(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_18(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_17(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_17(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_16(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_16(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_15(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_15(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_14(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_14(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_13(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_13(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_12(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_12(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_11(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_11(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_10(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_10(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_09(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_09(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_08(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_08(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_07(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_07(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_06(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_06(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_05(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_05(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_04(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_04(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_03(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_03(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_02(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_02(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1, P2), REP_OF_01(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_01(Act, TC, P1, P2, One)     EXPAND(Act, TC, P1, P2)
+#define REP_OF_00(Act, TC, P1, One)         LAST_ ## Act(TC, P1)
 
+#define ALT_REP_OF_N(Act, E, P, S, Count)  ALT_REP_OF_N_(Act, E, P, S, Count)
+#define ALT_REP_OF_N_(Act, E, P, S, Count) ALT_REP_OF_ ## Count(Act, E, P, S)
+
+#define ALT_REP_OF_20(Act, E, P, S)     P ALT_EXPAND(Act, E, 20), ALT_REP_OF_19(Act, E,  , S)
+#define ALT_REP_OF_19(Act, E, P, S)     P ALT_EXPAND(Act, E, 19), ALT_REP_OF_18(Act, E,  , S)
+#define ALT_REP_OF_18(Act, E, P, S)     P ALT_EXPAND(Act, E, 18), ALT_REP_OF_17(Act, E,  , S)
+#define ALT_REP_OF_17(Act, E, P, S)     P ALT_EXPAND(Act, E, 17), ALT_REP_OF_16(Act, E,  , S)
+#define ALT_REP_OF_16(Act, E, P, S)     P ALT_EXPAND(Act, E, 16), ALT_REP_OF_15(Act, E,  , S)
+#define ALT_REP_OF_15(Act, E, P, S)     P ALT_EXPAND(Act, E, 15), ALT_REP_OF_14(Act, E,  , S)
+#define ALT_REP_OF_14(Act, E, P, S)     P ALT_EXPAND(Act, E, 14), ALT_REP_OF_13(Act, E,  , S)
+#define ALT_REP_OF_13(Act, E, P, S)     P ALT_EXPAND(Act, E, 13), ALT_REP_OF_12(Act, E,  , S)
+#define ALT_REP_OF_12(Act, E, P, S)     P ALT_EXPAND(Act, E, 12), ALT_REP_OF_11(Act, E,  , S)
+#define ALT_REP_OF_11(Act, E, P, S)     P ALT_EXPAND(Act, E, 11), ALT_REP_OF_10(Act, E,  , S)
+#define ALT_REP_OF_10(Act, E, P, S)     P ALT_EXPAND(Act, E, 10), ALT_REP_OF_09(Act, E,  , S)
+#define ALT_REP_OF_9(Act, E, P, S)      P ALT_EXPAND(Act, E, 9), ALT_REP_OF_08(Act, E,  , S)
+#define ALT_REP_OF_8(Act, E, P, S)      P ALT_EXPAND(Act, E, 8), ALT_REP_OF_07(Act, E,  , S)
+#define ALT_REP_OF_7(Act, E, P, S)      P ALT_EXPAND(Act, E, 7), ALT_REP_OF_06(Act, E,  , S)
+#define ALT_REP_OF_6(Act, E, P, S)      P ALT_EXPAND(Act, E, 6), ALT_REP_OF_05(Act, E,  , S)
+#define ALT_REP_OF_5(Act, E, P, S)      P ALT_EXPAND(Act, E, 5), ALT_REP_OF_04(Act, E,  , S)
+#define ALT_REP_OF_4(Act, E, P, S)      P ALT_EXPAND(Act, E, 4), ALT_REP_OF_03(Act, E,  , S)
+#define ALT_REP_OF_3(Act, E, P, S)      P ALT_EXPAND(Act, E, 3), ALT_REP_OF_02(Act, E,  , S)
+#define ALT_REP_OF_2(Act, E, P, S)      P ALT_EXPAND(Act, E, 2), ALT_REP_OF_01(Act, E,  , S)
+#define ALT_REP_OF_1(Act, E, P, S)      P ALT_EXPAND(Act, E, 1) S
+#define ALT_REP_OF_0(Act, E, P, S)      LAST_ ## Act(E, 0)
 
 /*
  * The actions we apply with REP_*
  *
- * TypeAction:      Declares a type to hold the name and a pointer to the internal object.
- * ValueAction:     Declares an initialization of the Type putting the name and the pointer
+ * THOR_TYPEACTION:      Declares a type to hold the name and a pointer to the internal object.
+ * THOR_VALUEACTION:     Declares an initialization of the Type putting the name and the pointer
  *                  into the object
  */
-#define TypeAction(Type, Member)        std::pair<char const*, decltype(&Type::Member)>
-#define ValueAction(Type, Member)       { QUOTE(Member), &Type::Member }
-#define NameAction(Type, Member)        #Member
-#define Last_TypeAction(Type)           void*
-#define Last_ValueAction(Type)          {nullptr}
-#define Last_NameAction(Type)           nullptr
+#define BUILDTEMPLATETYPEPARAM(Act, Count)      ALT_REP_OF_N(Act, ,  ,  , Count)
+#define BUILDTEMPLATETYPEVALUE(Act, Count)      ALT_REP_OF_N(Act, , <, >, Count)
 
+
+#define THOR_TYPEACTION(TC, Type, Member)       std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, TC) ::Member)>
+#define THOR_VALUEACTION(TC, Type, Member)      { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, TC) ::Member }
+#define THOR_NAMEACTION(TC, Type, Member)       #Member
+#define LAST_THOR_TYPEACTION(TC, Type)          void*
+#define LAST_THOR_VALUEACTION(TC, Type)         {nullptr}
+#define LAST_THOR_NAMEACTION(TC, Type)          nullptr
+
+#define THOR_TYPENAMEPARAMACTION(Ex, Id)        typename T ## Id
+#define THOR_TYPENAMEVALUEACTION(Ex, Id)        T ## Id
+#define THOR_CHECK_ASSERT(Ex, Id)
+#define LAST_THOR_TYPENAMEPARAMACTION(Ex, Id)
+#define LAST_THOR_TYPENAMEVALUEACTION(Ex, Id)
+#define LAST_THOR_CHECK_ASSERT(Ex, Id)          DO_ASSERT(Ex)
 
 /*
  * Defines a trait for a user defined type.
  * Lists the members of the type that can be serialized.
  */
-#define ThorsAnvil_MakeTrait_Base(Parent, TType, DataType, ...)         \
+#define DO_ASSERT(DataType)                                             \
+static_assert(                                                          \
+    ::ThorsAnvil::Serialize::Traits<DataType>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
+    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
+)
+
+#define ThorsAnvil_MakeTrait_Base(Parent, TType, Count, DataType, ...)  \
 namespace ThorsAnvil { namespace Serialize {                            \
-template<>                                                              \
-class Traits<DataType>                                                  \
+template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
+class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
 {                                                                       \
     public:                                                             \
         static constexpr TraitType type = TraitType::TType;             \
         Parent                                                          \
                                                                         \
         using Members = std::tuple<                                     \
-                        REP_N(TypeAction, DataType, __VA_ARGS__)        \
+                        REP_N(THOR_TYPEACTION, Count, DataType, __VA_ARGS__)        \
                                     >;                                  \
                                                                         \
         static Members const& getMembers()                              \
         {                                                               \
             static constexpr Members members{                           \
-                        REP_N(ValueAction, DataType, __VA_ARGS__)       \
+                        REP_N(THOR_VALUEACTION, Count, DataType, __VA_ARGS__)       \
                                             };                          \
             return members;                                             \
         }                                                               \
 };                                                                      \
 }}                                                                      \
-static_assert(                                                                                      \
-    ::ThorsAnvil::Serialize::Traits<DataType>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
-    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."                            \
-)
+ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
+
+#define ThorsAnvil_Template_MakeTrait(Count, ...)                       \
+    ThorsAnvil_MakeTrait_Base( , Map, Count, __VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeTrait(...)                                       \
-    ThorsAnvil_MakeTrait_Base( , Map, __VA_ARGS__, 1)
+    ThorsAnvil_MakeTrait_Base( , Map, 0, __VA_ARGS__, 1)
 
-#define ThorsAnvil_ExpandTrait_With_Ext(ParentType, DataType, ...)      \
+#define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
+    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, Count, __VA_ARGS__, 1)
+
+#define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)               \
     static_assert(                                                      \
         std::is_base_of<ParentType, DataType>::value,                   \
         "ParentType must be a base class of DataType");                 \
@@ -128,10 +175,7 @@ static_assert(                                                                  
         ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
-    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, DataType, __VA_ARGS__)
-
-#define ThorsAnvil_ExpandTrait(ParentType, ...)                         \
-    ThorsAnvil_ExpandTrait_With_Ext(ParentType, __VA_ARGS__, 1)
+    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, 0, DataType, __VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
 namespace ThorsAnvil { namespace Serialize {                            \
@@ -143,7 +187,7 @@ class Traits<EnumName>                                                  \
         static char const* const* getValues()                           \
         {                                                               \
             static constexpr char const* values[] = {                   \
-                        REP_N(NameAction, 0, __VA_ARGS__, 1)            \
+                        REP_N(THOR_NAMEACTION, 0, 0, __VA_ARGS__, 1)    \
                                                     };                  \
             return values;                                              \
         }                                                               \
@@ -165,10 +209,7 @@ class Traits<EnumName>                                                  \
         }                                                               \
 };                                                                      \
 }}                                                                      \
-static_assert(                                                                                      \
-    ::ThorsAnvil::Serialize::Traits<EnumName>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
-    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."                            \
-)
+DO_ASSERT(EnumName)
 
 
 /*

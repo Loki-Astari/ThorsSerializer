@@ -8,16 +8,20 @@
 * Use one of these macros to declare your type as serializable
  * `ThorsAnvil_MakeTrait(<Type>, <members>...)`
  * `ThorsAnvil_ExpandTrait(<Parent-Type>, <Type>, <members>...)`
+ * `ThorsAnvil_Template_MakeTrait(<TemplateParamCount>, <Type>, <members>...)`
+ * `ThorsAnvil_Template_ExpandTrait(<TemplateParamCount>, <Parent-Type>, <Type>, <members>...)`
  * `ThorsAnvil_MakeEnum(<EnumType>, <EnumMembers>...)`
 
 ````bash
-    Type:           The name of a class (includeing namespace) of the type
-                    you want to be able to serialize at some point.
-    Parent-Type:    The name of a class that has previously been declared
-                    using `ThorsAnvil_MakeTrait` or `ThorsAnvil_ExpandTrait`
-                    and the parent of `Type`
-    members:        A list of member (names) of the class `Type` that need
-                    to be serialized.
+    Type:               The name of a class (includeing namespace) of the type
+                        you want to be able to serialize at some point.
+    Parent-Type:        The name of a class that has previously been declared
+                        using `ThorsAnvil_MakeTrait` or `ThorsAnvil_ExpandTrait`
+                        and the parent of `Type`
+    TemplateParamCount: If `Type` is a template type the number of parameters it needs
+                        so that it is fully generalized.
+    members:            A list of member (names) of the class `Type` that need
+                        to be serialized.
 ````
 The two macros above build a template specialization of the class `ThorsAnvil::Serialize::Traits<Type>` specific to your class. As a consequence these macros should not be placed inside any namespace blocks.
 ````c++
