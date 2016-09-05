@@ -737,7 +737,8 @@ class ContainerTuppleExtractor
         template<std::size_t... index>
         void parseTupleValues(ParserInterface& parser, std::size_t const& id, C& object,  std::index_sequence<index...> const&) const
         {
-            static auto parseTuppleValue = {&ContainerTuppleExtractor::parseTupleValue<index, typename std::tuple_element_t<index, C>>...};
+            using MemberDecoder = decltype(&ContainerTuppleExtractor::parseTupleValue<0, typename std::tuple_element_t<0, C>>);
+            static std::initializer_list<MemberDecoder> parseTuppleValue = {&ContainerTuppleExtractor::parseTupleValue<index, typename std::tuple_element_t<index, C>>...};
             auto iteratorToFunction = parseTuppleValue.begin() + id;
             auto function = *iteratorToFunction;
             (this->*function)(parser, object);
