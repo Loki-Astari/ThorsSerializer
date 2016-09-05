@@ -16,7 +16,7 @@ struct TemplateType
 };
 
 #undef  THOR_TEMPLATE_PARAM
-#define THOR_TEMPLATE_PARAM T,
+#define THOR_TEMPLATE_PARAM 01
 ThorsAnvil_MakeTrait(TemplateType, templateMember); 
 #undef  THOR_TEMPLATE_PARAM
 #if 0

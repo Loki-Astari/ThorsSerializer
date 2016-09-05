@@ -40,7 +40,7 @@
 #define EXPAND_(Result)                 Result
 #define EXPAND(Act, P1, P2)             EXPAND_(Act(P1, P2))
 #define ALT_EXPAND_(Result)             Result
-#define ALT_EXPAND(Act, P1, P2)         EXPAND_(Act(P1, P2))
+#define ALT_EXPAND(Act, Ex, Id)         EXPAND_(Act(Ex, Id))
 
 /*
  * Macros that that applies the action `Act` (a two parameter macro)
@@ -75,31 +75,30 @@
 #define REP_OF_01(Act, P1, P2, One)     EXPAND(Act, P1, P2)
 #define REP_OF_00(Act, P1, One)         LAST_ ## Act(P1)
 
-#define ALT_REP_N(Act, P1, ...)             ALT_REP_OF_N(Act, P1, NUM_ARGS(__VA_ARGS__), __VA_ARGS__)
-#define ALT_REP_OF_N(Act, P1, Count, ...)   ALT_REP_OF_N_(Act, P1, Count, __VA_ARGS__)
-#define ALT_REP_OF_N_(Act, P1, Count, ...)  ALT_REP_OF_ ## Count(Act, P1, __VA_ARGS__)
+#define ALT_REP_OF_N(Act, E, P, S, Count)  ALT_REP_OF_N_(Act, E, P, S, Count)
+#define ALT_REP_OF_N_(Act, E, P, S, Count) ALT_REP_OF_ ## Count(Act, E, P, S)
 
-#define ALT_REP_OF_20(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_19(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_19(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_18(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_18(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_17(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_17(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_16(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_16(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_15(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_15(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_14(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_14(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_13(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_13(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_12(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_12(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_11(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_11(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_10(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_10(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_09(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_09(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_08(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_08(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_07(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_07(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_06(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_06(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_05(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_05(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_04(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_04(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_03(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_03(Act, P1, P2, ...)     ALT_EXPAND(Act, P1 ,P2), ALT_REP_OF_02(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_02(Act, P1, P2, ...)     ALT_EXPAND(Act, P1, P2), ALT_REP_OF_01(Act, P1, __VA_ARGS__)
-#define ALT_REP_OF_01(Act, P1, P2, One)     ALT_EXPAND(Act, P1, P2)
-#define ALT_REP_OF_00(Act, P1, One)         LAST_ ## Act(P1)
+#define ALT_REP_OF_20(Act, E, P, S)     P ALT_EXPAND(Act, E, 20), ALT_REP_OF_19(Act, E,  , S)
+#define ALT_REP_OF_19(Act, E, P, S)     P ALT_EXPAND(Act, E, 19), ALT_REP_OF_18(Act, E,  , S)
+#define ALT_REP_OF_18(Act, E, P, S)     P ALT_EXPAND(Act, E, 18), ALT_REP_OF_17(Act, E,  , S)
+#define ALT_REP_OF_17(Act, E, P, S)     P ALT_EXPAND(Act, E, 17), ALT_REP_OF_16(Act, E,  , S)
+#define ALT_REP_OF_16(Act, E, P, S)     P ALT_EXPAND(Act, E, 16), ALT_REP_OF_15(Act, E,  , S)
+#define ALT_REP_OF_15(Act, E, P, S)     P ALT_EXPAND(Act, E, 15), ALT_REP_OF_14(Act, E,  , S)
+#define ALT_REP_OF_14(Act, E, P, S)     P ALT_EXPAND(Act, E, 14), ALT_REP_OF_13(Act, E,  , S)
+#define ALT_REP_OF_13(Act, E, P, S)     P ALT_EXPAND(Act, E, 13), ALT_REP_OF_12(Act, E,  , S)
+#define ALT_REP_OF_12(Act, E, P, S)     P ALT_EXPAND(Act, E, 12), ALT_REP_OF_11(Act, E,  , S)
+#define ALT_REP_OF_11(Act, E, P, S)     P ALT_EXPAND(Act, E, 11), ALT_REP_OF_10(Act, E,  , S)
+#define ALT_REP_OF_10(Act, E, P, S)     P ALT_EXPAND(Act, E, 10), ALT_REP_OF_09(Act, E,  , S)
+#define ALT_REP_OF_09(Act, E, P, S)     P ALT_EXPAND(Act, E, 09), ALT_REP_OF_08(Act, E,  , S)
+#define ALT_REP_OF_08(Act, E, P, S)     P ALT_EXPAND(Act, E, 08), ALT_REP_OF_07(Act, E,  , S)
+#define ALT_REP_OF_07(Act, E, P, S)     P ALT_EXPAND(Act, E, 07), ALT_REP_OF_06(Act, E,  , S)
+#define ALT_REP_OF_06(Act, E, P, S)     P ALT_EXPAND(Act, E, 06), ALT_REP_OF_05(Act, E,  , S)
+#define ALT_REP_OF_05(Act, E, P, S)     P ALT_EXPAND(Act, E, 05), ALT_REP_OF_04(Act, E,  , S)
+#define ALT_REP_OF_04(Act, E, P, S)     P ALT_EXPAND(Act, E, 04), ALT_REP_OF_03(Act, E,  , S)
+#define ALT_REP_OF_03(Act, E, P, S)     P ALT_EXPAND(Act, E, 03), ALT_REP_OF_02(Act, E,  , S)
+#define ALT_REP_OF_02(Act, E, P, S)     P ALT_EXPAND(Act, E, 02), ALT_REP_OF_01(Act, E,  , S)
+#define ALT_REP_OF_01(Act, E, P, S)     P ALT_EXPAND(Act, E, 01) S
+#define ALT_REP_OF_00(Act, E, P, S)     LAST_ ## Act(E, 00)
 
 #define TEST_IF_ARG(TF, TValue, FValue)          TEST_IF_ARG_(TF, TValue, FValue)
 #define TEST_IF_ARG_(TF, TValue, FValue)         TEST_IF_ARG_BOOL_ ## TF(TValue, FValue)
@@ -114,23 +113,26 @@
  * THOR_VALUEACTION:     Declares an initialization of the Type putting the name and the pointer
  *                  into the object
  */
-#define THOR_TEMPLATE_PARAM
-#define BUILDTEMPLATETYPEPARAMEXP           BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, 0, THOR_TEMPLATE_PARAM 1)
-#define BUILDTEMPLATETYPEVALUEEXP           BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, 0, THOR_TEMPLATE_PARAM 1)
-#define BUILDTEMPLATETYPEPARAM(Act, Type, ...)  REP_N(Act, Type, __VA_ARGS__)
-#define BUILDTEMPLATETYPEVALUE(Act, Type, ...)  TEST_IF_ARG(BOOL_ARGS(__VA_ARGS__), <,) ALT_REP_N(Act, Type, __VA_ARGS__) TEST_IF_ARG(BOOL_ARGS(__VA_ARGS__), >,)
+#define THOR_TEMPLATE_PARAM                     00
+#define BUILDTEMPLATETYPEPARAMEXP               BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, THOR_TEMPLATE_PARAM)
+#define BUILDTEMPLATETYPEVALUEEXP               BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, THOR_TEMPLATE_PARAM)
+#define BUILDTEMPLATETYPEPARAM(Act, Count)      ALT_REP_OF_N(Act, ,  ,  , Count)
+#define BUILDTEMPLATETYPEVALUE(Act, Count)      ALT_REP_OF_N(Act, , <, >, Count)
 
 
-#define THOR_TYPEACTION(Type, Member)            std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUEEXP ::Member)>
-#define THOR_VALUEACTION(Type, Member)           { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUEEXP ::Member }
-#define THOR_NAMEACTION(Type, Member)            #Member
-#define THOR_TYPENAMEPARAMACTION(Type, Member)   typename Member
-#define THOR_TYPENAMEVALUEACTION(Type, Member)   Member
-#define LAST_THOR_TYPEACTION(Type)               void*
-#define LAST_THOR_VALUEACTION(Type)              {nullptr}
-#define LAST_THOR_NAMEACTION(Type)               nullptr
-#define LAST_THOR_TYPENAMEPARAMACTION(Type)
-#define LAST_THOR_TYPENAMEVALUEACTION(Type)
+#define THOR_TYPEACTION(Type, Member)           std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUEEXP ::Member)>
+#define THOR_VALUEACTION(Type, Member)          { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUEEXP ::Member }
+#define THOR_NAMEACTION(Type, Member)           #Member
+#define LAST_THOR_TYPEACTION(Type)              void*
+#define LAST_THOR_VALUEACTION(Type)             {nullptr}
+#define LAST_THOR_NAMEACTION(Type)              nullptr
+
+#define THOR_TYPENAMEPARAMACTION(Ex, Id)        typename T ## Id
+#define THOR_TYPENAMEVALUEACTION(Ex, Id)        T ## Id
+#define THOR_CHECK_ASSERT(Ex, Id)
+#define LAST_THOR_TYPENAMEPARAMACTION(Ex, Id)
+#define LAST_THOR_TYPENAMEVALUEACTION(Ex, Id)
+#define LAST_THOR_CHECK_ASSERT(Ex, Id)          DO_ASSERT(Ex)
 
 /*
  * Defines a trait for a user defined type.
@@ -158,7 +160,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUEEXP >                       \
         }                                                               \
 };                                                                      \
 }}                                                                      \
-TEST_IF_ARG(BOOL_ARGS(THOR_TEMPLATE_PARAM 1), ,DO_ASSERT(DataType))
+ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , THOR_TEMPLATE_PARAM)
 
 #define DO_ASSERT(DataType)                                             \
 static_assert(                                                          \
