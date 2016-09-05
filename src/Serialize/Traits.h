@@ -23,9 +23,6 @@
 #define NUM_ARGS(...)          NUM_ARGS_(0, __VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 09, 08, 07, 06, 05, 04, 03, 02, 01, 00, Ignore)
 #define NUM_ARGS_(Zero, One, I1, I2, I3, I4 ,I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16, I17, I18, I19, I20, A, ...)  A
 
-#define BOOL_ARGS(...)          BOOL_ARGS_(0, __VA_ARGS__, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, F, Ignore)
-#define BOOL_ARGS_(Zero, One, I1, I2, I3, I4 ,I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16, I17, I18, I19, I20, A, ...)  A
-
 /*
  * Macros to quote the parameter
  * Used below by the actions.
@@ -100,12 +97,6 @@
 #define ALT_REP_OF_01(Act, E, P, S)     P ALT_EXPAND(Act, E, 01) S
 #define ALT_REP_OF_00(Act, E, P, S)     LAST_ ## Act(E, 00)
 
-#define TEST_IF_ARG(TF, TValue, FValue)          TEST_IF_ARG_(TF, TValue, FValue)
-#define TEST_IF_ARG_(TF, TValue, FValue)         TEST_IF_ARG_BOOL_ ## TF(TValue, FValue)
-#define TEST_IF_ARG_BOOL_T(TValue, FValue)       TValue
-#define TEST_IF_ARG_BOOL_F(TValue, FValue)       FValue
-
-
 /*
  * The actions we apply with REP_*
  *
@@ -138,6 +129,12 @@
  * Defines a trait for a user defined type.
  * Lists the members of the type that can be serialized.
  */
+#define DO_ASSERT(DataType)                                             \
+static_assert(                                                          \
+    ::ThorsAnvil::Serialize::Traits<DataType>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
+    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
+)
+
 #define ThorsAnvil_MakeTrait_Base(Parent, TType, DataType, ...)         \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<BUILDTEMPLATETYPEPARAMEXP>                                     \
@@ -161,12 +158,6 @@ class Traits<DataType BUILDTEMPLATETYPEVALUEEXP >                       \
 };                                                                      \
 }}                                                                      \
 ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , THOR_TEMPLATE_PARAM)
-
-#define DO_ASSERT(DataType)                                             \
-static_assert(                                                          \
-    ::ThorsAnvil::Serialize::Traits<DataType>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
-    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
-)
 
 #define ThorsAnvil_MakeTrait(...)                                       \
     ThorsAnvil_MakeTrait_Base( , Map, __VA_ARGS__, 1)
@@ -194,7 +185,7 @@ class Traits<EnumName>                                                  \
         static char const* const* getValues()                           \
         {                                                               \
             static constexpr char const* values[] = {                   \
-                        REP_N(THOR_NAMEACTION, 0, __VA_ARGS__, 1)            \
+                        REP_N(THOR_NAMEACTION, 0, __VA_ARGS__, 1)       \
                                                     };                  \
             return values;                                              \
         }                                                               \
@@ -216,10 +207,7 @@ class Traits<EnumName>                                                  \
         }                                                               \
 };                                                                      \
 }}                                                                      \
-static_assert(                                                                                      \
-    ::ThorsAnvil::Serialize::Traits<EnumName>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
-    "The macro ThorsAnvil_MakeTrait must be used outside all namespace."                            \
-)
+DO_ASSERT(EnumName)
 
 
 /*
