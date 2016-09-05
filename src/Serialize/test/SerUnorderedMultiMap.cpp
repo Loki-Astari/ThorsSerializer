@@ -17,7 +17,10 @@ TEST(SerUnorderedMultiMapTest, serialize)
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"([{"first":56,"second":78.901},{"first":56,"second":901}])");
+    bool test = result == R"([{"first":56,"second":78.901},{"first":56,"second":901}])"
+             || result == R"([{"first":56,"second":901},{"first":56,"second":78.901}])";
+
+    EXPECT_TRUE(test);
 }
 
 TEST(SerUnorderedMultiMapTest, deSerialize)
@@ -44,7 +47,14 @@ TEST(SerUnorderedMultiMapTest, serializeStringKey)
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"({"AStringKey":78.902,"TestValue":22.903,"TestValue":903})");
+    bool test =  result == R"({"AStringKey":78.902,"TestValue":22.903,"TestValue":903})"
+              || result == R"({"AStringKey":78.902,"TestValue":903,"TestValue":22.903})"
+              || result == R"({"TestValue":22.903,"AStringKey":78.902,"TestValue":903})"
+              || result == R"({"TestValue":22.903,"TestValue":903,"AStringKey":78.902})"
+              || result == R"({"TestValue":903,"AStringKey":78.902,"TestValue":22.903})"
+              || result == R"({"TestValue":903,"TestValue":22.903,"AStringKey":78.902})";
+
+    EXPECT_TRUE(test);
 }
 
 TEST(SerUnorderedMultiMapTest, deSerializeStringKey)
