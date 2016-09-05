@@ -268,6 +268,23 @@ template<> class Traits<bool>                   {public: static constexpr TraitT
 
 template<> class Traits<std::string>            {public: static constexpr TraitType type = TraitType::Value;};
 
+/*
+ * For object that are serialized as Json Array
+ * we use this object to get the size of the array.
+ *
+ * The default action is simply to call size() on
+ * the object before printing.
+ */
+template<typename T>
+class SerializeArraySize
+{
+    public:
+        static std::size_t size(T const& object)
+        {
+            return object.size();
+        }
+};
+
     }
 }
 

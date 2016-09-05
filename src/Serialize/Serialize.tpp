@@ -363,7 +363,7 @@ class SerializerForBlock<TraitType::Array, T>
             , printer(printer)
             , object(object)
         {
-            printer.openArray(object.size());
+            printer.openArray(SerializeArraySize<T>::size(object));
         }
         ~SerializerForBlock()
         {

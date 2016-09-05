@@ -51,7 +51,7 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::vector<int>>(std::
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::set<int>>(std::set<int>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::multiset<int>>(std::multiset<int>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::map<int, double>>(std::map<int, double>&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<std::multimap<int, double> >(std::multimap<int, double>&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::multimap<int, double>>(std::multimap<int, double>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::map<std::string, bool>>(std::map<std::string, bool>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::multimap<std::string, bool>>(std::multimap<std::string, bool>&);
 
@@ -60,5 +60,25 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<RGB>(RGB&);
 template void ThorsAnvil::Serialize::Serializer::print<EumHolder>(EumHolder const&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<EumHolder>(EumHolder&);
 
+template void ThorsAnvil::Serialize::Serializer::print<std::tuple<int, double>>(std::tuple<int, double> const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::tuple<int, double>>(std::tuple<int, double>&);
+
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_set<int>>(std::unordered_set<int> const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_set<int>>(std::unordered_set<int>&);
+
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_map<std::string, double>>(std::unordered_map<std::string, double> const&);
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_map<int, double>>(std::unordered_map<int, double> const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_map<std::string, bool>>(std::unordered_map<std::string, bool>&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_map<int, double>>(std::unordered_map<int, double>&);
+
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_multiset<int>>(std::unordered_multiset<int> const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_multiset<int>>(std::unordered_multiset<int>&);
+
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_multimap<std::string, double>>(std::unordered_multimap<std::string, double> const&);
+template void ThorsAnvil::Serialize::Serializer::print<std::unordered_multimap<int, double>>(std::unordered_multimap<int, double> const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_multimap<std::string, bool>>(std::unordered_multimap<std::string, bool>&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_multimap<int, double>>(std::unordered_multimap<int, double>&);
+
+template void ThorsAnvil::Serialize::Serializer::print<std::initializer_list<int>>(std::initializer_list<int> const&);
 
 #endif
