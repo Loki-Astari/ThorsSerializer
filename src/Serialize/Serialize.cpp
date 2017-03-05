@@ -1,5 +1,56 @@
 #include "Serialize.h"
 
+using ThorsAnvil::Serialize::ParserInterface;
+
+void ParserInterface::ignoreMap()
+{
+    for (ParserToken token = getNextToken(); token != ParserToken::MapEnd; token = getNextToken())
+    {
+        std::cout << "Ignoring Next Map Item\n";
+        if (token != ParserToken::Key)
+        {   throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+        }
+        ignoreValue();
+    }
+}
+
+void ParserInterface::ignoreArray()
+{
+    ParserToken token = getNextToken();
+    while (token != ParserToken::ArrayEnd)
+    {
+        switch (token)
+        {
+            case ParserToken::Error:     throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+            case ParserToken::Key:       throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+            case ParserToken::MapEnd:    throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+            case ParserToken::Value:     break;
+            case ParserToken::MapStart:  ignoreMap();    break;
+            case ParserToken::ArrayStart:ignoreArray();  break;
+            default:
+                throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+        }
+        token = getNextToken();
+    }
+}
+
+void ParserInterface::ignoreValue()
+{
+    ParserToken token = getNextToken();
+    switch (token)
+    {
+        case ParserToken::Error:     throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+        case ParserToken::Key:       throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+        case ParserToken::MapEnd:    throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+        case ParserToken::ArrayEnd:  throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+        case ParserToken::Value:     break;
+        case ParserToken::MapStart:  ignoreMap();    break;
+        case ParserToken::ArrayStart:ignoreArray();  break;
+        default:
+            throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+    }
+}
+
 #ifdef COVERAGE_TEST
 /*
  * This code is only compiled into the unit tests for code coverage purposes
@@ -10,6 +61,7 @@
 #include "JsonThor.h"
 #include "test/SerializeTest.h"
 #include "test/BinaryParserTest.h"
+#include "test/IgnoreUneededData.h"
 
 
 template void ThorsAnvil::Serialize::Serializer::print<Base>(Base const&);
@@ -80,5 +132,8 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_multimap
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_multimap<int, double>>(std::unordered_multimap<int, double>&);
 
 template void ThorsAnvil::Serialize::Serializer::print<std::initializer_list<int>>(std::initializer_list<int> const&);
+
+template void ThorsAnvil::Serialize::Serializer::print<Thing>(Thing const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<ThingVersion>(ThingVersion&);
 
 #endif
