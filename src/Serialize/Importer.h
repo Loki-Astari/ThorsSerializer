@@ -16,13 +16,15 @@ template<typename Format, typename T>
 class Importer
 {
     T& value;
+    ParserInterface::ParseType parseStrictness;
     public:
-        Importer(T& value)
+        Importer(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak)
             : value(value)
+            , parseStrictness(parseStrictness)
         {}
         friend std::istream& operator>>(std::istream& stream, Importer const& data)
         {
-            typename Format::Parser     parser(stream);
+            typename Format::Parser     parser(stream, data.parseStrictness);
             DeSerializer                deSerializer(parser);
 
             deSerializer.parse(data.value);

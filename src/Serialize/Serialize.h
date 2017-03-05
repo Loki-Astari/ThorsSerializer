@@ -43,13 +43,16 @@ namespace ThorsAnvil
 class ParserInterface
 {
     public:
+        enum class ParseType   {Weak, Strict};
         enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
         std::istream&   input;
         ParserToken     pushBack;
+        ParseType       parseStrictness;
 
-        ParserInterface(std::istream& input)
+        ParserInterface(std::istream& input, ParseType parseStrictness = ParseType::Weak)
             : input(input)
             , pushBack(ParserToken::Error)
+            , parseStrictness(parseStrictness)
         {}
         virtual ~ParserInterface() {}
                 ParserToken     getToken();
@@ -77,8 +80,9 @@ class ParserInterface
 
         void    ignoreValue();
     private:
-        void    ignoreMap();
-        void    ignoreArray();
+        void    ignoreTheValue();
+        void    ignoreTheMap();
+        void    ignoreTheArray();
 
 };
 class PrinterInterface

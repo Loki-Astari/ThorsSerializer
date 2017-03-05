@@ -175,7 +175,7 @@ class BinaryParser: public ParserInterface
     }
     public:
         BinaryParser(std::istream& stream)
-            : ParserInterface(stream)
+            : ParserInterface(stream, ParserInterface::ParseType::Strict)
         {
             std::size_t hash   = TBin::net2Host(read<TBin::BinForm32>());
             std::size_t expect = std::uint32_t(thash<T>());

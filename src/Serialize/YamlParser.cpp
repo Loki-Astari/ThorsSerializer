@@ -21,8 +21,8 @@ int thorsanvilYamlStreamReader(void* data, unsigned char* buffer, size_t size, s
     return result;
 }
 
-YamlParser::YamlParser(std::istream& input)
-    : ParserInterface(input)
+YamlParser::YamlParser(std::istream& input, ParseType parseStrictness)
+    : ParserInterface(input, parseStrictness)
     , first(true)
     , error(false)
 {

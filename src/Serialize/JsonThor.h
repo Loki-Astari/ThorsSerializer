@@ -33,9 +33,9 @@ Exporter<Json, T> jsonExport(T const& value, PrinterInterface::OutputType charac
     return Exporter<Json, T>(value, characteristics);
 }
 template<typename T>
-Importer<Json, T> jsonImport(T& value)
+Importer<Json, T> jsonImport(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak)
 {
-    return Importer<Json, T>(value);
+    return Importer<Json, T>(value, parseStrictness);
 }
     }
 }
