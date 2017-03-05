@@ -135,3 +135,25 @@ The JSON "Object" is a set of "name"/"value" pairs. But the name part is always 
         std::cout << jsonExport(data2) << "\n";             // [{"first":15, "second":2}]
     }
 ````
+
+##Strict Vs Weak Parsing.
+
+By defaul the parser is linient.  
+If it finds a "Key" that it does not recognize (or know how to decode) then it will ignore the "Value". This is controlled via the second parameter passed to the parser which defaults to "Weak"
+
+````c++
+        using TS = ThorsAnvil::Serializer;
+        using PT = TS::ParserInterface::ParseType;
+
+        TS::JasonParser         parser(stream, PT::Strict /* or Weak*/);
+        TS::DeSerializeMember   deSer(parser);
+
+        T object;
+        deSer.parse(object);
+
+        // -----------
+        // Or Short hand
+
+        T object;
+        stream >> TS::jsonImport(object, PT::Strict);
+````
