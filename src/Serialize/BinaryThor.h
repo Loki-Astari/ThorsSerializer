@@ -27,8 +27,18 @@ namespace ThorsAnvil
 template<typename T>
 struct Binary
 {
-    typedef BinaryParser<T>      Parser;
-    typedef BinaryPrinter<T>     Printer;
+    private:
+    template<typename X>
+    class BinaryParserWrapper: public BinaryParser<X>
+    {
+        public:
+            BinaryParserWrapper(std::istream& stream, ParserInterface::ParseType /*Ignored*/)
+                : BinaryParser<X>(stream)
+            {}
+    };
+    public:
+    typedef BinaryParserWrapper<T>  Parser;
+    typedef BinaryPrinter<T>        Printer;
 };
 
 template<typename T>
@@ -39,7 +49,7 @@ Exporter<Binary<T>, T> binExport(T const& value, PrinterInterface::OutputType ch
 template<typename T>
 Importer<Binary<T>, T> binImport(T& value)
 {
-    return Importer<Binary<T>, T>(value);
+    return Importer<Binary<T>, T>(value, ParserInterface::ParseType::Strict);
 }
     }
 }

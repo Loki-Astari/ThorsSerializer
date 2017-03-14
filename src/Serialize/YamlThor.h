@@ -36,9 +36,9 @@ Exporter<Yaml, T> yamlExport(T const& value, PrinterInterface::OutputType charac
     return Exporter<Yaml, T>(value, characteristics);
 }
 template<typename T>
-Importer<Yaml, T> yamlImport(T& value)
+Importer<Yaml, T> yamlImport(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak)
 {
-    return Importer<Yaml, T>(value);
+    return Importer<Yaml, T>(value, parseStrictness);
 }
     }
 }

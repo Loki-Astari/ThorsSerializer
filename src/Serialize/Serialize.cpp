@@ -2,52 +2,61 @@
 
 using ThorsAnvil::Serialize::ParserInterface;
 
-void ParserInterface::ignoreMap()
+void ParserInterface::ignoreValue()
+{
+    if (parseStrictness == ParseType::Strict)
+    {   throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreValue: In Strict parser mode not allowed to ignore values.");
+    }
+
+    ignoreTheValue();
+}
+
+void ParserInterface::ignoreTheMap()
 {
     for (ParserToken token = getNextToken(); token != ParserToken::MapEnd; token = getNextToken())
     {
         std::cout << "Ignoring Next Map Item\n";
         if (token != ParserToken::Key)
-        {   throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+        {   throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheMap: Invalid token found. (Expecting Key)");
         }
-        ignoreValue();
+        ignoreTheValue();
     }
 }
 
-void ParserInterface::ignoreArray()
+void ParserInterface::ignoreTheArray()
 {
     ParserToken token = getNextToken();
     while (token != ParserToken::ArrayEnd)
     {
         switch (token)
         {
-            case ParserToken::Error:     throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
-            case ParserToken::Key:       throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
-            case ParserToken::MapEnd:    throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+            case ParserToken::Error:     throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheArray: Invalid token found: Error");
+            case ParserToken::Key:       throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheArray: Invalid token found: Key");
+            case ParserToken::MapEnd:    throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheArray: Invalid token found: MapEnd");
             case ParserToken::Value:     break;
-            case ParserToken::MapStart:  ignoreMap();    break;
-            case ParserToken::ArrayStart:ignoreArray();  break;
+            case ParserToken::MapStart:  ignoreTheMap();    break;
+            case ParserToken::ArrayStart:ignoreTheArray();  break;
             default:
-                throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+                throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheArray: Invalid token found: Unknown");
         }
         token = getNextToken();
     }
 }
 
-void ParserInterface::ignoreValue()
+void ParserInterface::ignoreTheValue()
 {
     ParserToken token = getNextToken();
     switch (token)
     {
-        case ParserToken::Error:     throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
-        case ParserToken::Key:       throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
-        case ParserToken::MapEnd:    throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
-        case ParserToken::ArrayEnd:  throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+        case ParserToken::Error:     throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheValue: Invalid token found: Error");
+        case ParserToken::Key:       throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheValue: Invalid token found: Key");
+        case ParserToken::MapEnd:    throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheValue: Invalid token found: MapEnd");
+        case ParserToken::ArrayEnd:  throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheValue: Invalid token found: ArrayEnd");
         case ParserToken::Value:     break;
-        case ParserToken::MapStart:  ignoreMap();    break;
-        case ParserToken::ArrayStart:ignoreArray();  break;
+        case ParserToken::MapStart:  ignoreTheMap();    break;
+        case ParserToken::ArrayStart:ignoreTheArray();  break;
         default:
-            throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreMap: Invalid token found.");
+            throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheValue: Invalid token found: Unknown");
     }
 }
 
