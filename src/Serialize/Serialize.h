@@ -74,6 +74,12 @@ class ParserInterface
         virtual void    getValue(bool&)                  = 0;
 
         virtual void    getValue(std::string&)           = 0;
+
+        void    ignoreValue();
+    private:
+        void    ignoreMap();
+        void    ignoreArray();
+
 };
 class PrinterInterface
 {
@@ -148,15 +154,19 @@ class ApplyActionToParent
     public:
         // Default do nothing.
         void printParentMembers(Serializer&, T const&)            {}
-        void scanParentMember(DeSerializer&, I const&, T&)        {}
+        bool scanParentMember(DeSerializer&, I const&, T&)        {return false;}
 };
 
 template<typename T, typename M, TraitType type = Traits<M>::type>
 class DeSerializeMember
 {
     using ParserToken = ParserInterface::ParserToken;
+    bool used = false;
     public:
         DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
+        // Need to be here. But the default version never actually decodes values.
+        // Only the specializations actually decode values.
+        explicit operator bool() const {return used;}
 };
 
 class DeSerializer
@@ -166,13 +176,13 @@ class DeSerializer
     bool                root;
 
     template<typename T, typename Members, std::size_t... Seq>
-    void scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&);
+    bool scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&);
 
     template<typename T, typename... Members>
-    void scanMembers(std::string const& key, T& object, std::tuple<Members...> const& members);
+    bool scanMembers(std::string const& key, T& object, std::tuple<Members...> const& members);
 
     template<typename T, typename I, typename Action>
-    void scanMembers(I const& key, T& object, Action action);
+    bool scanMembers(I const& key, T& object, Action action);
     public:
         DeSerializer(ParserInterface& parser, bool root = true);
         ~DeSerializer();
@@ -181,7 +191,7 @@ class DeSerializer
         void parse(T& object);
 
         template<typename T, typename I>
-        void scanObjectMembers(I const& key, T& object);
+        bool scanObjectMembers(I const& key, T& object);
 };
 
 template<typename T, typename M, TraitType type = Traits<typename std::remove_cv<M>::type>::type>
