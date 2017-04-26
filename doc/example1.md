@@ -2,8 +2,10 @@
 
 ![ThorStream](../img/stream.jpg)
 
-##Example-1 [See doc/example1.cpp](example1.cpp)
+## Example-1 [See doc/example1.cpp](example1.cpp)
 ````c++
+    #include <iostream>
+    #include <sstream>
     #include "ThorSerialize/Traits.h"
     #include "ThorSerialize/JsonThor.h"
 
@@ -43,10 +45,15 @@
         TeamMember          mark("mark", 10, 5, Color{255,0,0});
         // Use the export function to serialize
         std::cout << jsonExport(mark) << "\n";
+        
+        TeamMember          john("Empty", 0, 0, Color{0,0,0});
+        std::stringstream   input(R"({"name": "John","score": 13,"team":{"red": 0,"green": 0,"blue": 255, "black":25}})");
+        input >> jsonImport(john);
+        std::cout << jsonExport(john) << "\n";
     }
 ````
 
-###Build and run
+### Build and run
 ````bash
     > g++ -std=c++14 expample1.cpp -lThorSerialize14
     > ./a.out
@@ -61,4 +68,15 @@
                 "blue": 0
             }
         }
+        {
+		    "name": "John",
+		    "score": 13,
+		    "damage": 0,
+		    "team":
+		    {
+			    "red": 0,
+			    "green": 0,
+			    "blue": 255
+		    }
+	    }
 ````
