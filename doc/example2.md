@@ -2,7 +2,7 @@
 
 ![ThorStream](../img/stream.jpg)
 
-##Example-2: [see doc/example2.cpp](example2.cpp)
+## Example-2: [see doc/example2.cpp](example2.cpp)
 ````c++
     #include <string>
     #include "ThorSerialize/Traits.h"

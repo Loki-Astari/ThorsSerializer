@@ -2,7 +2,7 @@
 
 ![ThorStream](../img/stream.jpg)
 
-###Objective:
+### Objective:
     The objective is to make serialization/de-serialization of C++ object to/from
     JSON/YAML/Binary trivial.
 
