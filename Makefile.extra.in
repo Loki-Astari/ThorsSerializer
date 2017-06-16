@@ -166,7 +166,8 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.extra.in \
+am__DIST_COMMON = $(srcdir)/Makefile.config.in \
+	$(srcdir)/Makefile.extra.in \
 	$(top_srcdir)/build/autotools/build/Makefile.config.in \
 	$(top_srcdir)/build/autotools/build/compile \
 	$(top_srcdir)/build/autotools/build/config.guess \
@@ -428,7 +429,7 @@ src/BinaryRep/stamp-h2: $(top_srcdir)/src/BinaryRep/BinaryRepConfig.h.in $(top_b
 
 distclean-hdr:
 	-rm -f src/Serialize/SerializeConfig.h src/Serialize/stamp-h1 src/BinaryRep/BinaryRepConfig.h src/BinaryRep/stamp-h2
-Makefile.config: $(top_builddir)/config.status $(top_srcdir)/build/autotools/build/Makefile.config.in
+Makefile.config: $(top_builddir)/config.status $(top_srcdir)/build/autotools/build/Makefile.config.in $(srcdir)/Makefile.config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
