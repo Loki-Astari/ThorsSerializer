@@ -684,6 +684,8 @@ StdFlag17
 StdFlag14
 StdFlag11
 CXXMaxLanguage
+NO_DEPRECATED_REGISTER_TEST
+NO_UNUSED_PRIVATE_FIELD_TEST
 THOR_TARGETLIBS
 BINARY_REP
 yaml_ROOT_LIB
@@ -16256,6 +16258,86 @@ fi
 
 
 
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wno-unused-private-field" >&5
+$as_echo_n "checking whether C compiler accepts -Wno-unused-private-field... " >&6; }
+if ${ax_cv_check_cflags___Wno_unused_private_field+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -Wno-unused-private-field"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___Wno_unused_private_field=yes
+else
+  ax_cv_check_cflags___Wno_unused_private_field=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wno_unused_private_field" >&5
+$as_echo "$ax_cv_check_cflags___Wno_unused_private_field" >&6; }
+if test "x$ax_cv_check_cflags___Wno_unused_private_field" = xyes; then :
+  NO_UNUSED_PRIVATE_FIELD_TEST=-Wno-unused-private-field
+
+
+else
+  :
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wno-deprecated-register" >&5
+$as_echo_n "checking whether C compiler accepts -Wno-deprecated-register... " >&6; }
+if ${ax_cv_check_cflags___Wno_deprecated_register+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -Wno-deprecated-register"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___Wno_deprecated_register=yes
+else
+  ax_cv_check_cflags___Wno_deprecated_register=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wno_deprecated_register" >&5
+$as_echo "$ax_cv_check_cflags___Wno_deprecated_register" >&6; }
+if test "x$ax_cv_check_cflags___Wno_deprecated_register" = xyes; then :
+  NO_DEPRECATED_REGISTER_TEST=-Wno-deprecated-register
+
+
+else
+  :
+fi
+
+
+
+
+
         minLangFeature=14
         if test "" = ""; then :
   maxLangFeature=17
@@ -17446,7 +17528,7 @@ fi
 
 ac_config_headers="$ac_config_headers src/Serialize/SerializeConfig.h src/BinaryRep/BinaryRepConfig.h"
 
-ac_config_files="$ac_config_files Makefile.extra Makefile.config"
+ac_config_files="$ac_config_files Makefile.extra Makefile.config:build/autotools/build/Makefile.config.in"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -18562,7 +18644,7 @@ do
     "src/Serialize/SerializeConfig.h") CONFIG_HEADERS="$CONFIG_HEADERS src/Serialize/SerializeConfig.h" ;;
     "src/BinaryRep/BinaryRepConfig.h") CONFIG_HEADERS="$CONFIG_HEADERS src/BinaryRep/BinaryRepConfig.h" ;;
     "Makefile.extra") CONFIG_FILES="$CONFIG_FILES Makefile.extra" ;;
-    "Makefile.config") CONFIG_FILES="$CONFIG_FILES Makefile.config" ;;
+    "Makefile.config") CONFIG_FILES="$CONFIG_FILES Makefile.config:build/autotools/build/Makefile.config.in" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
