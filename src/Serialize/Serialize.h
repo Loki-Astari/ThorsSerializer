@@ -189,7 +189,7 @@ class DeSerializer
     bool scanMembers(I const& key, T& object, Action action);
     public:
         DeSerializer(ParserInterface& parser, bool root = true);
-        ~DeSerializer();
+        ~DeSerializer() noexcept(false);
 
         template<typename T>
         void parse(T& object);
@@ -272,7 +272,7 @@ inline DeSerializer::DeSerializer(ParserInterface& parser, bool root)
         }
     }
 }
-inline DeSerializer::~DeSerializer()
+inline DeSerializer::~DeSerializer() noexcept(false)
 {
     if (root)
     {
