@@ -3015,7 +3015,6 @@ else
 
     mv .gitmodules gitmodules.old
     sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
-    rm gitmodules.old
 
 
 fi
@@ -3040,6 +3039,7 @@ git submodule update
         " "$LINENO" 5
 
 fi
+    mv gitmodules.old .gitmodules
 )
 
 
@@ -3051,7 +3051,6 @@ else
 
     mv .gitmodules gitmodules.old
     sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
-    rm gitmodules.old
 
 
 fi
@@ -3076,6 +3075,7 @@ git submodule update
         " "$LINENO" 5
 
 fi
+    mv gitmodules.old .gitmodules
 )
 
 
