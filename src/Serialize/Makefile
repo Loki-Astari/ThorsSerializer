@@ -10,7 +10,7 @@ TARGET						= ThorSerialize.lib
 
 FILE_WARNING_FLAGS			+= $(NO_DEPRECATED_REGISTER_TEST)
 LDLIBS_EXTERN_BUILD			+= $(yaml_ROOT_LIB)
-%/JsonLexer.lex.o:			FILE_WARNING_FLAGS	+= -Wno-sign-compare
+%/JsonLexer.lex.o:			FILE_WARNING_FLAGS	+= -Wno-sign-compare -Wno-register
 %/JsonLexer1.lex.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-register
 
 include $(THORSANVIL_ROOT)/build/tools/Makefile

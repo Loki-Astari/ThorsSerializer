@@ -1,18 +1,21 @@
 
-AC_INIT([ThorsAnvil], [0.1], [Loki.Astari+ThorsAnvil@gmail.com])
+AC_INIT([ThorsSerialize], [0.1], [Loki.Astari+ThorsAnvil@gmail.com])
 AC_PREREQ([2.65])
 
 # Set up the build system
+if [[ ! -e build/Notes ]]; then
+    git submodule init
+    git submodule update
+fi
 AC_CONFIG_MACRO_DIR([build/autotools/m4])
-AX_THOR_FUNC_BUILD
 AC_CONFIG_AUX_DIR([build/autotools/build])
+AX_THOR_FUNC_BUILD
 
 
 AC_CONFIG_SRCDIR([src/Serialize/JsonParser.cpp])
 AC_PROG_CXX
 AX_THOR_PROG_COV
 AX_THOR_PROG_LEX
-LT_INIT([disable-static])
 
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], [])
 
@@ -30,12 +33,13 @@ AC_SUBST([SERIALIZATION_EXTERN_LIBS], ["$with_yamllib  $SERIALIZATION_EXTERN_LIB
 
 AX_CHECK_COMPILE_FLAG([-ansi], [AC_SUBST([CXXFLAGS], ["$CXXFLAGS -ansi"])])
 
-AX_THOR_FUNC_LANG_FLAG(14)
+AX_THOR_FUNC_LANG_FLAG(17)
 AX_THOR_FUNC_TEST_COMP([
 #include <utility>
 int main() {
     std::index_sequence<1,2,3,4>    seq;
 }])
+LT_INIT
 
 
 
