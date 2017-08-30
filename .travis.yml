@@ -8,13 +8,12 @@ os:
 compiler:
     - gcc
 before_install:
-    - if [ "$TRAVIS_OS_NAME" == "linux" ];                        then sudo apt-get install build-essential software-properties-common -y;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" ];                        then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main' -y ;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" ];                        then sudo apt-get update;fi
 install:
-    - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "g++" ]];    then sudo apt-get install -qq g++-7;fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "g++" ];     then sudo apt-get install -qq g++-7;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then sudo apt-get install clang-3.5;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" ];                        then sudo apt-get install python-dev -y;fi
     - if [ "$TRAVIS_OS_NAME" == "linux" ];                        then sudo apt-get install -qq libboost-all-dev;fi
