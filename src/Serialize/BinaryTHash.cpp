@@ -36,6 +36,7 @@ template std::size_t ThorsAnvil::Serialize::thash<Derived>(std::size_t);
 
 template std::size_t ThorsAnvil::Serialize::thash<std::vector<int>>(std::size_t);
 
+/*
 template struct ThorsAnvil::Serialize::TraitsHash<short>;
 template struct ThorsAnvil::Serialize::TraitsHash<int>;
 template struct ThorsAnvil::Serialize::TraitsHash<long>;
@@ -52,6 +53,7 @@ template struct ThorsAnvil::Serialize::TraitsHash<long double>;
 
 template struct ThorsAnvil::Serialize::TraitsHash<bool>;
 template struct ThorsAnvil::Serialize::TraitsHash<std::string>;
+*/
 
 template std::size_t ThorsAnvil::Serialize::thash<MapWithMap>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<MapOneValue>(std::size_t);
