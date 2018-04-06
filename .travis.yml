@@ -31,7 +31,7 @@ before_script:
     - mv .gitmodules gitmodules.old
     - sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
 script:
-    - ./configure --with-boost=/tmp/extra --with-thor-build-on-travis --with-thors-network-byte-order
+    - ./configure --with-boost=/tmp/extra --with-thor-build-on-travis --disable-binary
     - export PATH=${PATH}:$(pwd)/build/bin;make 
 after_success:
     - ./uploadcodecovrage
