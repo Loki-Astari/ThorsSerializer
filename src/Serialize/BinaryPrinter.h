@@ -64,6 +64,8 @@ class BinaryPrinter: public PrinterInterface
         virtual void addValue(bool value)                   override    {write(static_cast<unsigned char>(value));}
 
         virtual void addValue(std::string const& value)     override    {writeString(value);}
+
+        virtual void addRawValue(std::string const& value)  override    {writeString(value);}
 };
 
     }

@@ -39,6 +39,7 @@ class JsonParser: public ParserInterface
     bool                started;
 
     std::string getString();
+    std::string getRawString();
 
     template<typename T>
     T scan();
@@ -64,6 +65,8 @@ class JsonParser: public ParserInterface
         virtual void    getValue(bool& value)                   override;
 
         virtual void    getValue(std::string& value)            override;
+
+        virtual std::string getRawValue()                       override;
 };
     }
 }

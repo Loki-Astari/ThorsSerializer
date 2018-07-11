@@ -138,6 +138,11 @@ std::string JsonParser::getString()
     return std::string(make_UnicodeWrapperIterator(lexer.YYText() + 1),
                        make_UnicodeWrapperIterator(lexer.YYText() + lexer.YYLeng() - 1));
 }
+std::string JsonParser::getRawString()
+{
+    return std::string(make_UnicodeWrapperIterator(lexer.YYText()),
+                       make_UnicodeWrapperIterator(lexer.YYText() + lexer.YYLeng()));
+}
 
 std::string JsonParser::getKey()
 {
@@ -189,4 +194,9 @@ void JsonParser::getValue(bool& value)
 void JsonParser::getValue(std::string& value)
 {
     value = getString();
+}
+
+std::string JsonParser::getRawValue()
+{
+    return getRawString();
 }

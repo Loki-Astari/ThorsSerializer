@@ -237,4 +237,9 @@ void YamlParser::getValue(std::string& value)
     value = getString();
 }
 
+std::string YamlParser::getRawValue()
+{
+    return getString();
+}
+
 #endif

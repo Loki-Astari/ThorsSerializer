@@ -213,6 +213,8 @@ class BinaryParser: public ParserInterface
         virtual void    getValue(bool& value)                  override {value = read<unsigned char>();}
 
         virtual void    getValue(std::string& value)           override {value = readString();};
+
+        virtual std::string getRawValue()                      override {return readString();};
 };
 
     }
