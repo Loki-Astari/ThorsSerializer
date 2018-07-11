@@ -6,6 +6,7 @@
 //#include <cstdlib>
 //#include "Traits.h"
 #include <algorithm>
+#include <sstream>
 
 
 namespace ThorsAnvil
@@ -104,6 +105,26 @@ class DeSerializationForBlock<TraitType::Value, T>
             {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Value>::DeSerializationForBlock: Invalid Object");
             }
             parser.getValue(object);
+        }
+};
+template<typename T>
+class DeSerializationForBlock<TraitType::Serialize, T>
+{
+    DeSerializer&       parent;
+    ParserInterface&    parser;
+    public:
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
+        {}
+        void scanObject(T& object)
+        {
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+            if (tokenType != ParserInterface::ParserToken::Value)
+            {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Value>::DeSerializationForBlock: Invalid Object");
+            }
+            std::stringstream valueStream(parser.getRawValue());
+            valueStream >> object;
         }
 };
 /*
@@ -250,6 +271,41 @@ class DeSerializeMember<T, M, TraitType::Enum>
         }
         explicit operator bool() const {return used;}
 };
+template<typename T, typename M>
+class DeSerializeMember<T, M, TraitType::Serialize>
+{
+    bool used = false;
+    public:
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+        {
+            if (key.compare(memberInfo.first) == 0)
+            {
+                used = true;
+                ParserInterface::ParserToken tokenType = parser.getToken();
+                if (tokenType != ParserInterface::ParserToken::Value)
+                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
+                }
+
+                std::stringstream valueStream(parser.getRawValue());
+                valueStream >> (object.*(memberInfo.second));
+            }
+        }
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+        {
+            if (key.compare(memberInfo.first) == 0)
+            {
+                used = true;
+                ParserInterface::ParserToken tokenType = parser.getToken();
+                if (tokenType != ParserInterface::ParserToken::Value)
+                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
+                }
+
+                std::stringstream valueStream(parser.getRawValue());
+                valueStream >> (*(memberInfo.second));
+            }
+        }
+        explicit operator bool() const {return used;}
+};
 
 template<typename T, typename M>
 DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M*> const& memberInfo)
@@ -348,6 +404,24 @@ class SerializerForBlock<TraitType::Value, T>
             printer.addValue(object);
         }
 };
+template<typename T>
+class SerializerForBlock<TraitType::Serialize, T>
+{
+    PrinterInterface&   printer;
+    T const&            object;
+    public:
+        SerializerForBlock(Serializer&, PrinterInterface& printer,T const& object)
+            : printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()   {}
+        void printMembers()
+        {
+            std::stringstream buffer;
+            buffer << object;
+            printer.addRawValue(buffer.str());
+        }
+};
 
 template<typename T>
 class SerializerForBlock<TraitType::Enum, T>
@@ -416,6 +490,27 @@ class SerializeMember<T, M, TraitType::Value>
         {
             printer.addKey(memberInfo.first);
             printer.addValue(*(memberInfo.second));
+        }
+};
+template<typename T, typename M>
+class SerializeMember<T, M, TraitType::Serialize>
+{
+    public:
+        SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+        {
+            std::stringstream   buffer;
+            buffer << (object.*(memberInfo.second));
+
+            printer.addKey(memberInfo.first);
+            printer.addRawValue(buffer.str());
+        }
+        SerializeMember(PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+        {
+            std::stringstream   buffer;
+            buffer << (*(memberInfo.second));
+
+            printer.addKey(memberInfo.first);
+            printer.addRawValue(buffer.str());
         }
 };
 

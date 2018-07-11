@@ -178,4 +178,6 @@ void YamlPrinter::addValue(bool value)                          {emit(value?"tru
 
 void YamlPrinter::addValue(std::string const& value)            {emit(value);}
 
+void YamlPrinter::addRawValue(std::string const& value)         {emit(value);}
+
 #endif

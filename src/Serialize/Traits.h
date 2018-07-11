@@ -6,6 +6,7 @@
  *  Two macros are provides to facilitate the building of Traits<T>
  *  specializations for user defined types.
  *
+ *      ThorsAnvil_MakeTraitCustom(DataType)    // Will use operator << and operator >>
  *      ThorsAnvil_MakeTrait(DataType, ...)
  *      ThorsAnvil_ExpandTrait(ParentType, DataType, ...)
  *      ThorsAnvil_Template_MakeTrait(TemplateParameterCount, DataType, ...)
@@ -164,6 +165,12 @@ ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
 #define ThorsAnvil_MakeTrait(...)                                       \
     ThorsAnvil_MakeTrait_Base( , Map, 0, __VA_ARGS__, 1)
 
+#define ThorsAnvil_MakeTraitCustom(DataType)                            \
+template<> class ThorsAnvil::Serialize::Traits<DataType>                \
+{                                                                       \
+    public: static constexpr TraitType type = TraitType::Serialize;     \
+}
+
 #define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
     ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, Count, __VA_ARGS__, 1)
 
@@ -220,7 +227,7 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
-enum class TraitType {Invalid, Parent, Value, Map, Array, Enum};
+enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Serialize};
 template<typename T>
 class Traits
 {

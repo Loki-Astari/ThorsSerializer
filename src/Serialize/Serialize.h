@@ -78,6 +78,8 @@ class ParserInterface
 
         virtual void    getValue(std::string&)           = 0;
 
+        virtual std::string getRawValue()                = 0;
+
         void    ignoreValue();
     private:
         void    ignoreTheValue();
@@ -127,6 +129,8 @@ class PrinterInterface
         virtual void    addValue(bool)                  = 0;
 
         virtual void    addValue(std::string const&)    = 0;
+
+        virtual void    addRawValue(std::string const&) = 0;
 
         void addValue(void*)        = delete;
         void addValue(void const*)  = delete;
