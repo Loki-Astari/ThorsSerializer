@@ -719,6 +719,9 @@ LEXLIB
 LEX_OUTPUT_ROOT
 LEX
 COV
+THOR_TARGETLIBS
+VERA
+TestVera
 BOOST_PYTHON_LIB
 PYTHON_EXTRA_LDFLAGS
 PYTHON_EXTRA_LIBS
@@ -749,9 +752,6 @@ CFLAGS
 CC
 CMAKE
 UNZIP
-THOR_TARGETLIBS
-VERA
-TestVera
 target_alias
 host_alias
 build_alias
@@ -794,11 +794,11 @@ am__quote'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
-enable_vera
 with_boost
 with_boost_libdir
 with_boost_python
 with_thor_build_on_travis
+enable_vera
 with_yamlroot
 enable_yaml
 with_thors_network_byte_order
@@ -3988,102 +3988,6 @@ See \`config.log' for more details" "$LINENO" 5; }
 	#
 
 
-
-    # Check whether --enable-vera was given.
-if test "${enable_vera+set}" = set; then :
-  enableval=$enable_vera;
-fi
-
-
-    VERA="";
-    if test "x$enable_vera" == "xno"; then :
-
-            VERA='echo "Disabled Static Analysis" ||';
-
-else
-
-            VERA='vera++';
-            for ac_prog in vera++
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_TestVera+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$TestVera"; then
-  ac_cv_prog_TestVera="$TestVera" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-as_dummy="${PATH}:./build/bin"
-for as_dir in $as_dummy
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_TestVera="$ac_prog"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-TestVera=$ac_cv_prog_TestVera
-if test -n "$TestVera"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $TestVera" >&5
-$as_echo "$TestVera" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  test -n "$TestVera" && break
-done
-test -n "$TestVera" || TestVera=":"
-
-            if test "$TestVera" == ":"; then :
-
-                    as_fn_error $? "
-
-By default the build tools use vera++ for static analysis of C++ code to ensure the project
-maintains a consistent style when people add pull requests. The configuration tests have
-detected that \"vera++\" (the static analysis tool) is not currently installed.
-
-
-" "$LINENO" 5
-
-fi
-
-
-fi
-    VERA=${VERA}
-
-
-    THOR_TARGETLIBS=""
-    if test "x$enable_shared" == "xyes"; then :
-  THOR_TARGETLIBS+=" slib"
-
-fi
-    if test "x$enable_static" == "xyes"; then :
-  THOR_TARGETLIBS+=" a"
-
-fi
-    if test "x$THOR_TARGETLIBS" == "x"; then :
-  THOR_TARGETLIBS="slib"
-
-fi
-
-    THOR_TARGETLIBS=${THOR_TARGETLIBS}
-
-
-
-
     for ac_prog in unzip
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -5102,6 +5006,102 @@ fi
 
 
 fi
+
+
+
+    # Check whether --enable-vera was given.
+if test "${enable_vera+set}" = set; then :
+  enableval=$enable_vera;
+fi
+
+
+    VERA="";
+    if test "x$enable_vera" == "xno"; then :
+
+            VERA='echo "Disabled Static Analysis" ||';
+
+else
+
+            VERA='vera++';
+            for ac_prog in vera++
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_TestVera+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$TestVera"; then
+  ac_cv_prog_TestVera="$TestVera" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+as_dummy="${PATH}:./build/bin"
+for as_dir in $as_dummy
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_TestVera="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+TestVera=$ac_cv_prog_TestVera
+if test -n "$TestVera"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $TestVera" >&5
+$as_echo "$TestVera" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$TestVera" && break
+done
+test -n "$TestVera" || TestVera=":"
+
+            if test "$TestVera" == ":"; then :
+
+                    as_fn_error $? "
+
+By default the build tools use vera++ for static analysis of C++ code to ensure the project
+maintains a consistent style when people add pull requests. The configuration tests have
+detected that \"vera++\" (the static analysis tool) is not currently installed.
+
+
+" "$LINENO" 5
+
+fi
+
+
+fi
+    VERA=${VERA}
+
+
+    THOR_TARGETLIBS=""
+    if test "x$enable_shared" == "xyes"; then :
+  THOR_TARGETLIBS+=" slib"
+
+fi
+    if test "x$enable_static" == "xyes"; then :
+  THOR_TARGETLIBS+=" a"
+
+fi
+    if test "x$THOR_TARGETLIBS" == "x"; then :
+  THOR_TARGETLIBS="slib"
+
+fi
+
+    THOR_TARGETLIBS=${THOR_TARGETLIBS}
+
+
 
 
     pushd build/third
