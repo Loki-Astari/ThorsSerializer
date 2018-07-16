@@ -65,7 +65,7 @@ This allows us to import and export object of the above class really easily.
 This generates:
 
 ````bash
-    > g++ -std=c++14 -o example2 example2.cpp -lThorSerialize14
+    > g++ -std=c++17 -o example2 example2.cpp -lThorSerialize17
     > ./example2
     Version 1
      

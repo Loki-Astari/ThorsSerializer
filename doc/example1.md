@@ -55,7 +55,7 @@
 
 ### Build and run
 ````bash
-    > g++ -std=c++14 expample1.cpp -lThorSerialize14
+    > g++ -std=c++17 expample1.cpp -lThorSerialize17
     > ./a.out
         { 
             "name": "mark", 
