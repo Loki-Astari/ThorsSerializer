@@ -2,7 +2,7 @@
 
 ![ThorStream](../img/stream.jpg)
 
-##Objective:
+## Objective:
 
     The objective is to make serialization/de-serialization of C++ object to/from
     JSON/YAML/Binary trivial.
@@ -21,7 +21,7 @@
     that speak JSON. The main envisioned usage was for mobile devices were many
     small JSON objects are transfered in both directions.
 
-##Marking your class Serializeable/Deserializable
+## Marking your class Serializeable/Deserializable
 
 * Include the header file: `ThorSerialize/Traits.h`
 * Use one of these macros to declare your type as serializable
@@ -63,7 +63,7 @@ The two macros above build a template specialization of the class `ThorsAnvil::S
     ThorsAnvil_MakeTrait(MyNameSpace::MyClass, x);
 ````
 
-##Private Members
+## Private Members
 If any members of the class that need to be serialized are private you must define a friendship to allow the `Traits<X>` class to have access to the private members.
 
 ````c++
@@ -85,7 +85,7 @@ If any members of the class that need to be serialized are private you must defi
     ThorsAnvil_MakeTrait(MyNameSpace::MyClass, x, y);
 ````
 
-##Standard containers
+## Standard containers
 The appropriate declarations for all the standard containers are provided. You simply need to include "ThorSerialize/SerUtil.h" to include these declarations.
 
 ````c++
@@ -103,9 +103,9 @@ The appropriate declarations for all the standard containers are provided. You s
     }
 ````
 
-##Serialization
+## Serialization
 
-###Json
+### Json
 * Include the header file "ThorSerialize/JsonThor.h".
 * There are two functions in the namespace `ThorsAnvil::Serialize`.
  * `jsonExport(<YourObject>, characteristics = Default);`
@@ -129,7 +129,7 @@ On export there is a second parameter `characteristics` that allows some simple 
      Config:      Human readable                                    Potentially config file like.
 ````
 
-###Yaml
+### Yaml
 
 The description above is for Json Serialization/Deserialization. But the exact same description can be used for Yaml. Simply replace Json with Yaml and replace json with yaml.
 
@@ -141,13 +141,13 @@ The export parameter `characteristics` has slightly different meaning for printi
      Stream:      YAML_FLOW_MAPPING_STYLE
      Config:      YAML_BLOCK_MAPPING_STYLE
 ````
-###Binary
+### Binary
 
 The description above is for Json Serialization/Deserialization. But the exact same description can be used for Binary versions. Simply replace Json with Binary and replace json with binary.
 
 The export parameter `characteristics` has no affect on binary.
 
-##Notes on std::map (Json)
+## Notes on std::map (Json)
 
 The JSON "Object" is a set of "name"/"value" pairs. But the name part is always a "String". If you use a `std::map<Key, Value>` where the "Key" is a `std::string` then the `std::map<>` will be represented by a JSON "Object". If any other type is used as the "Key" then `std::map<>` will be represented as a Json "Array" where each member of the array is `std::pair<Key,Value>`.
 
@@ -162,7 +162,7 @@ The JSON "Object" is a set of "name"/"value" pairs. But the name part is always 
         std::cout << jsonExport(data2) << "\n";             // [{"first":15, "second":2}]
     }
 
-##Strict Vs Weak Parsing.
+## Strict Vs Weak Parsing.
 
 By defaul the parser is linient.  
 If it finds a "Key" that it does not recognize (or know how to decode) then it will ignore the "Value". This is controlled via the second parameter passed to the parser which defaults to "Weak"
@@ -183,7 +183,7 @@ If it finds a "Key" that it does not recognize (or know how to decode) then it w
         T object;
         stream >> TS::jsonImport(object, PT::Strict);
 ````
-##Example-1 [See doc/example1.cpp](example1.cpp)
+## Example-1 [See doc/example1.cpp](example1.cpp)
 
 ````c++
     #include "ThorSerialize/Traits.h"
@@ -228,7 +228,7 @@ If it finds a "Key" that it does not recognize (or know how to decode) then it w
     }
 ````
 
-###Build and run
+### Build and run
 ````bash
     > g++ -std=c++17 expample1.cpp -lThorSerialize17
     > ./a.out
@@ -244,7 +244,7 @@ If it finds a "Key" that it does not recognize (or know how to decode) then it w
             }
         }
 ````
-##Example-2: [see doc/example2.cpp](example2.cpp)
+## Example-2: [see doc/example2.cpp](example2.cpp)
 
 ````c++
     #include <string>
@@ -349,14 +349,14 @@ This generates:
             }]
 ````
 
-#Install Instructions:
-##From [Homebrew](https://brew.sh/)
+# Install Instructions:
+## From [Homebrew](https://brew.sh/)
 ````bash
 brew tap Loki-Astari/ThorsAnvil
 brew install ThorsSerializer
 ````
 
-####What is installed:
+#### What is installed:
 * `/usr/local/include/ThorSerialize/*`
 * `/usr/local/include/ThorBinaryRep/*`
 * `/usr/local/lib/libThorSerialize17.so`
@@ -364,7 +364,7 @@ brew install ThorsSerializer
 * `/usr/local/lib/libyaml.so`
 * `/usr/local/share/man/man3/*`
 
-##From [GitHub](https://github.com/Loki-Astari/ThorsSerializer)
+## From [GitHub](https://github.com/Loki-Astari/ThorsSerializer)
 
 The basic script for installing everything is:
 
@@ -407,7 +407,7 @@ I install all the above with:
 ### Description
 By default installation will be in `/usr/local/include` and `/usr/local/lib`. You can override this with the normal auto-tools defaults. Use `./configure --help` to get details.
 
-####What is installed:
+#### What is installed:
 * `/usr/local/include/ThorSerialize/*`
 * `/usr/local/include/ThorBinaryRep/*`
 * `/usr/local/lib/libThorSerialize17.so`
@@ -419,10 +419,10 @@ libThorSerialize17.so is build using `-O3` and thus is fully optimized and debug
 libThorSerialize17D.so is build using `-g` and is useful for debugging purposes.
 
 
-###What is Downloaded
+### What is Downloaded
 The configuration processes will download the generic makefiles (using git) from [ThorMaker](https://github.com/Loki-Astari/ThorMaker) which in turn will download and build [google's gtest](https://github.com/google/googletest) and [vera++](https://github.com/Loki-Astari/vera-plusplus) library that is used in running the unit tests.
 
-##Requirements
+## Requirements
 This library uses features from C++14 so you will need a compiler that supports this. The generic makefile also does code coverage tests so your compiler will also need to support a code coverage tool that has an interface similar to `gcov`.
 
 
