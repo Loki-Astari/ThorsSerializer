@@ -797,7 +797,6 @@ enable_option_checking
 with_boost
 with_boost_libdir
 with_boost_python
-with_thor_build_on_travis
 enable_vera
 with_yamlroot
 enable_yaml
@@ -1479,9 +1478,6 @@ Optional Packages:
                           libraries are located.
   --with-boost-python     specify yes/no or the boost python library or suffix
                           to use
-  --with-thor-build-on-travis
-                          Used by travis to install and do some configuration
-
   --with-yamlroot=<location>
                           Directory of YAML_ROOT
 
@@ -4852,161 +4848,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-
-
-# Check whether --with-thor-build-on-travis was given.
-if test "${with_thor_build_on_travis+set}" = set; then :
-  withval=$with_thor_build_on_travis;
-fi
-
-
-
-    if test "${with_thor_build_on_travis}" == ""; then :
-
-fi
-
-
-(
-    cd .
-    if test "${with_thor_build_on_travis}" == ""; then :
-
-
-            if [ ! -e build/Notes ]; then
-
-    git submodule init
-    if git submodule update; then :
-
-else
-  as_fn_error $? "
-
-git submodule updated failed:
-Currently all Loki-Astari submodules are retrieved using ssh.
-If the above command failed it probably means that you have not registered your \"public key\" with github.com
-
-See this article on StackOverflow for simple instructions:
-http://stackoverflow.com/questions/25828483/github-permission-denied-publickey
-
-
-Once you have installed the keys you can restart the configuration with:
-git submodule update
-./configure <Same Flags You had before>
-
-        " "$LINENO" 5
-
-fi
-
-            fi
-
-else
-
-            mv .gitmodules gitmodules.old
-            sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
-
-
-    git submodule init
-    if git submodule update; then :
-
-else
-  as_fn_error $? "
-
-git submodule updated failed:
-Currently all Loki-Astari submodules are retrieved using ssh.
-If the above command failed it probably means that you have not registered your \"public key\" with github.com
-
-See this article on StackOverflow for simple instructions:
-http://stackoverflow.com/questions/25828483/github-permission-denied-publickey
-
-
-Once you have installed the keys you can restart the configuration with:
-git submodule update
-./configure <Same Flags You had before>
-
-        " "$LINENO" 5
-
-fi
-
-
-            mv gitmodules.old .gitmodules
-
-
-fi
-)
-
-
-(
-    cd build
-    if test "${with_thor_build_on_travis}" == ""; then :
-
-
-            if [ ! -e googletest/README.md ]; then
-
-    git submodule init
-    if git submodule update; then :
-
-else
-  as_fn_error $? "
-
-git submodule updated failed:
-Currently all Loki-Astari submodules are retrieved using ssh.
-If the above command failed it probably means that you have not registered your \"public key\" with github.com
-
-See this article on StackOverflow for simple instructions:
-http://stackoverflow.com/questions/25828483/github-permission-denied-publickey
-
-
-Once you have installed the keys you can restart the configuration with:
-git submodule update
-./configure <Same Flags You had before>
-
-        " "$LINENO" 5
-
-fi
-
-            fi
-
-else
-
-            mv .gitmodules gitmodules.old
-            sed -e 's#git@\([^:]*\):#https://\1/#' gitmodules.old > .gitmodules
-
-
-    git submodule init
-    if git submodule update; then :
-
-else
-  as_fn_error $? "
-
-git submodule updated failed:
-Currently all Loki-Astari submodules are retrieved using ssh.
-If the above command failed it probably means that you have not registered your \"public key\" with github.com
-
-See this article on StackOverflow for simple instructions:
-http://stackoverflow.com/questions/25828483/github-permission-denied-publickey
-
-
-Once you have installed the keys you can restart the configuration with:
-git submodule update
-./configure <Same Flags You had before>
-
-        " "$LINENO" 5
-
-fi
-
-
-            mv gitmodules.old .gitmodules
-
-
-fi
-)
-
-
-    if test "x$enable_vera" != "xno"; then :
-
-            ./build/third/vera-install
-
-
-fi
-
+    git submodule update --init --recursive
 
 
     # Check whether --enable-vera was given.
@@ -5023,6 +4865,7 @@ fi
 else
 
             VERA='vera++';
+            ./build/third/vera-install
             for ac_prog in vera++
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.

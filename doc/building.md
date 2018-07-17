@@ -22,7 +22,7 @@ brew install ThorsSerializer
 The basic script for installing everything is:
 
 ````bash
-    > git clone git@github.com:Loki-Astari/ThorsSerializer.git
+    > git clone https://github.com/Loki-Astari/ThorsSerializer.git
     > cd ThorsSerializer
     > ./configure --disable-binary
     > make
