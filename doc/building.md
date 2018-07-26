@@ -5,8 +5,8 @@
 # Install Instructions:
 ## From [Homebrew](https://brew.sh/)
 ````bash
-brew tap Loki-Astari/ThorsAnvil
-brew install ThorsSerializer
+brew update
+brew install thors-serializer
 ````
 
 #### What is installed:
