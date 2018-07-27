@@ -15,7 +15,6 @@ void ParserInterface::ignoreTheMap()
 {
     for (ParserToken token = getNextToken(); token != ParserToken::MapEnd; token = getNextToken())
     {
-        std::cout << "Ignoring Next Map Item\n";
         if (token != ParserToken::Key)
         {   throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreTheMap: Invalid token found. (Expecting Key)");
         }
