@@ -581,6 +581,35 @@ TEST(YamlParserTest, getDataFromBool)
     );
     EXPECT_EQ(false, value4);
 }
+TEST(YamlParserTest, getRawValue)
+{
+    std::stringstream   stream(R"([true, false, 0, 15.4, "The Best"])");
+    TA::YamlParser      parser(stream);
+    std::string         value;
+
+    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+
+    value = parser.getRawValue();
+    EXPECT_EQ(std::string("true"), value);
+
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    value = parser.getRawValue();
+    EXPECT_EQ(std::string("false"), value);
+
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    value = parser.getRawValue();
+    EXPECT_EQ(std::string("0"), value);
+
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    value = parser.getRawValue();
+    EXPECT_EQ(std::string("15.4"), value);
+
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    value = parser.getRawValue();
+    EXPECT_EQ(std::string("The Best"), value);
+}
 
 #endif
 

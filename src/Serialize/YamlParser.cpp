@@ -66,17 +66,14 @@ ParserInterface::ParserToken YamlParser::getNextToken()
 
     switch (event.type)
     {
-        case YAML_STREAM_START_EVENT:   generateParsingException("ThorsAnvil::Serialize::YamlParser: Start should only happen as first event");
+        case YAML_STREAM_START_EVENT:   generateParsingException([](){return true;}, "ThorsAnvil::Serialize::YamlParser: Start should only happen as first event");
         // fallthrough
-        case YAML_ALIAS_EVENT:          generateParsingException("ThorsAnvil::Serialize::YamlParser: Alias not supported");
+        case YAML_ALIAS_EVENT:          generateParsingException([](){return true;}, "ThorsAnvil::Serialize::YamlParser: Alias not supported");
         // fallthrough
-        case YAML_NO_EVENT:             generateParsingException("ThorsAnvil::Serialize::YamlParser: No Event not supported");
+        case YAML_NO_EVENT:             generateParsingException([](){return true;}, "ThorsAnvil::Serialize::YamlParser: No Event not supported");
         // fallthrough
 
-        case YAML_STREAM_END_EVENT:
-        {
-            return parsingError();
-        }
+        case YAML_STREAM_END_EVENT:     return parsingError();
 
         case YAML_DOCUMENT_START_EVENT:
         {
@@ -91,7 +88,6 @@ ParserInterface::ParserToken YamlParser::getNextToken()
                     "ThorsAnvil::Serialize::YamlParser: Invalid document end event");
             return ParserToken::DocEnd;
         }
-
         case YAML_MAPPING_START_EVENT:
         {
             ++state.back().second;
@@ -107,7 +103,6 @@ ParserInterface::ParserToken YamlParser::getNextToken()
             state.pop_back();
             return ParserToken::MapEnd;
         }
-
         case YAML_SEQUENCE_START_EVENT:
         {
             ++state.back().second;
@@ -121,7 +116,6 @@ ParserInterface::ParserToken YamlParser::getNextToken()
             state.pop_back();
             return ParserToken::ArrayEnd;
         }
-
         case YAML_SCALAR_EVENT:
         {
             ++state.back().second;
@@ -129,8 +123,8 @@ ParserInterface::ParserToken YamlParser::getNextToken()
                         ? ParserToken::Key
                         : ParserToken::Value;
         }
-        default:
-            break;
+        // If nothing fits then fall out of the switch.
+        // The default action is to return an error.
     }
     return ParserToken::Error;
 }
@@ -145,14 +139,9 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
 {
     if (test())
     {
-        generateParsingException(msg);
+        error = true;
+        throw std::runtime_error(msg);
     }
-}
-
-void YamlParser::generateParsingException(std::string const& msg)
-{
-    error = true;
-    throw std::runtime_error(msg);
 }
 
 std::string YamlParser::getString()

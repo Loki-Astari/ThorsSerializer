@@ -42,7 +42,6 @@ class YamlParser: public ParserInterface
 
     std::string getString();
     void generateParsingException(std::function<bool ()> test, std::string const& msg);
-    void generateParsingException(std::string const& msg);
     ParserToken parsingError();
 
     template<typename T>

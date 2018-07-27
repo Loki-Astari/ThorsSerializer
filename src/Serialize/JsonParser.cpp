@@ -80,20 +80,31 @@ ParserToken JsonParser::getNextToken()
     switch (currentState)
     {
         // These states should be impossible to get too
-        case Init:      throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Got into Init State");
-        case Done:      throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Got into Done State");
+        case Init:
+            throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Got into Init State");
+        case Done:
+            throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Got into Done State");
         // The states that we actually want to return
-        case Error:     return ParserToken::Error;
-        case Key:       return ParserToken::Key;
-        case ValueM:    return ParserToken::Value;
-        case ValueA:    return ParserToken::Value;
-        case ValueD:    currentState = Done; return ParserToken::Value;
+        case Error:
+            return ParserToken::Error;
+        case Key:
+            return ParserToken::Key;
+        case ValueM:
+            return ParserToken::Value;
+        case ValueA:
+            return ParserToken::Value;
+        case ValueD:
+            currentState = Done;
+            return ParserToken::Value;
         // Punctuation.
         // Parse it but it is not the actual result
         // So try and get the next token.
-        case Colon:     return getNextToken();
-        case CommaM:    return getNextToken();
-        case CommaA:    return getNextToken();
+        case Colon:
+            return getNextToken();
+        case CommaM:
+            return getNextToken();
+        case CommaA:
+            return getNextToken();
         // We are going into a containing object.
 
         // Push the state we want when the containing
@@ -119,9 +130,9 @@ ParserToken JsonParser::getNextToken()
             parrentState.pop_back();
             return ParserToken::ArrayEnd;
 
-        // Anything else just break.
-        default:
-            break;
+        // Anything else is an error.
+        // We don't have a default as it should never happen.
+        // If it does happen we fall through anyway to the throw statement below.
     }
     // If we hit anything else there was a serious problem in the
     // parser itself.

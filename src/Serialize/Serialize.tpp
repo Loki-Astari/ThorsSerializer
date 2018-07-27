@@ -353,8 +353,16 @@ inline bool DeSerializer::scanObjectMembers(I const& key, T& object)
 template<typename T>
 inline void DeSerializer::parse(T& object)
 {
-    DeSerializationForBlock<Traits<T>::type, T>     block(*this, parser);
-    block.scanObject(object);
+    try
+    {
+        DeSerializationForBlock<Traits<T>::type, T>     block(*this, parser);
+        block.scanObject(object);
+    }
+    catch (...)
+    {
+        root = false;
+        throw;
+    }
 }
 
 /* ------------ SerializerForBlock ------------------------- */
