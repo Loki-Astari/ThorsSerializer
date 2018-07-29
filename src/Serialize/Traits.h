@@ -254,6 +254,22 @@ class Traits
 };
 
 /*
+ * A specialization for pointer objects.
+ * They are a pointer type. When serialized a pointer will emit:
+ *      If the pointer is nullptr:      A "null" object.
+ *      Otherwise de-reference the pointer and emit like normal.
+ *
+ * If the de-referenced type has a Traits class then it will be normally
+ * serialized. Otherwise there will be an error.
+ */
+template<typename T>
+class Traits<T*>
+{
+    public:
+        static constexpr TraitType type = TraitType::Pointer;
+};
+
+/*
  * Declare types that can be read/written directly by the parser/printer
  * as value types. Other compound types need to use the Serializer/Deserializer
  */
