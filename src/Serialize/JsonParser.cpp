@@ -198,13 +198,21 @@ void JsonParser::getValue(bool& value)
     }
     else
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not a bool");
+        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser::getValue(): Not a bool");
     }
 }
 
 void JsonParser::getValue(std::string& value)
 {
     value = getString();
+}
+
+void JsonParser::getNull()
+{
+    if (lexer.YYLeng() == 4 && std::strncmp(lexer.YYText(), "null", 4) != 0)
+    {
+        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser::getNull(): Not a Null");
+    }
 }
 
 std::string JsonParser::getRawValue()

@@ -74,6 +74,8 @@ class YamlParser: public ParserInterface
 
         virtual void    getValue(std::string& value)            override;
 
+        virtual void    getNull()                               override;
+
         virtual std::string getRawValue()                       override;
 };
 
