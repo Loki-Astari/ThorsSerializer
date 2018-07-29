@@ -25,6 +25,7 @@ class YamlPrinter: public PrinterInterface
     void checkYamlResultCode(std::function<int(yaml_event_t&)> init, char const* method, char const* msg);
     template<typename T>
     void emit(T const& data);
+    void emitNull();
     public:
         YamlPrinter(std::ostream& output, OutputType characteristics = OutputType::Default);
         ~YamlPrinter();
@@ -56,6 +57,8 @@ class YamlPrinter: public PrinterInterface
         virtual void addValue(std::string const& value)     override;
 
         virtual void addRawValue(std::string const& value)  override;
+
+        virtual void addNull()                              override;
 };
 
     }

@@ -66,6 +66,12 @@ class BinaryPrinter: public PrinterInterface
         virtual void addValue(std::string const& value)     override    {writeString(value);}
 
         virtual void addRawValue(std::string const& value)  override    {writeString(value);}
+
+        virtual void addNull()                              override
+        {
+            throw std::runtime_error("ThorsAnvil::Serialize::BinaryPrinter::addNull Not Implemented");
+        }
+
 };
 
     }

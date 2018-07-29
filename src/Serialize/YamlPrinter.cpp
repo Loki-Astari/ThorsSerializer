@@ -149,6 +149,26 @@ void YamlPrinter::emit(T const& data)
         "yaml_scalar_event_initialize");
     ++state.back().first;
 }
+void YamlPrinter::emitNull()
+{
+    static yaml_char_t nullObject[] = "null";
+    checkYamlResultCode(
+        [&](yaml_event_t& event)
+        {
+            return yaml_scalar_event_initialize(
+                        &event,
+                        NULL,
+                        NULL,
+                        nullObject,
+                        4,
+                        1,
+                        1,
+                        YAML_ANY_SCALAR_STYLE);
+        },
+        "emit",
+        "yaml_scalar_event_initialize");
+    ++state.back().first;
+}
 
 void YamlPrinter::addKey(std::string const& key)
 {
@@ -179,5 +199,7 @@ void YamlPrinter::addValue(bool value)                          {emit(value?"tru
 void YamlPrinter::addValue(std::string const& value)            {emit(value);}
 
 void YamlPrinter::addRawValue(std::string const& value)         {emit(value);}
+
+void YamlPrinter::addNull()                                     {emitNull();}
 
 #endif

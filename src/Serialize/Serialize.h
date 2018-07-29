@@ -132,6 +132,8 @@ class PrinterInterface
 
         virtual void    addRawValue(std::string const&) = 0;
 
+        virtual void    addNull()                       = 0;
+
         void addValue(void*)        = delete;
         void addValue(void const*)  = delete;
 };
