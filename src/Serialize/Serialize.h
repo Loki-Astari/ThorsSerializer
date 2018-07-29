@@ -206,7 +206,7 @@ template<typename T, typename M, TraitType type = Traits<typename std::remove_cv
 class SerializeMember
 {
     public:
-        SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo);
+        SerializeMember(Serializer& ser, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo);
 };
 
 class Serializer

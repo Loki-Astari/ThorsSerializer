@@ -399,11 +399,13 @@ class SerializerForBlock
 template<typename T>
 class SerializerForBlock<TraitType::Value, T>
 {
+    Serializer&         parent;
     PrinterInterface&   printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer&, PrinterInterface& printer,T const& object)
-            : printer(printer)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object)
+            : parent(parent)
+            , printer(printer)
             , object(object)
         {}
         ~SerializerForBlock()   {}
@@ -415,11 +417,13 @@ class SerializerForBlock<TraitType::Value, T>
 template<typename T>
 class SerializerForBlock<TraitType::Serialize, T>
 {
+    Serializer&         parent;
     PrinterInterface&   printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer&, PrinterInterface& printer,T const& object)
-            : printer(printer)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object)
+            : parent(parent)
+            , printer(printer)
             , object(object)
         {}
         ~SerializerForBlock()   {}
@@ -434,11 +438,13 @@ class SerializerForBlock<TraitType::Serialize, T>
 template<typename T>
 class SerializerForBlock<TraitType::Enum, T>
 {
+    Serializer&         parent;
     PrinterInterface&   printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer&, PrinterInterface& printer,T const& object)
-            : printer(printer)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object)
+            : parent(parent)
+            , printer(printer)
             , object(object)
         {}
         ~SerializerForBlock()   {}
@@ -475,7 +481,7 @@ class SerializerForBlock<TraitType::Array, T>
 /* ------------ SerializeMember ------------------------- */
 
 template<typename T, typename M, TraitType type>
-SerializeMember<T, M, type>::SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+SerializeMember<T, M, type>::SerializeMember(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
     static_assert(type != TraitType::Invalid, "Trying to serialize an object that does not have a ThorsAnvil::Serialize::Trait<> defined."
                                               "Look at macro ThorsAnvil_MakeTrait() for more information.");
@@ -489,12 +495,12 @@ template<typename T, typename M>
 class SerializeMember<T, M, TraitType::Value>
 {
     public:
-        SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+        SerializeMember(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             printer.addKey(memberInfo.first);
             printer.addValue(object.*(memberInfo.second));
         }
-        SerializeMember(PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+        SerializeMember(Serializer&, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
         {
             printer.addKey(memberInfo.first);
             printer.addValue(*(memberInfo.second));
@@ -504,7 +510,7 @@ template<typename T, typename M>
 class SerializeMember<T, M, TraitType::Serialize>
 {
     public:
-        SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+        SerializeMember(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             std::stringstream   buffer;
             buffer << (object.*(memberInfo.second));
@@ -512,7 +518,7 @@ class SerializeMember<T, M, TraitType::Serialize>
             printer.addKey(memberInfo.first);
             printer.addRawValue(buffer.str());
         }
-        SerializeMember(PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+        SerializeMember(Serializer&, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
         {
             std::stringstream   buffer;
             buffer << (*(memberInfo.second));
@@ -523,14 +529,14 @@ class SerializeMember<T, M, TraitType::Serialize>
 };
 
 template<typename T, typename M>
-SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M*> const& memberInfo)
+SerializeMember<T, M> make_SerializeMember(Serializer& ser, PrinterInterface& printer, T const& object, std::pair<char const*, M*> const& memberInfo)
 {
-    return SerializeMember<T,M>(printer, object, memberInfo);
+    return SerializeMember<T,M>(ser, printer, object, memberInfo);
 }
 template<typename T, typename M>
-SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+SerializeMember<T, M> make_SerializeMember(Serializer& ser, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    return SerializeMember<T,M>(printer, object, memberInfo);
+    return SerializeMember<T,M>(ser, printer, object, memberInfo);
 }
 
 /* ------------ Serializer ------------------------- */
@@ -538,7 +544,7 @@ SerializeMember<T, M> make_SerializeMember(PrinterInterface& printer, T const& o
 template<typename T, typename Members, std::size_t... Seq>
 inline void Serializer::printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    auto discard = {(make_SerializeMember(printer, object, std::get<Seq>(member)),1)...};
+    auto discard = {(make_SerializeMember(*this, printer, object, std::get<Seq>(member)),1)...};
     (void)discard;
 }
 
