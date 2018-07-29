@@ -127,6 +127,21 @@ class DeSerializationForBlock<TraitType::Serialize, T>
             valueStream >> object;
         }
 };
+template<typename T>
+class DeSerializationForBlock<TraitType::Pointer, T>
+{
+    DeSerializer&       parent;
+    ParserInterface&    parser;
+    public:
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
+        {}
+        void scanObject(T& /*object*/)
+        {
+            throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Value>::DeSerializationForBlock: TODO");
+        }
+};
 /*
  * Specialization for Enum.
  * This is only used at the top level.
@@ -306,6 +321,39 @@ class DeSerializeMember<T, M, TraitType::Serialize>
         }
         explicit operator bool() const {return used;}
 };
+template<typename T, typename M>
+class DeSerializeMember<T, M, TraitType::Pointer>
+{
+    bool used = false;
+    public:
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T& /*object*/, std::pair<char const*, M T::*> const& memberInfo)
+        {
+            if (key.compare(memberInfo.first) == 0)
+            {
+                used = true;
+                ParserInterface::ParserToken tokenType = parser.getToken();
+                if (tokenType != ParserInterface::ParserToken::Value)
+                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
+                }
+
+                throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: TODO");
+            }
+        }
+        DeSerializeMember(ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+        {
+            if (key.compare(memberInfo.first) == 0)
+            {
+                used = true;
+                ParserInterface::ParserToken tokenType = parser.getToken();
+                if (tokenType != ParserInterface::ParserToken::Value)
+                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
+                }
+
+                throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: TODO");
+            }
+        }
+        explicit operator bool() const {return used;}
+};
 
 template<typename T, typename M>
 DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M*> const& memberInfo)
@@ -434,6 +482,33 @@ class SerializerForBlock<TraitType::Serialize, T>
             printer.addRawValue(buffer.str());
         }
 };
+template<typename T>
+class SerializerForBlock<TraitType::Pointer, T>
+{
+    Serializer&         parent;
+    PrinterInterface&   printer;
+    T const&            object;
+    public:
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object)
+            : parent(parent)
+            , printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()   {}
+        void printMembers()
+        {
+            if (object == nullptr)
+            {
+                printer.addNull();
+            }
+            else
+            {
+                using BaseType = typename std::remove_pointer<T>::type;
+                SerializerForBlock<Traits<BaseType>::type, BaseType>  block(parent, printer, *object);
+                block.printMembers();
+            }
+        }
+};
 
 template<typename T>
 class SerializerForBlock<TraitType::Enum, T>
@@ -525,6 +600,43 @@ class SerializeMember<T, M, TraitType::Serialize>
 
             printer.addKey(memberInfo.first);
             printer.addRawValue(buffer.str());
+        }
+};
+template<typename T, typename M>
+class SerializeMember<T, M, TraitType::Pointer>
+{
+    public:
+        SerializeMember(Serializer& ser, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+        {
+            printer.addKey(memberInfo.first);
+
+            M pointer = object.*(memberInfo.second);
+            if (pointer == nullptr)
+            {
+                printer.addNull();
+            }
+            else
+            {
+                using BaseType = typename std::remove_pointer<M>::type;
+                SerializerForBlock<Traits<BaseType>::type, BaseType>  block(ser, printer, *pointer);
+                block.printMembers();
+            }
+        }
+        SerializeMember(Serializer& ser, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+        {
+            printer.addKey(memberInfo.first);
+
+            M pointer = memberInfo.second;
+            if (pointer == nullptr)
+            {
+                printer.addNull();
+            }
+            else
+            {
+                using BaseType = typename std::remove_pointer<M>::type;
+                SerializerForBlock<Traits<BaseType>::type, BaseType>  block(ser, printer, *pointer);
+                block.printMembers();
+            }
         }
 };
 
