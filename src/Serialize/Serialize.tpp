@@ -249,30 +249,22 @@ class DeSerializeMember<T, M, TraitType::Value>
 {
     bool used = false;
     public:
-        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken tokenType = parser.getToken();
-                if (tokenType != ParserInterface::ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
-                }
-
-                parser.getValue(object.*(memberInfo.second));
+                DeSerializationForBlock<TraitType::Value, M>    deserializer(parent, parser);
+                deserializer.scanObject(object.*(memberInfo.second));
             }
         }
-        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken tokenType = parser.getToken();
-                if (tokenType != ParserInterface::ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
-                }
-
-                parser.getValue(*(memberInfo.second));
+                DeSerializationForBlock<TraitType::Value, M>    deserializer(parent, parser);
+                deserializer.scanObject(*(memberInfo.second));
             }
         }
         explicit operator bool() const {return used;}
@@ -282,19 +274,13 @@ class DeSerializeMember<T, M, TraitType::Enum>
 {
     bool used = false;
     public:
-        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken tokenType = parser.getToken();
-                if (tokenType != ParserInterface::ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
-                }
-                std::string     objectValue;
-                parser.getValue(objectValue);
-
-                object.*(memberInfo.second) = Traits<M>::getValue(objectValue, "ThorsAnvil::Serialize::DeSerializeMember<T,M,Enum>::DeSerializeMember:");
+                DeSerializationForBlock<TraitType::Enum, M>    deserializer(parent, parser);
+                deserializer.scanObject(object.*(memberInfo.second));
             }
         }
         explicit operator bool() const {return used;}
@@ -304,32 +290,22 @@ class DeSerializeMember<T, M, TraitType::Serialize>
 {
     bool used = false;
     public:
-        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken tokenType = parser.getToken();
-                if (tokenType != ParserInterface::ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
-                }
-
-                std::stringstream valueStream(parser.getRawValue());
-                valueStream >> (object.*(memberInfo.second));
+                DeSerializationForBlock<TraitType::Serialize, M>    deserializer(parent, parser);
+                deserializer.scanObject(object.*(memberInfo.second));
             }
         }
-        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken tokenType = parser.getToken();
-                if (tokenType != ParserInterface::ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
-                }
-
-                std::stringstream valueStream(parser.getRawValue());
-                valueStream >> (*(memberInfo.second));
+                DeSerializationForBlock<TraitType::Serialize, M>    deserializer(parent, parser);
+                deserializer.scanObject(*(memberInfo.second));
             }
         }
         explicit operator bool() const {return used;}
@@ -344,20 +320,8 @@ class DeSerializeMember<T, M, TraitType::Pointer>
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken    tokenType = parser.getToken();
-                if (parser.isValueNull())
-                {
-                    (object.*(memberInfo.second)) = nullptr;
-                    return;
-                }
-
-                using BaseType = typename std::remove_pointer<M>::type;
-                using TraitBase = Traits<BaseType>;
-                using TraitPoint = Traits<M>;
-                parser.pushBackToken(tokenType);
-                (object.*(memberInfo.second)) = TraitPoint::alloc();
-                DeSerializationForBlock<TraitBase::type, BaseType>   pointerDeSerializer(parent, parser);
-                pointerDeSerializer.scanObject(*(object.*(memberInfo.second)));
+                DeSerializationForBlock<TraitType::Pointer, M>    deserializer(parent, parser);
+                deserializer.scanObject(object.*(memberInfo.second));
             }
         }
         DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
@@ -365,20 +329,8 @@ class DeSerializeMember<T, M, TraitType::Pointer>
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken    tokenType = parser.getToken();
-                if (parser.isValueNull())
-                {
-                    *(memberInfo.second) = nullptr;
-                    return;
-                }
-
-                using BaseType = typename std::remove_pointer<M>::type;
-                using TraitBase = Traits<BaseType>;
-                using TraitPoint = Traits<M>;
-                parser.pushBackToken(tokenType);
-                *(memberInfo.second) = TraitPoint::alloc();
-                DeSerializationForBlock<TraitBase::type, BaseType>   pointerDeSerializer(parent, parser);
-                pointerDeSerializer.scanObject(*(memberInfo.second));
+                DeSerializationForBlock<TraitType::Pointer, M>    deserializer(parent, parser);
+                deserializer.scanObject(*(memberInfo.second));
             }
         }
         explicit operator bool() const {return used;}
@@ -599,73 +551,53 @@ template<typename T, typename M>
 class SerializeMember<T, M, TraitType::Value>
 {
     public:
-        SerializeMember(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+        SerializeMember(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             printer.addKey(memberInfo.first);
-            printer.addValue(object.*(memberInfo.second));
+            SerializerForBlock<TraitType::Value, M>  serializer(parent, printer, object.*(memberInfo.second));
+            serializer.printMembers();
         }
-        SerializeMember(Serializer&, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+        SerializeMember(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
         {
             printer.addKey(memberInfo.first);
-            printer.addValue(*(memberInfo.second));
+            SerializerForBlock<TraitType::Value, M>  serializer(parent, printer, *(memberInfo.second));
+            serializer.printMembers();
         }
 };
 template<typename T, typename M>
 class SerializeMember<T, M, TraitType::Serialize>
 {
     public:
-        SerializeMember(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+        SerializeMember(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
         {
-            std::stringstream   buffer;
-            buffer << (object.*(memberInfo.second));
-
             printer.addKey(memberInfo.first);
-            printer.addRawValue(buffer.str());
+            SerializerForBlock<TraitType::Serialize, M>  serializer(parent, printer, object.*(memberInfo.second));
+            serializer.printMembers();
         }
-        SerializeMember(Serializer&, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+        SerializeMember(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
         {
-            std::stringstream   buffer;
-            buffer << (*(memberInfo.second));
-
             printer.addKey(memberInfo.first);
-            printer.addRawValue(buffer.str());
+            SerializerForBlock<TraitType::Serialize, M>  serializer(parent, printer, *(memberInfo.second));
+            serializer.printMembers();
         }
 };
 template<typename T, typename M>
 class SerializeMember<T, M, TraitType::Pointer>
 {
     public:
-        SerializeMember(Serializer& ser, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+        SerializeMember(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             printer.addKey(memberInfo.first);
 
-            M pointer = object.*(memberInfo.second);
-            if (pointer == nullptr)
-            {
-                printer.addNull();
-            }
-            else
-            {
-                using BaseType = typename std::remove_pointer<M>::type;
-                SerializerForBlock<Traits<BaseType>::type, BaseType>  block(ser, printer, *pointer);
-                block.printMembers();
-            }
+            SerializerForBlock<TraitType::Pointer, M>  serializer(parent, printer, object.*(memberInfo.second));
+            serializer.printMembers();
         }
-        SerializeMember(Serializer& ser, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+        SerializeMember(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
         {
             printer.addKey(memberInfo.first);
 
-            M pointer = memberInfo.second;
-            if (pointer == nullptr)
-            {
-                printer.addNull();
-            }
-            else
-            {
-                using BaseType = typename std::remove_pointer<M>::type;
-                SerializerForBlock<Traits<BaseType>::type, BaseType>  block(ser, printer, *pointer);
-                block.printMembers();
-            }
+            SerializerForBlock<TraitType::Serialize, M>  serializer(parent, printer, *(memberInfo.second));
+            serializer.printMembers();
         }
 };
 
