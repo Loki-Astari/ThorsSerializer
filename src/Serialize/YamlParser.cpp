@@ -226,16 +226,13 @@ void YamlParser::getValue(std::string& value)
     value = getString();
 }
 
-void YamlParser::getNull()
+bool YamlParser::isValueNull()
 {
     char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
     std::size_t length  = event.data.scalar.length;
 
-    if ((length == 4 && strncmp(buffer, "null", 4) != 0) &&
-        (length == 1 && strncmp(buffer, "~", 1) != 0))
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser::getNull: Not a Null");
-    }
+    return (length == 4 && strncmp(buffer, "null", 4) == 0)
+       ||  (length == 1 && strncmp(buffer, "~", 1) == 0);
 }
 
 std::string YamlParser::getRawValue()

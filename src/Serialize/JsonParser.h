@@ -66,7 +66,7 @@ class JsonParser: public ParserInterface
 
         virtual void    getValue(std::string& value)            override;
 
-        virtual void    getNull()                               override;
+        virtual bool    isValueNull()                           override;
 
         virtual std::string getRawValue()                       override;
 };

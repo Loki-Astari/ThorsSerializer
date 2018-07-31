@@ -214,9 +214,9 @@ class BinaryParser: public ParserInterface
 
         virtual void    getValue(std::string& value)           override {value = readString();};
 
-        virtual void    getNull()                              override
+        virtual bool    isValueNull()                          override
         {
-            throw std::runtime_error("ThorsAnvil::Serialize::BinaryParser::getNull Not Implemented");
+            throw std::runtime_error("ThorsAnvil::Serialize::BinaryParser::isValueNull Not Implemented");
         }
 
         virtual std::string getRawValue()                      override {return readString();};

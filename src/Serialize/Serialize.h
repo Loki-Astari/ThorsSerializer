@@ -78,7 +78,7 @@ class ParserInterface
 
         virtual void    getValue(std::string&)           = 0;
 
-        virtual void    getNull()                        = 0;
+        virtual bool    isValueNull()                    = 0;
 
         virtual std::string getRawValue()                = 0;
 

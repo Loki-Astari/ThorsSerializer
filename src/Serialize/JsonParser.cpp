@@ -207,12 +207,9 @@ void JsonParser::getValue(std::string& value)
     value = getString();
 }
 
-void JsonParser::getNull()
+bool JsonParser::isValueNull()
 {
-    if (lexer.YYLeng() == 4 && std::strncmp(lexer.YYText(), "null", 4) != 0)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser::getNull(): Not a Null");
-    }
+    return lexer.YYLeng() == 4 && std::strncmp(lexer.YYText(), "null", 4) == 0;
 }
 
 std::string JsonParser::getRawValue()
