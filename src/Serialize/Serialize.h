@@ -175,7 +175,7 @@ class DeSerializeMember
     using ParserToken = ParserInterface::ParserToken;
     bool used = false;
     public:
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
         // Need to be here. But the default version never actually decodes values.
         // Only the specializations actually decode values.
         explicit operator bool() const {return used;}

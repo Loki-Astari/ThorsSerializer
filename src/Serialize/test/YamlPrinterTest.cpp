@@ -5,6 +5,19 @@
 #include "YamlPrinter.h"
 #include <algorithm>
 
+TEST(YamlPrinterTest, NullValue)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::YamlPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.addNull();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ("---null...", result);
+}
 TEST(YamlPrinterTest, ArrayTokens)
 {
     std::stringstream                   stream;

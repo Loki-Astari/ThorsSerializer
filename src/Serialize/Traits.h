@@ -7,6 +7,7 @@
  *  specializations for user defined types.
  *
  *      ThorsAnvil_MakeTraitCustom(DataType)    // Will use operator << and operator >>
+ *      ThorsAnvil_PointerAllocator(DataType, Action)
  *      ThorsAnvil_MakeTrait(DataType, ...)
  *      ThorsAnvil_ExpandTrait(ParentType, DataType, ...)
  *      ThorsAnvil_Template_MakeTrait(TemplateParameterCount, DataType, ...)
@@ -135,6 +136,16 @@ static_assert(                                                          \
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
 )
 
+#define ThorsAnvil_PointerAllocator(DataType, Action)                   \
+namespace ThorsAnvil { namespace Serialize {                            \
+template<>                                                              \
+class Traits<DataType*>                                                 \
+{                                                                       \
+    public:                                                             \
+        static constexpr TraitType type = TraitType::Pointer;           \
+        static DataType* alloc() Action                                 \
+};                                                                      \
+}}
 #define ThorsAnvil_MakeTrait_Base(Parent, TType, Count, DataType, ...)  \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
@@ -267,6 +278,7 @@ class Traits<T*>
 {
     public:
         static constexpr TraitType type = TraitType::Pointer;
+        static T* alloc() {return new T;}
 };
 
 /*

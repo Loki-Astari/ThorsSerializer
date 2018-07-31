@@ -137,9 +137,22 @@ class DeSerializationForBlock<TraitType::Pointer, T>
             : parent(parent)
             , parser(parser)
         {}
-        void scanObject(T& /*object*/)
+        void scanObject(T& object)
         {
-            throw std::runtime_error("ThorsAnvil::Serialize::DeSerializationForBlock<Value>::DeSerializationForBlock: TODO");
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+            if (parser.isValueNull())
+            {
+                object = nullptr;
+                return;
+            }
+
+            using BaseType = typename std::remove_pointer<T>::type;
+            using TraitBase = Traits<BaseType>;
+            using TraitPoint = Traits<T>;
+            parser.pushBackToken(tokenType);
+            object = TraitPoint::alloc();
+            DeSerializationForBlock<TraitBase::type, BaseType>   pointerDeSerializer(parent, parser);
+            pointerDeSerializer.scanObject(*object);
         }
 };
 /*
@@ -218,7 +231,7 @@ class DeSerializationForBlock<TraitType::Array, T>
 /* ------------ DeSerializeMember ------------------------- */
 
 template<typename T, typename M, TraitType type>
-DeSerializeMember<T, M, type>::DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+DeSerializeMember<T, M, type>::DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
 {
     static_assert(type != TraitType::Invalid, "Trying to de-serialize an object that does not have a ThorsAnvil::Serialize::Trait<> defined."
                                               "Look at macro ThorsAnvil_MakeTrait() for more information.");
@@ -236,7 +249,7 @@ class DeSerializeMember<T, M, TraitType::Value>
 {
     bool used = false;
     public:
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
@@ -249,7 +262,7 @@ class DeSerializeMember<T, M, TraitType::Value>
                 parser.getValue(object.*(memberInfo.second));
             }
         }
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
@@ -269,7 +282,7 @@ class DeSerializeMember<T, M, TraitType::Enum>
 {
     bool used = false;
     public:
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
@@ -291,7 +304,7 @@ class DeSerializeMember<T, M, TraitType::Serialize>
 {
     bool used = false;
     public:
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
@@ -305,7 +318,7 @@ class DeSerializeMember<T, M, TraitType::Serialize>
                 valueStream >> (object.*(memberInfo.second));
             }
         }
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+        DeSerializeMember(DeSerializer&, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
@@ -326,52 +339,68 @@ class DeSerializeMember<T, M, TraitType::Pointer>
 {
     bool used = false;
     public:
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T& /*object*/, std::pair<char const*, M T::*> const& memberInfo)
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken tokenType = parser.getToken();
-                if (tokenType != ParserInterface::ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
+                ParserInterface::ParserToken    tokenType = parser.getToken();
+                if (parser.isValueNull())
+                {
+                    (object.*(memberInfo.second)) = nullptr;
+                    return;
                 }
 
-                throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: TODO");
+                using BaseType = typename std::remove_pointer<M>::type;
+                using TraitBase = Traits<BaseType>;
+                using TraitPoint = Traits<M>;
+                parser.pushBackToken(tokenType);
+                (object.*(memberInfo.second)) = TraitPoint::alloc();
+                DeSerializationForBlock<TraitBase::type, BaseType>   pointerDeSerializer(parent, parser);
+                pointerDeSerializer.scanObject(*(object.*(memberInfo.second)));
             }
         }
-        DeSerializeMember(ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
         {
             if (key.compare(memberInfo.first) == 0)
             {
                 used = true;
-                ParserInterface::ParserToken tokenType = parser.getToken();
-                if (tokenType != ParserInterface::ParserToken::Value)
-                {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: Expecting Value Token");
+                ParserInterface::ParserToken    tokenType = parser.getToken();
+                if (parser.isValueNull())
+                {
+                    *(memberInfo.second) = nullptr;
+                    return;
                 }
 
-                throw std::runtime_error("ThorsAnvil::Serialize::DeSerializeMember::DeSerializeMember: TODO");
+                using BaseType = typename std::remove_pointer<M>::type;
+                using TraitBase = Traits<BaseType>;
+                using TraitPoint = Traits<M>;
+                parser.pushBackToken(tokenType);
+                *(memberInfo.second) = TraitPoint::alloc();
+                DeSerializationForBlock<TraitBase::type, BaseType>   pointerDeSerializer(parent, parser);
+                pointerDeSerializer.scanObject(*(memberInfo.second));
             }
         }
         explicit operator bool() const {return used;}
 };
 
 template<typename T, typename M>
-DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M*> const& memberInfo)
+DeSerializeMember<T, M> make_DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M*> const& memberInfo)
 {
-    return DeSerializeMember<T, M>(parser, key, object, memberInfo);
+    return DeSerializeMember<T, M>(parent, parser, key, object, memberInfo);
 }
 
 template<typename T, typename M>
-DeSerializeMember<T, M> make_DeSerializeMember(ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+DeSerializeMember<T, M> make_DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    return DeSerializeMember<T, M>(parser, key, object, memberInfo);
+    return DeSerializeMember<T, M>(parent, parser, key, object, memberInfo);
 }
 
 /* ------------ DeSerializer ------------------------- */
 template<typename T, typename Members, std::size_t... Seq>
 inline bool DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    auto memberCheck = {static_cast<bool>(make_DeSerializeMember(parser, key, object, std::get<Seq>(member)))...};
+    auto memberCheck = {static_cast<bool>(make_DeSerializeMember(*this, parser, key, object, std::get<Seq>(member)))...};
     return std::find(std::begin(memberCheck), std::end(memberCheck), true) != std::end(memberCheck);
 }
 

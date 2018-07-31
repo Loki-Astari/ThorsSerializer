@@ -9,6 +9,26 @@
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 
+TEST(YamlParserTest, isNullNullString)
+{
+    std::stringstream   stream("null");
+    TA::YamlParser      parser(stream);
+
+    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    EXPECT_EQ(true,                                     parser.isValueNull());
+    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
+}
+TEST(YamlParserTest, isNullTilda)
+{
+    std::stringstream   stream("~");
+    TA::YamlParser      parser(stream);
+
+    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
+    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
+    EXPECT_EQ(true,                                     parser.isValueNull());
+    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
+}
 TEST(YamlParserTest, ArrayEmpty)
 {
     std::stringstream   stream("[]");
