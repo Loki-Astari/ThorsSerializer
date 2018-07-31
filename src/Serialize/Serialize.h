@@ -176,6 +176,7 @@ class DeSerializeMember
     bool used = false;
     public:
         DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
+        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo);
         // Need to be here. But the default version never actually decodes values.
         // Only the specializations actually decode values.
         explicit operator bool() const {return used;}
@@ -211,6 +212,7 @@ class SerializeMember
 {
     public:
         SerializeMember(Serializer& ser, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo);
+        SerializeMember(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo);
 };
 
 class Serializer
