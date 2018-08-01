@@ -230,75 +230,46 @@ class DeSerializationForBlock<TraitType::Array, T>
 
 /* ------------ DeSerializeMember ------------------------- */
 
-template<typename T, typename M, TraitType Type>
-DeSerializeMember<T, M, Type>::DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+template<typename T, typename M>
+DeSerializeMemberContainer<T, M>::DeSerializeMemberContainer(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    static_assert(Type != TraitType::Invalid, "Trying to de-serialize an object that does not have a ThorsAnvil::Serialize::Trait<> defined."
-                                              "Look at macro ThorsAnvil_MakeTrait() for more information.");
-
     if (key.compare(memberInfo.first) == 0)
     {
         used = true;
-        DeSerializationForBlock<Type, M>    deserializer(parent, parser);
-        deserializer.scanObject(object.*(memberInfo.second));
+        DeSerializer    deSerializer(parser, false);
+        deSerializer.parse(object.*(memberInfo.second));
     }
 }
-template<typename T, typename M, TraitType Type>
-DeSerializeMember<T, M, Type>::DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
-{
-    static_assert(Type != TraitType::Invalid, "Trying to de-serialize an object that does not have a ThorsAnvil::Serialize::Trait<> defined."
-                                              "Look at macro ThorsAnvil_MakeTrait() for more information.");
 
-    if (key.compare(memberInfo.first) == 0)
+template<typename T, typename M, TraitType Type>
+DeSerializeMemberValue<T, M, Type>::DeSerializeMemberValue(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+{
+    init(parent, parser, key, memberInfo.first, object.*(memberInfo.second));
+}
+
+template<typename T, typename M, TraitType Type>
+DeSerializeMemberValue<T, M, Type>::DeSerializeMemberValue(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+{
+    init(parent, parser, key, memberInfo.first, *(memberInfo.second));
+}
+
+template<typename T, typename M, TraitType Type>
+void DeSerializeMemberValue<T, M, Type>::init(DeSerializer& parent, ParserInterface& parser, std::string const& key, char const* name, M& object)
+{
+    if (key.compare(name) == 0)
     {
         used = true;
         DeSerializationForBlock<Type, M>    deserializer(parent, parser);
-        deserializer.scanObject(*(memberInfo.second));
+        deserializer.scanObject(object);
     }
 }
 
-template<typename T, typename M>
-class DeSerializeMemberContainer
+template<typename T, typename M, TraitType Type = Traits<M>::type>
+class DeSerializeMember: public TraitsInfo<T, M, Type>::DeSerializeMember
 {
+    using Parent = typename TraitsInfo<T, M, Type>::DeSerializeMember;
     public:
-        DeSerializeMemberContainer(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
-        {
-            if (key.compare(memberInfo.first) == 0)
-            {
-                used = true;
-                DeSerializer    deSerializer(parser, false);
-                deSerializer.parse(object.*(memberInfo.second));
-            }
-        }
-    protected:
-        bool used = false;
-};
-template<typename T, typename M>
-class DeSerializeMember<T, M, TraitType::Map>: public DeSerializeMemberContainer<T, M>
-{
-    public:
-        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
-            : DeSerializeMemberContainer<T, M>(parent, parser, key, object, memberInfo)
-        {}
-        explicit operator bool() const {return DeSerializeMemberContainer<T, M>::used;}
-};
-template<typename T, typename M>
-class DeSerializeMember<T, M, TraitType::Parent>: public DeSerializeMemberContainer<T, M>
-{
-    public:
-        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
-            : DeSerializeMemberContainer<T, M>(parent, parser, key, object, memberInfo)
-        {}
-        explicit operator bool() const {return DeSerializeMemberContainer<T, M>::used;}
-};
-template<typename T, typename M>
-class DeSerializeMember<T, M, TraitType::Array>: public DeSerializeMemberContainer<T, M>
-{
-    public:
-        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
-            : DeSerializeMemberContainer<T, M>(parent, parser, key, object, memberInfo)
-        {}
-        explicit operator bool() const {return DeSerializeMemberContainer<T, M>::used;}
+        using Parent::Parent;
 };
 
 template<typename T, typename M>
@@ -501,62 +472,41 @@ class SerializerForBlock<TraitType::Array, T>
 
 /* ------------ SerializeMember ------------------------- */
 
-template<typename T, typename M, TraitType Type>
-SerializeMember<T, M, Type>::SerializeMember(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
+template<typename T, typename M>
+SerializeMemberContainer<T, M>::SerializeMemberContainer(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    static_assert(Type != TraitType::Invalid, "Trying to serialize an object that does not have a ThorsAnvil::Serialize::Trait<> defined."
-                                              "Look at macro ThorsAnvil_MakeTrait() for more information.");
-
     printer.addKey(memberInfo.first);
-    SerializerForBlock<Type, M>  serializer(parent, printer, object.*(memberInfo.second));
-    serializer.printMembers();
-}
-template<typename T, typename M, TraitType Type>
-SerializeMember<T, M, Type>::SerializeMember(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
-{
-    static_assert(Type != TraitType::Invalid, "Trying to serialize an object that does not have a ThorsAnvil::Serialize::Trait<> defined."
-                                              "Look at macro ThorsAnvil_MakeTrait() for more information.");
 
-    printer.addKey(memberInfo.first);
-    SerializerForBlock<Type, M>  serializer(parent, printer, *(memberInfo.second));
-    serializer.printMembers();
+    Serializer      serialzier(printer, false);
+    serialzier.print(object.*(memberInfo.second));
 }
 
-template<typename T, typename M>
-class SerializeMemberContainer
+template<typename T, typename M, TraitType Type>
+SerializeMemberValue<T, M, Type>::SerializeMemberValue(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    public:
-        SerializeMemberContainer(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
-        {
-            printer.addKey(memberInfo.first);
+    init(parent, printer, memberInfo.first, object.*(memberInfo.second));
+}
 
-            Serializer      serialzier(printer, false);
-            serialzier.print(object.*(memberInfo.second));
-        }
-};
-template<typename T, typename M>
-class SerializeMember<T, M, TraitType::Map>: public SerializeMemberContainer<T, M>
+template<typename T, typename M, TraitType Type>
+SerializeMemberValue<T, M, Type>::SerializeMemberValue(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
 {
-    public:
-        SerializeMember(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
-            : SerializeMemberContainer<T, M>(parent, printer, object, memberInfo)
-        {}
-};
-template<typename T, typename M>
-class SerializeMember<T, M, TraitType::Parent>: public SerializeMemberContainer<T, M>
+    init(parent, printer, memberInfo.first, *(memberInfo.second));
+}
+
+template<typename T, typename M, TraitType Type>
+void SerializeMemberValue<T, M, Type>::init(Serializer& parent, PrinterInterface& printer, char const* member, M const& object)
 {
-    public:
-        SerializeMember(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
-            : SerializeMemberContainer<T, M>(parent, printer, object, memberInfo)
-        {}
-};
-template<typename T, typename M>
-class SerializeMember<T, M, TraitType::Array>: public SerializeMemberContainer<T, M>
+    printer.addKey(member);
+    SerializerForBlock<Type, M>  serializer(parent, printer, object);
+    serializer.printMembers();
+}
+
+template<typename T, typename M, TraitType Type = Traits<typename std::remove_cv<M>::type>::type>
+class SerializeMember: public TraitsInfo<T, M, Type>::SerializeMember
 {
+    using Parent = typename TraitsInfo<T, M, Type>::SerializeMember;
     public:
-        SerializeMember(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
-            : SerializeMemberContainer<T, M>(parent, printer, object, memberInfo)
-        {}
+        using Parent::Parent;
 };
 
 template<typename T, typename M>

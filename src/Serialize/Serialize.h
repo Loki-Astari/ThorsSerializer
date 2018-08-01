@@ -169,17 +169,26 @@ class ApplyActionToParent
         bool scanParentMember(DeSerializer&, I const&, T&)        {return false;}
 };
 
-template<typename T, typename M, TraitType type = Traits<M>::type>
-class DeSerializeMember
+template<typename T, typename M>
+class DeSerializeMemberContainer
 {
-    using ParserToken = ParserInterface::ParserToken;
-    bool used = false;
     public:
-        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
-        DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo);
-        // Need to be here. But the default version never actually decodes values.
-        // Only the specializations actually decode values.
+        DeSerializeMemberContainer(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
         explicit operator bool() const {return used;}
+    private:
+        bool used = false;
+};
+
+template<typename T, typename M, TraitType Type>
+class DeSerializeMemberValue
+{
+    public:
+        DeSerializeMemberValue(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo);
+        DeSerializeMemberValue(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo);
+        explicit operator bool() const {return used;}
+    private:
+        bool used = false;
+        void init(DeSerializer& parent, ParserInterface& parser, std::string const& key, char const* name, M& object);
 };
 
 class DeSerializer
@@ -207,12 +216,21 @@ class DeSerializer
         bool scanObjectMembers(I const& key, T& object);
 };
 
-template<typename T, typename M, TraitType type = Traits<typename std::remove_cv<M>::type>::type>
-class SerializeMember
+template<typename T, typename M>
+class SerializeMemberContainer
 {
     public:
-        SerializeMember(Serializer& ser, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo);
-        SerializeMember(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo);
+        SerializeMemberContainer(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo);
+};
+
+template<typename T, typename M, TraitType Type>
+class SerializeMemberValue
+{
+    public:
+        SerializeMemberValue(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo);
+        SerializeMemberValue(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo);
+    private:
+        void init(Serializer& parent, PrinterInterface& printer, char const* member, M const& object);
 };
 
 class Serializer
@@ -238,6 +256,54 @@ class Serializer
 
         template<typename T>
         void printObjectMembers(T const& object);
+};
+
+/* ------------ MetaTraits for Serialization/DeSerialization ------------------------- */
+
+template<typename T, typename M, TraitType Type>
+struct TraitsInfo;
+
+template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Map>
+{
+    using DeSerializeMember     = DeSerializeMemberContainer<T, M>;
+    using SerializeMember       = SerializeMemberContainer<T, M>;
+};
+template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Parent>
+{
+    using DeSerializeMember     = DeSerializeMemberContainer<T, M>;
+    using SerializeMember       = SerializeMemberContainer<T, M>;
+};
+template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Array>
+{
+    using DeSerializeMember     = DeSerializeMemberContainer<T, M>;
+    using SerializeMember       = SerializeMemberContainer<T, M>;
+};
+template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Value>
+{
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Value>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Value>;
+};
+template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Enum>
+{
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Enum>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Enum>;
+};
+template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Pointer>
+{
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Pointer>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Pointer>;
+};
+template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Serialize>
+{
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Serialize>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Serialize>;
 };
 
 /* ------------ ParserInterface ------------------------- */
