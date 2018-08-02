@@ -14,6 +14,8 @@
  *      ThorsAnvil_Template_ExpandTrait(TemplateParameterCount, ParentType, DataType, ...)
  *      ThorsAnvil_MakeEnum(<EnumType>, <EnumValues>...)
  *
+ *      PolyMorphicSerializer(Type)
+ *
  * See README.md for examples.
  */
 
@@ -228,6 +230,20 @@ class Traits<EnumName>                                                  \
 };                                                                      \
 }}                                                                      \
 DO_ASSERT(EnumName)
+
+/*
+ * Defined the virtual function needed by tryPrintPolyMorphicObject()
+ */
+#define PolyMorphicSerializer(Type)                                                         \
+    virtual void polyMorphicSerializer(ThorsAnvil::Serialize::Serializer&          parent,  \
+                                       ThorsAnvil::Serialize::PrinterInterface&    printer) \
+    {                                                                                       \
+        ThorsAnvil::Serialize::polyMorphicSerializer<Type>(parent, printer, *this);         \
+    }                                                                                       \
+    static constexpr char const* polyMorphicSerializerName()                                \
+    {                                                                                       \
+        return #Type;                                                                       \
+    }
 
 
 /*

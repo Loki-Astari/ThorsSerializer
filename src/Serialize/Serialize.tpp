@@ -7,6 +7,7 @@
 //#include "Traits.h"
 #include <algorithm>
 #include <sstream>
+#include <type_traits>
 
 
 namespace ThorsAnvil
@@ -359,6 +360,12 @@ class SerializerForBlock
         {
             parent.printObjectMembers(object);
         }
+        void printPolyMorphicMembers(std::string const& type)
+        {
+            printer.addKey("__type");
+            printer.addValue(type);
+            printMembers();
+        }
 };
 
 template<typename T>
@@ -399,6 +406,42 @@ class SerializerForBlock<TraitType::Serialize, T>
             printer.addRawValue(buffer.str());
         }
 };
+
+/* ------------ tryPrintPolyMorphicObject Serializer ------------------------- */
+template<class T>
+auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object, int) -> decltype(object->polyMorphicSerializer(parent, printer), void())
+{
+    // This uses a virtual method in the object to 
+    // call polyMorphicSerializer() the difference
+    // will be the type of the template used as we will
+    // get the type 'T' of the most derived type of
+    // the actual runtime object.
+    //
+    // To install this virtual method use the macro
+    // PolyMorphicSerializer  See Traits.h for details.
+    object->polyMorphicSerializer(parent, printer);
+}
+template<class T>
+auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object, long) -> void
+{
+    // This version is called if the object foes not have a virtual
+    // `polyMorphicSerializer()`. Thus you get a call to the current
+    // object and thus we simply use `T`.
+    polyMorphicSerializer<T>(parent, printer, object);
+}
+/* ------------ PolyMorphic Serializer ------------------------- */
+template<typename T>
+void polyMorphicSerializer(ThorsAnvil::Serialize::Serializer& parent, ThorsAnvil::Serialize::PrinterInterface& printer, T& object)
+{
+    // This function is called by one of the above two functions.
+    using BaseType = typename std::remove_pointer<T>::type;
+    SerializerForBlock<ThorsAnvil::Serialize::Traits<BaseType>::type, BaseType>  block(parent, printer, object);
+
+    // Note the call to printPolyMorphicMembers() rather than printMembers()
+    // this adds the "__type": "<Type Name>"
+    block.printPolyMorphicMembers(T::polyMorphicSerializerName());
+}
+
 template<typename T>
 class SerializerForBlock<TraitType::Pointer, T>
 {
@@ -420,9 +463,8 @@ class SerializerForBlock<TraitType::Pointer, T>
             }
             else
             {
-                using BaseType = typename std::remove_pointer<T>::type;
-                SerializerForBlock<Traits<BaseType>::type, BaseType>  block(parent, printer, *object);
-                block.printMembers();
+                // Use SFINE to call one of two versions of the function.
+                tryPrintPolyMorphicObject(parent, printer, object, 0);
             }
         }
 };

@@ -26,7 +26,11 @@ namespace ThorsAnvil
 TEST(PointerTest, BuildStringFromTree)
 {
     Tree*   root = new Tree{34, new Tree{22, new Tree{10, nullptr, nullptr}, nullptr}, new Tree{50, nullptr, new Tree{70, nullptr, nullptr}}};
-    std::cout << ThorsAnvil::Serialize::jsonExport(root);
+    std::stringstream data;
+    data << ThorsAnvil::Serialize::jsonExport(root);
+    std::string result = data.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"value":34,"left":{"value":22,"left":{"value":10,"left":null,"right":null},"right":null},"right":{"value":50,"left":null,"right":{"value":70,"left":null,"right":null}}})");
 }
 TEST(PointerTest, BuildTreeFromString)
 {
@@ -78,17 +82,3 @@ TEST(PointerTest, BuildTreeFromString)
     EXPECT_EQ(root->right->right->right, nullptr);
 }
 
-
-
-
-#if 0
-    std::string         inputStr(R"({"normalMember":7,"staticMember":14})");
-    std::stringstream   input(inputStr);
-    std::stringstream   output;
-    StaticMember        data;
-
-    input  >> ThorsAnvil::Serialize::jsonImport(data);
-    output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
-
-    EXPECT_EQ(output.str(), inputStr);
-#endif
