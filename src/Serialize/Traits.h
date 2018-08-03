@@ -235,10 +235,15 @@ DO_ASSERT(EnumName)
  * Defined the virtual function needed by tryPrintPolyMorphicObject()
  */
 #define PolyMorphicSerializer(Type)                                                         \
-    virtual void polyMorphicSerializer(ThorsAnvil::Serialize::Serializer&          parent,  \
+    virtual void printPolyMorphicObject(ThorsAnvil::Serialize::Serializer&         parent,  \
                                        ThorsAnvil::Serialize::PrinterInterface&    printer) \
     {                                                                                       \
-        ThorsAnvil::Serialize::polyMorphicSerializer<Type>(parent, printer, *this);         \
+        ThorsAnvil::Serialize::printPolyMorphicObject<Type>(parent, printer, *this);        \
+    }                                                                                       \
+    virtual void parsePolyMorphicObject(ThorsAnvil::Serialize::DeSerializer&       parent,  \
+                                       ThorsAnvil::Serialize::ParserInterface&     parser)  \
+    {                                                                                       \
+        ThorsAnvil::Serialize::parsePolyMorphicObject<Type>(parent, parser, *this);         \
     }                                                                                       \
     static constexpr char const* polyMorphicSerializerName()                                \
     {                                                                                       \

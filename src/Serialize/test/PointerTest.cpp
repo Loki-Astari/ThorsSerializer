@@ -11,8 +11,8 @@
 struct Tree
 {
     int     value;
-    Tree*   left;
-    Tree*   right;
+    Tree*   left    = nullptr;
+    Tree*   right   = nullptr;
 };
 ThorsAnvil_MakeTrait(Tree, value, left, right);
 namespace ThorsAnvil

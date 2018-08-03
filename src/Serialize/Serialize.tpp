@@ -128,6 +128,40 @@ class DeSerializationForBlock<TraitType::Serialize, T>
             valueStream >> object;
         }
 };
+/* ------------ tryParsePolyMorphicObject Serializer ------------------------- */
+template<class T>
+auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, int) -> decltype(object->parsePolyMorphicObject(parent, parser), void())
+{
+    using TraitPoint = Traits<T>;
+    object = TraitPoint::alloc();
+
+    // This uses a virtual method in the object to 
+    // call parsePolyMorphicObject() the difference
+    // will be the type of the template used as we will
+    // get the type 'T' of the most derived type of
+    // the actual runtime object.
+    //
+    // To install this virtual method use the macro
+    // PolyMorphicSerializer  See Traits.h for details.
+    object->parsePolyMorphicObject(parent, parser);
+}
+template<class T>
+auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, long) -> void
+{
+    using TraitPoint = Traits<T>;
+    object = TraitPoint::alloc();
+
+    parsePolyMorphicObject(parent, parser, *object);
+}
+/* ------------ PolyMorphic Serializer ------------------------- */
+template<typename T>
+void parsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object)
+{
+    using TraitBase = Traits<T>;
+    DeSerializationForBlock<TraitBase::type, T>   pointerDeSerializer(parent, parser);
+    pointerDeSerializer.scanObject(object);
+}
+
 template<typename T>
 class DeSerializationForBlock<TraitType::Pointer, T>
 {
@@ -140,6 +174,8 @@ class DeSerializationForBlock<TraitType::Pointer, T>
         {}
         void scanObject(T& object)
         {
+            delete object;
+
             ParserInterface::ParserToken    tokenType = parser.getToken();
             if (parser.isValueNull())
             {
@@ -147,13 +183,9 @@ class DeSerializationForBlock<TraitType::Pointer, T>
                 return;
             }
 
-            using BaseType = typename std::remove_pointer<T>::type;
-            using TraitBase = Traits<BaseType>;
-            using TraitPoint = Traits<T>;
             parser.pushBackToken(tokenType);
-            object = TraitPoint::alloc();
-            DeSerializationForBlock<TraitBase::type, BaseType>   pointerDeSerializer(parent, parser);
-            pointerDeSerializer.scanObject(*object);
+
+            tryParsePolyMorphicObject(parent, parser, object, 0);
         }
 };
 /*
@@ -409,31 +441,33 @@ class SerializerForBlock<TraitType::Serialize, T>
 
 /* ------------ tryPrintPolyMorphicObject Serializer ------------------------- */
 template<class T>
-auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object, int) -> decltype(object->polyMorphicSerializer(parent, printer), void())
+auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object, int) -> decltype(object->printPolyMorphicObject(parent, printer), void())
 {
     // This uses a virtual method in the object to 
-    // call polyMorphicSerializer() the difference
+    // call printPolyMorphicObject() the difference
     // will be the type of the template used as we will
     // get the type 'T' of the most derived type of
     // the actual runtime object.
     //
     // To install this virtual method use the macro
     // PolyMorphicSerializer  See Traits.h for details.
-    object->polyMorphicSerializer(parent, printer);
+    object->printPolyMorphicObject(parent, printer);
 }
 template<class T>
 auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object, long) -> void
 {
     // This version is called if the object foes not have a virtual
-    // `polyMorphicSerializer()`. Thus you get a call to the current
-    // object and thus we simply use `T`.
-    polyMorphicSerializer<T>(parent, printer, object);
+    // `printPolyMorphicObject()`. Thus you get a call to the current
+    // object and thus we simply use `T` and we can simply print the
+    // normal members.
+    using BaseType = typename std::remove_pointer<T>::type;
+    SerializerForBlock<ThorsAnvil::Serialize::Traits<BaseType>::type, BaseType>  block(parent, printer, *object);
+    block.printMembers();
 }
 /* ------------ PolyMorphic Serializer ------------------------- */
 template<typename T>
-void polyMorphicSerializer(ThorsAnvil::Serialize::Serializer& parent, ThorsAnvil::Serialize::PrinterInterface& printer, T& object)
+void printPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object)
 {
-    // This function is called by one of the above two functions.
     using BaseType = typename std::remove_pointer<T>::type;
     SerializerForBlock<ThorsAnvil::Serialize::Traits<BaseType>::type, BaseType>  block(parent, printer, object);
 
