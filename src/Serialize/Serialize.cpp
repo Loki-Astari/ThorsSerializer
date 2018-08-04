@@ -143,5 +143,6 @@ template void ThorsAnvil::Serialize::Serializer::print<std::initializer_list<int
 
 template void ThorsAnvil::Serialize::Serializer::print<Thing>(Thing const&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<ThingVersion>(ThingVersion&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<CornerCaseClass>(CornerCaseClass&);
 
 #endif

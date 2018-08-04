@@ -141,8 +141,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
 
 
     std::string keyValue;
-    parser.getValue(keyValue);
-    if (keyValue != "__type")
+    if (parser.getKey() != "__type")
     {   throw std::runtime_error("ThorsAnvil::Serialize::tryParsePolyMorphicObject: Invalid PolyMorphic Object. Expecting Key Name __type");
     }
 
