@@ -79,11 +79,6 @@ ParserToken JsonParser::getNextToken()
     currentState    = stateTable[currentState][index];
     switch (currentState)
     {
-        // These states should be impossible to get too
-        case Init:
-            throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Got into Init State");
-        case Done:
-            throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Got into Done State");
         // The states that we actually want to return
         case Error:
             return ParserToken::Error;
@@ -133,6 +128,7 @@ ParserToken JsonParser::getNextToken()
         // Anything else is an error.
         // We don't have a default as it should never happen.
         // If it does happen we fall through anyway to the throw statement below.
+        default: break;
     }
     // If we hit anything else there was a serious problem in the
     // parser itself.
