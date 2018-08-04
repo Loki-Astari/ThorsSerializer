@@ -218,4 +218,54 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedInvalidValue)
         std::runtime_error
     );
 }
+TEST(CornerCaseTest, DeSerializerNoDocStart)
+{
+    auto test = []()
+    {
+        std::stringstream           stream;
+        std::vector<std::string>    keys    {"Ignore"};
+        std::vector<std::string>    values;
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            // Missing DocStart
+            ParserInterface::ParserToken::MapStart,
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass     value;
+        deSerializer.parse(value);
+    };
+
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, DeSerializerNoDocEnd)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys    {"Ignore"};
+        std::vector<std::string>    values;
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::MapStart,
+            ParserInterface::ParserToken::MapEnd,
+            // Missing Doc End
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass     value;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
 
