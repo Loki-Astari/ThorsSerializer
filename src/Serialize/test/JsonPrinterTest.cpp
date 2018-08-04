@@ -248,4 +248,20 @@ TEST(JsonPrinterTest, PuttingKeyInArray)
         printer.addKey("This old house");
     );
 }
+TEST(JsonPrinterTest, AddRawValueTest)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+
+    printer.openDoc();
+    printer.openMap();
+    printer.addKey("K1");
+    printer.addRawValue("12");
+    printer.closeMap();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"K1":12})");
+}
 
