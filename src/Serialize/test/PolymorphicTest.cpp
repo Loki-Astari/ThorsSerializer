@@ -16,7 +16,7 @@ struct Vehicle
         : speed(speed)
     {}
     int     speed;
-    PolyMorphicSerializer(Vehicle);
+    ThorsAnvil_PolyMorphicSerializer(Vehicle);
 };
 struct Car: public Vehicle
 {
@@ -26,7 +26,7 @@ struct Car: public Vehicle
         , make(make)
     {}
     std::string     make;
-    PolyMorphicSerializer(Car);
+    ThorsAnvil_PolyMorphicSerializer(Car);
 };
 struct Bike: public Vehicle
 {
@@ -36,7 +36,7 @@ struct Bike: public Vehicle
         , stroke(stroke)
     {}
     int     stroke;
-    PolyMorphicSerializer(Bike);
+    ThorsAnvil_PolyMorphicSerializer(Bike);
 };
 
 ThorsAnvil_MakeTrait(Vehicle, speed);

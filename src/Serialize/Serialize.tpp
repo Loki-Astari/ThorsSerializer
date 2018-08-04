@@ -142,7 +142,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
     // the actual runtime object.
     //
     // To install this virtual method use the macro
-    // PolyMorphicSerializer  See Traits.h for details.
+    // ThorsAnvil_PolyMorphicSerializer  See Traits.h for details.
     object->parsePolyMorphicObject(parent, parser);
 }
 template<class T>
@@ -450,7 +450,7 @@ auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T 
     // the actual runtime object.
     //
     // To install this virtual method use the macro
-    // PolyMorphicSerializer  See Traits.h for details.
+    // ThorsAnvil_PolyMorphicSerializer  See Traits.h for details.
     object->printPolyMorphicObject(parent, printer);
 }
 template<class T>
