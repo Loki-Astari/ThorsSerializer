@@ -189,11 +189,15 @@ namespace                                                               \
 }                                                                       \
 }}
 
+#define ThorsAnvil_NoParent(Count, DataType, ...)           typedef DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count)    Root;
+#define ThorsAnvil_Parent(Count, ParentType, DataType, ...) typedef ParentType  Parent; \
+                                                            typedef typename Traits<ParentType>::Root Root;
+
 #define ThorsAnvil_Template_MakeTrait(Count, ...)                       \
-    ThorsAnvil_MakeTrait_Base( , Map, Count, __VA_ARGS__, 1)
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_NoParent(Count, __VA_ARGS__, 1) , Map, Count, __VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeTrait(...)                                       \
-    ThorsAnvil_MakeTrait_Base( , Map, 0, __VA_ARGS__, 1);               \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_NoParent(0, __VA_ARGS__, 1) , Map, 0, __VA_ARGS__, 1);               \
     ThorsAnvil_RegisterPolyMorphicType_Internal(__VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeTraitCustom(DataType)                            \
@@ -203,7 +207,7 @@ template<> class ThorsAnvil::Serialize::Traits<DataType>                \
 }
 
 #define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
-    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, Count, __VA_ARGS__, 1)
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(Count, ParentType, __VA_ARGS__, 1), Parent, Count, __VA_ARGS__, 1)
 
 #define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)               \
     static_assert(                                                      \
@@ -213,7 +217,7 @@ template<> class ThorsAnvil::Serialize::Traits<DataType>                \
         ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
-    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, 0, DataType, __VA_ARGS__, 1); \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(0, ParentType, DataType, __VA_ARGS__, 1), Parent, 0, DataType, __VA_ARGS__, 1); \
     ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)
 
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
