@@ -364,6 +364,29 @@ class SerializeArraySize
         }
 };
 
+/*
+ */
+class PolyMorphicRegistry
+{
+    static std::map<std::string, std::function<void*()>>& getContainer()
+    {
+        static std::map<std::string, std::function<void*()>>    polyAllocContainer;
+        return polyAllocContainer;
+    }
+
+    public:
+        static std::function<void*()>& getAllocator(std::string const& name)
+        {
+            return getContainer()[name];
+        }
+        template<typename T>
+        static T* getNamedTypeConvertedTo(std::string const& name)
+        {
+            void* data =  getContainer()[name]();
+            return dynamic_cast<T*>(data);
+        }
+};
+
 template <typename T>
 class HasPolyMorphicObjectMarker
 {
@@ -387,6 +410,10 @@ struct ThorsAnvil_InitPolyMorphicType<T, true>
 {
     ThorsAnvil_InitPolyMorphicType(char const* name)
     {
+        PolyMorphicRegistry::getAllocator(name) =
+            []() -> void*
+            {   return dynamic_cast<typename Traits<T>::Root*>(Traits<T*>::alloc());
+            };
         std::cout << "PolyType Init: " << name  << "\n";
     }
 };
