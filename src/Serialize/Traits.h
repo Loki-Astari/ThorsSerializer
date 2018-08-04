@@ -22,6 +22,7 @@
 
 #include <string>
 #include <tuple>
+#include <iostream>
 
 /*
  * Macros for counting the number of arguments
@@ -129,6 +130,11 @@
 #define LAST_THOR_TYPENAMEVALUEACTION(Ex, Id)
 #define LAST_THOR_CHECK_ASSERT(Ex, Id)          DO_ASSERT(Ex)
 
+
+#define THOR_MERGE_LABEL_NAME(Pre, Post)        Pre ## Post
+#define THOR_UNIQUE_LABEL(Line)                 THOR_MERGE_LABEL_NAME(thorUniqueName, Line)
+#define THOR_UNIQUE_NAME                        THOR_UNIQUE_LABEL(__LINE__)
+
 /*
  * Defines a trait for a user defined type.
  * Lists the members of the type that can be serialized.
@@ -173,11 +179,22 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
 }}                                                                      \
 ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
 
+#define ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, ...)      \
+    ThorsAnvil_RegisterPolyMorphicType(DataType)
+#define ThorsAnvil_RegisterPolyMorphicType(DataType)                    \
+namespace ThorsAnvil { namespace Serialize {                            \
+namespace                                                               \
+{                                                                       \
+    ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME( # DataType); \
+}                                                                       \
+}}
+
 #define ThorsAnvil_Template_MakeTrait(Count, ...)                       \
     ThorsAnvil_MakeTrait_Base( , Map, Count, __VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeTrait(...)                                       \
-    ThorsAnvil_MakeTrait_Base( , Map, 0, __VA_ARGS__, 1)
+    ThorsAnvil_MakeTrait_Base( , Map, 0, __VA_ARGS__, 1);               \
+    ThorsAnvil_RegisterPolyMorphicType_Internal(__VA_ARGS__, 1)
 
 #define ThorsAnvil_MakeTraitCustom(DataType)                            \
 template<> class ThorsAnvil::Serialize::Traits<DataType>                \
@@ -196,7 +213,8 @@ template<> class ThorsAnvil::Serialize::Traits<DataType>                \
         ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
-    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, 0, DataType, __VA_ARGS__, 1)
+    ThorsAnvil_MakeTrait_Base(typedef ParentType Parent;, Parent, 0, DataType, __VA_ARGS__, 1); \
+    ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)
 
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
 namespace ThorsAnvil { namespace Serialize {                            \
@@ -252,14 +270,14 @@ DO_ASSERT(EnumName)
     }
 
 
-/*
- * Defines the generic type that all serialization types can expand on
- */
 namespace ThorsAnvil
 {
     namespace Serialize
     {
 
+/*
+ * Defines the generic type that all serialization types can expand on
+ */
 enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Serialize};
 template<typename T>
 class Traits
@@ -340,6 +358,39 @@ class SerializeArraySize
         {
             return object.size();
         }
+};
+
+template <typename T>
+class HasPolyMorphicObjectMarker
+{
+    typedef char one;
+    typedef long two;
+
+    template <typename C> static one test( decltype(&C::parsePolyMorphicObject) ) ;
+    template <typename C> static two test(...);
+
+public:
+    enum { value = sizeof(test<T>(nullptr)) == sizeof(char) };
+};
+
+
+template<typename T, bool Poly = HasPolyMorphicObjectMarker<T>::value>
+struct ThorsAnvil_InitPolyMorphicType;
+
+
+template<typename T>
+struct ThorsAnvil_InitPolyMorphicType<T, true>
+{
+    ThorsAnvil_InitPolyMorphicType(char const* name)
+    {
+        std::cout << "PolyType Init: " << name  << "\n";
+    }
+};
+
+template<typename T>
+struct ThorsAnvil_InitPolyMorphicType<T, false>
+{
+    ThorsAnvil_InitPolyMorphicType(char const*){}
 };
 
     }
