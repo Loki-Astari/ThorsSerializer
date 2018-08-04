@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "THashTest.h"
 #include "BinaryTHash.h"
+#include "BinaryParserTest.h"
 
 namespace TS=ThorsAnvil::Serialize;
 
@@ -23,6 +24,10 @@ TEST(THashTest, hashFundamental)
 
     std::size_t     boolH               = TS::thash<bool>();
     std::size_t     stringH             = TS::thash<std::string>();
+
+    std::size_t     vectorIntH          = TS::thash<std::vector<int>>();
+    std::size_t     emptyMapH           = TS::thash<MapEmptyTest>();
+    std::size_t     OneMapH             = TS::thash<MapOneValue>();
 
 
     EXPECT_EQ(shortH,           TS::thash<short>());
