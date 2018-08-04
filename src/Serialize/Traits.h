@@ -22,7 +22,8 @@
 
 #include <string>
 #include <tuple>
-#include <iostream>
+#include <map>
+#include <functional>
 
 /*
  * Macros for counting the number of arguments
@@ -181,6 +182,8 @@ ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
 
 #define ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, ...)      \
     ThorsAnvil_RegisterPolyMorphicType(DataType)
+
+#pragma vera-pushoff
 #define ThorsAnvil_RegisterPolyMorphicType(DataType)                    \
 namespace ThorsAnvil { namespace Serialize {                            \
 namespace                                                               \
@@ -188,6 +191,7 @@ namespace                                                               \
     ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME( # DataType); \
 }                                                                       \
 }}
+#pragma vera-pop
 
 #define ThorsAnvil_NoParent(Count, DataType, ...)           typedef DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count)    Root;
 #define ThorsAnvil_Parent(Count, ParentType, DataType, ...) typedef ParentType  Parent; \
@@ -382,8 +386,11 @@ class PolyMorphicRegistry
         template<typename T>
         static T* getNamedTypeConvertedTo(std::string const& name)
         {
-            void* data =  getContainer()[name]();
-            return dynamic_cast<T*>(data);
+            using Root = typename Traits<T>::Root;
+
+            void*    data        = getContainer()[name]();
+            Root*    dataBase    = reinterpret_cast<Root*>(data);
+            return dynamic_cast<T*>(dataBase);
         }
 };
 
@@ -393,15 +400,15 @@ class HasPolyMorphicObjectMarker
     typedef char one;
     typedef long two;
 
-    template <typename C> static one test( decltype(&C::parsePolyMorphicObject) ) ;
+    template <typename C> static one test( decltype(&C::parsePolyMorphicObject) );
     template <typename C> static two test(...);
 
 public:
-    enum { value = sizeof(test<T>(nullptr)) == sizeof(char) };
+    enum { Value = sizeof(test<T>(nullptr)) == sizeof(char) };
 };
 
 
-template<typename T, bool Poly = HasPolyMorphicObjectMarker<T>::value>
+template<typename T, bool Poly = HasPolyMorphicObjectMarker<T>::Value>
 struct ThorsAnvil_InitPolyMorphicType;
 
 
@@ -414,7 +421,6 @@ struct ThorsAnvil_InitPolyMorphicType<T, true>
             []() -> void*
             {   return dynamic_cast<typename Traits<T>::Root*>(Traits<T*>::alloc());
             };
-        std::cout << "PolyType Init: " << name  << "\n";
     }
 };
 

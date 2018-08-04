@@ -1,10 +1,6 @@
 #ifndef THORS_ANVIL_SERIALIZE_SERIALIZE_TPP
 #define THORS_ANVIL_SERIALIZE_SERIALIZE_TPP
 
-//#include <iostream>
-//#include <vector>
-//#include <cstdlib>
-//#include "Traits.h"
 #include <algorithm>
 #include <sstream>
 #include <type_traits>
@@ -132,10 +128,36 @@ class DeSerializationForBlock<TraitType::Serialize, T>
 template<class T>
 auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, int) -> decltype(object->parsePolyMorphicObject(parent, parser), void())
 {
-    using TraitPoint = Traits<T>;
-    object = TraitPoint::alloc();
+    ParserInterface::ParserToken    tokenType;
+    tokenType = parser.getToken();
+    if (tokenType != ParserInterface::ParserToken::MapStart)
+    {   throw std::runtime_error("ThorsAnvil::Serialize::tryParsePolyMorphicObject: Invalid Object. Expecting MapStart");
+    }
 
-    // This uses a virtual method in the object to 
+    tokenType = parser.getToken();
+    if (tokenType != ParserInterface::ParserToken::Key)
+    {   throw std::runtime_error("ThorsAnvil::Serialize::tryParsePolyMorphicObject: Invalid Object. Expecting Key");
+    }
+
+
+    std::string keyValue;
+    parser.getValue(keyValue);
+    if (keyValue != "__type")
+    {   throw std::runtime_error("ThorsAnvil::Serialize::tryParsePolyMorphicObject: Invalid PolyMorphic Object. Expecting Key Name __type");
+    }
+
+    tokenType = parser.getToken();
+    if (tokenType != ParserInterface::ParserToken::Value)
+    {   throw std::runtime_error("ThorsAnvil::Serialize::tryParsePolyMorphicObject: Invalid Object. Expecting Value");
+    }
+
+    std::string className;
+    parser.getValue(className);
+
+    using BaseType  = typename std::remove_pointer<T>::type;
+    object = PolyMorphicRegistry::getNamedTypeConvertedTo<BaseType>(className);
+
+    // This uses a virtual method in the object to
     // call parsePolyMorphicObject() the difference
     // will be the type of the template used as we will
     // get the type 'T' of the most derived type of
@@ -143,6 +165,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
     //
     // To install this virtual method use the macro
     // ThorsAnvil_PolyMorphicSerializer  See Traits.h for details.
+    parser.pushBackToken(ParserInterface::ParserToken::MapStart);
     object->parsePolyMorphicObject(parent, parser);
 }
 template<class T>
@@ -443,7 +466,7 @@ class SerializerForBlock<TraitType::Serialize, T>
 template<class T>
 auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object, int) -> decltype(object->printPolyMorphicObject(parent, printer), void())
 {
-    // This uses a virtual method in the object to 
+    // This uses a virtual method in the object to
     // call printPolyMorphicObject() the difference
     // will be the type of the template used as we will
     // get the type 'T' of the most derived type of
