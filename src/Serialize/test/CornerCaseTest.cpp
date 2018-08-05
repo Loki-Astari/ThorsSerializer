@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "JsonParser.h"
 #include "test/SerializeTest.h"
+#include "SerUtil.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::JsonParser;
@@ -261,6 +262,274 @@ TEST(CornerCaseTest, DeSerializerNoDocEnd)
         DeSerializer    deSerializer(parser);
 
         CornerCaseClass     value;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, DeSerializationForBlock_Struct_Constructor)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys;
+        std::vector<std::string>    values;
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            // Missing MapStart
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass     value;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, DeSerializationForBlock_Struct_HasMoreValue)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys;
+        std::vector<std::string>    values;
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::MapStart,
+            ParserInterface::ParserToken::Value,    // Not a key
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass     value;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, DeSerializationForBlock_Value_ScanObject)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys{"value"};
+        std::vector<std::string>    values;
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::MapStart,
+            ParserInterface::ParserToken::Key,      // Key -> "value" Expecting an ParserToken::Value next
+            ParserInterface::ParserToken::MapStart,
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass     value;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, TryParsePolyMorphicObject_NotMap)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys{"__type", "Type"};
+        std::vector<std::string>    values{"CornerCaseClass", "15"};
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            // ParserInterface::ParserToken::MapStart,  // Missing Map Start
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass*    value = nullptr;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, TryParsePolyMorphicObject_MapNoKey)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys{"__type", "Type"};
+        std::vector<std::string>    values{"CornerCaseClass", "15"};
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::MapStart,
+            // ParserInterface::ParserToken::Key,   // Missing Key
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass*    value = nullptr;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyNot_Type)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys{"__typeXX", "Type"};   // Type incorrect
+        std::vector<std::string>    values{"CornerCaseClass", "15"};
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::MapStart,
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass*    value = nullptr;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyNotValue)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys{"__type", "Type"};
+        std::vector<std::string>    values{"CornerCaseClass", "15"};
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::MapStart,
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::MapStart, // Needs to be a value (to get string and type name)
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass*    value = nullptr;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyValueBadType)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys{"__type", "Type"};
+        std::vector<std::string>    values{"CornerCaseClass_XX", "15"}; // Bad Class Name
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::MapStart,
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::Key,
+            ParserInterface::ParserToken::Value,
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseClass*    value = nullptr;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+
+enum    CornerCaseEnum {Enum1, Enum2, Enum3};
+ThorsAnvil_MakeEnum(CornerCaseEnum, Enum1, Enum2, Enum3);
+TEST(CornerCaseTest, DeSerializationForBlock_Enum_Constructor)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys;
+        std::vector<std::string>    values;
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::MapStart, // Should be Value for enum
+            ParserInterface::ParserToken::MapEnd,
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        CornerCaseEnum     value;
+        deSerializer.parse(value);
+    };
+    EXPECT_THROW(
+        test(),
+        std::runtime_error
+    );
+}
+
+TEST(CornerCaseTest, DeSerializationForBlock_Array_Constructor)
+{
+    auto test = [](){
+        std::stringstream           stream;
+        std::vector<std::string>    keys;
+        std::vector<std::string>    values;
+        std::vector<ParserInterface::ParserToken>    tokens
+        {
+            ParserInterface::ParserToken::DocStart,
+            ParserInterface::ParserToken::Value, // Should be ArrayStart for Array
+            ParserInterface::ParserToken::DocEnd,
+        };
+        ParserMock      parser(stream, tokens, keys, values);
+        DeSerializer    deSerializer(parser);
+
+        std::vector<int>     value;
         deSerializer.parse(value);
     };
     EXPECT_THROW(

@@ -2,7 +2,9 @@
 #ifndef THORS_ANVIL_SERIALIZE_TEST_SERIALIZE_TEST_EXTRA_H
 #define THORS_ANVIL_SERIALIZE_TEST_SERIALIZE_TEST_EXTRA_H
 
-#include "../Traits.h"
+#include "Traits.h"
+#include "Serialize.h"
+#include "Serialize.tpp"
 
 enum RGB { Red, Green, Blue };
 struct EumHolder
@@ -70,6 +72,8 @@ class SerializeTestMembers
 struct CornerCaseClass
 {
     int value;
+    virtual ~CornerCaseClass() {}
+    ThorsAnvil_PolyMorphicSerializer(CornerCaseClass);
 };
 
 ThorsAnvil_MakeEnum(RGB, Red, Green, Blue);

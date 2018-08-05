@@ -392,7 +392,13 @@ class PolyMorphicRegistry
         {
             using Root = typename Traits<T>::Root;
 
-            void*    data        = getContainer()[name]();
+            auto     cont       = getContainer();
+            auto     find       = cont.find(name);
+            if (find == cont.end())
+            {
+                throw std::runtime_error("ThorsAnvil::Serialize::PolyMorphicRegistry::getNamedTypeConvertedTo: Non polymorphic type");
+            }
+            void*    data        = find->second();
             Root*    dataBase    = reinterpret_cast<Root*>(data);
             return dynamic_cast<T*>(dataBase);
         }
