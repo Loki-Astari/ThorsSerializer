@@ -59,7 +59,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedKey)
     std::vector<ParserInterface::ParserToken>    tokens
     {   ParserInterface::ParserToken::DocStart,
             ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,
+                ParserInterface::ParserToken::Key,  // Key
                     ParserInterface::ParserToken::ArrayStart,
                         ParserInterface::ParserToken::Key,   /* Don't expect a Key in Array */
                     ParserInterface::ParserToken::ArrayEnd,
@@ -84,7 +84,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedMapEnd)
     std::vector<ParserInterface::ParserToken>    tokens
     {   ParserInterface::ParserToken::DocStart,
             ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,
+                ParserInterface::ParserToken::Key,  // Key
                     ParserInterface::ParserToken::ArrayStart,
                         ParserInterface::ParserToken::MapEnd,   /* Don't expect a MapEnd in Array */
                     ParserInterface::ParserToken::ArrayEnd,
@@ -109,7 +109,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedInvalidValue)
     std::vector<ParserInterface::ParserToken>    tokens
     {   ParserInterface::ParserToken::DocStart,
             ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,
+                ParserInterface::ParserToken::Key,  // Key
                     ParserInterface::ParserToken::ArrayStart,
                         ((ParserInterface::ParserToken)32762),   /* Don't expect a Invalid in Array */
                     ParserInterface::ParserToken::ArrayEnd,
@@ -134,7 +134,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedKey)
     std::vector<ParserInterface::ParserToken>    tokens
     {   ParserInterface::ParserToken::DocStart,
             ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,
+                ParserInterface::ParserToken::Key,  // Key
                 ParserInterface::ParserToken::Key,  /* Don't expect a key after a key */
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
@@ -157,7 +157,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedMapEnd)
     std::vector<ParserInterface::ParserToken>    tokens
     {   ParserInterface::ParserToken::DocStart,
             ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,
+                ParserInterface::ParserToken::Key,  // Key
                 ParserInterface::ParserToken::MapEnd,  /* Don't expect a MapEnd after a key */
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
@@ -180,7 +180,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedArrayEnd)
     std::vector<ParserInterface::ParserToken>    tokens
     {   ParserInterface::ParserToken::DocStart,
             ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,
+                ParserInterface::ParserToken::Key,  // Key
                 ParserInterface::ParserToken::ArrayEnd,  /* Don't expect an ArrayEnd after a key */
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
@@ -203,7 +203,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedInvalidValue)
     std::vector<ParserInterface::ParserToken>    tokens
     {   ParserInterface::ParserToken::DocStart,
             ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,
+                ParserInterface::ParserToken::Key,  // Key
                 ((ParserInterface::ParserToken)32762),   /* Don't expect a Invalid after a Key */
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
@@ -223,7 +223,7 @@ TEST(CornerCaseTest, DeSerializerNoDocStart)
     auto test = []()
     {
         std::stringstream           stream;
-        std::vector<std::string>    keys    {"Ignore"};
+        std::vector<std::string>    keys;
         std::vector<std::string>    values;
         std::vector<ParserInterface::ParserToken>    tokens
         {
@@ -248,7 +248,7 @@ TEST(CornerCaseTest, DeSerializerNoDocEnd)
 {
     auto test = [](){
         std::stringstream           stream;
-        std::vector<std::string>    keys    {"Ignore"};
+        std::vector<std::string>    keys;
         std::vector<std::string>    values;
         std::vector<ParserInterface::ParserToken>    tokens
         {
