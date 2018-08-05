@@ -3,6 +3,7 @@
 #include "JsonParser.h"
 #include "test/SerializeTest.h"
 #include "SerUtil.h"
+#include "UnicodeIterator.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::JsonParser;
@@ -534,6 +535,261 @@ TEST(CornerCaseTest, DeSerializationForBlock_Array_Constructor)
     };
     EXPECT_THROW(
         test(),
+        std::runtime_error
+    );
+}
+
+TEST(CornerCaseTest, ConvertHexToDec_InvalidCharacter)
+{
+    EXPECT_THROW(
+        ThorsAnvil::Serialize::convertHexToDec('G'),
+        std::runtime_error
+    );
+    EXPECT_THROW(
+        ThorsAnvil::Serialize::convertHexToDec('g'),
+        std::runtime_error
+    );
+    EXPECT_THROW(
+        ThorsAnvil::Serialize::convertHexToDec('@'),
+        std::runtime_error
+    );
+    EXPECT_THROW(
+        ThorsAnvil::Serialize::convertHexToDec('`'),
+        std::runtime_error
+    );
+    EXPECT_THROW(
+        ThorsAnvil::Serialize::convertHexToDec('/'),
+        std::runtime_error
+    );
+    EXPECT_THROW(
+        ThorsAnvil::Serialize::convertHexToDec(':'),
+        std::runtime_error
+    );
+}
+
+TEST(CornerCaseTest, UnicodePushBackIterator_SlashSlash)
+{
+    using ThorsAnvil::Serialize::UnicodePushBackIterator;
+
+    std::string                 stream;
+    UnicodePushBackIterator     iter(stream);
+
+    iter    = '\\';     ++iter;
+    iter    = '\\';     ++iter;
+
+    EXPECT_EQ(stream, R"(\)");
+}
+TEST(CornerCaseTest, UnicodePushBackIterator_BackSlashBackSlash)
+{
+    using ThorsAnvil::Serialize::UnicodePushBackIterator;
+
+    std::string                 stream;
+    UnicodePushBackIterator     iter(stream);
+
+    iter    = '\\';     ++iter;
+    iter    = '/';     ++iter;
+
+    EXPECT_EQ(stream, R"(/)");
+}
+
+// https://www.charbase.com/1d11e-unicode-musical-symbol-g-clef
+// Surrogate Pair:  d834 dd1e
+// UTF-8:           f0 9d 84 9e
+TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair)
+{
+    using ThorsAnvil::Serialize::UnicodePushBackIterator;
+
+    std::string                 stream;
+    UnicodePushBackIterator     iter(stream);
+
+    iter    = '\\';     ++iter;
+    iter    = 'u';      ++iter;
+    iter    = 'd';      ++iter;
+    iter    = '8';      ++iter;
+    iter    = '3';      ++iter;
+    iter    = '4';      ++iter;
+
+    iter    = '\\';     ++iter;
+    iter    = 'u';      ++iter;
+    iter    = 'd';      ++iter;
+    iter    = 'd';      ++iter;
+    iter    = '1';      ++iter;
+    iter    = 'e';      ++iter;
+
+    // Should now be UTF-8 encoded.
+    ASSERT_EQ(4, stream.size());
+    EXPECT_EQ('\xf0', stream[0]);
+    EXPECT_EQ('\x9d', stream[1]);
+    EXPECT_EQ('\x84', stream[2]);
+    EXPECT_EQ('\x9e', stream[3]);
+}
+TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair_SecondNotValid)
+{
+    using ThorsAnvil::Serialize::UnicodePushBackIterator;
+
+    std::string                 stream;
+    UnicodePushBackIterator     iter(stream);
+
+    iter    = '\\';     ++iter;
+    iter    = 'u';      ++iter;
+    iter    = 'd';      ++iter;
+    iter    = '8';      ++iter;
+    iter    = '3';      ++iter;
+    iter    = '4';      ++iter;
+
+    // Should be R"(\udd1e)"
+    EXPECT_THROW(
+        iter    = 'a',
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair_SecondNotValid_P2)
+{
+    using ThorsAnvil::Serialize::UnicodePushBackIterator;
+
+    std::string                 stream;
+    UnicodePushBackIterator     iter(stream);
+
+    iter    = '\\';     ++iter;
+    iter    = 'u';      ++iter;
+    iter    = 'd';      ++iter;
+    iter    = '8';      ++iter;
+    iter    = '3';      ++iter;
+    iter    = '4';      ++iter;
+
+    iter    = '\\';     ++iter;
+    // Should be R"(\udd1e)"
+    EXPECT_THROW(
+        iter    = '\\',
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair_SecondNotValid_P3)
+{
+    using ThorsAnvil::Serialize::UnicodePushBackIterator;
+
+    std::string                 stream;
+    UnicodePushBackIterator     iter(stream);
+
+    iter    = '\\';     ++iter;
+    iter    = 'u';      ++iter;
+    iter    = 'd';      ++iter;
+    iter    = '8';      ++iter;
+    iter    = '3';      ++iter;
+    iter    = '4';      ++iter;
+
+    // Should be R"(\udd1e)"
+    iter    = '\\';     ++iter;
+    iter    = 'u';      ++iter;
+    iter    = '1';      ++iter; // 1 is not in the correct range
+    iter    = 'd';      ++iter;
+    iter    = '1';      ++iter;
+
+    EXPECT_THROW(
+        iter    = 'e',
+        std::runtime_error
+    );
+}
+// #####
+TEST(CornerCaseTest, UnicodeWrapperIterator_SlashSlash)
+{
+    using ThorsAnvil::Serialize::UnicodeWrapperIterator;
+    using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
+
+    std::string                 stream(R"(\\)");;
+    auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
+
+    char    value = *loop;
+    EXPECT_EQ(value, '\\');
+}
+TEST(CornerCaseTest, UnicodeWrapperIterator_BackSlashBackSlash)
+{
+    using ThorsAnvil::Serialize::UnicodeWrapperIterator;
+    using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
+
+    std::string                 stream(R"(\/)");;
+    auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
+
+    char    value = *loop;
+    EXPECT_EQ(value, '/');
+}
+TEST(CornerCaseTest, UnicodeWrapperIterator_SlashK)
+{
+    using ThorsAnvil::Serialize::UnicodeWrapperIterator;
+    using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
+
+    std::string                 stream(R"(\k)");;
+    auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
+
+    char    value = *loop;
+    EXPECT_EQ(value, 'k');
+}
+
+// https://www.charbase.com/1d11e-unicode-musical-symbol-g-clef
+// Surrogate Pair:  d834 dd1e
+// UTF-8:           f0 9d 84 9e
+TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair)
+{
+    using ThorsAnvil::Serialize::UnicodeWrapperIterator;
+    using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
+
+    std::string                 stream(R"(\ud834\udd1e)");
+    auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
+
+    EXPECT_EQ('\xf0', *loop);   ++loop;
+    EXPECT_EQ('\x9d', *loop);   ++loop;
+    EXPECT_EQ('\x84', *loop);   ++loop;
+    EXPECT_EQ('\x9e', *loop);   ++loop;
+}
+TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid)
+{
+    using ThorsAnvil::Serialize::UnicodeWrapperIterator;
+    using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
+
+    std::string                 stream(R"(\ud834a)");
+    auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
+
+    // Should be R"(\udd1e)"
+    //EXPECT_EQ('\xf0', *loop);   ++loop;
+    //EXPECT_EQ('\x9d', *loop);   ++loop;
+    //EXPECT_EQ('\x84', *loop);   ++loop;
+    //EXPECT_EQ('\x9e', *loop);   ++loop;
+    EXPECT_THROW(
+        *loop,
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid_P2)
+{
+    using ThorsAnvil::Serialize::UnicodeWrapperIterator;
+    using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
+
+    std::string                 stream(R"(\ud834\\)");
+    auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
+
+    //EXPECT_EQ('\xf0', *loop);   ++loop;
+    //EXPECT_EQ('\x9d', *loop);   ++loop;
+    //EXPECT_EQ('\x84', *loop);   ++loop;
+    //EXPECT_EQ('\x9e', *loop);   ++loop;
+    EXPECT_THROW(
+        *loop,
+        std::runtime_error
+    );
+}
+TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid_P3)
+{
+    using ThorsAnvil::Serialize::UnicodeWrapperIterator;
+    using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
+
+    std::string                 stream(R"(\ud834\u1d1e)");
+    auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
+
+    //EXPECT_EQ('\xf0', *loop);   ++loop;
+    //EXPECT_EQ('\x9d', *loop);   ++loop;
+    //EXPECT_EQ('\x84', *loop);   ++loop;
+    //EXPECT_EQ('\x9e', *loop);   ++loop;
+    EXPECT_THROW(
+        *loop,
         std::runtime_error
     );
 }
