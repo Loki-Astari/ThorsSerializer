@@ -570,9 +570,10 @@ TEST(CornerCaseTest, ConvertHexToDec_InvalidCharacter)
 TEST(CornerCaseTest, UnicodePushBackIterator_SlashSlash)
 {
     using ThorsAnvil::Serialize::UnicodePushBackIterator;
+    using ThorsAnvil::Serialize::make_UnicodePushBackIterator;
 
     std::string                 stream;
-    UnicodePushBackIterator     iter(stream);
+    auto                        iter = make_UnicodePushBackIterator(stream);
 
     iter    = '\\';     ++iter;
     iter    = '\\';     ++iter;
@@ -582,9 +583,10 @@ TEST(CornerCaseTest, UnicodePushBackIterator_SlashSlash)
 TEST(CornerCaseTest, UnicodePushBackIterator_BackSlashBackSlash)
 {
     using ThorsAnvil::Serialize::UnicodePushBackIterator;
+    using ThorsAnvil::Serialize::make_UnicodePushBackIterator;
 
     std::string                 stream;
-    UnicodePushBackIterator     iter(stream);
+    auto                        iter = make_UnicodePushBackIterator(stream);
 
     iter    = '\\';     ++iter;
     iter    = '/';     ++iter;
@@ -598,9 +600,10 @@ TEST(CornerCaseTest, UnicodePushBackIterator_BackSlashBackSlash)
 TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair)
 {
     using ThorsAnvil::Serialize::UnicodePushBackIterator;
+    using ThorsAnvil::Serialize::make_UnicodePushBackIterator;
 
     std::string                 stream;
-    UnicodePushBackIterator     iter(stream);
+    auto                        iter = make_UnicodePushBackIterator(stream);
 
     iter    = '\\';     ++iter;
     iter    = 'u';      ++iter;
@@ -626,9 +629,10 @@ TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair)
 TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair_SecondNotValid)
 {
     using ThorsAnvil::Serialize::UnicodePushBackIterator;
+    using ThorsAnvil::Serialize::make_UnicodePushBackIterator;
 
     std::string                 stream;
-    UnicodePushBackIterator     iter(stream);
+    auto                        iter = make_UnicodePushBackIterator(stream);
 
     iter    = '\\';     ++iter;
     iter    = 'u';      ++iter;
@@ -646,9 +650,10 @@ TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair_SecondNotValid)
 TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair_SecondNotValid_P2)
 {
     using ThorsAnvil::Serialize::UnicodePushBackIterator;
+    using ThorsAnvil::Serialize::make_UnicodePushBackIterator;
 
     std::string                 stream;
-    UnicodePushBackIterator     iter(stream);
+    auto                        iter = make_UnicodePushBackIterator(stream);
 
     iter    = '\\';     ++iter;
     iter    = 'u';      ++iter;
@@ -667,9 +672,10 @@ TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair_SecondNotValid_P2)
 TEST(CornerCaseTest, UnicodePushBackIterator_SurogatePair_SecondNotValid_P3)
 {
     using ThorsAnvil::Serialize::UnicodePushBackIterator;
+    using ThorsAnvil::Serialize::make_UnicodePushBackIterator;
 
     std::string                 stream;
-    UnicodePushBackIterator     iter(stream);
+    auto                        iter = make_UnicodePushBackIterator(stream);
 
     iter    = '\\';     ++iter;
     iter    = 'u';      ++iter;
