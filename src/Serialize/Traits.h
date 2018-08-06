@@ -199,12 +199,12 @@ namespace                                                               \
 
 #define ThorsAnvil_Template_MakeTrait(Count, ...)                       \
     ThorsAnvil_MakeTrait_Base(ThorsAnvil_NoParent(Count, __VA_ARGS__, 1) , Map, Count, __VA_ARGS__, 1)  \
-    static_assert(true)
+    static_assert(true, "")
 
 #define ThorsAnvil_MakeTrait(...)                                       \
     ThorsAnvil_MakeTrait_Base(ThorsAnvil_NoParent(0, __VA_ARGS__, 1) , Map, 0, __VA_ARGS__, 1);               \
     ThorsAnvil_RegisterPolyMorphicType_Internal(__VA_ARGS__, 1)         \
-    static_assert(true)
+    static_assert(true, "")
 
 #define ThorsAnvil_MakeTraitCustom(DataType)                            \
 template<> class ThorsAnvil::Serialize::Traits<DataType>                \
@@ -214,7 +214,7 @@ template<> class ThorsAnvil::Serialize::Traits<DataType>                \
 
 #define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
     ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(Count, ParentType, __VA_ARGS__, 1), Parent, Count, __VA_ARGS__, 1) \
-    static_assert(true)
+    static_assert(true, "")
 
 #define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)               \
     static_assert(                                                      \
@@ -226,7 +226,7 @@ template<> class ThorsAnvil::Serialize::Traits<DataType>                \
     );                                                                  \
     ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(0, ParentType, DataType, __VA_ARGS__, 1), Parent, 0, DataType, __VA_ARGS__, 1); \
     ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)            \
-    static_assert(true)
+    static_assert(true, "")
 
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
 namespace ThorsAnvil { namespace Serialize {                            \
