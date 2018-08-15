@@ -17,17 +17,30 @@ class Importer
 {
     T& value;
     ParserInterface::ParseType parseStrictness;
+    bool    catchException;
     public:
-        Importer(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak)
+        Importer(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak, bool catchException = false)
             : value(value)
             , parseStrictness(parseStrictness)
+            , catchException(catchException)
         {}
         friend std::istream& operator>>(std::istream& stream, Importer const& data)
         {
-            typename Format::Parser     parser(stream, data.parseStrictness);
-            DeSerializer                deSerializer(parser);
+            try
+            {
+                typename Format::Parser     parser(stream, data.parseStrictness);
+                DeSerializer                deSerializer(parser);
 
-            deSerializer.parse(data.value);
+                deSerializer.parse(data.value);
+            }
+            catch (...)
+            {
+                stream.setstate(std::ios::failbit);
+                if (!data.catchException)
+                {
+                    throw;
+                }
+            }
             return stream;
         }
 };

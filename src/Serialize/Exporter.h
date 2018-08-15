@@ -18,18 +18,30 @@ class Exporter
     using OutputType = PrinterInterface::OutputType;
     T const&    value;
     OutputType  characteristics;
-
+    bool        catchException;
     public:
-        Exporter(T const& value, OutputType characteristics)
+        Exporter(T const& value, OutputType characteristics, bool catchException = false)
             : value(value)
             , characteristics(characteristics)
+            , catchException(catchException)
         {}
         friend std::ostream& operator<<(std::ostream& stream, Exporter const& data)
         {
-            typename Format::Printer    printer(stream, data.characteristics);
-            Serializer                  serializer(printer);
+            try
+            {
+                typename Format::Printer    printer(stream, data.characteristics);
+                Serializer                  serializer(printer);
 
-            serializer.print(data.value);
+                serializer.print(data.value);
+            }
+            catch (...)
+            {
+                stream.setstate(std::ios::failbit);
+                if (!data.catchException)
+                {
+                    throw;
+                }
+            }
 
             return stream;
         }
