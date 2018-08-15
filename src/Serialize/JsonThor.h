@@ -28,14 +28,14 @@ struct Json
 };
 
 template<typename T>
-Exporter<Json, T> jsonExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default)
+Exporter<Json, T> jsonExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default, bool catchExceptions = false)
 {
-    return Exporter<Json, T>(value, characteristics);
+    return Exporter<Json, T>(value, characteristics, catchExceptions);
 }
 template<typename T>
-Importer<Json, T> jsonImport(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak)
+Importer<Json, T> jsonImport(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak, bool catchExceptions = false)
 {
-    return Importer<Json, T>(value, parseStrictness);
+    return Importer<Json, T>(value, parseStrictness, catchExceptions);
 }
     }
 }
