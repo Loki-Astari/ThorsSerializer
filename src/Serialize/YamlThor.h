@@ -31,14 +31,14 @@ struct Yaml
 };
 
 template<typename T>
-Exporter<Yaml, T> yamlExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default)
+Exporter<Yaml, T> yamlExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default, bool catchExceptions = false)
 {
-    return Exporter<Yaml, T>(value, characteristics);
+    return Exporter<Yaml, T>(value, characteristics, catchExceptions);
 }
 template<typename T>
-Importer<Yaml, T> yamlImport(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak)
+Importer<Yaml, T> yamlImport(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak, bool catchExceptions = false)
 {
-    return Importer<Yaml, T>(value, parseStrictness);
+    return Importer<Yaml, T>(value, parseStrictness, catchExceptions);
 }
     }
 }

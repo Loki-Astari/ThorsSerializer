@@ -42,14 +42,14 @@ struct Binary
 };
 
 template<typename T>
-Exporter<Binary<T>, T> binExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default)
+Exporter<Binary<T>, T> binExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default, bool catchExceptions = false)
 {
-    return Exporter<Binary<T>, T>(value, characteristics);
+    return Exporter<Binary<T>, T>(value, characteristics, catchExceptions);
 }
 template<typename T>
-Importer<Binary<T>, T> binImport(T& value)
+Importer<Binary<T>, T> binImport(T& value, bool catchExceptions = false)
 {
-    return Importer<Binary<T>, T>(value, ParserInterface::ParseType::Strict);
+    return Importer<Binary<T>, T>(value, ParserInterface::ParseType::Strict, catchExceptions);
 }
     }
 }
