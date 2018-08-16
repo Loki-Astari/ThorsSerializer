@@ -1,4 +1,5 @@
 #include "JsonPrinter.h"
+#include <iomanip>
 
 using namespace ThorsAnvil::Serialize;
 
@@ -156,6 +157,24 @@ void JsonPrinter::addKey(std::string const& key)
     output << PrefixKey(characteristics, state.size(), state.back()) << '"' << key << '"';
 }
 
+template<typename T>
+struct FormatDouble
+{
+    T const &  value;
+    FormatDouble(T const& value): value(value){}
+    friend std::ostream& operator<<(std::ostream& str, FormatDouble const& formater)
+    {
+        if (formater.value == 0)
+        {
+            return str << "0.0";
+        }
+        else
+        {
+            return str << formater.value;
+        }
+    }
+};
+
 void JsonPrinter::addValue(short value)                 {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
 void JsonPrinter::addValue(int value)                   {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
 void JsonPrinter::addValue(long value)                  {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
@@ -166,9 +185,9 @@ void JsonPrinter::addValue(unsigned int value)          {output << PrefixValue(c
 void JsonPrinter::addValue(unsigned long value)         {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
 void JsonPrinter::addValue(unsigned long long value)    {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
 
-void JsonPrinter::addValue(float value)                 {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
-void JsonPrinter::addValue(double value)                {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
-void JsonPrinter::addValue(long double value)           {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(float value)                 {output << PrefixValue(characteristics, state.size(), state.back()) << FormatDouble<float>(value);}
+void JsonPrinter::addValue(double value)                {output << PrefixValue(characteristics, state.size(), state.back()) << FormatDouble<double>(value);}
+void JsonPrinter::addValue(long double value)           {output << PrefixValue(characteristics, state.size(), state.back()) << FormatDouble<long double>(value);}
 
 void JsonPrinter::addValue(bool value)                  {output << PrefixValue(characteristics, state.size(), state.back()) << std::boolalpha << value;}
 void JsonPrinter::addValue(std::string const& value)    {output << PrefixValue(characteristics, state.size(), state.back()) << '"' << value << '"';}
