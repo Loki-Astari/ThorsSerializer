@@ -160,7 +160,7 @@ class ContainerMemberExtractor
         }
         void operator()(ParserInterface& parser, std::size_t const& index, C& object) const
         {
-            V                   data;
+            V                   data{};
             GetValueType<V>     valueGetter(parser, data);
 
             MemberInserter<C>   inserter(object);
@@ -490,7 +490,7 @@ class Traits<std::map<std::string, Value>>
                 }
                 void operator()(ParserInterface& parser, std::string const& key, std::map<std::string, Value>& object) const
                 {
-                    Value                   data;
+                    Value                   data{};
                     GetValueType<Value>     valueGetter(parser, data);
                     object.insert(std::make_pair(std::move(key), std::move(data)));
                 }
@@ -556,7 +556,7 @@ class Traits<std::unordered_map<std::string, Value>>
                 }
                 void operator()(ParserInterface& parser, std::string const& key, std::unordered_map<std::string, Value>& object) const
                 {
-                    Value                   data;
+                    Value                   data{};
                     GetValueType<Value>     valueGetter(parser, data);
                     object.insert(std::make_pair(std::move(key), std::move(data)));
                 }
@@ -618,7 +618,7 @@ class Traits<std::unordered_multimap<std::string, Value>>
                 }
                 void operator()(ParserInterface& parser, std::string const& key, std::unordered_multimap<std::string, Value>& object) const
                 {
-                    Value                   data;
+                    Value                   data{};
                     GetValueType<Value>     valueGetter(parser, data);
                     object.insert(std::make_pair(std::move(key), std::move(data)));
                 }
@@ -680,7 +680,7 @@ class Traits<std::multimap<std::string, Value>>
                 }
                 void operator()(ParserInterface& parser, std::string const& key, std::multimap<std::string, Value>& object) const
                 {
-                    Value                   data;
+                    Value                   data{};
                     GetValueType<Value>     valueGetter(parser, data);
                     object.insert(std::make_pair(std::move(key), std::move(data)));
                 }
