@@ -180,7 +180,7 @@
 
 #define THOR_MERGE_LABEL_NAME(Pre, Post)        Pre ## Post
 #define THOR_UNIQUE_LABEL(Line)                 THOR_MERGE_LABEL_NAME(thorUniqueName, Line)
-#define THOR_UNIQUE_NAME                        THOR_UNIQUE_LABEL(__LINE__)
+#define THOR_UNIQUE_NAME                        THOR_UNIQUE_LABEL(__COUNTER__)
 
 /*
  * Defines a trait for a user defined type.
@@ -234,7 +234,7 @@ ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
 namespace ThorsAnvil { namespace Serialize {                            \
 namespace                                                               \
 {                                                                       \
-    ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME( # DataType); \
+    ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME ( # DataType); \
 }                                                                       \
 }}
 #pragma vera-pop
