@@ -264,4 +264,19 @@ TEST(JsonPrinterTest, AddRawValueTest)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"K1":12})");
 }
+TEST(JsonPrinterTest, DoubleZeroNeedsDot)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    printer.addValue(0.0);
+    printer.closeArray();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    auto find = result.find('.');
+    EXPECT_NE(std::string::npos, find);
+}
 

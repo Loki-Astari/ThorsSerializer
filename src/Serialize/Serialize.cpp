@@ -70,6 +70,8 @@ void ParserInterface::ignoreTheValue()
 #include "test/SerializeTest.h"
 #include "test/BinaryParserTest.h"
 #include "test/IgnoreUneededData.h"
+#include "test/ExceptionTest.h"
+#include "test/Twitter.h"
 
 
 template void ThorsAnvil::Serialize::Serializer::print<Base>(Base const&);
@@ -146,5 +148,13 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<ThingVersion>(ThingVers
 template void ThorsAnvil::Serialize::DeSerializer::parse<CornerCaseClass>(CornerCaseClass&);
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<CornerCaseClass*>(CornerCaseClass*&);
+template void ThorsAnvil::Serialize::Serializer::print<ThrowablePrint>(ThrowablePrint const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<ThrowablePrint>(ThrowablePrint&);
+
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::string>(std::string&);
+template void ThorsAnvil::Serialize::Serializer::print<std::string>(std::string const&);
+
+template void ThorsAnvil::Serialize::DeSerializer::parse<TwitterTest::Twitter>(TwitterTest::Twitter&);
+template void ThorsAnvil::Serialize::Serializer::print<TwitterTest::Twitter>(TwitterTest::Twitter const&);
 
 #endif

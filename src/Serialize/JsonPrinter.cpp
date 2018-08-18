@@ -190,7 +190,88 @@ void JsonPrinter::addValue(double value)                {output << PrefixValue(c
 void JsonPrinter::addValue(long double value)           {output << PrefixValue(characteristics, state.size(), state.back()) << FormatDouble<long double>(value);}
 
 void JsonPrinter::addValue(bool value)                  {output << PrefixValue(characteristics, state.size(), state.back()) << std::boolalpha << value;}
-void JsonPrinter::addValue(std::string const& value)    {output << PrefixValue(characteristics, state.size(), state.back()) << '"' << value << '"';}
+
+auto isEscape = [](char c)
+{
+    return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
+};
+void JsonPrinter::addValue(std::string const& value)
+{
+    output << PrefixValue(characteristics, state.size(), state.back()) << '"';
+
+    auto begin  = std::begin(value);
+    auto end    = std::end(value);
+    auto next = std::find_if(begin, end, isEscape);
+    if (next == end)
+    {
+        output << value;
+    }
+    else
+    {
+        while (next != end)
+        {
+            output << std::string(begin, next);
+            if (*next == '"')
+            {
+                output << R"(\")";
+                ++next;
+            }
+            else if (*next == '\\')
+            {
+                output << R"(\\)";
+                ++next;
+            }
+            else if (*next == 0x08)
+            {
+                output << R"(\b)";
+                ++next;
+            }
+            else if (*next == 0x0C)
+            {
+                output << R"(\f)";
+                ++next;
+            }
+            else if (*next == 0x0A)
+            {
+                output << R"(\n)";
+                ++next;
+            }
+            else if (*next == 0x0D)
+            {
+                output << R"(\r)";
+                ++next;
+            }
+            else if (*next == 0x09)
+            {
+                output << R"(\t)";
+                ++next;
+            }
+            else
+            {
+                output << R"(\u)"
+                       << std::setw(4)
+                       << std::setfill('0')
+                       << std::hex
+                       << static_cast<unsigned int>(static_cast<unsigned char>(*next))
+                       << std::dec;
+                ++next;
+            }
+            /*
+            else
+            {
+                110xxxxx
+
+                output << R("\u") << std::setw(4) << std::setfill('0') << std::hex << codepoint;
+            }
+            */
+            begin = next;
+            next = std::find_if(begin, end, isEscape);
+        }
+        output << std::string(begin, end);
+    }
+
+    output << '"';
+}
 
 void JsonPrinter::addRawValue(std::string const& value) {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
 
