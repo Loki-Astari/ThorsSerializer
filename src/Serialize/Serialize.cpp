@@ -163,4 +163,7 @@ template void ThorsAnvil::Serialize::Serializer::print<SmartPtrTest::Object*>(Sm
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::unique_ptr<SmartPtrTest::Object>>(std::unique_ptr<SmartPtrTest::Object>&);
 template void ThorsAnvil::Serialize::Serializer::print<std::unique_ptr<SmartPtrTest::Object>>(std::unique_ptr<SmartPtrTest::Object> const&);
 
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::shared_ptr<SmartPtrTest::Object>>(std::shared_ptr<SmartPtrTest::Object>&);
+template void ThorsAnvil::Serialize::Serializer::print<std::shared_ptr<SmartPtrTest::Object>>(std::shared_ptr<SmartPtrTest::Object> const&);
+
 #endif

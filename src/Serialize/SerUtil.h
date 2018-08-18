@@ -792,6 +792,20 @@ class Traits<std::unique_ptr<T>>
         static void release(std::unique_ptr<T>& p)  {p.reset();}
 };
 
+template<typename T>
+struct BaseTypeGetter<std::shared_ptr<T>>
+{
+    using type = typename std::shared_ptr<T>::element_type;
+};
+template<typename T>
+class Traits<std::shared_ptr<T>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Pointer;
+        static std::shared_ptr<T>   alloc()         {return std::make_shared<T>();}
+        static void release(std::shared_ptr<T>& p)  {p.reset();}
+};
+
 
     }
 }
