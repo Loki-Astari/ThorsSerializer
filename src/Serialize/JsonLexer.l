@@ -20,7 +20,7 @@ NUMBER          -?{FLOAT}{EXP}?
 
 UNICODE         \\u[A-Fa-f0-9]{4}
 ESCAPECHAR      \\["\\/bfnrt]
-CHAR            [^"\\]|{ESCAPECHAR}|{UNICODE}
+CHAR            [^"\\\b\n\f\r\t]|{ESCAPECHAR}|{UNICODE}
 STRING          \"{CHAR}*\"
 
 VALUE_STRING    {STRING}

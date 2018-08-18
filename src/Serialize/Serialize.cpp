@@ -150,4 +150,6 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<CornerCaseClass*>(Corne
 template void ThorsAnvil::Serialize::Serializer::print<ThrowablePrint>(ThrowablePrint const&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<ThrowablePrint>(ThrowablePrint&);
 
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::string>(std::string&);
+template void ThorsAnvil::Serialize::Serializer::print<std::string>(std::string const&);
 #endif
