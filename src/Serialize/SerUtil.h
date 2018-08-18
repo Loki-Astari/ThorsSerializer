@@ -16,6 +16,7 @@
 #include <array>
 #include <tuple>
 #include <initializer_list>
+#include <memory>
 
 /*
  * GetValueType
@@ -45,6 +46,7 @@
  *      Traits<std::unordered_multimap<std::string,V>>
  * Traits<std::initializer_list<T>>
  *
+ * Traits<std::unique_ptr<T>>
  */
 
 namespace ThorsAnvil
@@ -773,6 +775,35 @@ class Traits<std::tuple<Args...>>
             static constexpr ContainerTuppleExtractor<Args...> members;
             return members;
         }
+};
+
+
+template<typename T>
+struct BaseTypeGetter<std::unique_ptr<T>>
+{
+    using type = typename std::unique_ptr<T>::element_type;
+};
+template<typename T>
+class Traits<std::unique_ptr<T>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Pointer;
+        static std::unique_ptr<T>   alloc()         {return std::make_unique<T>();}
+        static void release(std::unique_ptr<T>& p)  {p.reset();}
+};
+
+template<typename T>
+struct BaseTypeGetter<std::shared_ptr<T>>
+{
+    using type = typename std::shared_ptr<T>::element_type;
+};
+template<typename T>
+class Traits<std::shared_ptr<T>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Pointer;
+        static std::shared_ptr<T>   alloc()         {return std::make_shared<T>();}
+        static void release(std::shared_ptr<T>& p)  {p.reset();}
 };
 
 

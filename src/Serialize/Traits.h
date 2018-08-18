@@ -376,7 +376,8 @@ class Traits<T*>
 {
     public:
         static constexpr TraitType type = TraitType::Pointer;
-        static T* alloc() {return new T;}
+        static T*   alloc()         {return new T;}
+        static void release(T* p)   {delete p;}
 };
 
 /*

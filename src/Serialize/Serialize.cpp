@@ -72,6 +72,7 @@ void ParserInterface::ignoreTheValue()
 #include "test/IgnoreUneededData.h"
 #include "test/ExceptionTest.h"
 #include "test/Twitter.h"
+#include "test/SmartPointerTest.h"
 
 
 template void ThorsAnvil::Serialize::Serializer::print<Base>(Base const&);
@@ -156,5 +157,13 @@ template void ThorsAnvil::Serialize::Serializer::print<std::string>(std::string 
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<TwitterTest::Twitter>(TwitterTest::Twitter&);
 template void ThorsAnvil::Serialize::Serializer::print<TwitterTest::Twitter>(TwitterTest::Twitter const&);
+
+template void ThorsAnvil::Serialize::DeSerializer::parse<SmartPtrTest::Object*>(SmartPtrTest::Object*&);
+template void ThorsAnvil::Serialize::Serializer::print<SmartPtrTest::Object*>(SmartPtrTest::Object* const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::unique_ptr<SmartPtrTest::Object>>(std::unique_ptr<SmartPtrTest::Object>&);
+template void ThorsAnvil::Serialize::Serializer::print<std::unique_ptr<SmartPtrTest::Object>>(std::unique_ptr<SmartPtrTest::Object> const&);
+
+template void ThorsAnvil::Serialize::DeSerializer::parse<std::shared_ptr<SmartPtrTest::Object>>(std::shared_ptr<SmartPtrTest::Object>&);
+template void ThorsAnvil::Serialize::Serializer::print<std::shared_ptr<SmartPtrTest::Object>>(std::shared_ptr<SmartPtrTest::Object> const&);
 
 #endif
