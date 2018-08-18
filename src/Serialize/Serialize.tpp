@@ -196,7 +196,7 @@ class DeSerializationForBlock<TraitType::Pointer, T>
         {}
         void scanObject(T& object)
         {
-            delete object;
+            Traits<T>::release(object);
 
             ParserInterface::ParserToken    tokenType = parser.getToken();
             if (parser.isValueNull())
@@ -482,7 +482,7 @@ auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T 
     // `printPolyMorphicObject()`. Thus you get a call to the current
     // object and thus we simply use `T` and we can simply print the
     // normal members.
-    using BaseType = typename std::remove_pointer<T>::type;
+    using BaseType = typename BaseTypeGetter<T>::type;
     SerializerForBlock<ThorsAnvil::Serialize::Traits<BaseType>::type, BaseType>  block(parent, printer, *object);
     block.printMembers();
 }

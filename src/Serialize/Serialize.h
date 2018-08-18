@@ -257,6 +257,13 @@ class Serializer
         template<typename T>
         void printObjectMembers(T const& object);
 };
+/* ------------ BaseTypeGetter Gets base type of pointer ------------------------- */
+template<typename P>
+struct BaseTypeGetter
+{
+    // Done this way so smart pointers can specialize
+    using type = typename std::remove_pointer<P>::type;
+};
 
 /* ------------ MetaTraits for Serialization/DeSerialization ------------------------- */
 
