@@ -22,7 +22,9 @@
  * GetValueType
  * PutValueType
  * MemberInserter
- * ContainerMemberExtractor
+ * MemberEmplacer
+ * ContainerMemberExtractorInserter
+ * ContainerMemberExtractorEmplacer
  *
  * Traits<std::array<T,N>>
  * Traits<std::list<T>>
@@ -126,6 +128,8 @@ class PutValueType<V, TraitType::Value>
  */
 template<typename T>
 class MemberInserter;
+template<typename T>
+class MemberEmplacer;
 
 /* ------------------------------- ContainerMemberExtractor ------------------------------- */
 /*
@@ -144,10 +148,10 @@ class MemberInserter;
  * using move semantics.
  */
 template<typename C, typename V = typename C::value_type>
-class ContainerMemberExtractor
+class ContainerMemberExtractorInserter
 {
     public:
-        constexpr ContainerMemberExtractor() {}
+        constexpr ContainerMemberExtractorInserter() {}
         constexpr std::size_t getHash(std::size_t start) const
         {
             return thash<C>(start);
@@ -167,6 +171,30 @@ class ContainerMemberExtractor
 
             MemberInserter<C>   inserter(object);
             inserter.add(index, std::move(data));
+        }
+};
+template<typename C, typename V = typename C::value_type>
+class ContainerMemberExtractorEmplacer
+{
+    public:
+        constexpr ContainerMemberExtractorEmplacer() {}
+        constexpr std::size_t getHash(std::size_t start) const
+        {
+            return thash<C>(start);
+        }
+        void operator()(PrinterInterface& printer, C const& object) const
+        {
+            PutValueType<V>     valuePutter(printer);
+            for (auto const& loop: object)
+            {
+                valuePutter.putValue(loop);
+            }
+        }
+        void operator()(ParserInterface& parser, std::size_t const& index, C& object) const
+        {
+            MemberEmplacer<C>   extractor(object);
+            V&                  data = extractor.get(index);
+            GetValueType<V>     valueGetter(parser, data);
         }
 };
 
@@ -207,7 +235,7 @@ class Traits<std::initializer_list<T>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::initializer_list<T>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::initializer_list<T>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -217,16 +245,16 @@ class Traits<std::initializer_list<T>>
 
 /* ------------------------------- Traits<std::array<T, N>> ------------------------------- */
 template<typename T, std::size_t N>
-class MemberInserter<std::array<T, N>>
+class MemberEmplacer<std::array<T, N>>
 {
     std::array<T, N>& container;
     public:
-        MemberInserter(std::array<T, N>& container)
+        MemberEmplacer(std::array<T, N>& container)
             : container(container)
         {}
-        void add(std::size_t const& index, T&& value)
+        T& get(std::size_t const& index)
         {
-            container[index] = std::forward<T>(value);
+            return container[index];
         }
 };
 
@@ -235,7 +263,7 @@ class Traits<std::array<T, N>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::array<T, N>>    MemberExtractor;
+        typedef ContainerMemberExtractorEmplacer<std::array<T, N>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -245,16 +273,17 @@ class Traits<std::array<T, N>>
 
 /* ------------------------------- Traits<std::list<T>> ------------------------------- */
 template<typename T, typename Allocator>
-class MemberInserter<std::list<T, Allocator>>
+class MemberEmplacer<std::list<T, Allocator>>
 {
     std::list<T, Allocator>& container;
     public:
-        MemberInserter(std::list<T, Allocator>& container)
+        MemberEmplacer(std::list<T, Allocator>& container)
             : container(container)
         {}
-        void add(std::size_t const&, T&& value)
+        T& get(std::size_t const&)
         {
-            container.push_back(std::forward<T>(value));
+            container.emplace_back();
+            return container.back();
         }
 };
 
@@ -263,7 +292,7 @@ class Traits<std::list<T, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::list<T, Allocator>>    MemberExtractor;
+        typedef ContainerMemberExtractorEmplacer<std::list<T, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -273,25 +302,51 @@ class Traits<std::list<T, Allocator>>
 
 /* ------------------------------- Traits<std::vector<T>> ------------------------------- */
 template<typename T, typename Allocator>
-class MemberInserter<std::vector<T, Allocator>>
+class MemberEmplacer<std::vector<T, Allocator>>
 {
     std::vector<T, Allocator>& container;
     public:
-        MemberInserter(std::vector<T, Allocator>& container)
+        MemberEmplacer(std::vector<T, Allocator>& container)
             : container(container)
         {}
-        void add(std::size_t const&, T&& value)
+        T& get(std::size_t const&)
         {
-            container.push_back(std::forward<T>(value));
+            container.emplace_back();
+            return container.back();
         }
 };
-
 template<typename T, typename Allocator>
 class Traits<std::vector<T, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::vector<T, Allocator>>    MemberExtractor;
+        typedef ContainerMemberExtractorEmplacer<std::vector<T, Allocator>>    MemberExtractor;
+        static MemberExtractor const& getMembers()
+        {
+            static constexpr MemberExtractor    memberExtractor;
+            return memberExtractor;
+        }
+};
+
+template<typename Allocator>
+class MemberInserter<std::vector<bool, Allocator>>
+{
+    std::vector<bool, Allocator>& container;
+    public:
+        MemberInserter(std::vector<bool, Allocator>& container)
+            : container(container)
+        {}
+        void add(std::size_t const&, bool value)
+        {
+            container.push_back(value);
+        }
+};
+template<typename Allocator>
+class Traits<std::vector<bool, Allocator>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Array;
+        typedef ContainerMemberExtractorInserter<std::vector<bool, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -301,16 +356,17 @@ class Traits<std::vector<T, Allocator>>
 
 /* ------------------------------- Traits<std::deque<T>> ------------------------------- */
 template<typename T, typename Allocator>
-class MemberInserter<std::deque<T, Allocator>>
+class MemberEmplacer<std::deque<T, Allocator>>
 {
     std::deque<T, Allocator>& container;
     public:
-        MemberInserter(std::deque<T, Allocator>& container)
+        MemberEmplacer(std::deque<T, Allocator>& container)
             : container(container)
         {}
-        void add(std::size_t const&, T&& value)
+        T& get(std::size_t const&)
         {
-            container.push_back(std::forward<T>(value));
+            container.emplace_back();
+            return container.back();
         }
 };
 
@@ -319,7 +375,7 @@ class Traits<std::deque<T, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::deque<T, Allocator>>    MemberExtractor;
+        typedef ContainerMemberExtractorEmplacer<std::deque<T, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -347,7 +403,7 @@ class Traits<std::set<Key, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::set<Key, Compare, Allocator>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::set<Key, Compare, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -375,7 +431,7 @@ class Traits<std::unordered_set<Key, Hash, KeyEqual, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::unordered_set<Key, Hash, KeyEqual, Allocator>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::unordered_set<Key, Hash, KeyEqual, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -403,7 +459,7 @@ class Traits<std::multiset<Key, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::multiset<Key, Compare, Allocator>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::multiset<Key, Compare, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -431,7 +487,7 @@ class Traits<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -459,7 +515,7 @@ class Traits<std::map<Key, T, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::map<Key, T, Compare, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::map<Key, T, Compare, Allocator>, std::pair<Key, T>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -492,9 +548,8 @@ class Traits<std::map<std::string, Value>>
                 }
                 void operator()(ParserInterface& parser, std::string const& key, std::map<std::string, Value>& object) const
                 {
-                    Value                   data{};
+                    Value&                  data = object[key];
                     GetValueType<Value>     valueGetter(parser, data);
-                    object.insert(std::make_pair(std::move(key), std::move(data)));
                 }
         };
 
@@ -525,7 +580,7 @@ class Traits<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -591,7 +646,7 @@ class Traits<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -653,7 +708,7 @@ class Traits<std::multimap<Key, T, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractor<std::multimap<Key, T, Compare, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        typedef ContainerMemberExtractorInserter<std::multimap<Key, T, Compare, Allocator>, std::pair<Key, T>>    MemberExtractor;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
