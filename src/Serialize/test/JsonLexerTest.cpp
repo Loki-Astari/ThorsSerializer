@@ -1,12 +1,14 @@
 
 #include "gtest/gtest.h"
-#include "JsonLexer.h"
+#include "JsonManualLexer.h"
 #include "JsonLexemes.h"
+
+using ThorsAnvil::Serialize::JsonManualLexer;
 
 TEST(JsonLexerTest, ArrayTokens)
 {
     std::stringstream   stream("[],");
-    JsonLexerFlexLexer  lexer(&stream);
+    JsonManualLexer     lexer(stream);
 
     EXPECT_EQ('[',   lexer.yylex());
     EXPECT_EQ(']',   lexer.yylex());
@@ -15,7 +17,7 @@ TEST(JsonLexerTest, ArrayTokens)
 TEST(JsonLexerTest, MapTokens)
 {
     std::stringstream   stream("{}:,");
-    JsonLexerFlexLexer  lexer(&stream);
+    JsonManualLexer     lexer(stream);
 
     EXPECT_EQ('{',   lexer.yylex());
     EXPECT_EQ('}',   lexer.yylex());
@@ -25,7 +27,7 @@ TEST(JsonLexerTest, MapTokens)
 TEST(JsonLexerTest, ValueTokens)
 {
     std::stringstream   stream(R"("Test" 456 789.123 true false null)");
-    JsonLexerFlexLexer  lexer(&stream);
+    JsonManualLexer     lexer(stream);
 
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_STRING,  lexer.yylex());
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_INTEGER, lexer.yylex());

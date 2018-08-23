@@ -18,7 +18,7 @@
  */
 
 #include "Serialize.h"
-#include "JsonLexer.h"
+#include "JsonManualLexer.h"
 #include <istream>
 #include <string>
 #include <vector>
@@ -32,7 +32,7 @@ class JsonParser: public ParserInterface
 {
     enum State          {Error, Init, OpenM, Key, Colon, ValueM, CommaM, CloseM, OpenA, ValueA, CommaA, CloseA, ValueD, Done};
 
-    JsonLexerFlexLexer  lexer;
+    JsonManualLexer     lexer;
     std::vector<State>  parrentState;
     State               currentEnd;
     State               currentState;
