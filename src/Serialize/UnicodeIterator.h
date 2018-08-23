@@ -179,52 +179,60 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
     }
     UnicodeWrapperIterator& operator++()
     {
-        ++index;
-        if (index == cont.size())
+        if (cont.size() == 0)
         {
             ++iter;
+        }
+        else
+        {
+            ++index;
+            if (index == cont.size())
+            {
+                ++iter;
+                cont.clear();
+                index = 0;
+            }
         }
         return *this;
     }
     char operator*()
     {
-        checkBuffer();
+        if (cont.size() == 0)
+        {
+            return checkBuffer();
+        }
         return cont[index];
     }
     private:
-    void checkBuffer()
+    char checkBuffer()
     {
-        if (index == cont.size())
+        char result = *iter;
+        if (result != '\\')
         {
-            cont.clear();
-            index   = 0;
-
-            cont.push_back(*iter);
-
-            if (cont[0] == '\\')
+            return result;
+        }
+        ++iter;
+        result = *iter;
+        switch (result)
+        {
+            case '"':   return '"';
+            case '\\':  return '\\';
+            case '/':   return '/';
+            case 'b':   return '\b';
+            case 'f':   return '\f';
+            case 'n':   return '\n';
+            case 'r':   return '\r';
+            case 't':   return '\t';
+            case 'u':
             {
-                ++iter;
-                char next   = *iter;
-
-                switch (next)
-                {
-                    case '"':   cont[0] = '"';    break;
-                    case '\\':  cont[0] = '\\';   break;
-                    case '/':   cont[0] = '/';    break;
-                    case 'b':   cont[0] = '\b';   break;
-                    case 'f':   cont[0] = '\f';   break;
-                    case 'n':   cont[0] = '\n';   break;
-                    case 'r':   cont[0] = '\r';   break;
-                    case 't':   cont[0] = '\t';   break;
-                    case 'u':   decodeUnicode();  break;
-                    default:    cont[0] = next;   break;
-                }
+                decodeUnicode();
+                return cont[0];
             }
+            default:    return result;
         }
     }
     void decodeUnicode()
     {
-        cont.clear();
         long    unicodeValue    = getUnicodeHex();
 
         if (unicodeValue <= 0x7F)
