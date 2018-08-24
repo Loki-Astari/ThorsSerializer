@@ -165,13 +165,25 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
     I                   iter;
     std::vector<char>   cont;
     std::size_t         index;
-    UnicodeWrapperIterator(I iter)
-        : iter(iter)
+    int                 next;
+    UnicodeWrapperIterator(I inIter, bool end)
+        : iter(inIter)
         , index(0)
-    {}
+        , next(*iter)
+    {
+        if (!end)
+        {
+            if (next != '"')
+            {
+                throw std::runtime_error("UnicodeWrapperIterator: 1");
+            }
+            ++iter;
+            next = *iter;
+        }
+    }
     bool operator==(UnicodeWrapperIterator const& rhs) const
     {
-        return iter == rhs.iter;
+        return next == '"' || iter == rhs.iter;
     }
     bool operator!=(UnicodeWrapperIterator const& rhs) const
     {
@@ -182,6 +194,7 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
         if (cont.size() == 0)
         {
             ++iter;
+            next = *iter;
         }
         else
         {
@@ -189,6 +202,7 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
             if (index == cont.size())
             {
                 ++iter;
+                next = *iter;
                 cont.clear();
                 index = 0;
             }
@@ -206,7 +220,7 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
     private:
     char checkBuffer()
     {
-        char result = *iter;
+        char result = next;
         if (result != '\\')
         {
             return result;
@@ -311,7 +325,8 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
 };
 
 template<typename C> UnicodePushBackIterator<C> make_UnicodePushBackIterator(C& cont)   {return UnicodePushBackIterator<C>(cont);}
-template<typename I> UnicodeWrapperIterator<I>  make_UnicodeWrapperIterator(I iter)     {return UnicodeWrapperIterator<I>(iter);}
+template<typename I> UnicodeWrapperIterator<I>  make_UnicodeWrapperIterator(I iter)     {return UnicodeWrapperIterator<I>(iter, false);}
+template<typename I> UnicodeWrapperIterator<I>  make_EndUnicodeWrapperIterator(I iter)  {return UnicodeWrapperIterator<I>(iter, true);}
 
     }
 }

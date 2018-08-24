@@ -142,13 +142,12 @@ std::string JsonParser::getString()
         throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not a String value");
     }
     // Remember to drop the quotes
-    return std::string(make_UnicodeWrapperIterator(lexer.yyText() + 1),
-                       make_UnicodeWrapperIterator(lexer.yyText() + lexer.yyLeng() - 1));
+    return std::string(make_UnicodeWrapperIterator(lexer.yyText()),
+                       make_EndUnicodeWrapperIterator(lexer.yyText() + lexer.yyLeng()));
 }
 std::string JsonParser::getRawString()
 {
-    return std::string(make_UnicodeWrapperIterator(lexer.yyText()),
-                       make_UnicodeWrapperIterator(lexer.yyText() + lexer.yyLeng()));
+    return std::string(lexer.yyText(), lexer.yyText() + lexer.yyLeng());
 }
 
 std::string JsonParser::getKey()
