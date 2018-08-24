@@ -181,9 +181,9 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
             next = *iter;
         }
     }
-    bool operator==(UnicodeWrapperIterator const& rhs) const
+    bool operator==(UnicodeWrapperIterator const&) const
     {
-        return next == '"' || iter == rhs.iter;
+        return next == '"';
     }
     bool operator!=(UnicodeWrapperIterator const& rhs) const
     {
