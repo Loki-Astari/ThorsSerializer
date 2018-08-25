@@ -51,7 +51,15 @@ int JsonManualLexer::yylex()
         {
             str.unget();
             return lastToken = ThorsAnvil::Serialize::JSON_STRING;
-
+        }
+        default:
+        {
+            return lastToken = readNumber(next)
+                ? ThorsAnvil::Serialize::JSON_INTEGER
+                : ThorsAnvil::Serialize::JSON_FLOAT;
+        }
+    }
+};
 void JsonManualLexer::readTrue()
 {
     checkFixed("true", 4);
