@@ -144,7 +144,7 @@ std::string JsonManualLexer::getRawString()
 
 std::string JsonManualLexer::getString()
 {
-    return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator(str)));
+    return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator<char>(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator<char>(str)));
 }
 
 bool JsonManualLexer::getLastBool() const
