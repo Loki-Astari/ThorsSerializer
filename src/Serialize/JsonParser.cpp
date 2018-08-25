@@ -156,13 +156,7 @@ std::string JsonParser::getKey()
 template<typename T>
 inline T JsonParser::scan()
 {
-    char*   end;
-    T value = scanValue<T>(lexer.yyText(), &end);
-    if (lexer.yyLeng() == 0 || lexer.yyText() + lexer.yyLeng() != end)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not an integer");
-    }
-    return value;
+    return lexer.scan<T>();
 }
 
 void JsonParser::getValue(short& value)                         {value = scan<short>();}
@@ -181,18 +175,7 @@ void JsonParser::getValue(long double& value)                   {value = scan<lo
 
 void JsonParser::getValue(bool& value)
 {
-    if (lexer.yyLeng() == 4 && std::strncmp(lexer.yyText(), "true", 4) == 0)
-    {
-        value = true;
-    }
-    else if (lexer.yyLeng() == 5 && std::strncmp(lexer.yyText(), "false", 5) == 0)
-    {
-        value = false;
-    }
-    else
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser::getValue(): Not a bool");
-    }
+    value = lexer.getLastBool();
 }
 
 void JsonParser::getValue(std::string& value)
@@ -202,7 +185,7 @@ void JsonParser::getValue(std::string& value)
 
 bool JsonParser::isValueNull()
 {
-    return lexer.yyLeng() == 4 && std::strncmp(lexer.yyText(), "null", 4) == 0;
+    return lexer.isLastNull();
 }
 
 std::string JsonParser::getRawValue()

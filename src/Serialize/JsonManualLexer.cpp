@@ -9,6 +9,7 @@ using namespace ThorsAnvil::Serialize;
 
 JsonManualLexer::JsonManualLexer(std::istream& str)
     : str(str)
+    , lastNull(false)
 {}
 
 int JsonManualLexer::yylex()
@@ -16,6 +17,7 @@ int JsonManualLexer::yylex()
     char    next;
     str >> next;
     buffer.clear();
+    lastNull = false;
     switch (next)
     {
         case '{':
@@ -30,41 +32,25 @@ int JsonManualLexer::yylex()
         case 't':
         {
             readTrue();
+            lastBool = true;
             return lastToken = ThorsAnvil::Serialize::JSON_TRUE;
         }
         case 'f':
         {
             readFalse();
+            lastBool = false;
             return lastToken = ThorsAnvil::Serialize::JSON_FALSE;
         }
         case 'n':
         {
             readNull();
+            lastNull = true;
             return lastToken = ThorsAnvil::Serialize::JSON_NULL;
         }
         case '"':
         {
             str.unget();
             return lastToken = ThorsAnvil::Serialize::JSON_STRING;
-        }
-        default:
-        {
-            return lastToken = readNumber(next)
-                ? ThorsAnvil::Serialize::JSON_INTEGER
-                : ThorsAnvil::Serialize::JSON_FLOAT;
-        }
-    }
-};
-
-char const* JsonManualLexer::yyText()
-{
-    return &buffer[0];
-}
-
-int JsonManualLexer::yyLeng()
-{
-    return buffer.size();
-}
 
 void JsonManualLexer::readTrue()
 {
@@ -133,6 +119,23 @@ std::string JsonManualLexer::getRawString()
 std::string JsonManualLexer::getString()
 {
     return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator(str)));
+}
+
+bool JsonManualLexer::getLastBool() const
+{
+    if (lastToken == ThorsAnvil::Serialize::JSON_TRUE || lastToken == ThorsAnvil::Serialize::JSON_FALSE)
+    {
+        return lastBool;
+    }
+    else
+    {
+        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser::getValue(): Not a bool");
+    }
+}
+
+bool JsonManualLexer::isLastNull() const
+{
+    return lastNull;
 }
 
 char JsonManualLexer::readDigits(char next)
