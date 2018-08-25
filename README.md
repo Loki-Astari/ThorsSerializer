@@ -22,3 +22,4 @@ Unlike other libraries this one does not require you to build DOM of you object 
 
 -----
 [One Page](doc/full.md)
+
