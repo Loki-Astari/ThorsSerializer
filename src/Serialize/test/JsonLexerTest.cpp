@@ -30,10 +30,16 @@ TEST(JsonLexerTest, ValueTokens)
     JsonManualLexer     lexer(stream);
 
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_STRING,  lexer.yylex());
+    lexer.getRawString();
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_INTEGER, lexer.yylex());
+    lexer.getRawString();
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_FLOAT,   lexer.yylex());
+    lexer.getRawString();
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_TRUE,    lexer.yylex());
+    lexer.getRawString();
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_FALSE,   lexer.yylex());
+    lexer.getRawString();
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_NULL,    lexer.yylex());
+    lexer.getRawString();
 }
 

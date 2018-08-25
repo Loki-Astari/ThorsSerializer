@@ -19,6 +19,7 @@
  */
 
 #include <iterator>
+#include <vector>
 
 namespace ThorsAnvil
 {
@@ -179,6 +180,10 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
             }
             ++iter;
             next = *iter;
+            if (next == '"')
+            {
+                ++iter;
+            }
         }
     }
     bool operator==(UnicodeWrapperIterator const&) const
@@ -195,6 +200,10 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
         {
             ++iter;
             next = *iter;
+            if (next == '"')
+            {
+                ++iter;
+            }
         }
         else
         {
@@ -203,6 +212,10 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
             {
                 ++iter;
                 next = *iter;
+                if (next == '"')
+                {
+                    ++iter;
+                }
                 cont.clear();
                 index = 0;
             }
@@ -220,7 +233,11 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
     private:
     char checkBuffer()
     {
-        char result = next;
+        unsigned char result = next;
+        if (result < 0x20)
+        {
+            throw std::runtime_error("XXXXXX");
+        }
         if (result != '\\')
         {
             return result;

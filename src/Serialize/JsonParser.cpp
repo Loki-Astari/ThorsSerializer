@@ -137,17 +137,15 @@ ParserToken JsonParser::getNextToken()
 
 std::string JsonParser::getString()
 {
-    if (lexer.yyLeng() < 2 || lexer.yyText()[0] != '"' || lexer.yyText()[lexer.yyLeng()-1] != '"')
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not a String value");
-    }
-    // Remember to drop the quotes
-    return std::string(make_UnicodeWrapperIterator(lexer.yyText()),
-                       make_EndUnicodeWrapperIterator(lexer.yyText() + lexer.yyLeng()));
+    return lexer.getString();
 }
 std::string JsonParser::getRawString()
 {
-    return std::string(lexer.yyText(), lexer.yyText() + lexer.yyLeng());
+    return lexer.getRawString();
+}
+void JsonParser::ignoreDataValue()
+{
+    std::string ignore = lexer.getRawString();
 }
 
 std::string JsonParser::getKey()
@@ -160,7 +158,7 @@ inline T JsonParser::scan()
 {
     char*   end;
     T value = scanValue<T>(lexer.yyText(), &end);
-    if (lexer.yyText() + lexer.yyLeng() != end)
+    if (lexer.yyLeng() == 0 || lexer.yyText() + lexer.yyLeng() != end)
     {
         throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not an integer");
     }

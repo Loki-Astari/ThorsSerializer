@@ -1,5 +1,6 @@
 #include "JsonManualLexer.h"
 #include "JsonLexemes.h"
+#include "UnicodeIterator.h"
 
 #include <limits>
 #include <cstring>
@@ -14,6 +15,7 @@ int JsonManualLexer::yylex()
 {
     char    next;
     str >> next;
+    buffer.clear();
     switch (next)
     {
         case '{':
@@ -23,31 +25,31 @@ int JsonManualLexer::yylex()
         case ',':
         case ':':
         {
-            return next;
+            return lastToken = next;
         }
         case 't':
         {
             readTrue();
-            return ThorsAnvil::Serialize::JSON_TRUE;
+            return lastToken = ThorsAnvil::Serialize::JSON_TRUE;
         }
         case 'f':
         {
             readFalse();
-            return ThorsAnvil::Serialize::JSON_FALSE;
+            return lastToken = ThorsAnvil::Serialize::JSON_FALSE;
         }
         case 'n':
         {
             readNull();
-            return ThorsAnvil::Serialize::JSON_NULL;
+            return lastToken = ThorsAnvil::Serialize::JSON_NULL;
         }
         case '"':
         {
-            readString();
-            return ThorsAnvil::Serialize::JSON_STRING;
+            str.unget();
+            return lastToken = ThorsAnvil::Serialize::JSON_STRING;
         }
         default:
         {
-            return readNumber(next)
+            return lastToken = readNumber(next)
                 ? ThorsAnvil::Serialize::JSON_INTEGER
                 : ThorsAnvil::Serialize::JSON_FLOAT;
         }
@@ -79,28 +81,58 @@ void JsonManualLexer::readNull()
     checkFixed("null", 4);
 }
 
-void JsonManualLexer::readString()
+std::string JsonManualLexer::getRawString()
 {
-    buffer.clear();
-    buffer.push_back('"');
-
-    char last = ' ';
-    int next = str.get();;
-    while (next != EOF && !(next == '"' && last != '\\'))
+    switch (lastToken)
     {
-        if (next < 0x20)
+        case '{':   return "{";
+        case '}':   return "}";
+        case '[':   return "[";
+        case ']':   return "]";
+        case ',':   return ",";
+        case ':':   return ":";
+        case ThorsAnvil::Serialize::JSON_TRUE:  return "true";
+        case ThorsAnvil::Serialize::JSON_FALSE: return "false";
+        case ThorsAnvil::Serialize::JSON_NULL:  return "null";
+        case ThorsAnvil::Serialize::JSON_INTEGER:
+        case ThorsAnvil::Serialize::JSON_FLOAT:
         {
-            error();
+            return buffer;
         }
-        buffer.push_back(next);
-        last = next;
-        next = str.get();
+        case ThorsAnvil::Serialize::JSON_STRING:
+        {
+            std::string result;
+
+            char last = str.get();  // Read the first Quote off the stream
+            result.push_back(last);
+            int next = str.get();
+            while (next != EOF && !(next == '"' && last != '\\'))
+            {
+                if (next < 0x20)
+                {
+                    throw std::runtime_error("X");
+                }
+                result.push_back(next);
+                last = next;
+                next = str.get();
+            }
+            if (next == EOF)
+            {
+                error();
+            }
+            result.push_back('"');
+            return result;
+        }
+        default:
+        {
+            throw std::runtime_error("Not Supported: Unexpected");
+        }
     }
-    if (next == EOF)
-    {
-        error();
-    }
-    buffer.push_back('"');
+}
+
+std::string JsonManualLexer::getString()
+{
+    return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator(str)));
 }
 
 char JsonManualLexer::readDigits(char next)

@@ -60,6 +60,8 @@ class ParserInterface
         virtual ParserToken     getNextToken()          = 0;
         virtual std::string     getKey()                = 0;
 
+        virtual void    ignoreDataValue()                {}
+
         virtual void    getValue(short int&)             = 0;
         virtual void    getValue(int&)                   = 0;
         virtual void    getValue(long int&)              = 0;

@@ -48,6 +48,8 @@ class JsonParser: public ParserInterface
         virtual ParserToken getNextToken()                      override;
         virtual std::string getKey()                            override;
 
+        virtual void    ignoreDataValue()                       override;
+
         virtual void    getValue(short int& value)              override;
         virtual void    getValue(int& value)                    override;
         virtual void    getValue(long int& value)               override;
