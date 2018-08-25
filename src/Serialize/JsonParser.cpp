@@ -145,7 +145,7 @@ std::string JsonParser::getRawString()
 }
 void JsonParser::ignoreDataValue()
 {
-    std::string ignore = lexer.getRawString();
+    lexer.ignoreRawValue();
 }
 
 std::string JsonParser::getKey()

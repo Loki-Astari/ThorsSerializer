@@ -75,6 +75,24 @@ void JsonManualLexer::readNull()
     checkFixed("null", 4);
 }
 
+void JsonManualLexer::ignoreRawValue()
+{
+    if (lastToken == ThorsAnvil::Serialize::JSON_STRING)
+    {
+        char last = str.get();  // Read the first Quote off the stream
+        int next = str.get();
+        while (next != EOF && !(next == '"' && last != '\\'))
+        {
+            last = next;
+            next = str.get();
+        }
+        if (next == EOF)
+        {
+            error();
+        }
+    }
+}
+
 std::string JsonManualLexer::getRawString()
 {
     switch (lastToken)

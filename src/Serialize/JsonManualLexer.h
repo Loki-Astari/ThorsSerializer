@@ -20,6 +20,7 @@ class JsonManualLexer
         JsonManualLexer(std::istream& str);
         int yylex();
 
+        void        ignoreRawValue();
         std::string getRawString();
         std::string getString();
         bool        getLastBool() const;
