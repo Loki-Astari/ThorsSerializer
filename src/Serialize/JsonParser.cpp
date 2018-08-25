@@ -11,7 +11,7 @@ using ParserToken = ParserInterface::ParserToken;
 
 JsonParser::JsonParser(std::istream& stream, ParseType parseStrictness)
     : ParserInterface(stream, parseStrictness)
-    , lexer(&stream)
+    , lexer(stream)
     , currentEnd(Done)
     , currentState(Init)
     , started(false)
@@ -137,18 +137,15 @@ ParserToken JsonParser::getNextToken()
 
 std::string JsonParser::getString()
 {
-    if (lexer.YYLeng() < 2 || lexer.YYText()[0] != '"' || lexer.YYText()[lexer.YYLeng()-1] != '"')
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not a String value");
-    }
-    // Remember to drop the quotes
-    return std::string(make_UnicodeWrapperIterator(lexer.YYText() + 1),
-                       make_UnicodeWrapperIterator(lexer.YYText() + lexer.YYLeng() - 1));
+    return lexer.getString();
 }
 std::string JsonParser::getRawString()
 {
-    return std::string(make_UnicodeWrapperIterator(lexer.YYText()),
-                       make_UnicodeWrapperIterator(lexer.YYText() + lexer.YYLeng()));
+    return lexer.getRawString();
+}
+void JsonParser::ignoreDataValue()
+{
+    lexer.ignoreRawValue();
 }
 
 std::string JsonParser::getKey()
@@ -159,13 +156,7 @@ std::string JsonParser::getKey()
 template<typename T>
 inline T JsonParser::scan()
 {
-    char*   end;
-    T value = scanValue<T>(lexer.YYText(), &end);
-    if (lexer.YYText() + lexer.YYLeng() != end)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not an integer");
-    }
-    return value;
+    return lexer.scan<T>();
 }
 
 void JsonParser::getValue(short& value)                         {value = scan<short>();}
@@ -184,18 +175,7 @@ void JsonParser::getValue(long double& value)                   {value = scan<lo
 
 void JsonParser::getValue(bool& value)
 {
-    if (lexer.YYLeng() == 4 && std::strncmp(lexer.YYText(), "true", 4) == 0)
-    {
-        value = true;
-    }
-    else if (lexer.YYLeng() == 5 && std::strncmp(lexer.YYText(), "false", 5) == 0)
-    {
-        value = false;
-    }
-    else
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser::getValue(): Not a bool");
-    }
+    value = lexer.getLastBool();
 }
 
 void JsonParser::getValue(std::string& value)
@@ -205,7 +185,7 @@ void JsonParser::getValue(std::string& value)
 
 bool JsonParser::isValueNull()
 {
-    return lexer.YYLeng() == 4 && std::strncmp(lexer.YYText(), "null", 4) == 0;
+    return lexer.isLastNull();
 }
 
 std::string JsonParser::getRawValue()

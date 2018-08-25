@@ -19,6 +19,7 @@
  */
 
 #include <iterator>
+#include <vector>
 
 namespace ThorsAnvil
 {
@@ -165,13 +166,27 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
     I                   iter;
     std::vector<char>   cont;
     std::size_t         index;
-    UnicodeWrapperIterator(I iter)
-        : iter(iter)
+    int                 next;
+    UnicodeWrapperIterator(I inIter, bool end)
+        : iter(inIter)
         , index(0)
-    {}
-    bool operator==(UnicodeWrapperIterator const& rhs) const
+        , next(0)
     {
-        return iter == rhs.iter;
+        if (!end)
+        {
+            next = *iter;
+            ++iter;
+            if (next != '"')
+            {
+                throw std::runtime_error("UnicodeWrapperIterator: 1");
+            }
+            next = *iter;
+            ++iter;
+        }
+    }
+    bool operator==(UnicodeWrapperIterator const&) const
+    {
+        return next == '"';
     }
     bool operator!=(UnicodeWrapperIterator const& rhs) const
     {
@@ -179,52 +194,66 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
     }
     UnicodeWrapperIterator& operator++()
     {
-        ++index;
-        if (index == cont.size())
+        if (cont.size() == 0)
         {
+            next = *iter;
             ++iter;
+        }
+        else
+        {
+            ++index;
+            if (index == cont.size())
+            {
+                next = *iter;
+                ++iter;
+                cont.clear();
+                index = 0;
+            }
         }
         return *this;
     }
     char operator*()
     {
-        checkBuffer();
+        if (cont.size() == 0)
+        {
+            return checkBuffer();
+        }
         return cont[index];
     }
     private:
-    void checkBuffer()
+    char checkBuffer()
     {
-        if (index == cont.size())
+        unsigned char result = next;
+        if (result < 0x20)
         {
-            cont.clear();
-            index   = 0;
-
-            cont.push_back(*iter);
-
-            if (cont[0] == '\\')
+            throw std::runtime_error("XXXXXX");
+        }
+        if (result != '\\')
+        {
+            return result;
+        }
+        result = *iter;
+        ++iter;
+        switch (result)
+        {
+            case '"':   return '"';
+            case '\\':  return '\\';
+            case '/':   return '/';
+            case 'b':   return '\b';
+            case 'f':   return '\f';
+            case 'n':   return '\n';
+            case 'r':   return '\r';
+            case 't':   return '\t';
+            case 'u':
             {
-                ++iter;
-                char next   = *iter;
-
-                switch (next)
-                {
-                    case '"':   cont[0] = '"';    break;
-                    case '\\':  cont[0] = '\\';   break;
-                    case '/':   cont[0] = '/';    break;
-                    case 'b':   cont[0] = '\b';   break;
-                    case 'f':   cont[0] = '\f';   break;
-                    case 'n':   cont[0] = '\n';   break;
-                    case 'r':   cont[0] = '\r';   break;
-                    case 't':   cont[0] = '\t';   break;
-                    case 'u':   decodeUnicode();  break;
-                    default:    cont[0] = next;   break;
-                }
+                decodeUnicode();
+                return cont[0];
             }
+            default:    return result;
         }
     }
     void decodeUnicode()
     {
-        cont.clear();
         long    unicodeValue    = getUnicodeHex();
 
         if (unicodeValue <= 0x7F)
@@ -256,14 +285,14 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
     }
     void decodeSurrogatePairs(long unicodeValue)
     {
-        ++iter;
         char nextChar  = *iter;
+        ++iter;
         if (nextChar != '\\')
         {
             throw std::runtime_error("ThorsAnvil::Serialize::UnicodeIterator: Iter->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");
         }
-        ++iter;
         nextChar  = *iter;
+        ++iter;
         if (nextChar != 'u')
         {
             throw std::runtime_error("ThorsAnvil::Serialize::UnicodeIterator: Iter->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");
@@ -292,8 +321,8 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
 
         for (int loop=0;loop < 4;++loop)
         {
-            ++iter;
             char x = *iter;
+            ++iter;
 
             unicodeValue <<= 4;
             unicodeValue    += convertHexToDec(x);
@@ -303,7 +332,8 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
 };
 
 template<typename C> UnicodePushBackIterator<C> make_UnicodePushBackIterator(C& cont)   {return UnicodePushBackIterator<C>(cont);}
-template<typename I> UnicodeWrapperIterator<I>  make_UnicodeWrapperIterator(I iter)     {return UnicodeWrapperIterator<I>(iter);}
+template<typename I> UnicodeWrapperIterator<I>  make_UnicodeWrapperIterator(I iter)     {return UnicodeWrapperIterator<I>(iter, false);}
+template<typename I> UnicodeWrapperIterator<I>  make_EndUnicodeWrapperIterator(I iter)  {return UnicodeWrapperIterator<I>(iter, true);}
 
     }
 }
