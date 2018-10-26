@@ -5,6 +5,10 @@
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7567)](http://codereview.stackexchange.com/q/7567/507)
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7536)](http://codereview.stackexchange.com/q/7536/507)
 
+# Benchmark Results:
+Conformance [mac](https://LokiAstari.com/Json/Conformance.osx.html) [linux](https://LokiAstari.com/Json/Conformance.linux.html)  
+Performance [max](https://LokiAstari.com/Json/Performance.osx.html) [linux](https://LokiAstari.com/Json/Performance.linux.html)  
+For details see: [JsonBenchmark](https://github.com/Loki-Astari/JsonBenchmark)  
 
 ![ThorStream](img/stream.jpg)
 
