@@ -22,6 +22,7 @@ std::string const testDataE3 = R"({"ignoreArray": [)";
 std::string const testDataE4 = R"({"ignoreArray": )";
 std::string const testDataE5 = R"({"ignoreArray": ])";
 std::string const testDataE6 = R"({"ignoreArray": })";
+std::string const testDataE7 = R"({"aNonRealValue":56.78,"test":true,"normalString":"Done", "anotherValue":13})";
 
 TEST(SerializeTest, SerializeStructureOfValue)
 {
@@ -157,6 +158,21 @@ TEST(SerializeTest, ExactParserNeedsAllMembersFail)
     // testData1 has all the members of SerializeTestExtra (parent of SerializeExact)
     // but does not have anotherValue so should throw an exception
     std::stringstream                   stream(testData1);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
+
+    EXPECT_THROW(
+        deSerializer.parse(data),
+        std::runtime_error
+    );
+}
+TEST(SerializeTest, ExactParserNeedsAllMembersAndParentFail)
+{
+    SerializeExact      data;
+
+    // testData1 has all the members of SerializeTestExtra (parent of SerializeExact)
+    // but does not have anotherValue so should throw an exception
+    std::stringstream                   stream(testDataE7);
     ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
     ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
 

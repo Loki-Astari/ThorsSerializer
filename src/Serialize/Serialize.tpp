@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <sstream>
 #include <type_traits>
+#include <map>
+#include <unordered_map>
 
 
 namespace ThorsAnvil
@@ -26,6 +28,88 @@ class ApplyActionToParent<TraitType::Parent, T, I>
             return deSerializer.scanObjectMembers(key, static_cast<typename Traits<T>::Parent&>(object));
         }
 };
+/* ------------------- HeedAllValues ---------------------------- */
+template<typename T>
+struct HeedAllValues;
+
+template <typename, typename = void>
+struct HasParent: std::false_type
+{};
+
+template <class T>
+struct HasParent<T, std::enable_if_t<(sizeof(typename Traits<T>::Parent) >= 0)>>: std::true_type
+{};
+
+template<typename T>
+typename std::enable_if<! HasParent<T>::value>::type
+heedAllParentMembers(std::map<std::string, bool> const& /*membersound*/)
+{}
+
+template<typename T>
+typename std::enable_if<HasParent<T>::value>::type
+heedAllParentMembers(std::map<std::string, bool> const& membersFound)
+{
+    HeedAllValues<typename Traits<T>::Parent>   heedParent;
+    heedParent(membersFound);
+}
+
+template<typename T>
+struct HeedAllValues
+{
+    template<typename X>
+    int checkAMember(std::map<std::string, bool> const& membersFound, std::pair<char const*, X> const& member)
+    {
+        std::cerr << "CheckMember: " << member.first << "\n";
+        if (membersFound.find(member.first) == std::end(membersFound))
+        {
+            std::string msg("HeedAllValues::checkAMember: Did not fine: ");
+            msg += member.first;
+            throw std::runtime_error(msg);
+        }
+        return 0;
+    }
+
+    template<typename Tuple, std::size_t... Index>
+    void checkEachMember(std::map<std::string, bool> const& membersFound, Tuple const& tuple, std::index_sequence<Index...> const&)
+    {
+        std::initializer_list<int> ignore{1, checkAMember(membersFound, std::get<Index>(tuple))...};
+        (void)ignore;
+        heedAllParentMembers<T>(membersFound);
+    }
+
+    template<typename... Args>
+    void checkMemberFound(std::map<std::string, bool> const& membersFound, std::tuple<Args...> const& args)
+    {
+        checkEachMember(membersFound, args, std::index_sequence_for<Args...>{});
+    }
+
+    void operator()(std::map<std::string, bool> const& membersFound)
+    {
+        checkMemberFound(membersFound, Traits<T>::getMembers());
+    }
+};
+
+template<typename K, typename V>
+struct HeedAllValues<std::map<K, V>>
+{
+    void operator()(std::map<std::string, bool> const& /*members*/) {}
+};
+template<typename K, typename V>
+struct HeedAllValues<std::multimap<K, V>>
+{
+    void operator()(std::map<std::string, bool> const& /*members*/) {}
+};
+template<typename K, typename V>
+struct HeedAllValues<std::unordered_map<K, V>>
+{
+    void operator()(std::map<std::string, bool> const& /*members*/) {}
+};
+template<typename K, typename V>
+struct HeedAllValues<std::unordered_multimap<K, V>>
+{
+    void operator()(std::map<std::string, bool> const& /*members*/) {}
+};
+
 /* ------------ DeSerializationForBlock ------------------------- */
 
 /*
@@ -56,12 +140,22 @@ class DeSerializationForBlock
 
         void scanObject(T& object)
         {
+            std::map<std::string, bool>     memberFound;
             while (hasMoreValue())
             {
                 if (!parent.scanObjectMembers(key, object))
                 {
                     parser.ignoreValue();
                 }
+                else
+                {
+                    memberFound[key] = true;
+                }
+            }
+            if (parser.parseStrictness == ParserInterface::ParseType::Exact)
+            {
+                HeedAllValues<T>    check;
+                check(memberFound);
             }
         }
         bool hasMoreValue()
@@ -519,7 +613,7 @@ class SerializerForBlock<TraitType::Pointer, T>
             }
             else
             {
-                // Use SFINE to call one of two versions of the function.
+                // Use SFINAE to call one of two versions of the function.
                 tryPrintPolyMorphicObject(parent, printer, object, 0);
             }
         }
