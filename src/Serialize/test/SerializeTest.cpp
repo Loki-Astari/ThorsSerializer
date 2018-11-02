@@ -15,6 +15,7 @@ std::string const testData3 = R"({"member1":{"theInteger":234567,"aNonRealValue"
                               R"(,"member2":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide","data1":67,"data2":11}})";
 // testData4 is identical to testData1 but with several ignored fields added.
 std::string const testData4 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","ShouldIgnore":true, "ignoreMap": {"Plop":true}, "ignoreArray":[true, false, [1,2,34], {"key":"value"}]})";
+std::string const testData5 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","anotherValue":14})";
 std::string const testDataE1 = R"({"ignoreMap": {"Plop":true, ]}})";
 std::string const testDataE2 = R"({"ignoreArray": [}]})";
 std::string const testDataE3 = R"({"ignoreArray": [)";
@@ -135,6 +136,44 @@ TEST(SerializeTest, StrictParserDoesNotIgnoreData)
         deSerializer.parse(data),
         std::runtime_error
     );
+}
+TEST(SerializeTest, ExactParserDoesNotIgnoreData)
+{
+    SerializeTestExtra      data;
+
+    std::stringstream                   stream(testData4);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
+
+    EXPECT_THROW(
+        deSerializer.parse(data),
+        std::runtime_error
+    );
+}
+TEST(SerializeTest, ExactParserNeedsAllMembersFail)
+{
+    SerializeExact      data;
+
+    // testData1 has all the members of SerializeTestExtra (parent of SerializeExact)
+    // but does not have anotherValue so should throw an exception
+    std::stringstream                   stream(testData1);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
+
+    EXPECT_THROW(
+        deSerializer.parse(data),
+        std::runtime_error
+    );
+}
+TEST(SerializeTest, ExactParserNeedsAllMembersGood)
+{
+    SerializeExact      data;
+
+    std::stringstream                   stream(testData5);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
+
+    deSerializer.parse(data);
 }
 TEST(SerializeTest, IgnoreAllTheDataWeDontCareAbout)
 {

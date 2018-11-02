@@ -43,7 +43,7 @@ namespace ThorsAnvil
 class ParserInterface
 {
     public:
-        enum class ParseType   {Weak, Strict};
+        enum class ParseType   {Weak, Strict, Exact};
         enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
         std::istream&   input;
         ParserToken     pushBack;
