@@ -183,6 +183,26 @@ If it finds a "Key" that it does not recognize (or know how to decode) then it w
         T object;
         stream >> TS::jsonImport(object, PT::Strict);
 ````
+## Strict Vs Exact Parsing.
+
+Strict parsing does not allow extra parameters in the Json input. Exact parsing takes one further step in that all members in the object must be present in the Json. If not all members are available then an exception is thrown.
+
+````c++
+        using TS = ThorsAnvil::Serializer;
+        using PT = TS::ParserInterface::ParseType;
+
+        TS::JasonParser         parser(stream, PT::Exact;
+        TS::DeSerializeMember   deSer(parser);
+
+        T object;
+        deSer.parse(object);
+
+        // -----------
+        // Or Short hand
+
+        T object;
+        stream >> TS::jsonImport(object, PT::Exact);    // 
+````
 ## Example-1 [See doc/example1.cpp](example1.cpp)
 
 ````c++
