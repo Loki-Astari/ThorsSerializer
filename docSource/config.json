@@ -1,0 +1,7 @@
+{
+    "author": "ThorsSerialize",
+    "title": "ThorsSerialize",
+    "description": "Modern C++ declaritive Serialization Library",
+    "theme": "documentation",
+    "themeGit": "git@github.com:Loki-Astari/andvari-theme-documentation.git"
+}
