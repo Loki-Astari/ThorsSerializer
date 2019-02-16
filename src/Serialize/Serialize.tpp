@@ -717,7 +717,7 @@ SerializeMember<T, M> make_SerializeMember(Serializer& ser, PrinterInterface& pr
 template<typename T, typename Members, std::size_t... Seq>
 inline void Serializer::printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    auto discard = {(make_SerializeMember(*this, printer, object, std::get<Seq>(member)),1)...};
+    auto discard = {1, (make_SerializeMember(*this, printer, object, std::get<Seq>(member)),1)...};
     (void)discard;
 }
 

@@ -166,8 +166,8 @@
 #define THOR_TYPEACTION(TC, Type, Member)       std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, TC) ::Member)>
 #define THOR_VALUEACTION(TC, Type, Member)      { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, TC) ::Member }
 #define THOR_NAMEACTION(TC, Type, Member)       #Member
-#define LAST_THOR_TYPEACTION(TC, Type)          void*
-#define LAST_THOR_VALUEACTION(TC, Type)         {nullptr}
+#define LAST_THOR_TYPEACTION(TC, Type)
+#define LAST_THOR_VALUEACTION(TC, Type)
 #define LAST_THOR_NAMEACTION(TC, Type)          nullptr
 
 #define THOR_TYPENAMEPARAMACTION(Ex, Id)        typename T ## Id
@@ -266,7 +266,8 @@ DO_ASSERT(DataType)
     ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(Count, ParentType, __VA_ARGS__, 1), Parent, Count, __VA_ARGS__, 1) \
     static_assert(true, "")
 
-#define ThorsAnvil_ExpandTrait(ParentType, DataType, ...)               \
+#define ThorsAnvil_ExpandTrait(ParentType, ...)                     ThorsAnvil_ExpandTrait_Base(ParentType, __VA_ARGS__, 1)
+#define ThorsAnvil_ExpandTrait_Base(ParentType, DataType, ...)          \
     static_assert(                                                      \
         std::is_base_of<ParentType, DataType>::value,                   \
         "ParentType must be a base class of DataType");                 \
@@ -274,7 +275,7 @@ DO_ASSERT(DataType)
         ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(0, ParentType, DataType, __VA_ARGS__, 1), Parent, 0, DataType, __VA_ARGS__, 1); \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(0, ParentType, DataType, __VA_ARGS__), Parent, 0, DataType, __VA_ARGS__); \
     ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)            \
     static_assert(true, "")
 
