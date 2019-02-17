@@ -50,6 +50,13 @@ class SerializeExactNoMembers: public SerializeTestExtra
         using SerializeTestExtra::SerializeTestExtra;
 };
 
+class SerializeExactNoMembersPoly: public SerializeTestExtra
+{
+    public:
+        using SerializeTestExtra::SerializeTestExtra;
+	ThorsAnvil_PolyMorphicSerializer(SerializeExactNoMembersPoly);
+};
+
 
 class SerializeTestChild: public SerializeTestExtra
 {
@@ -99,6 +106,7 @@ ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeTestChild, data1, data2);
 ThorsAnvil_MakeTrait(SerializeTestMembers, member1, member2);
 ThorsAnvil_MakeTrait(CornerCaseClass, value);
 ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeExactNoMembers);
+ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeExactNoMembersPoly);
 
 
 #endif

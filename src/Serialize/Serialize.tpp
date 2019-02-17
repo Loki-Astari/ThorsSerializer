@@ -437,7 +437,8 @@ DeSerializeMember<T, M> make_DeSerializeMember(DeSerializer& parent, ParserInter
 template<typename T, typename Members, std::size_t... Seq>
 inline bool DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    auto memberCheck = {static_cast<bool>(make_DeSerializeMember(*this, parser, key, object, std::get<Seq>(member)))...};
+    using CheckMembers = std::initializer_list<bool>;
+    CheckMembers memberCheck = {static_cast<bool>(make_DeSerializeMember(*this, parser, key, object, std::get<Seq>(member)))...};
     return std::find(std::begin(memberCheck), std::end(memberCheck), true) != std::end(memberCheck);
 }
 
