@@ -4,7 +4,7 @@ using ThorsAnvil::Serialize::ParserInterface;
 
 void ParserInterface::ignoreValue()
 {
-    if (parseStrictness == ParseType::Strict)
+    if (parseStrictness != ParseType::Weak)
     {   throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::ignoreValue: In Strict parser mode not allowed to ignore values.");
     }
 

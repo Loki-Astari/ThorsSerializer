@@ -36,6 +36,15 @@ class SerializeTestExtra
         SerializeTestExtra& operator=(SerializeTestExtra const&)  = delete;
 };
 
+class SerializeExact: public SerializeTestExtra
+{
+    int     anotherValue;
+    friend class ThorsAnvil::Serialize::Traits<SerializeExact>;
+    public:
+        using SerializeTestExtra::SerializeTestExtra;
+};
+
+
 class SerializeTestChild: public SerializeTestExtra
 {
     public:
@@ -79,6 +88,7 @@ struct CornerCaseClass
 ThorsAnvil_MakeEnum(RGB, Red, Green, Blue);
 ThorsAnvil_MakeTrait(EumHolder, value);
 ThorsAnvil_MakeTrait(SerializeTestExtra, theInteger, aNonRealValue, test, normalString);
+ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeExact, anotherValue);
 ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeTestChild, data1, data2);
 ThorsAnvil_MakeTrait(SerializeTestMembers, member1, member2);
 ThorsAnvil_MakeTrait(CornerCaseClass, value);
