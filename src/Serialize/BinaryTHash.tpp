@@ -52,7 +52,7 @@ struct TraitsHash
     template<typename Members, std::size_t... Seq>
     std::size_t makeTraitsHashValue(std::size_t start, Members const& member, std::index_sequence<Seq...> const&)
     {
-        auto d = {(start=thash(start, std::get<Seq>(member)))...};
+        auto d = {1, (start=thash(start, std::get<Seq>(member)), 1)...};
         d.size();
         return start;
     }

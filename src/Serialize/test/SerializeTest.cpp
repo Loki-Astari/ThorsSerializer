@@ -284,4 +284,32 @@ TEST(SerializeTest, IgnoreDataArrayWithBadData6)
         std::runtime_error
     );
 }
+TEST(SerializeTest, DerivedTypeNoNewMembers)
+{
+    SerializeExactNoMembers        data(34,56.78, true, "Done");
+
+    std::stringstream   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
+    ThorsAnvil::Serialize::Serializer   serializer(printer);
+
+    serializer.print(data);
+    std::string result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+
+    EXPECT_EQ(testData1, result);
+}
+TEST(SerializeTest, DerivedTypeNoNewMembersPolyMorphic)
+{
+    SerializeExactNoMembersPoly        data(34,56.78, true, "Done");
+
+    std::stringstream   stream;
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
+    ThorsAnvil::Serialize::Serializer   serializer(printer);
+
+    serializer.print(data);
+    std::string result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+
+    EXPECT_EQ(testData1, result);
+}
 
