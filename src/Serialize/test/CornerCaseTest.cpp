@@ -727,8 +727,10 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SlashK)
     std::string                 stream(R"("\k")");;
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
-    char    value = *loop;
-    EXPECT_EQ(value, 'k');
+    EXPECT_THROW(
+        *loop,
+        std::runtime_error
+    );
 }
 
 // https://www.charbase.com/1d11e-unicode-musical-symbol-g-clef

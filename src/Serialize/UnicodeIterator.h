@@ -40,7 +40,7 @@ inline long convertHexToDec(char x)
     {
         return 10 + (x - 'a');
     }
-    throw std::runtime_error("ThorsAnvil::Serialize::UnicodeIterator: Invalid Hex Digit in unicode string");
+    throw std::runtime_error("ThorsAnvil::Serialize::convertHexToDec: Invalid Hex Digit in unicode string");
 }
 
 template<typename C>
@@ -178,7 +178,7 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
             ++iter;
             if (next != '"')
             {
-                throw std::runtime_error("UnicodeWrapperIterator: 1");
+                throw std::runtime_error("ThorsAnvil::Serialize::UnicodeWrapperIterator::UnicodeWrapperIterator: String does not start with a \" character");
             }
             next = *iter;
             ++iter;
@@ -226,7 +226,7 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
         unsigned char result = next;
         if (result < 0x20)
         {
-            throw std::runtime_error("XXXXXX");
+            throw std::runtime_error("ThorsAnvil::Serialize::UnicodeWrapperIterator::checkBuffer: input character can not be smaller than 0x20");
         }
         if (result != '\\')
         {
@@ -249,7 +249,10 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
                 decodeUnicode();
                 return cont[0];
             }
-            default:    return result;
+            default:
+            {
+                throw std::runtime_error("ThorsAnvil::Serialize::UnicodeWrapperIterator::checkBuffer Escaped character must be one of [\"\\/bfnrtvu]");
+            }
         }
     }
     void decodeUnicode()

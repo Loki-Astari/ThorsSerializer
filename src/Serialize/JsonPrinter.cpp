@@ -1,5 +1,6 @@
 #include "JsonPrinter.h"
 #include <iomanip>
+#include <algorithm>
 
 using namespace ThorsAnvil::Serialize;
 

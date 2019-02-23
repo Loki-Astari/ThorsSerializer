@@ -253,10 +253,14 @@ namespace                                                               \
     static_assert(true, "")
 
 #define ThorsAnvil_MakeTraitCustom(DataType)                            \
-template<> class ThorsAnvil::Serialize::Traits<DataType>                \
+namespace ThorsAnvil { namespace Serialize {                            \
+template<>                                                              \
+class Traits<DataType>                                                  \
 {                                                                       \
     public: static constexpr TraitType type = TraitType::Serialize;     \
-}
+};                                                                      \
+}}                                                                      \
+DO_ASSERT(DataType)
 
 #define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
     ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(Count, ParentType, __VA_ARGS__, 1), Parent, Count, __VA_ARGS__, 1) \

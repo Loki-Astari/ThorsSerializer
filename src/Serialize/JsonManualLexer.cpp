@@ -59,7 +59,8 @@ int JsonManualLexer::yylex()
                 : ThorsAnvil::Serialize::JSON_FLOAT;
         }
     }
-};
+}
+
 void JsonManualLexer::readTrue()
 {
     checkFixed("true", 4);
@@ -144,7 +145,7 @@ std::string JsonManualLexer::getRawString()
 
 std::string JsonManualLexer::getString()
 {
-    return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator(str)));
+    return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator<char>(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator<char>(str)));
 }
 
 bool JsonManualLexer::getLastBool() const
@@ -250,23 +251,3 @@ void JsonManualLexer::error()
 {
     throw std::runtime_error("ThorsAnvil::Serialize::JsonLexer: Invalid Character in Lexer");
 }
-
-#if 0
-DIGIT           [0-9]
-DIGIT1          [1-9]
-INTNUM          {DIGIT1}{DIGIT}*
-FRACT           "."{DIGIT}+
-FLOAT           ({INTNUM}|0){FRACT}?
-EXP             [eE][+-]?{DIGIT}+
-NUMBER          -?{FLOAT}{EXP}?
-
-UNICODE         \\u[A-Fa-f0-9]{4}
-ESCAPECHAR      \\["\\/bfnrt]
-CHAR            [^"\\\b\n\f\r\t]|{ESCAPECHAR}|{UNICODE}
-STRING          \"{CHAR}*\"
-
-VALUE_STRING    {STRING}
-VALUE_INTEGER   {INTNUM}
-VALUE_FLOAT     {NUMBER}
-
-#endif
