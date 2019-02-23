@@ -219,6 +219,24 @@ class DeSerializationForBlock<TraitType::Serialize, T>
         }
 };
 /* ------------ tryParsePolyMorphicObject Serializer ------------------------- */
+template<typename T>
+struct ConvertPointer
+{
+    static T* assign(T* result)
+    {
+        return result;
+    }
+};
+template<typename T>
+struct ConvertPointer<std::unique_ptr<T>>
+{
+    static std::unique_ptr<T> assign(std::unique_ptr<T>* result)
+    {
+        std::unique_ptr<T>  data = std::move(*result);
+        delete result;
+        return data;
+    }
+};
 template<class T>
 auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, int) -> decltype(object->parsePolyMorphicObject(parent, parser), void())
 {
@@ -248,7 +266,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
     parser.getValue(className);
 
     using BaseType  = typename std::remove_pointer<T>::type;
-    object = PolyMorphicRegistry::getNamedTypeConvertedTo<BaseType>(className);
+    object = ConvertPointer<BaseType>::assign(PolyMorphicRegistry::getNamedTypeConvertedTo<BaseType>(className));
 
     // This uses a virtual method in the object to
     // call parsePolyMorphicObject() the difference
