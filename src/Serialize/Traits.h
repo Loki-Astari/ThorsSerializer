@@ -239,16 +239,15 @@ namespace                                                               \
 }}
 #pragma vera-pop
 
-#define ThorsAnvil_NoParent(Count, DataType, ...)           typedef DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count)    Root;
 #define ThorsAnvil_Parent(Count, ParentType, DataType, ...) typedef ParentType  Parent; \
-                                                            typedef typename Traits<ParentType>::Root Root;
+                                                            typedef typename GetRootType<ParentType>::Root Root;
 
 #define ThorsAnvil_Template_MakeTrait(Count, ...)                       \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_NoParent(Count, __VA_ARGS__, 1) , Map, Count, __VA_ARGS__, 1)  \
+    ThorsAnvil_MakeTrait_Base( , Map, Count, __VA_ARGS__, 1)            \
     static_assert(true, "")
 
 #define ThorsAnvil_MakeTrait(...)                                       \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_NoParent(0, __VA_ARGS__, 1) , Map, 0, __VA_ARGS__, 1);               \
+    ThorsAnvil_MakeTrait_Base( , Map, 0, __VA_ARGS__, 1);               \
     ThorsAnvil_RegisterPolyMorphicType_Internal(__VA_ARGS__, 1)         \
     static_assert(true, "")
 
@@ -424,6 +423,17 @@ class SerializeArraySize
         }
 };
 
+template<typename T, typename R = T>
+struct GetRootType
+{
+    using Root = R;
+};
+template<typename T>
+struct GetRootType<T, typename Traits<T>::Root>
+{
+    using Root = typename Traits<T>::Root;
+};
+
 /*
  */
 class PolyMorphicRegistry
@@ -442,7 +452,7 @@ class PolyMorphicRegistry
         template<typename T>
         static T* getNamedTypeConvertedTo(std::string const& name)
         {
-            using Root = typename Traits<T>::Root;
+            using Root = typename GetRootType<T>::Root;
 
             auto     cont       = getContainer();
             auto     find       = cont.find(name);
@@ -481,7 +491,9 @@ struct ThorsAnvil_InitPolyMorphicType<T, true>
     {
         PolyMorphicRegistry::getAllocator(name) =
             []() -> void*
-            {   return dynamic_cast<typename Traits<T>::Root*>(Traits<T*>::alloc());
+            {
+                using Root = typename GetRootType<T>::Root;
+                return dynamic_cast<Root*>(Traits<T*>::alloc());
             };
     }
 };
