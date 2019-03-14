@@ -24,6 +24,7 @@
 #include <tuple>
 #include <map>
 #include <functional>
+#include <memory>
 
 /*
  * Macros for counting the number of arguments
