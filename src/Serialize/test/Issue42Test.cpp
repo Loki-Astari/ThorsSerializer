@@ -19,19 +19,18 @@ struct BaseVehicle {
     ThorsAnvil_PolyMorphicSerializer(BaseVehicle);
 };
 
-struct Vehicle : public BaseVehicle {
+struct VehicleHolder : public BaseVehicle {
     std::unique_ptr<int> id { nullptr };
-    ~Vehicle() override = default;
-    ThorsAnvil_PolyMorphicSerializer(Vehicle);
+    ThorsAnvil_PolyMorphicSerializer(VehicleHolder);
 };
 
 struct Fleet {
     //! The list of vehicles.
-    std::unique_ptr<std::vector<std::unique_ptr<Vehicle>>> vehicles { nullptr };
+    std::unique_ptr<std::vector<std::unique_ptr<VehicleHolder>>> vehicles { nullptr };
 };
 
 ThorsAnvil_MakeTrait(BaseVehicle, isPreloaded);
-ThorsAnvil_ExpandTrait(BaseVehicle, Vehicle, id);
+ThorsAnvil_ExpandTrait(BaseVehicle, VehicleHolder, id);
 ThorsAnvil_MakeTrait(Fleet, vehicles);
 
 TEST(Issue42Test, PointerUniquePtrMultiple)
@@ -39,7 +38,7 @@ TEST(Issue42Test, PointerUniquePtrMultiple)
     Fleet test {};
     string str = R"( {"vehicles":[
          {
-            "__type": "Vehicle",
+            "__type": "VehicleHolder",
             "id":0
          }
       ]})";

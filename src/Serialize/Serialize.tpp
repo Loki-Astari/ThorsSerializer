@@ -230,11 +230,9 @@ struct ConvertPointer
 template<typename T>
 struct ConvertPointer<std::unique_ptr<T>>
 {
-    static std::unique_ptr<T> assign(std::unique_ptr<T>* result)
+    static std::unique_ptr<T> assign(T* result)
     {
-        std::unique_ptr<T>  data = std::move(*result);
-        delete result;
-        return data;
+        return std::unique_ptr<T>{result};
     }
 };
 template<class T>
@@ -266,7 +264,8 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
     parser.getValue(className);
 
     using BaseType  = typename std::remove_pointer<T>::type;
-    object = ConvertPointer<BaseType>::assign(PolyMorphicRegistry::getNamedTypeConvertedTo<BaseType>(className));
+    using AllocType = typename GetAllocationType<BaseType>::AllocType;
+    object = ConvertPointer<BaseType>::assign(PolyMorphicRegistry::getNamedTypeConvertedTo<AllocType>(className));
 
     // This uses a virtual method in the object to
     // call parsePolyMorphicObject() the difference
