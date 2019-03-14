@@ -433,6 +433,16 @@ struct GetRootType<T, typename Traits<T>::Root>
 {
     using Root = typename Traits<T>::Root;
 };
+template<typename T>
+struct GetAllocationType
+{
+    using AllocType = T;
+};
+template<typename T>
+struct GetAllocationType<std::unique_ptr<T>>
+{
+    using AllocType = T;
+};
 
 /*
  */
@@ -452,7 +462,7 @@ class PolyMorphicRegistry
         template<typename T>
         static T* getNamedTypeConvertedTo(std::string const& name)
         {
-            using Root = typename GetRootType<T>::Root;
+            using AllocType     = typename GetAllocationType<T>::AllocType;
 
             auto     cont       = getContainer();
             auto     find       = cont.find(name);
@@ -460,9 +470,11 @@ class PolyMorphicRegistry
             {
                 throw std::runtime_error("ThorsAnvil::Serialize::PolyMorphicRegistry::getNamedTypeConvertedTo: Non polymorphic type");
             }
-            void*    data        = find->second();
-            Root*    dataBase    = reinterpret_cast<Root*>(data);
-            return dynamic_cast<T*>(dataBase);
+            void*       data        = find->second();
+            AllocType*  dataBase    = reinterpret_cast<AllocType*>(data);
+
+            using ReturnType    = T*;
+            return ReturnType{dataBase};
         }
 };
 
