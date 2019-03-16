@@ -69,8 +69,10 @@ ThorsAnvil_ExpandTrait(IPConnection, IPv6Connection, v6Name, cost);
 ThorsAnvil_MakeTrait(TcpConnection, blocks);
 ThorsAnvil_MakeTrait(UdpConnection, listeners);
 
+using Tcp4ConnectionParent = ThorsAnvil::Serialize::Parents<IPv4Connection, TcpConnection>;
 
-ThorsAnvil_MakeTrait(Tcp4Connection, data);
+
+ThorsAnvil_ExpandTrait(Tcp4ConnectionParent, Tcp4Connection, data);
 ThorsAnvil_MakeTrait(Tcp6Connection, sync);
 ThorsAnvil_MakeTrait(Udp4Connection, fly);
 ThorsAnvil_MakeTrait(Udp6Connection, fancy);

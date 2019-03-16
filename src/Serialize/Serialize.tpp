@@ -14,18 +14,52 @@ namespace ThorsAnvil
     {
 
 /* ------------ ApplyActionToParent ------------------------- */
-
-template<typename T, typename I>
-class ApplyActionToParent<TraitType::Parent, T, I>
+template<typename P, typename T, typename I>
+class ApplyActionToAllParent
 {
     public:
         void printParentMembers(Serializer& serializer, T const& object)
         {
-            serializer.printObjectMembers(static_cast<typename Traits<T>::Parent const&>(object));
+            serializer.printObjectMembers(static_cast<P const&>(object));
         }
         bool scanParentMember(DeSerializer& deSerializer, I const& key, T& object)
         {
-            return deSerializer.scanObjectMembers(key, static_cast<typename Traits<T>::Parent&>(object));
+            return deSerializer.scanObjectMembers(key, static_cast<P&>(object));
+        }
+};
+template<typename... Args, typename T, typename I>
+class ApplyActionToAllParent<Parents<Args...>, T, I>
+{
+    public:
+        void printParentMembers(Serializer& serializer, T const& object)
+        {
+            bool ignore[] {true, (serializer.printObjectMembers(static_cast<Args const&>(object)), true)...};
+            (void)ignore;
+        }
+        bool scanParentMember(DeSerializer& deSerializer, I const& key, T& object)
+        {
+            /*
+             * See if the key is valid in one parent
+             * Note: If it is valid in multiple parents we will probably get an exception
+             *       as each parent will try and read the value.
+             */
+            bool result[] = {false, deSerializer.scanObjectMembers(key, static_cast<Args&>(object))...};
+            return std::find(std::begin(result) , std::end(result), true) != std::end(result);
+        }
+};
+
+template<typename T, typename I>
+class ApplyActionToParent<TraitType::Parent, T, I>
+{
+    ApplyActionToAllParent<typename Traits<T>::Parent, T, I>  parentAction;
+    public:
+        void printParentMembers(Serializer& serializer, T const& object)
+        {
+            parentAction.printParentMembers(serializer, object);
+        }
+        bool scanParentMember(DeSerializer& deSerializer, I const& key, T& object)
+        {
+            return parentAction.scanParentMember(deSerializer, key, object);
         }
 };
 /* ------------------- HeedAllValues ---------------------------- */
@@ -86,6 +120,21 @@ struct HeedAllValues
     void operator()(std::map<std::string, bool> const& membersFound)
     {
         checkMemberFound(membersFound, Traits<T>::getMembers());
+    }
+};
+template<typename... P>
+struct HeedAllValues<Parents<P...>>
+{
+    template<typename ParentTupple, std::size_t... Index>
+    void checkEachParent(ParentTupple& parentsToHeed, std::map<std::string, bool> const& membersFound, std::index_sequence<Index...> const&)
+    {
+        bool ignore[] = {true, (std::get<Index>(parentsToHeed)(membersFound), true)...};
+        (void)ignore;
+    }
+    void operator()(std::map<std::string, bool> const& membersFound)
+    {
+        std::tuple<HeedAllValues<P>...>     parentsToHeed;
+        checkEachParent(parentsToHeed, membersFound, std::index_sequence_for<P...>{});
     }
 };
 
