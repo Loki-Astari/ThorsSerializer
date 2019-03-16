@@ -240,8 +240,8 @@ namespace                                                               \
 }}
 #pragma vera-pop
 
-#define ThorsAnvil_Parent(Count, ParentType, DataType, ...) typedef ParentType  Parent; \
-                                                            typedef typename GetRootType<ParentType>::Root Root;
+#define ThorsAnvil_Parent(Count, ParentType, DataType, ...) using Parent = ParentType; \
+                                                            using Root   = typename GetRootType<ParentType>::Root;
 
 #define ThorsAnvil_Template_MakeTrait(Count, ...)                       \
     ThorsAnvil_MakeTrait_Base( , Map, Count, __VA_ARGS__, 1)            \
@@ -522,11 +522,11 @@ class PolyMorphicRegistry
 template <typename T>
 class HasPolyMorphicObjectMarker
 {
-    typedef char one;
-    typedef long two;
+    using One = char;
+    using Two = long;
 
-    template <typename C> static one test( decltype(&C::parsePolyMorphicObject) );
-    template <typename C> static two test(...);
+    template <typename C> static One test( decltype(&C::parsePolyMorphicObject) );
+    template <typename C> static Two test(...);
 
 public:
     enum { Value = sizeof(test<T>(nullptr)) == sizeof(char) };

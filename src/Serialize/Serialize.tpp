@@ -813,24 +813,24 @@ struct IndexType;
 template<>
 struct IndexType<TraitType::Map>
 {
-    typedef std::string     IndexInfoType;
+    using IndexInfoType = std::string;
 };
 template<>
 struct IndexType<TraitType::Array>
 {
-    typedef std::size_t     IndexInfoType;
+    using IndexInfoType = std::size_t;
 };
 template<>
 struct IndexType<TraitType::Parent>
 {
-    typedef std::string     IndexInfoType;
+    using IndexInfoType = std::string;
 };
 
 
 template<typename T>
 inline void Serializer::printObjectMembers(T const& object)
 {
-    typedef typename IndexType<Traits<T>::type>::IndexInfoType IndexInfoType;
+    using IndexInfoType = typename IndexType<Traits<T>::type>::IndexInfoType;
 
     ApplyActionToParent<Traits<T>::type, T, IndexInfoType>     parentPrinter;
 

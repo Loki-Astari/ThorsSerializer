@@ -37,8 +37,8 @@ struct Binary
             {}
     };
     public:
-    typedef BinaryParserWrapper<T>  Parser;
-    typedef BinaryPrinter<T>        Printer;
+    using Parser  = BinaryParserWrapper<T>;
+    using Printer = BinaryPrinter<T>;
 };
 
 template<typename T>
