@@ -70,12 +70,15 @@ ThorsAnvil_MakeTrait(TcpConnection, blocks);
 ThorsAnvil_MakeTrait(UdpConnection, listeners);
 
 using Tcp4ConnectionParent = ThorsAnvil::Serialize::Parents<IPv4Connection, TcpConnection>;
+using Tcp6ConnectionParent = ThorsAnvil::Serialize::Parents<IPv6Connection, TcpConnection>;
+using Udp4ConnectionParent = ThorsAnvil::Serialize::Parents<IPv4Connection, UdpConnection>;
+using Udp6ConnectionParent = ThorsAnvil::Serialize::Parents<IPv6Connection, UdpConnection>;
 
 
 ThorsAnvil_ExpandTrait(Tcp4ConnectionParent, Tcp4Connection, data);
-ThorsAnvil_MakeTrait(Tcp6Connection, sync);
-ThorsAnvil_MakeTrait(Udp4Connection, fly);
-ThorsAnvil_MakeTrait(Udp6Connection, fancy);
+ThorsAnvil_ExpandTrait(Tcp6ConnectionParent, Tcp6Connection, sync);
+ThorsAnvil_ExpandTrait(Udp4ConnectionParent, Udp4Connection, fly);
+ThorsAnvil_ExpandTrait(Udp6ConnectionParent, Udp6Connection, fancy);
 
 #include <iostream>
 
