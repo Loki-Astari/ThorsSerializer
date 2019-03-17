@@ -13,6 +13,9 @@
 using namespace ThorsAnvil::Serialize;
 using namespace std;
 
+namespace Issue38
+{
+
 struct Connection
 {
     bool    active;
@@ -61,24 +64,26 @@ struct Udp6Connection : public IPv6Connection, public UdpConnection
     std::vector<std::string>    fancy;
 };
 
-
-ThorsAnvil_MakeTrait(Connection, active);
-ThorsAnvil_ExpandTrait(Connection, IPConnection, port);
-ThorsAnvil_ExpandTrait(IPConnection, IPv4Connection, v4Name);
-ThorsAnvil_ExpandTrait(IPConnection, IPv6Connection, v6Name, cost);
-ThorsAnvil_MakeTrait(TcpConnection, blocks);
-ThorsAnvil_MakeTrait(UdpConnection, listeners);
-
 using Tcp4ConnectionParent = ThorsAnvil::Serialize::Parents<IPv4Connection, TcpConnection>;
 using Tcp6ConnectionParent = ThorsAnvil::Serialize::Parents<IPv6Connection, TcpConnection>;
 using Udp4ConnectionParent = ThorsAnvil::Serialize::Parents<IPv4Connection, UdpConnection>;
 using Udp6ConnectionParent = ThorsAnvil::Serialize::Parents<IPv6Connection, UdpConnection>;
 
+}
 
-ThorsAnvil_ExpandTrait(Tcp4ConnectionParent, Tcp4Connection, data);
-ThorsAnvil_ExpandTrait(Tcp6ConnectionParent, Tcp6Connection, sync);
-ThorsAnvil_ExpandTrait(Udp4ConnectionParent, Udp4Connection, fly);
-ThorsAnvil_ExpandTrait(Udp6ConnectionParent, Udp6Connection, fancy);
+
+ThorsAnvil_MakeTrait(Issue38::Connection, active);
+ThorsAnvil_ExpandTrait(Issue38::Connection, Issue38::IPConnection, port);
+ThorsAnvil_ExpandTrait(Issue38::IPConnection, Issue38::IPv4Connection, v4Name);
+ThorsAnvil_ExpandTrait(Issue38::IPConnection, Issue38::IPv6Connection, v6Name, cost);
+ThorsAnvil_MakeTrait(Issue38::TcpConnection, blocks);
+ThorsAnvil_MakeTrait(Issue38::UdpConnection, listeners);
+
+
+ThorsAnvil_ExpandTrait(Issue38::Tcp4ConnectionParent, Issue38::Tcp4Connection, data);
+ThorsAnvil_ExpandTrait(Issue38::Tcp6ConnectionParent, Issue38::Tcp6Connection, sync);
+ThorsAnvil_ExpandTrait(Issue38::Udp4ConnectionParent, Issue38::Udp4Connection, fly);
+ThorsAnvil_ExpandTrait(Issue38::Udp6ConnectionParent, Issue38::Udp6Connection, fancy);
 
 #include <iostream>
 
@@ -90,7 +95,7 @@ TEST(Issue38Test, Connection)
     })";
     std::stringstream stream(input);
 
-    Connection  test;
+    Issue38::Connection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -110,7 +115,7 @@ TEST(Issue38Test, IPConnection)
     })";
     std::stringstream stream(input);
 
-    IPConnection  test;
+    Issue38::IPConnection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -131,7 +136,7 @@ TEST(Issue38Test, IPv4Connection)
     })";
     std::stringstream stream(input);
 
-    IPv4Connection  test;
+    Issue38::IPv4Connection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -153,7 +158,7 @@ TEST(Issue38Test, IPv6Connection)
     })";
     std::stringstream stream(input);
 
-    IPv6Connection  test;
+    Issue38::IPv6Connection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -172,7 +177,7 @@ TEST(Issue38Test, TcpConnection)
     })";
     std::stringstream stream(input);
 
-    TcpConnection  test;
+    Issue38::TcpConnection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -191,7 +196,7 @@ TEST(Issue38Test, UdpConnection)
     })";
     std::stringstream stream(input);
 
-    UdpConnection  test;
+    Issue38::UdpConnection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -214,7 +219,7 @@ TEST(Issue38Test, Tcp4Connection)
     })";
     std::stringstream stream(input);
 
-    Tcp4Connection  test;
+    Issue38::Tcp4Connection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -238,7 +243,7 @@ TEST(Issue38Test, Tcp6Connection)
     })";
     std::stringstream stream(input);
 
-    Tcp6Connection  test;
+    Issue38::Tcp6Connection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -261,7 +266,7 @@ TEST(Issue38Test, Udp4Connection)
     })";
     std::stringstream stream(input);
 
-    Udp4Connection  test;
+    Issue38::Udp4Connection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;
@@ -285,7 +290,7 @@ TEST(Issue38Test, Udp6Connection)
     })";
     std::stringstream stream(input);
 
-    Udp6Connection  test;
+    Issue38::Udp6Connection  test;
     stream >> ThorsAnvil::Serialize::jsonImport(test);
 
     std::stringstream output;

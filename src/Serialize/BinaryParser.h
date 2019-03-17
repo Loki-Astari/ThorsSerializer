@@ -43,8 +43,8 @@ template<typename T>
 class BinaryParser;
 class BinaryParserUtilBase;
 
-typedef ParserInterface::ParserToken                        ParserToken;
-typedef std::vector<std::unique_ptr<BinaryParserUtilBase>>  ParserState;
+using ParserToken =  ParserInterface::ParserToken;
+using ParserState =  std::vector<std::unique_ptr<BinaryParserUtilBase>>;
 
 class BinaryParserUtilBase
 {

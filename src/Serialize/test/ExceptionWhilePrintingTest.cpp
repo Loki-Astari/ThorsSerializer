@@ -7,7 +7,7 @@
 TEST(ExceptionWhilePrintingTest, NormalPrint)
 {
     std::stringstream   stream;
-    ThrowablePrint      obj(false, 15);
+    ExceptionTest::ThrowablePrint      obj(false, 15);
     bool                thrown = false;
 
     try
@@ -29,7 +29,7 @@ TEST(ExceptionWhilePrintingTest, NormalPrint)
 TEST(ExceptionWhilePrintingTest, NormalPrintCatchEnabled)
 {
     std::stringstream   stream;
-    ThrowablePrint      obj(false, 16);
+    ExceptionTest::ThrowablePrint      obj(false, 16);
     bool                thrown = false;
 
     try
@@ -50,7 +50,7 @@ TEST(ExceptionWhilePrintingTest, NormalPrintCatchEnabled)
 TEST(ExceptionWhilePrintingTest, ThrowPrint)
 {
     std::stringstream   stream;
-    ThrowablePrint      obj(true, 17);
+    ExceptionTest::ThrowablePrint      obj(true, 17);
     bool                thrown = false;
 
     try
@@ -71,7 +71,7 @@ TEST(ExceptionWhilePrintingTest, ThrowPrint)
 TEST(ExceptionWhilePrintingTest, ThrowPrintCatchEnabled)
 {
     std::stringstream   stream;
-    ThrowablePrint      obj(true, 18);
+    ExceptionTest::ThrowablePrint      obj(true, 18);
     bool                thrown = false;
 
     try
@@ -92,7 +92,7 @@ TEST(ExceptionWhilePrintingTest, ThrowPrintCatchEnabled)
 TEST(ExceptionWhilePrintingTest, NormalStream)
 {
     std::stringstream   stream(R"(19 "Data")");
-    ThrowablePrint      obj(false,1);
+    ExceptionTest::ThrowablePrint      obj(false,1);
     bool                thrown = false;
 
     try
@@ -114,7 +114,7 @@ TEST(ExceptionWhilePrintingTest, NormalStream)
 TEST(ExceptionWhilePrintingTest, NormalStreamCatchEnabled)
 {
     std::stringstream   stream(R"(20 "Data")");
-    ThrowablePrint      obj(false, 2);
+    ExceptionTest::ThrowablePrint      obj(false, 2);
     bool                thrown = false;
 
     try
@@ -135,7 +135,7 @@ TEST(ExceptionWhilePrintingTest, NormalStreamCatchEnabled)
 TEST(ExceptionWhilePrintingTest, ThrowStream)
 {
     std::stringstream   stream("21");
-    ThrowablePrint      obj(true, 3);
+    ExceptionTest::ThrowablePrint      obj(true, 3);
     bool                thrown = false;
 
     try
@@ -156,7 +156,7 @@ TEST(ExceptionWhilePrintingTest, ThrowStream)
 TEST(ExceptionWhilePrintingTest, ThrowStreamCatchEnabled)
 {
     std::stringstream   stream("22");
-    ThrowablePrint      obj(true, 4);
+    ExceptionTest::ThrowablePrint      obj(true, 4);
     bool                thrown = false;
 
     try

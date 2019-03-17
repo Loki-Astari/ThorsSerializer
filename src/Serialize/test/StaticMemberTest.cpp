@@ -8,6 +8,9 @@
 #include <string>
 #include <sstream>
 
+namespace StaticMemberTest
+{
+
 struct StaticMember
 {
     static int staticMember;
@@ -15,15 +18,16 @@ struct StaticMember
 };
 
 int StaticMember::staticMember = 8;
+}
 
-ThorsAnvil_MakeTrait(StaticMember, normalMember, staticMember); 
+ThorsAnvil_MakeTrait(StaticMemberTest::StaticMember, normalMember, staticMember); 
 
 TEST(StaticMemberTest, serializeStaticMember)
 {
     std::string         inputStr(R"({"normalMember":7,"staticMember":14})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
-    StaticMember        data;
+    StaticMemberTest::StaticMember        data;
 
     input  >> ThorsAnvil::Serialize::jsonImport(data);
     output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);

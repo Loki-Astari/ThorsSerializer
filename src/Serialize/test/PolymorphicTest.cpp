@@ -9,6 +9,8 @@
 #include <sstream>
 #include <cctype>
 
+namespace PolymorphicTest
+{
 struct Vehicle
 {
     Vehicle(){}
@@ -16,7 +18,7 @@ struct Vehicle
         : speed(speed)
     {}
     int     speed;
-    ThorsAnvil_PolyMorphicSerializer(Vehicle);
+    ThorsAnvil_PolyMorphicSerializer(PolymorphicTest::Vehicle);
 };
 struct Car: public Vehicle
 {
@@ -26,7 +28,7 @@ struct Car: public Vehicle
         , make(make)
     {}
     std::string     make;
-    ThorsAnvil_PolyMorphicSerializer(Car);
+    ThorsAnvil_PolyMorphicSerializer(PolymorphicTest::Car);
 };
 struct Bike: public Vehicle
 {
@@ -36,32 +38,23 @@ struct Bike: public Vehicle
         , stroke(stroke)
     {}
     int     stroke;
-    ThorsAnvil_PolyMorphicSerializer(Bike);
+    ThorsAnvil_PolyMorphicSerializer(PolymorphicTest::Bike);
 };
-
-ThorsAnvil_MakeTrait(Vehicle, speed);
-ThorsAnvil_ExpandTrait(Vehicle, Car, make);
-ThorsAnvil_ExpandTrait(Vehicle, Bike, stroke);
-
-
 struct User
 {
     int         age;
     Vehicle*    transport;
 };
-ThorsAnvil_MakeTrait(User, age, transport);
-
-namespace ThorsAnvil
-{
-    namespace Serialize
-    {
-
-    }
 }
+
+ThorsAnvil_MakeTrait(PolymorphicTest::Vehicle, speed);
+ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Car, make);
+ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Bike, stroke);
+ThorsAnvil_MakeTrait(PolymorphicTest::User, age, transport);
 
 TEST(PolymorphicTest, NullPointer)
 {
-    User    user1{10, nullptr};
+    PolymorphicTest::User    user1{10, nullptr};
 
     std::stringstream   data;
     data << ThorsAnvil::Serialize::jsonExport(user1);
@@ -72,43 +65,43 @@ TEST(PolymorphicTest, NullPointer)
 }
 TEST(PolymorphicTest, VehiclePointer)
 {
-    User    user1{10, new Vehicle(12)};
+    PolymorphicTest::User    user1{10, new PolymorphicTest::Vehicle(12)};
 
     std::stringstream   data;
     data << ThorsAnvil::Serialize::jsonExport(user1);
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"Vehicle","speed":12}})");
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
 }
 TEST(PolymorphicTest, CarPointer)
 {
-    User    user1{10, new Car(16, "Turbo")};
+    PolymorphicTest::User    user1{10, new PolymorphicTest::Car(16, "Turbo")};
 
     std::stringstream   data;
     data << ThorsAnvil::Serialize::jsonExport(user1);
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"Car","speed":16,"make":"Turbo"}})");
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
 }
 
 TEST(PolymorphicTest, BikePointer)
 {
-    User    user1{10, new Bike(18, 7)};
+    PolymorphicTest::User    user1{10, new PolymorphicTest::Bike(18, 7)};
 
     std::stringstream   data;
     data << ThorsAnvil::Serialize::jsonExport(user1);
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"Bike","speed":18,"stroke":7}})");
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
 }
 
 TEST(PolymorphicTest, ReadNull)
 {
     std::stringstream   stream(R"({"age":10,"transport":null})");
-    User                user1 {12, new Vehicle(12)};
+    PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(12)};
 
     stream >> ThorsAnvil::Serialize::jsonImport(user1);
     EXPECT_EQ(user1.age, 10);
@@ -117,8 +110,8 @@ TEST(PolymorphicTest, ReadNull)
 
 TEST(PolymorphicTest, ReadVehicle)
 {
-    std::stringstream   stream(R"({"age":10,"transport":{"__type":"Vehicle","speed":12}})");
-    User                user1 {12, new Vehicle(13)};
+    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
+    PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(13)};
 
     stream >> ThorsAnvil::Serialize::jsonImport(user1);
     EXPECT_EQ(user1.age, 10);
@@ -128,30 +121,30 @@ TEST(PolymorphicTest, ReadVehicle)
 
 TEST(PolymorphicTest, ReadCar)
 {
-    std::stringstream   stream(R"({"age":10,"transport":{"__type":"Car","speed":16,"make":"Turbo"}})");
-    User                user1 {12, new Vehicle(14)};
+    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+    PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(14)};
 
     stream >> ThorsAnvil::Serialize::jsonImport(user1);
     EXPECT_EQ(user1.age, 10);
     ASSERT_NE(user1.transport, nullptr);
     EXPECT_EQ(user1.transport->speed, 16);
 
-    Car* car = dynamic_cast<Car*>(user1.transport);
+    PolymorphicTest::Car* car = dynamic_cast<PolymorphicTest::Car*>(user1.transport);
     ASSERT_NE(car, nullptr);
     EXPECT_EQ(car->make, "Turbo");
 }
 
 TEST(PolymorphicTest, ReadBike)
 {
-    std::stringstream   stream(R"({"age":10,"transport":{"__type":"Bike","speed":18,"stroke":7}})");
-    User                user1 {12, new Vehicle(15)};
+    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+    PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(15)};
 
     stream >> ThorsAnvil::Serialize::jsonImport(user1);
     EXPECT_EQ(user1.age, 10);
     ASSERT_NE(user1.transport, nullptr);
     EXPECT_EQ(user1.transport->speed, 18);
 
-    Bike* bike = dynamic_cast<Bike*>(user1.transport);
+    PolymorphicTest::Bike* bike = dynamic_cast<PolymorphicTest::Bike*>(user1.transport);
     ASSERT_NE(bike, nullptr);
     EXPECT_EQ(bike->stroke, 7);
 }

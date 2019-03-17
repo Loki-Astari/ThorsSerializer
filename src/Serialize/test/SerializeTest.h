@@ -6,6 +6,9 @@
 #include "Serialize.h"
 #include "Serialize.tpp"
 
+namespace SerializeTest
+{
+
 enum RGB { Red, Green, Blue };
 struct EumHolder
 {
@@ -57,7 +60,6 @@ class SerializeExactNoMembersPoly: public SerializeTestExtra
 	ThorsAnvil_PolyMorphicSerializer(SerializeExactNoMembersPoly);
 };
 
-
 class SerializeTestChild: public SerializeTestExtra
 {
     public:
@@ -98,15 +100,17 @@ struct CornerCaseClass
     ThorsAnvil_PolyMorphicSerializer(CornerCaseClass);
 };
 
-ThorsAnvil_MakeEnum(RGB, Red, Green, Blue);
-ThorsAnvil_MakeTrait(EumHolder, value);
-ThorsAnvil_MakeTrait(SerializeTestExtra, theInteger, aNonRealValue, test, normalString);
-ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeExact, anotherValue);
-ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeTestChild, data1, data2);
-ThorsAnvil_MakeTrait(SerializeTestMembers, member1, member2);
-ThorsAnvil_MakeTrait(CornerCaseClass, value);
-ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeExactNoMembers);
-ThorsAnvil_ExpandTrait(SerializeTestExtra, SerializeExactNoMembersPoly);
+}
+
+ThorsAnvil_MakeEnum(SerializeTest::RGB, Red, Green, Blue);
+ThorsAnvil_MakeTrait(SerializeTest::EumHolder, value);
+ThorsAnvil_MakeTrait(SerializeTest::SerializeTestExtra, theInteger, aNonRealValue, test, normalString);
+ThorsAnvil_ExpandTrait(SerializeTest::SerializeTestExtra, SerializeTest::SerializeExact, anotherValue);
+ThorsAnvil_ExpandTrait(SerializeTest::SerializeTestExtra, SerializeTest::SerializeTestChild, data1, data2);
+ThorsAnvil_MakeTrait(SerializeTest::SerializeTestMembers, member1, member2);
+ThorsAnvil_MakeTrait(SerializeTest::CornerCaseClass, value);
+ThorsAnvil_ExpandTrait(SerializeTest::SerializeTestExtra, SerializeTest::SerializeExactNoMembers);
+ThorsAnvil_ExpandTrait(SerializeTest::SerializeTestExtra, SerializeTest::SerializeExactNoMembersPoly);
 
 
 #endif

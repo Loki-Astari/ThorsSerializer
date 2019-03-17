@@ -26,8 +26,8 @@ namespace ThorsAnvil
 
 struct Yaml
 {
-    typedef YamlParser      Parser;
-    typedef YamlPrinter     Printer;
+    using Parser  = YamlParser;
+    using Printer = YamlPrinter;
 };
 
 template<typename T>

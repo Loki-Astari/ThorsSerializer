@@ -1,6 +1,9 @@
 #include "Traits.h"
 #include <iostream>
 
+namespace ExceptionTest
+{
+
 class ThrowablePrint
 {
     bool doThrow;
@@ -28,6 +31,8 @@ class ThrowablePrint
         }
 };
 
-ThorsAnvil_MakeTraitCustom(ThrowablePrint);
+}
+
+ThorsAnvil_MakeTraitCustom(ExceptionTest::ThrowablePrint);
 
 

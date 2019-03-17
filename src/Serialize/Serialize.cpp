@@ -76,22 +76,22 @@ void ParserInterface::ignoreTheValue()
 #include "test/SmartPointerTest.h"
 
 
-template void ThorsAnvil::Serialize::Serializer::print<Base>(Base const&);
-template void ThorsAnvil::Serialize::Serializer::print<Derived>(Derived const&);
+template void ThorsAnvil::Serialize::Serializer::print<BinaryParserTest::Base>(BinaryParserTest::Base const&);
+template void ThorsAnvil::Serialize::Serializer::print<BinaryParserTest::Derived>(BinaryParserTest::Derived const&);
 template void ThorsAnvil::Serialize::Serializer::print<int>(int const&);
 
-template void ThorsAnvil::Serialize::DeSerializer::parse<Base>(Base&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<Derived>(Derived&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<BinaryParserTest::Base>(BinaryParserTest::Base&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<BinaryParserTest::Derived>(BinaryParserTest::Derived&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<int>(int&);
 
 
-template void ThorsAnvil::Serialize::Serializer::print<SerializeTestExtra>(SerializeTestExtra const&);
-template void ThorsAnvil::Serialize::Serializer::print<SerializeTestChild>(SerializeTestChild const&);
-template void ThorsAnvil::Serialize::Serializer::print<SerializeTestMembers>(SerializeTestMembers const&);
+template void ThorsAnvil::Serialize::Serializer::print<SerializeTest::SerializeTestExtra>(SerializeTest::SerializeTestExtra const&);
+template void ThorsAnvil::Serialize::Serializer::print<SerializeTest::SerializeTestChild>(SerializeTest::SerializeTestChild const&);
+template void ThorsAnvil::Serialize::Serializer::print<SerializeTest::SerializeTestMembers>(SerializeTest::SerializeTestMembers const&);
 
-template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestExtra>(SerializeTestExtra&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestChild>(SerializeTestChild&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTestMembers>(SerializeTestMembers&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::SerializeTestExtra>(SerializeTest::SerializeTestExtra&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::SerializeTestChild>(SerializeTest::SerializeTestChild&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::SerializeTestMembers>(SerializeTest::SerializeTestMembers&);
 
 
 template void ThorsAnvil::Serialize::Serializer::print<std::array<int, 12ul>>(std::array<int, 12ul> const&);
@@ -119,10 +119,10 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::multimap<int, doub
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::map<std::string, bool>>(std::map<std::string, bool>&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::multimap<std::string, bool>>(std::multimap<std::string, bool>&);
 
-template void ThorsAnvil::Serialize::Serializer::print<RGB>(RGB const&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<RGB>(RGB&);
-template void ThorsAnvil::Serialize::Serializer::print<EumHolder>(EumHolder const&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<EumHolder>(EumHolder&);
+template void ThorsAnvil::Serialize::Serializer::print<SerializeTest::RGB>(SerializeTest::RGB const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::RGB>(SerializeTest::RGB&);
+template void ThorsAnvil::Serialize::Serializer::print<SerializeTest::EumHolder>(SerializeTest::EumHolder const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::EumHolder>(SerializeTest::EumHolder&);
 
 template void ThorsAnvil::Serialize::Serializer::print<std::tuple<int, double>>(std::tuple<int, double> const&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::tuple<int, double>>(std::tuple<int, double>&);
@@ -145,13 +145,13 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_multimap
 
 template void ThorsAnvil::Serialize::Serializer::print<std::initializer_list<int>>(std::initializer_list<int> const&);
 
-template void ThorsAnvil::Serialize::Serializer::print<Thing>(Thing const&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<ThingVersion>(ThingVersion&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<CornerCaseClass>(CornerCaseClass&);
+template void ThorsAnvil::Serialize::Serializer::print<IgnoreUneededData::Thing>(IgnoreUneededData::Thing const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<IgnoreUneededData::ThingVersion>(IgnoreUneededData::ThingVersion&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::CornerCaseClass>(SerializeTest::CornerCaseClass&);
 
-template void ThorsAnvil::Serialize::DeSerializer::parse<CornerCaseClass*>(CornerCaseClass*&);
-template void ThorsAnvil::Serialize::Serializer::print<ThrowablePrint>(ThrowablePrint const&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<ThrowablePrint>(ThrowablePrint&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::CornerCaseClass*>(SerializeTest::CornerCaseClass*&);
+template void ThorsAnvil::Serialize::Serializer::print<ExceptionTest::ThrowablePrint>(ExceptionTest::ThrowablePrint const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<ExceptionTest::ThrowablePrint>(ExceptionTest::ThrowablePrint&);
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::string>(std::string&);
 template void ThorsAnvil::Serialize::Serializer::print<std::string>(std::string const&);

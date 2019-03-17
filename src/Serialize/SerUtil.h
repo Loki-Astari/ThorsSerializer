@@ -204,7 +204,7 @@ class Traits<std::pair<F, S>>
 {
     public:
         static constexpr TraitType type = TraitType::Map;
-        typedef std::pair<F,S>  Self;
+        using Self = std::pair<F,S>;
 
         using Members = std::tuple< REP_N(THOR_TYPEACTION, 0, Self, first, second, 1) >;
 
@@ -235,7 +235,7 @@ class Traits<std::initializer_list<T>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::initializer_list<T>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::initializer_list<T>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -263,7 +263,7 @@ class Traits<std::array<T, N>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorEmplacer<std::array<T, N>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorEmplacer<std::array<T, N>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -292,7 +292,7 @@ class Traits<std::list<T, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorEmplacer<std::list<T, Allocator>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorEmplacer<std::list<T, Allocator>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -320,7 +320,7 @@ class Traits<std::vector<T, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorEmplacer<std::vector<T, Allocator>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorEmplacer<std::vector<T, Allocator>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -346,7 +346,7 @@ class Traits<std::vector<bool, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::vector<bool, Allocator>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::vector<bool, Allocator>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -375,7 +375,7 @@ class Traits<std::deque<T, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorEmplacer<std::deque<T, Allocator>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorEmplacer<std::deque<T, Allocator>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -403,7 +403,7 @@ class Traits<std::set<Key, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::set<Key, Compare, Allocator>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::set<Key, Compare, Allocator>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -431,7 +431,7 @@ class Traits<std::unordered_set<Key, Hash, KeyEqual, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::unordered_set<Key, Hash, KeyEqual, Allocator>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::unordered_set<Key, Hash, KeyEqual, Allocator>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -459,7 +459,7 @@ class Traits<std::multiset<Key, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::multiset<Key, Compare, Allocator>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::multiset<Key, Compare, Allocator>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -487,7 +487,7 @@ class Traits<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -515,7 +515,7 @@ class Traits<std::map<Key, T, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::map<Key, T, Compare, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::map<Key, T, Compare, Allocator>, std::pair<Key, T>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -580,7 +580,7 @@ class Traits<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -646,7 +646,7 @@ class Traits<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>, std::pair<Key, T>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;
@@ -708,7 +708,7 @@ class Traits<std::multimap<Key, T, Compare, Allocator>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        typedef ContainerMemberExtractorInserter<std::multimap<Key, T, Compare, Allocator>, std::pair<Key, T>>    MemberExtractor;
+        using MemberExtractor = ContainerMemberExtractorInserter<std::multimap<Key, T, Compare, Allocator>, std::pair<Key, T>>;
         static MemberExtractor const& getMembers()
         {
             static constexpr MemberExtractor    memberExtractor;

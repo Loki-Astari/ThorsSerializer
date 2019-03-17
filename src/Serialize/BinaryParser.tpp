@@ -53,8 +53,8 @@ template<typename P>
 void BinaryParserMapParentCommon<T>::addMember(std::pair<char const*, P> const& token)
 {
     keys.emplace_back(token.first);
-    typedef decltype(((T*)nullptr)->*(token.second))            DestTypeBase;
-    typedef typename std::remove_reference<DestTypeBase>::type  DestType;
+    using DestTypeBase = decltype(((T*)nullptr)->*(token.second));
+    using DestType     = typename std::remove_reference<DestTypeBase>::type;
 
     if (    ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Map
         ||  ThorsAnvil::Serialize::Traits<DestType>::type == TraitType::Array
@@ -142,7 +142,7 @@ template<typename T>
 ParserToken BinaryParserUtil<T, TraitType::Array>
     ::pushNextState(std::size_t, ParserInterface& parser, ParserState& state, ParserToken norm)
 {
-    typedef typename T::value_type       ChildType;
+    using ChildType = typename T::value_type;
     if (    ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Map
         ||  ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Array
         ||  ThorsAnvil::Serialize::Traits<ChildType>::type == TraitType::Parent)

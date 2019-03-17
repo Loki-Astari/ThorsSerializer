@@ -26,7 +26,7 @@ std::string const testDataE7 = R"({"aNonRealValue":56.78,"test":true,"normalStri
 
 TEST(SerializeTest, SerializeStructureOfValue)
 {
-    SerializeTestExtra        data(34,56.78, true, "Done");
+    SerializeTest::SerializeTestExtra        data(34,56.78, true, "Done");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -41,7 +41,7 @@ TEST(SerializeTest, SerializeStructureOfValue)
 
 TEST(SerializeTest, DeSerializeStructureOfValue)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testData1);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -57,7 +57,7 @@ TEST(SerializeTest, DeSerializeStructureOfValue)
 
 TEST(SerializeTest, SerializeStructureOfValueAndParents)
 {
-    SerializeTestChild     data(1, 2, 456, 89.101, false, "Akinkthatisnotstraight");
+    SerializeTest::SerializeTestChild     data(1, 2, 456, 89.101, false, "Akinkthatisnotstraight");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -72,7 +72,7 @@ TEST(SerializeTest, SerializeStructureOfValueAndParents)
 
 TEST(SerializeTest, DeSerializeStructureOfValueAndParent)
 {
-    SerializeTestChild      data;
+    SerializeTest::SerializeTestChild      data;
 
     std::stringstream                   stream(testData2);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -90,7 +90,7 @@ TEST(SerializeTest, DeSerializeStructureOfValueAndParent)
 
 TEST(SerializeTest, SerializeStructureMemberOfValue)
 {
-    SerializeTestMembers        data(67, 11, 234567, 123.45, true, "NotASquareAndOnlyOneSide");
+    SerializeTest::SerializeTestMembers        data(67, 11, 234567, 123.45, true, "NotASquareAndOnlyOneSide");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -105,7 +105,7 @@ TEST(SerializeTest, SerializeStructureMemberOfValue)
 
 TEST(SerializeTest, DeSerializeStructureMemberOfValue)
 {
-    SerializeTestMembers        data;
+    SerializeTest::SerializeTestMembers        data;
 
     std::stringstream                   stream(testData3);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -127,7 +127,7 @@ TEST(SerializeTest, DeSerializeStructureMemberOfValue)
 
 TEST(SerializeTest, StrictParserDoesNotIgnoreData)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testData4);
     ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Strict);
@@ -140,7 +140,7 @@ TEST(SerializeTest, StrictParserDoesNotIgnoreData)
 }
 TEST(SerializeTest, ExactParserDoesNotIgnoreData)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testData4);
     ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
@@ -153,7 +153,7 @@ TEST(SerializeTest, ExactParserDoesNotIgnoreData)
 }
 TEST(SerializeTest, ExactParserNeedsAllMembersFail)
 {
-    SerializeExact      data;
+    SerializeTest::SerializeExact      data;
 
     // testData1 has all the members of SerializeTestExtra (parent of SerializeExact)
     // but does not have anotherValue so should throw an exception
@@ -168,7 +168,7 @@ TEST(SerializeTest, ExactParserNeedsAllMembersFail)
 }
 TEST(SerializeTest, ExactParserNeedsAllMembersAndParentFail)
 {
-    SerializeExact      data;
+    SerializeTest::SerializeExact      data;
 
     // testData1 has all the members of SerializeTestExtra (parent of SerializeExact)
     // but does not have anotherValue so should throw an exception
@@ -183,7 +183,7 @@ TEST(SerializeTest, ExactParserNeedsAllMembersAndParentFail)
 }
 TEST(SerializeTest, ExactParserNeedsAllMembersGood)
 {
-    SerializeExact      data;
+    SerializeTest::SerializeExact      data;
 
     std::stringstream                   stream(testData5);
     ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
@@ -193,7 +193,7 @@ TEST(SerializeTest, ExactParserNeedsAllMembersGood)
 }
 TEST(SerializeTest, IgnoreAllTheDataWeDontCareAbout)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testData4);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -208,7 +208,7 @@ TEST(SerializeTest, IgnoreAllTheDataWeDontCareAbout)
 }
 TEST(SerializeTest, IgnoreDataMapWithBadData1)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testDataE1);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -221,7 +221,7 @@ TEST(SerializeTest, IgnoreDataMapWithBadData1)
 }
 TEST(SerializeTest, IgnoreDataArrayWithBadData2)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testDataE2);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -234,7 +234,7 @@ TEST(SerializeTest, IgnoreDataArrayWithBadData2)
 }
 TEST(SerializeTest, IgnoreDataArrayWithBadData3)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testDataE3);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -247,7 +247,7 @@ TEST(SerializeTest, IgnoreDataArrayWithBadData3)
 }
 TEST(SerializeTest, IgnoreDataArrayWithBadData4)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testDataE4);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -260,7 +260,7 @@ TEST(SerializeTest, IgnoreDataArrayWithBadData4)
 }
 TEST(SerializeTest, IgnoreDataArrayWithBadData5)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testDataE5);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -273,7 +273,7 @@ TEST(SerializeTest, IgnoreDataArrayWithBadData5)
 }
 TEST(SerializeTest, IgnoreDataArrayWithBadData6)
 {
-    SerializeTestExtra      data;
+    SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testDataE6);
     ThorsAnvil::Serialize::JsonParser   parser(stream);
@@ -286,7 +286,7 @@ TEST(SerializeTest, IgnoreDataArrayWithBadData6)
 }
 TEST(SerializeTest, DerivedTypeNoNewMembers)
 {
-    SerializeExactNoMembers        data(34,56.78, true, "Done");
+    SerializeTest::SerializeExactNoMembers        data(34,56.78, true, "Done");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -300,7 +300,7 @@ TEST(SerializeTest, DerivedTypeNoNewMembers)
 }
 TEST(SerializeTest, DerivedTypeNoNewMembersPolyMorphic)
 {
-    SerializeExactNoMembersPoly        data(34,56.78, true, "Done");
+    SerializeTest::SerializeExactNoMembersPoly        data(34,56.78, true, "Done");
 
     std::stringstream   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);

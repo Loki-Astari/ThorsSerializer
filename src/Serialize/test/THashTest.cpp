@@ -26,8 +26,8 @@ TEST(THashTest, hashFundamental)
     std::size_t     stringH             = TS::thash<std::string>();
 
     std::size_t     vectorIntH          = TS::thash<std::vector<int>>();
-    std::size_t     emptyMapH           = TS::thash<MapEmptyTest>();
-    std::size_t     OneMapH             = TS::thash<MapOneValue>();
+    std::size_t     emptyMapH           = TS::thash<BinaryParserTest::MapEmptyTest>();
+    std::size_t     OneMapH             = TS::thash<BinaryParserTest::MapOneValue>();
 
 
     EXPECT_EQ(shortH,           TS::thash<short>());
@@ -148,8 +148,8 @@ TEST(THashTest, hashCompound)
      * To help check this as long as the hash of the type on both ends match then
      * it is safe* to de-serialize into the destination object.
      */
-    EXPECT_EQ(TS::thash<T1>(),      TS::thash<T2>());
-    EXPECT_NE(TS::thash<T1>(),      TS::thash<D1>());
+    EXPECT_EQ(TS::thash<THashTest::T1>(),      TS::thash<THashTest::T2>());
+    EXPECT_NE(TS::thash<THashTest::T1>(),      TS::thash<THashTest::D1>());
 }
 
 

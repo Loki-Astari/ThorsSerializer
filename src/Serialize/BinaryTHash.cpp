@@ -10,9 +10,9 @@
 #include "test/BinaryParserTest.h"
 
 
-template std::size_t ThorsAnvil::Serialize::thash<D1>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<T1>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<T2>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<THashTest::D1>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<THashTest::T1>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<THashTest::T2>(std::size_t);
 
 template std::size_t ThorsAnvil::Serialize::thash<short>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<int>(std::size_t);
@@ -31,8 +31,8 @@ template std::size_t ThorsAnvil::Serialize::thash<float>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<bool>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<std::string>(std::size_t);
 
-template std::size_t ThorsAnvil::Serialize::thash<Base>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<Derived>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::Base>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::Derived>(std::size_t);
 
 template std::size_t ThorsAnvil::Serialize::thash<std::vector<int>>(std::size_t);
 
@@ -55,15 +55,15 @@ template struct ThorsAnvil::Serialize::TraitsHash<bool>;
 template struct ThorsAnvil::Serialize::TraitsHash<std::string>;
 */
 
-template std::size_t ThorsAnvil::Serialize::thash<MapWithMap>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<MapOneValue>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<MapTwoValue>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<MapEmptyTest>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<MapWithArray>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<MapThreeValue>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<MapWithTwoMap>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<MapWithTwoArray>(std::size_t);
-template std::size_t ThorsAnvil::Serialize::thash<std::vector<MapEmptyTest>>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::MapWithMap>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::MapOneValue>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::MapTwoValue>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::MapEmptyTest>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::MapWithArray>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::MapThreeValue>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::MapWithTwoMap>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<BinaryParserTest::MapWithTwoArray>(std::size_t);
+template std::size_t ThorsAnvil::Serialize::thash<std::vector<BinaryParserTest::MapEmptyTest>>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<std::vector<std::string>>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<std::vector<std::vector<int>>>(std::size_t);
 template std::size_t ThorsAnvil::Serialize::thash<std::vector<bool>>(std::size_t);

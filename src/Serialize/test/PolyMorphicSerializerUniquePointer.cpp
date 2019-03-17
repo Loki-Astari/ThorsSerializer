@@ -7,6 +7,8 @@
 #include "SerUtil.h"
 #include <iostream>
 
+namespace PolyMorphicSerializerUniquePointerTest
+{
 struct Quantities
 {
     std::vector<int>* quantities;
@@ -34,15 +36,16 @@ struct Tour
 {
     std::unique_ptr<TourResult> result { nullptr };
 };
+}
 
-ThorsAnvil_MakeTrait(Quantities, quantities);
-ThorsAnvil_MakeTrait(AbstractTourResult, maxQuantities);
-ThorsAnvil_ExpandTrait(AbstractTourResult, TourResult);
-ThorsAnvil_MakeTrait(Tour, result);
+ThorsAnvil_MakeTrait(PolyMorphicSerializerUniquePointerTest::Quantities, quantities);
+ThorsAnvil_MakeTrait(PolyMorphicSerializerUniquePointerTest::AbstractTourResult, maxQuantities);
+ThorsAnvil_ExpandTrait(PolyMorphicSerializerUniquePointerTest::AbstractTourResult, PolyMorphicSerializerUniquePointerTest::TourResult);
+ThorsAnvil_MakeTrait(PolyMorphicSerializerUniquePointerTest::Tour, result);
 
 TEST(PolyMorphicSerializerUniquePointerTest, QuantitiesEmpty)
 {
-    Quantities                  t{};
+    PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
     std::string                 str = R"({})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);
@@ -50,7 +53,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, QuantitiesEmpty)
 }
 TEST(PolyMorphicSerializerUniquePointerTest, Quantities)
 {
-    Quantities                  t{};
+    PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
     std::string                 str = R"({"quantities":[15,23]})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);
@@ -60,7 +63,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, Quantities)
 }
 TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultEmpty)
 {
-    AbstractTourResult          t{};
+    PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);
@@ -68,7 +71,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultEmpty)
 }
 TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResult)
 {
-    AbstractTourResult          t{};
+    PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({"maxQuantities":{}})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);
@@ -77,7 +80,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResult)
 }
 TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultWithQuantities)
 {
-    AbstractTourResult          t{};
+    PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);
@@ -88,7 +91,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultWithQuantities)
 }
 TEST(PolyMorphicSerializerUniquePointerTest, TourResultEmpty)
 {
-    TourResult                  t{};
+    PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);
@@ -96,7 +99,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResultEmpty)
 }
 TEST(PolyMorphicSerializerUniquePointerTest, TourResult)
 {
-    TourResult                  t{};
+    PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({"maxQuantities":{}})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);
@@ -105,7 +108,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResult)
 }
 TEST(PolyMorphicSerializerUniquePointerTest, TourResultWithQuantities)
 {
-    TourResult                  t{};
+    PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);
@@ -116,7 +119,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResultWithQuantities)
 }
 TEST(PolyMorphicSerializerUniquePointerTest, TourEmpty)
 {
-    Tour                        t{};
+    PolyMorphicSerializerUniquePointerTest::Tour                        t{};
     std::string                 str = R"({})";;
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::jsonImport(t);

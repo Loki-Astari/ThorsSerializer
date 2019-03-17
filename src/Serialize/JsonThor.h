@@ -23,8 +23,8 @@ namespace ThorsAnvil
 
 struct Json
 {
-    typedef JsonParser      Parser;
-    typedef JsonPrinter     Printer;
+    using Parser  = JsonParser;
+    using Printer = JsonPrinter;
 };
 
 template<typename T>

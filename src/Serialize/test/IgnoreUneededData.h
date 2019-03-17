@@ -6,6 +6,9 @@
 
 namespace TA=ThorsAnvil::Serialize;
 
+namespace IgnoreUneededData
+{
+
 class Thing
 {
 public:
@@ -21,9 +24,11 @@ public:
     long version;
 };
 
+}
 
-ThorsAnvil_MakeTrait(ThingVersion, version);
-ThorsAnvil_MakeTrait(Thing, name, version);
+
+ThorsAnvil_MakeTrait(IgnoreUneededData::ThingVersion, version);
+ThorsAnvil_MakeTrait(IgnoreUneededData::Thing, name, version);
 
 #endif
 
