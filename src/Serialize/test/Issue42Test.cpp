@@ -18,23 +18,23 @@ namespace Issue42Test
 struct BaseVehicle {
     std::unique_ptr<bool> isPreloaded { nullptr };
     virtual ~BaseVehicle() = default;
-    ThorsAnvil_PolyMorphicSerializer(BaseVehicle);
+    ThorsAnvil_PolyMorphicSerializer(Issue42Test::BaseVehicle);
 };
 
-struct VehicleHolder : public BaseVehicle {
+struct Vehicle : public BaseVehicle {
     std::unique_ptr<int> id { nullptr };
-    ThorsAnvil_PolyMorphicSerializer(VehicleHolder);
+    ThorsAnvil_PolyMorphicSerializer(Issue42Test::Vehicle);
 };
 
 struct Fleet {
     //! The list of vehicles.
-    std::unique_ptr<std::vector<std::unique_ptr<VehicleHolder>>> vehicles { nullptr };
+    std::unique_ptr<std::vector<std::unique_ptr<Vehicle>>> vehicles { nullptr };
 };
 
 }
 
 ThorsAnvil_MakeTrait(Issue42Test::BaseVehicle, isPreloaded);
-ThorsAnvil_ExpandTrait(Issue42Test::BaseVehicle, Issue42Test::VehicleHolder, id);
+ThorsAnvil_ExpandTrait(Issue42Test::BaseVehicle, Issue42Test::Vehicle, id);
 ThorsAnvil_MakeTrait(Issue42Test::Fleet, vehicles);
 
 TEST(Issue42Test, PointerUniquePtrMultiple)
@@ -42,7 +42,7 @@ TEST(Issue42Test, PointerUniquePtrMultiple)
     Issue42Test::Fleet test {};
     string str = R"( {"vehicles":[
          {
-            "__type": "Issue42Test::VehicleHolder",
+            "__type": "Issue42Test::Vehicle",
             "id":0
          }
       ]})";
