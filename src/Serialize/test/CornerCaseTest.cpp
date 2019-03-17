@@ -10,6 +10,9 @@ using TA::JsonParser;
 using TA::ParserInterface;
 using TA::DeSerializer;
 
+namespace CornerCaseTest
+{
+
 class ParserMock: public ParserInterface
 {
     std::vector<ParserToken> const& tokens;
@@ -53,6 +56,9 @@ class ParserMock: public ParserInterface
 
         virtual std::string getRawValue()                override{return "";}
 };
+
+}
+
 TEST(CornerCaseTest, IgnoreTheArrayUnexpectedKey)
 {
     std::stringstream           stream;
@@ -68,7 +74,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedKey)
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
     };
-    ParserMock      parser(stream, tokens, keys, values);
+    CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
 
 
@@ -93,7 +99,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedMapEnd)
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
     };
-    ParserMock      parser(stream, tokens, keys, values);
+    CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
 
 
@@ -118,7 +124,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedInvalidValue)
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
     };
-    ParserMock      parser(stream, tokens, keys, values);
+    CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
 
 
@@ -141,7 +147,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedKey)
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
     };
-    ParserMock      parser(stream, tokens, keys, values);
+    CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
 
 
@@ -164,7 +170,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedMapEnd)
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
     };
-    ParserMock      parser(stream, tokens, keys, values);
+    CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
 
 
@@ -187,7 +193,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedArrayEnd)
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
     };
-    ParserMock      parser(stream, tokens, keys, values);
+    CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
 
 
@@ -210,7 +216,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedInvalidValue)
             ParserInterface::ParserToken::MapEnd,
         ParserInterface::ParserToken::DocEnd
     };
-    ParserMock      parser(stream, tokens, keys, values);
+    CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
 
 
@@ -234,7 +240,7 @@ TEST(CornerCaseTest, DeSerializerNoDocStart)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass     value;
@@ -259,7 +265,7 @@ TEST(CornerCaseTest, DeSerializerNoDocEnd)
             ParserInterface::ParserToken::MapEnd,
             // Missing Doc End
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass     value;
@@ -283,7 +289,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Struct_Constructor)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass     value;
@@ -308,7 +314,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Struct_HasMoreValue)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass     value;
@@ -335,7 +341,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Value_ScanObject)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass     value;
@@ -363,7 +369,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_NotMap)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass*    value = nullptr;
@@ -391,7 +397,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapNoKey)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass*    value = nullptr;
@@ -419,7 +425,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyNot_Type)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass*    value = nullptr;
@@ -448,7 +454,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyNotValue)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass*    value = nullptr;
@@ -476,7 +482,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyValueBadType)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseClass*    value = nullptr;
@@ -506,7 +512,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Enum_Constructor)
             ParserInterface::ParserToken::MapEnd,
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         SerializeTest::CornerCaseEnum     value;
@@ -530,7 +536,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Array_Constructor)
             ParserInterface::ParserToken::Value, // Should be ArrayStart for Array
             ParserInterface::ParserToken::DocEnd,
         };
-        ParserMock      parser(stream, tokens, keys, values);
+        CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
         std::vector<int>     value;
