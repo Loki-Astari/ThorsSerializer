@@ -5,6 +5,9 @@
 #include "../Traits.h"
 #include "../SerUtil.h"
 
+namespace BinaryParserTest
+{
+
 class MapEmptyTest {};
 class MapOneValue
 {
@@ -58,16 +61,18 @@ class Derived: public Base
         int                 der;
         float               flt;
 };
-ThorsAnvil_MakeTrait(MapEmptyTest);
-ThorsAnvil_MakeTrait(MapOneValue, One);
-ThorsAnvil_MakeTrait(MapTwoValue, one, two);
-ThorsAnvil_MakeTrait(MapThreeValue, one, two, three);
-ThorsAnvil_MakeTrait(MapWithArray, one);
-ThorsAnvil_MakeTrait(MapWithTwoArray, one, two);
-ThorsAnvil_MakeTrait(MapWithMap, one);
-ThorsAnvil_MakeTrait(MapWithTwoMap, one, two);
-ThorsAnvil_MakeTrait(Base, ace, val);
-ThorsAnvil_ExpandTrait(Base, Derived, der, flt);
+
+}
+ThorsAnvil_MakeTrait(BinaryParserTest::MapEmptyTest);
+ThorsAnvil_MakeTrait(BinaryParserTest::MapOneValue, One);
+ThorsAnvil_MakeTrait(BinaryParserTest::MapTwoValue, one, two);
+ThorsAnvil_MakeTrait(BinaryParserTest::MapThreeValue, one, two, three);
+ThorsAnvil_MakeTrait(BinaryParserTest::MapWithArray, one);
+ThorsAnvil_MakeTrait(BinaryParserTest::MapWithTwoArray, one, two);
+ThorsAnvil_MakeTrait(BinaryParserTest::MapWithMap, one);
+ThorsAnvil_MakeTrait(BinaryParserTest::MapWithTwoMap, one, two);
+ThorsAnvil_MakeTrait(BinaryParserTest::Base, ace, val);
+ThorsAnvil_ExpandTrait(BinaryParserTest::Base, BinaryParserTest::Derived, der, flt);
 
 #endif
 

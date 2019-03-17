@@ -8,24 +8,20 @@
 #include <string>
 #include <sstream>
 
+namespace PointerTest
+{
 struct Tree
 {
     int     value;
     Tree*   left    = nullptr;
     Tree*   right   = nullptr;
 };
-ThorsAnvil_MakeTrait(Tree, value, left, right);
-namespace ThorsAnvil
-{
-    namespace Serialize
-    {
-
-    }
 }
+ThorsAnvil_MakeTrait(PointerTest::Tree, value, left, right);
 
 TEST(PointerTest, BuildStringFromTree)
 {
-    Tree*   root = new Tree{34, new Tree{22, new Tree{10, nullptr, nullptr}, nullptr}, new Tree{50, nullptr, new Tree{70, nullptr, nullptr}}};
+    PointerTest::Tree*   root = new PointerTest::Tree{34, new PointerTest::Tree{22, new PointerTest::Tree{10, nullptr, nullptr}, nullptr}, new PointerTest::Tree{50, nullptr, new PointerTest::Tree{70, nullptr, nullptr}}};
     std::stringstream data;
     data << ThorsAnvil::Serialize::jsonExport(root);
     std::string result = data.str();
@@ -61,7 +57,7 @@ TEST(PointerTest, BuildTreeFromString)
 	}
 })");
     std::stringstream   jsonStream(json);
-    Tree* root = nullptr;
+    PointerTest::Tree* root = nullptr;
 
     jsonStream >> ThorsAnvil::Serialize::jsonImport(root);
     ASSERT_NE(root, nullptr);

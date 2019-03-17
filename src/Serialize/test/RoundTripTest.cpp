@@ -13,7 +13,7 @@ using TA::ParserInterface;
 #ifdef NETWORK_BYTE_ORDER
 TEST(RoundTripTest, BinaryMap)
 {   
-    Base                base    { 10, 1024};
+    BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
     stream << TA::binExport(base);
@@ -29,7 +29,7 @@ TEST(RoundTripTest, BinaryMap)
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 
-    Base    base2 {};
+    BinaryParserTest::Base    base2 {};
     stream >> TA::binImport(base2);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
@@ -37,7 +37,7 @@ TEST(RoundTripTest, BinaryMap)
 
 TEST(RoundTripTest, BinaryParent)
 {
-    Derived             deri;
+    BinaryParserTest::Derived             deri;
     deri.ace    = 10;
     deri.val    = 1024;
     deri.der    = 56789;
@@ -70,7 +70,7 @@ TEST(RoundTripTest, BinaryParent)
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 
-    Derived             deri2 {};
+    BinaryParserTest::Derived             deri2 {};
     stream >> TA::binImport(deri2);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632
@@ -130,7 +130,7 @@ TEST(RoundTripTest, BinaryValue)
 #endif
 TEST(RoundTripTest, JsonMap)
 {   
-    Base                base    { 10, 1024};
+    BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
     stream << TA::jsonExport(base, TA::PrinterInterface::OutputType::Stream);
@@ -143,7 +143,7 @@ TEST(RoundTripTest, JsonMap)
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 
-    Base    base2 {};
+    BinaryParserTest::Base    base2 {};
     stream >> TA::jsonImport(base2);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
@@ -151,7 +151,7 @@ TEST(RoundTripTest, JsonMap)
 
 TEST(RoundTripTest, JsonParent)
 {
-    Derived             deri;
+    BinaryParserTest::Derived             deri;
     deri.ace    = 10;
     deri.val    = 1024;
     deri.der    = 56789;
@@ -168,7 +168,7 @@ TEST(RoundTripTest, JsonParent)
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 
-    Derived             deri2 {};
+    BinaryParserTest::Derived             deri2 {};
     stream >> TA::jsonImport(deri2);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632
@@ -220,7 +220,7 @@ TEST(RoundTripTest, JsonValue)
 #ifdef HAVE_YAML
 TEST(RoundTripTest, YamlMap)
 {   
-    Base                base    { 10, 1024};
+    BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
     stream << TA::yamlExport(base, TA::PrinterInterface::OutputType::Stream);
@@ -233,7 +233,7 @@ TEST(RoundTripTest, YamlMap)
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 
-    Base    base2 {};
+    BinaryParserTest::Base    base2 {};
     stream >> TA::yamlImport(base2);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
@@ -241,7 +241,7 @@ TEST(RoundTripTest, YamlMap)
 
 TEST(RoundTripTest, YamlParent)
 {
-    Derived             deri;
+    BinaryParserTest::Derived             deri;
     deri.ace    = 10;
     deri.val    = 1024;
     deri.der    = 56789;
@@ -258,7 +258,7 @@ TEST(RoundTripTest, YamlParent)
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
 
-    Derived             deri2 {};
+    BinaryParserTest::Derived             deri2 {};
     stream >> TA::yamlImport(deri2);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632

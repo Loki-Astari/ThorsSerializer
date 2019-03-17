@@ -13,6 +13,8 @@
 using namespace ThorsAnvil::Serialize;
 using namespace std;
 
+namespace Issue42Test
+{
 struct BaseVehicle {
     std::unique_ptr<bool> isPreloaded { nullptr };
     virtual ~BaseVehicle() = default;
@@ -29,16 +31,18 @@ struct Fleet {
     std::unique_ptr<std::vector<std::unique_ptr<VehicleHolder>>> vehicles { nullptr };
 };
 
-ThorsAnvil_MakeTrait(BaseVehicle, isPreloaded);
-ThorsAnvil_ExpandTrait(BaseVehicle, VehicleHolder, id);
-ThorsAnvil_MakeTrait(Fleet, vehicles);
+}
+
+ThorsAnvil_MakeTrait(Issue42Test::BaseVehicle, isPreloaded);
+ThorsAnvil_ExpandTrait(Issue42Test::BaseVehicle, Issue42Test::VehicleHolder, id);
+ThorsAnvil_MakeTrait(Issue42Test::Fleet, vehicles);
 
 TEST(Issue42Test, PointerUniquePtrMultiple)
 {
-    Fleet test {};
+    Issue42Test::Fleet test {};
     string str = R"( {"vehicles":[
          {
-            "__type": "VehicleHolder",
+            "__type": "Issue42Test::VehicleHolder",
             "id":0
          }
       ]})";

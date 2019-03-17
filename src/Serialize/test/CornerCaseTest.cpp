@@ -72,7 +72,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedKey)
     DeSerializer    deSerializer(parser);
 
 
-    CornerCaseClass     value;
+    SerializeTest::CornerCaseClass     value;
     EXPECT_THROW(
         deSerializer.parse(value),
         std::runtime_error
@@ -97,7 +97,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedMapEnd)
     DeSerializer    deSerializer(parser);
 
 
-    CornerCaseClass     value;
+    SerializeTest::CornerCaseClass     value;
     EXPECT_THROW(
         deSerializer.parse(value),
         std::runtime_error
@@ -122,7 +122,7 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedInvalidValue)
     DeSerializer    deSerializer(parser);
 
 
-    CornerCaseClass     value;
+    SerializeTest::CornerCaseClass     value;
     EXPECT_THROW(
         deSerializer.parse(value),
         std::runtime_error
@@ -145,7 +145,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedKey)
     DeSerializer    deSerializer(parser);
 
 
-    CornerCaseClass     value;
+    SerializeTest::CornerCaseClass     value;
     EXPECT_THROW(
         deSerializer.parse(value),
         std::runtime_error
@@ -168,7 +168,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedMapEnd)
     DeSerializer    deSerializer(parser);
 
 
-    CornerCaseClass     value;
+    SerializeTest::CornerCaseClass     value;
     EXPECT_THROW(
         deSerializer.parse(value),
         std::runtime_error
@@ -191,7 +191,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedArrayEnd)
     DeSerializer    deSerializer(parser);
 
 
-    CornerCaseClass     value;
+    SerializeTest::CornerCaseClass     value;
     EXPECT_THROW(
         deSerializer.parse(value),
         std::runtime_error
@@ -214,7 +214,7 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedInvalidValue)
     DeSerializer    deSerializer(parser);
 
 
-    CornerCaseClass     value;
+    SerializeTest::CornerCaseClass     value;
     EXPECT_THROW(
         deSerializer.parse(value),
         std::runtime_error
@@ -237,7 +237,7 @@ TEST(CornerCaseTest, DeSerializerNoDocStart)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass     value;
+        SerializeTest::CornerCaseClass     value;
         deSerializer.parse(value);
     };
 
@@ -262,7 +262,7 @@ TEST(CornerCaseTest, DeSerializerNoDocEnd)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass     value;
+        SerializeTest::CornerCaseClass     value;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -286,7 +286,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Struct_Constructor)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass     value;
+        SerializeTest::CornerCaseClass     value;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -311,7 +311,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Struct_HasMoreValue)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass     value;
+        SerializeTest::CornerCaseClass     value;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -338,7 +338,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Value_ScanObject)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass     value;
+        SerializeTest::CornerCaseClass     value;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -366,7 +366,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_NotMap)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass*    value = nullptr;
+        SerializeTest::CornerCaseClass*    value = nullptr;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -394,7 +394,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapNoKey)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass*    value = nullptr;
+        SerializeTest::CornerCaseClass*    value = nullptr;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -422,7 +422,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyNot_Type)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass*    value = nullptr;
+        SerializeTest::CornerCaseClass*    value = nullptr;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -451,7 +451,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyNotValue)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass*    value = nullptr;
+        SerializeTest::CornerCaseClass*    value = nullptr;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -479,7 +479,7 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyValueBadType)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseClass*    value = nullptr;
+        SerializeTest::CornerCaseClass*    value = nullptr;
         deSerializer.parse(value);
     };
     EXPECT_THROW(
@@ -488,8 +488,11 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyValueBadType)
     );
 }
 
+namespace SerializeTest
+{
 enum    CornerCaseEnum {Enum1, Enum2, Enum3};
-ThorsAnvil_MakeEnum(CornerCaseEnum, Enum1, Enum2, Enum3);
+}
+ThorsAnvil_MakeEnum(SerializeTest::CornerCaseEnum, Enum1, Enum2, Enum3);
 TEST(CornerCaseTest, DeSerializationForBlock_Enum_Constructor)
 {
     auto test = [](){
@@ -506,7 +509,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Enum_Constructor)
         ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
 
-        CornerCaseEnum     value;
+        SerializeTest::CornerCaseEnum     value;
         deSerializer.parse(value);
     };
     EXPECT_THROW(

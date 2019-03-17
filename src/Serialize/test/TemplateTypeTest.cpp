@@ -9,6 +9,9 @@
 #include <string>
 #include <sstream>
 
+namespace TemplateTypeTest
+{
+
 template<typename T>
 struct TemplateType
 {
@@ -26,17 +29,19 @@ struct TemplateInheritFromTemplate: public TemplateType<T>
     std::vector<T>   alternative;
 };
 
+}
 
-ThorsAnvil_Template_MakeTrait(1, TemplateType, templateMember); 
-ThorsAnvil_ExpandTrait(TemplateType<int>, NormalInheritFromTemplate, normalName);
-ThorsAnvil_Template_ExpandTrait(1, TemplateType<T1>, TemplateInheritFromTemplate, alternative);
+
+ThorsAnvil_Template_MakeTrait(1, TemplateTypeTest::TemplateType, templateMember); 
+ThorsAnvil_ExpandTrait(TemplateTypeTest::TemplateType<int>, TemplateTypeTest::NormalInheritFromTemplate, normalName);
+ThorsAnvil_Template_ExpandTrait(1, TemplateTypeTest::TemplateType<T1>, TemplateTypeTest::TemplateInheritFromTemplate, alternative);
 
 TEST(TemplateTypeTest, templateTest)
 {
     std::string         inputStr(R"({"templateMember":[1,2,3,4]})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
-    TemplateType<int>   data;
+    TemplateTypeTest::TemplateType<int>   data;
 
     input  >> ThorsAnvil::Serialize::jsonImport(data);
     output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
@@ -49,7 +54,7 @@ TEST(TemplateTypeTest, normalInheritingFromtemplateTest)
     std::string         inputStr(R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
-    NormalInheritFromTemplate   data;
+    TemplateTypeTest::NormalInheritFromTemplate   data;
 
     input  >> ThorsAnvil::Serialize::jsonImport(data);
     output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
@@ -62,7 +67,7 @@ TEST(TemplateTypeTest, templateInheritingFromtemplateTest)
     std::string         inputStr(R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
-    TemplateInheritFromTemplate<int>   data;
+    TemplateTypeTest::TemplateInheritFromTemplate<int>   data;
 
     input  >> ThorsAnvil::Serialize::jsonImport(data);
     output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);

@@ -370,7 +370,7 @@ TEST(BinaryParserTest, TestParentDeSerilization)
                                             "\x00\x00\x00\x00\x00\x00\x00\x00",     // flt
                                             36));
 
-    TA::BinaryParser<Derived>   parser(stream);
+    TA::BinaryParser<BinaryParserTest::Derived>   parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());

@@ -4,6 +4,9 @@
 
 #include "../Traits.h"
 
+namespace THashTest
+{
+
 struct T1
 {
     int x;
@@ -23,9 +26,11 @@ struct D1
     double z;
 };
 
-ThorsAnvil_MakeTrait(T1, x,y,z);
-ThorsAnvil_MakeTrait(T2, x,y,z);
-ThorsAnvil_MakeTrait(D1, x,y,z);
+}
+
+ThorsAnvil_MakeTrait(THashTest::T1, x,y,z);
+ThorsAnvil_MakeTrait(THashTest::T2, x,y,z);
+ThorsAnvil_MakeTrait(THashTest::D1, x,y,z);
 
 
 #endif
