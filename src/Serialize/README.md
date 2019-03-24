@@ -1,5 +1,5 @@
 
-#ThorSerialize
+# ThorSerialize
 
 This is a framework for serializing C++ objects to/from stream in some "standard formats" efficiently.
 Standard Formats: Currently supported are Json/Yaml/Binary(Experimental)
@@ -11,7 +11,7 @@ User defined classes require no additional code to be serialized, only a simple 
 **Note the constructor is not called.**  
 The serialization class reads/writes built-in data by default and reads/writes these values directly into the members of the object. To read/write non built-in types you must define a serialization for that class. (Note: it is possible to get this library to call the constructors and methods (this is how the standard containers are accessed). But I have not documented this procedure yet as I want to get some good use cases together so I can define a consistent interface for its usage).
 
-##Usage
+## Usage
 
 There are two main functions for export and import that can be used with streams.
 ```C++ XXX
@@ -37,7 +37,7 @@ A simple example of usage would be (link against libThorSerialize14.dynlib)
     // Output
     [1, 2, 3, 4, 5, 6, 7, 8]
 ```
-##User declared Types
+## User declared Types
 
 User defined classes can be made serialize-able by defining a specialization of the class ThorsAnvil::Serialize::Traits<>.
 The macros `ThorsAnvil_MakeTrait` is provided to simplify this for most standard situations. Yes I know macros are nasty. But the idea is to make usage easier and hide the real work. So the macro takes the names of the members (and generates that appropriate type information from the names). A more detailed explanation of how to build a Traits class by hand is provided below.
