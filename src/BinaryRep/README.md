@@ -1,8 +1,8 @@
-#BinaryRep
+# BinaryRep
 
 Defines classes that can be used to help serialization of built in types in a consistent way.
 
-##Types:
+## Types:
 
 The following types are used to represent unsigned integers of various sizes for serialization.
 ```C++
@@ -15,7 +15,7 @@ The following types are used to represent unsigned integers of various sizes for
 Note 1: They are not designed as fully functional integer types (don't use them like that).
 Note 2: The reason I don't use std::unint_nn is because there is not standard std::uint_128
 
-##Float Functions
+## Float Functions
 
 Convert floating point number to/from IEEE transportable format.
 Then converts this to a big endian representation for platform neutral storage.
