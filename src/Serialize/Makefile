@@ -2,6 +2,18 @@
 THORSANVIL_ROOT				?= $(realpath ../../)
 
 TARGET						= ThorSerialize.lib
+# There is no executable code in this header. Just an enum declaration.
+TEST_IGNORE					+= JsonLexemes.h
+# There is no executable code in these files.
+# All the code is in BinaryTHash.tpp that is tested thoroughly
+TEST_IGNORE					+= BinaryTHash.cpp BinaryTHash.h
+
+
+# This is experimental code.
+# Need a better definition of what it does before we add tests
+TEST_IGNORE					+= BinaryParser.cpp BinaryParser.tpp BinaryParser.h BinaryPrinter.h BinaryThor.h
+
+
 
 #
 # Note: SERIALIZATION_EXTERN_LIBS
