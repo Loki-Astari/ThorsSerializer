@@ -167,11 +167,6 @@ std::string YamlParser::getString()
     return std::string(buffer, buffer + length);
 }
 
-std::string YamlParser::getKey()
-{
-    return getString();
-}
-
 template<typename T>
 T YamlParser::scan()
 {

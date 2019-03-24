@@ -38,27 +38,27 @@ class YamlPrinter: public PrinterInterface
 
         virtual void addKey(std::string const& key)         override;
 
-        virtual void addValue(short int value)              override;
-        virtual void addValue(int value)                    override;
-        virtual void addValue(long int value)               override;
-        virtual void addValue(long long int value)          override;
+        virtual void addValue(short int value)              override    {emit(value);}
+        virtual void addValue(int value)                    override    {emit(value);}
+        virtual void addValue(long int value)               override    {emit(value);}
+        virtual void addValue(long long int value)          override    {emit(value);}
 
-        virtual void addValue(unsigned short int value)     override;
-        virtual void addValue(unsigned int value)           override;
-        virtual void addValue(unsigned long int value)      override;
-        virtual void addValue(unsigned long long int value) override;
+        virtual void addValue(unsigned short int value)     override    {emit(value);}
+        virtual void addValue(unsigned int value)           override    {emit(value);}
+        virtual void addValue(unsigned long int value)      override    {emit(value);}
+        virtual void addValue(unsigned long long int value) override    {emit(value);}
 
-        virtual void addValue(float value)                  override;
-        virtual void addValue(double value)                 override;
-        virtual void addValue(long double value)            override;
+        virtual void addValue(float value)                  override    {emit(value);}
+        virtual void addValue(double value)                 override    {emit(value);}
+        virtual void addValue(long double value)            override    {emit(value);}
 
-        virtual void addValue(bool value)                   override;
+        virtual void addValue(bool value)                   override    {emit(value?"true":"false");}
 
-        virtual void addValue(std::string const& value)     override;
+        virtual void addValue(std::string const& value)     override    {emit(value);}
 
-        virtual void addRawValue(std::string const& value)  override;
+        virtual void addRawValue(std::string const& value)  override    {emit(value);}
 
-        virtual void addNull()                              override;
+        virtual void addNull()                              override    {emitNull();}
 };
 
     }
