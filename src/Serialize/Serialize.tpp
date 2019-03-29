@@ -1,6 +1,7 @@
 #ifndef THORS_ANVIL_SERIALIZE_SERIALIZE_TPP
 #define THORS_ANVIL_SERIALIZE_SERIALIZE_TPP
 
+#include "ThorsIOUtil/Utility.h"
 #include <algorithm>
 #include <sstream>
 #include <type_traits>
@@ -96,9 +97,9 @@ struct HeedAllValues
         std::cerr << "CheckMember: " << member.first << "\n";
         if (membersFound.find(member.first) == std::end(membersFound))
         {
-            std::string msg("HeedAllValues::checkAMember: Did not fine: ");
-            msg += member.first;
-            throw std::runtime_error(msg);
+            throw std::runtime_error(
+                Utility::buildErrorMessage("HeedAllValues::checkAMember: Did not fine: ",
+                                           member.first));
         }
         return 0;
     }

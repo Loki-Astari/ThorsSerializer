@@ -1,6 +1,7 @@
 #include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 #include "BinaryParser.h"
+#include "ThorsIOUtil/Utility.h"
 #include <sstream>
 
 using namespace ThorsAnvil::Serialize;
@@ -49,11 +50,12 @@ ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserSt
                 return pushNextState(position - 1, parser, state, ParserToken::Value);
             default:
             {
-                std::stringstream  message;
-                message << "ThorsAnvil::Serialize::BinaryParserUtilBase::getNextToken:"
-                        << " Was expecting Key/Value"
-                        << " Got: ParserToken(" << static_cast<int>(nextToken) << ")";
-                throw std::runtime_error(message.str());
+                throw std::runtime_error(
+                    Utility::buildErrorMessage("ThorsAnvil::Serialize::BinaryParserUtilBase::getNextToken:",
+                                               " Was expecting Key/Value",
+                                               " Got: ParserToken(",
+                                               static_cast<int>(nextToken),
+                                               ")");
             }
         }
     }
