@@ -4,3 +4,6 @@
 [submodule "docSource/themes/documentation"]
 	path = docSource/themes/documentation
 	url = https://github.com/Loki-Astari/andvari-theme-documentation.git
+[submodule "third/ThorsIOUtil"]
+	path = third/ThorsIOUtil
+	url = https://github.com/Loki-Astari/ThorsIOUtil.git
