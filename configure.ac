@@ -42,7 +42,7 @@ LT_INIT
 
 export cwd=`pwd`
 pushd third/ThorsIOUtil
-./configure --with-hostbuild=${cwd}/build
+./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
 popd
 
 
