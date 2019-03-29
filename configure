@@ -17864,6 +17864,11 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
+export cwd=`pwd`
+pushd third/ThorsIOUtil
+./configure --with-hostbuild=${cwd}/build
+popd
+
 
 
 am__api_version='1.16'

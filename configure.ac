@@ -40,6 +40,11 @@ int main() {
 }])
 LT_INIT
 
+export cwd=`pwd`
+pushd third/ThorsIOUtil
+./configure --with-hostbuild=${cwd}/build
+popd
+
 
 
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
