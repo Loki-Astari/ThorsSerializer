@@ -4861,7 +4861,7 @@ fi
     subconfigvera=""
     if test "x$enable_vera" == "xno"; then :
 
-            VERATOOL="echo 'Disabled Static Analysis' ||";
+            VERATOOL='off';
             subconfigvera="--disable-vera";
 
 else
