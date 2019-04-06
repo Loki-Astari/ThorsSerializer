@@ -193,14 +193,15 @@ static_assert(                                                          \
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
 )
 
-#define ThorsAnvil_PointerAllocator(DataType, Action)                   \
+#define ThorsAnvil_PointerAllocator(DataType, ActionObj)                \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<>                                                              \
 class Traits<DataType*>                                                 \
 {                                                                       \
     public:                                                             \
         static constexpr TraitType type = TraitType::Pointer;           \
-        static DataType* alloc() Action                                 \
+        static DataType* alloc()    {return ActionObj.alloc();}         \
+        static void release(T* p)   {ActionObj.release(p);}             \
 };                                                                      \
 }}
 #define ThorsAnvil_MakeTrait_Base(Parent, TType, Count, DataType, ...)  \
