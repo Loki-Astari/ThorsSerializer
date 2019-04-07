@@ -41,11 +41,17 @@ struct Binary
     using Printer = BinaryPrinter<T>;
 };
 
+// @function-api
+// @param value             The object to be serialized.
+// @return                  Object that can be passed to operator<< for serialization.
 template<typename T>
-Exporter<Binary<T>, T> binExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default, bool catchExceptions = false)
+Exporter<Binary<T>, T> binExport(T const& value, bool catchExceptions = false)
 {
-    return Exporter<Binary<T>, T>(value, characteristics, catchExceptions);
+    return Exporter<Binary<T>, T>(value, PrinterInterface::OutputType::Stream, catchExceptions);
 }
+// @function-api
+// @param value             The object to be de-serialized.
+// @return                  Object that can be passed to operator>> for de-serialization.
 template<typename T>
 Importer<Binary<T>, T> binImport(T& value, bool catchExceptions = false)
 {

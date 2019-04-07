@@ -5,6 +5,10 @@
     "theme": "documentation",
     "themeGit": "git@github.com:Loki-Astari/andvari-theme-documentation.git",
     "toc": [
-        {"name": "Introduction", "value": "intro.md"}
+        {"name": "Introduction", "value": "intro.md"},
+        {"name": "API", "value": "api.md"},
+        {"name": "Usage", "value": "usage.md"},
+        {"name": "Implementation", "value": "impl.md"},
+        {"name": "APi Generated", "value": "ThorSerialize-api.md"}
     ]
 }
