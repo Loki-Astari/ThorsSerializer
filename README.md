@@ -22,7 +22,7 @@ Unlike other libraries this one does not require you to build DOM of you object 
 * [PolyMorphic Example](doc/example3.md)
 * [Installing](doc/building.md)
 * [Documentation Usage](doc/usage.md)
-* [Documentation Internal](doc/internal.md)
+* [Documentation Internal](https://lokiastari.com/ThorsSerializer/)
 
 -----
 [One Page](doc/full.md)
