@@ -3,12 +3,12 @@ layout: function
 generate: false
 typeInfo:
     namespace: ThorsAnvil::Serialize
-    header:    ThorSerialize/JsonThor.h
-    function:  jsonExport
+    header:    ThorSerialize/YamlThor.h
+    function:  yamlExport
     description: 
     template:  template<typename T> 
     return:
-        type: 'Exporter<Json, T>'
+        type: 'Exporter<Yaml, T>'
         description: 'Object that can be passed to operator<< for serialization.'
     parameters:
         - name: value

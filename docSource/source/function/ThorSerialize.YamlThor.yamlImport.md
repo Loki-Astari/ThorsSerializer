@@ -3,12 +3,12 @@ layout: function
 generate: false
 typeInfo:
     namespace: ThorsAnvil::Serialize
-    header:    ThorSerialize/JsonThor.h
-    function:  jsonImport
+    header:    ThorSerialize/YamlThor.h
+    function:  yamlImport
     description: 
     template:  template<typename T> 
     return:
-        type: 'Importer<Json, T>'
+        type: 'Importer<Yaml, T>'
         description: 'Object that can be passed to operator>> for de-serialization.'
     parameters:
         - name: value
