@@ -27,11 +27,13 @@ struct Json
     using Printer = JsonPrinter;
 };
 
+// @function-api
 template<typename T>
 Exporter<Json, T> jsonExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default, bool catchExceptions = false)
 {
     return Exporter<Json, T>(value, characteristics, catchExceptions);
 }
+// @function-api
 template<typename T>
 Importer<Json, T> jsonImport(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak, bool catchExceptions = false)
 {

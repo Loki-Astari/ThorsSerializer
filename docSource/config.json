@@ -8,6 +8,7 @@
         {"name": "Introduction", "value": "intro.md"},
         {"name": "API", "value": "api.md"},
         {"name": "Usage", "value": "usage.md"},
-        {"name": "Implementation", "value": "impl.md"}
+        {"name": "Implementation", "value": "impl.md"},
+        {"name": "APi Generated", "value": "ThorSerialize-api.md"}
     ]
 }
