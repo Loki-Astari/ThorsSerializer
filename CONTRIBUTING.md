@@ -11,7 +11,13 @@ Be sure to include a **title and clear description**, as much relevant informati
 
 * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
 
-* Make sure that the pull request builds on [Travis.ci](https://travis-ci.org/)
+* Make sure it build localy with no errors.
+
+    ./configure --disable-binary
+    make
+
+* Make sure that the pull request builds on [Travis.ci](https://travis-ci.org/)  
+The project includes an appropriate `.travis` files that will check the build.
 
 #### **Did you fix whitespace, format code, or make a purely cosmetic patch?**
 
