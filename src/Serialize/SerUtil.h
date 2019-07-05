@@ -206,11 +206,11 @@ class Traits<std::pair<F, S>>
         static constexpr TraitType type = TraitType::Map;
         using Self = std::pair<F,S>;
 
-        using Members = std::tuple< REP_N(THOR_TYPEACTION, 0, Self, first, second, 1) >;
+        using Members = std::tuple< REP_N(THOR_TYPEACTION, 00, Self, first, second, 1) >;
 
         static Members const& getMembers()
         {
-            static constexpr Members members{ REP_N(THOR_VALUEACTION, 0, Self, first, second, 1) };
+            static constexpr Members members{ REP_N(THOR_VALUEACTION, 00, Self, first, second, 1) };
             return members;
         }
 };

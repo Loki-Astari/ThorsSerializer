@@ -142,16 +142,16 @@
 #define ALT_REP_OF_12(Act, E, P, S)     P ALT_EXPAND(Act, E, 12), ALT_REP_OF_11(Act, E,  , S)
 #define ALT_REP_OF_11(Act, E, P, S)     P ALT_EXPAND(Act, E, 11), ALT_REP_OF_10(Act, E,  , S)
 #define ALT_REP_OF_10(Act, E, P, S)     P ALT_EXPAND(Act, E, 10), ALT_REP_OF_09(Act, E,  , S)
-#define ALT_REP_OF_9(Act, E, P, S)      P ALT_EXPAND(Act, E, 9), ALT_REP_OF_08(Act, E,  , S)
-#define ALT_REP_OF_8(Act, E, P, S)      P ALT_EXPAND(Act, E, 8), ALT_REP_OF_07(Act, E,  , S)
-#define ALT_REP_OF_7(Act, E, P, S)      P ALT_EXPAND(Act, E, 7), ALT_REP_OF_06(Act, E,  , S)
-#define ALT_REP_OF_6(Act, E, P, S)      P ALT_EXPAND(Act, E, 6), ALT_REP_OF_05(Act, E,  , S)
-#define ALT_REP_OF_5(Act, E, P, S)      P ALT_EXPAND(Act, E, 5), ALT_REP_OF_04(Act, E,  , S)
-#define ALT_REP_OF_4(Act, E, P, S)      P ALT_EXPAND(Act, E, 4), ALT_REP_OF_03(Act, E,  , S)
-#define ALT_REP_OF_3(Act, E, P, S)      P ALT_EXPAND(Act, E, 3), ALT_REP_OF_02(Act, E,  , S)
-#define ALT_REP_OF_2(Act, E, P, S)      P ALT_EXPAND(Act, E, 2), ALT_REP_OF_01(Act, E,  , S)
-#define ALT_REP_OF_1(Act, E, P, S)      P ALT_EXPAND(Act, E, 1) S
-#define ALT_REP_OF_0(Act, E, P, S)      LAST_ ## Act(E, 0)
+#define ALT_REP_OF_09(Act, E, P, S)     P ALT_EXPAND(Act, E, 09), ALT_REP_OF_08(Act, E,  , S)
+#define ALT_REP_OF_08(Act, E, P, S)     P ALT_EXPAND(Act, E, 08), ALT_REP_OF_07(Act, E,  , S)
+#define ALT_REP_OF_07(Act, E, P, S)     P ALT_EXPAND(Act, E, 07), ALT_REP_OF_06(Act, E,  , S)
+#define ALT_REP_OF_06(Act, E, P, S)     P ALT_EXPAND(Act, E, 06), ALT_REP_OF_05(Act, E,  , S)
+#define ALT_REP_OF_05(Act, E, P, S)     P ALT_EXPAND(Act, E, 05), ALT_REP_OF_04(Act, E,  , S)
+#define ALT_REP_OF_04(Act, E, P, S)     P ALT_EXPAND(Act, E, 04), ALT_REP_OF_03(Act, E,  , S)
+#define ALT_REP_OF_03(Act, E, P, S)     P ALT_EXPAND(Act, E, 03), ALT_REP_OF_02(Act, E,  , S)
+#define ALT_REP_OF_02(Act, E, P, S)     P ALT_EXPAND(Act, E, 02), ALT_REP_OF_01(Act, E,  , S)
+#define ALT_REP_OF_01(Act, E, P, S)     P ALT_EXPAND(Act, E, 01) S
+#define ALT_REP_OF_00(Act, E, P, S)     LAST_ ## Act(E, 00)
 
 /*
  * The actions we apply with REP_*
@@ -249,7 +249,7 @@ namespace                                                               \
     static_assert(true, "")
 
 #define ThorsAnvil_MakeTrait(...)                                       \
-    ThorsAnvil_MakeTrait_Base( , Map, 0, __VA_ARGS__, 1);               \
+    ThorsAnvil_MakeTrait_Base( , Map, 00, __VA_ARGS__, 1);               \
     ThorsAnvil_RegisterPolyMorphicType_Internal(__VA_ARGS__, 1)         \
     static_assert(true, "")
 
@@ -276,7 +276,7 @@ DO_ASSERT(DataType)
         ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(0, ParentType, DataType, __VA_ARGS__), Parent, 0, DataType, __VA_ARGS__); \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(0, ParentType, DataType, __VA_ARGS__), Parent, 00, DataType, __VA_ARGS__); \
     ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)            \
     static_assert(true, "")
 
