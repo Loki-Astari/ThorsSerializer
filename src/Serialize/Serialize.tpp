@@ -702,7 +702,7 @@ class SerializerForBlock<TraitType::Enum, T>
         ~SerializerForBlock()   {}
         void printMembers()
         {
-            printer.addValue(std::string(Traits<T>::getValues()[static_cast<int>(object)]));
+            printer.addValue(Traits<T>::getValues().find(object)->second);
         }
 };
 

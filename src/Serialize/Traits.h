@@ -166,10 +166,10 @@
 
 #define THOR_TYPEACTION(TC, Type, Member)       std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, TC) ::Member)>
 #define THOR_VALUEACTION(TC, Type, Member)      { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, TC) ::Member }
-#define THOR_NAMEACTION(TC, Type, Member)       #Member
+#define THOR_NAMEACTION(TC, Type, Member)       { Type::Member, #Member ## s}
 #define LAST_THOR_TYPEACTION(TC, Type)
 #define LAST_THOR_VALUEACTION(TC, Type)
-#define LAST_THOR_NAMEACTION(TC, Type)          nullptr
+#define LAST_THOR_NAMEACTION(TC, Type)
 
 #define THOR_TYPENAMEPARAMACTION(Ex, Id)        typename T ## Id
 #define THOR_TYPENAMEVALUEACTION(Ex, Id)        T ## Id
@@ -280,6 +280,8 @@ DO_ASSERT(DataType)
     ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)            \
     static_assert(true, "")
 
+#include <map>
+#include <string>
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<>                                                              \
@@ -287,11 +289,13 @@ class Traits<EnumName>                                                  \
 {                                                                       \
     public:                                                             \
         static constexpr    TraitType       type = TraitType::Enum;     \
-        static char const* const* getValues()                           \
+        static std::map<EnumName, std::string> const& getValues()       \
         {                                                               \
-            static constexpr char const* values[] = {                   \
-                        REP_N(THOR_NAMEACTION, 0, 0, __VA_ARGS__, 1)    \
-                                                    };                  \
+            using std::string_literals::operator""s;                    \
+            static const std::map<EnumName, std::string> values =       \
+            {                                                           \
+                REP_N(THOR_NAMEACTION, 0, EnumName, __VA_ARGS__, 1)     \
+            };                                                          \
             return values;                                              \
         }                                                               \
         static std::size_t getSize()                                    \
@@ -300,12 +304,11 @@ class Traits<EnumName>                                                  \
         }                                                               \
         static EnumName getValue(std::string const& val, std::string const& msg) \
         {                                                               \
-            char const* const* values = getValues();                    \
-            std::size_t        size   = getSize();                      \
-            for (std::size_t loop = 0;loop < size; ++loop)              \
+            std::map<EnumName, std::string> const& values = getValues();\
+            for (auto const& value: values)                             \
             {                                                           \
-                if (val == values[loop]) {                              \
-                    return static_cast<EnumName>(loop);                 \
+                if (val == value.second) {                              \
+                    return value.first;                                 \
                 }                                                       \
             }                                                           \
             throw std::runtime_error(msg + " Invalid Enum Value");      \
