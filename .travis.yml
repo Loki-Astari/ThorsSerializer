@@ -1,24 +1,32 @@
 git:
-    submodules: false
+  submodules: false
 language: cpp
 before_install:
-    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-    - sudo apt-get update
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update
 install:
-    - sudo apt-get install -qq g++-7 -y
-    - sudo apt-get install python-dev -y
-    - sudo apt-get install -qq libboost-all-dev
-    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-    - wget -O boost_1_56.tar.gz http://sourceforge.net/projects/boost/files/boost/1.56.0/boost_1_56_0.tar.gz/download
-    - tar xzf boost_1_56.tar.gz;cd boost_1_56_0/;mkdir -p /tmp/extra;./bootstrap.sh --prefix=/tmp/extra
-    - ./b2 cxxflags="-Wno-strict-aliasing -Wno-unused-local-typedefs -Wno-maybe-uninitialized -Wno-deprecated-declarations -Wno-placement-new" --with-system --with-context --with-coroutine
-    - sudo ./b2 --with-system --with-context --with-coroutine install | awk 'NR == 1 || NR % 25 == 0'
-    - cd ..
+- sudo apt-get install -qq g++-7 -y
+- sudo apt-get install python-dev -y
+- sudo apt-get install -qq libboost-all-dev
+- sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++
+  g++ /usr/bin/g++-7
+- wget -O boost_1_56.tar.gz http://sourceforge.net/projects/boost/files/boost/1.56.0/boost_1_56_0.tar.gz/download
+- tar xzf boost_1_56.tar.gz;cd boost_1_56_0/;mkdir -p /tmp/extra;./bootstrap.sh --prefix=/tmp/extra
+- ./b2 cxxflags="-Wno-strict-aliasing -Wno-unused-local-typedefs -Wno-maybe-uninitialized
+  -Wno-deprecated-declarations -Wno-placement-new" --with-system --with-context --with-coroutine
+- sudo ./b2 --with-system --with-context --with-coroutine install | awk 'NR == 1 ||
+  NR % 25 == 0'
+- cd ..
 script:
-    - ./configure --with-boost=/tmp/extra --disable-binary
-    - export PATH=${PATH}:$(pwd)/build/bin;make 
+- "./configure --with-boost=/tmp/extra --disable-binary"
+- export PATH=${PATH}:$(pwd)/build/bin;make
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+- "./CreateHeaderOnly"
+- bash <(curl -s https://codecov.io/bash)
 branches:
   only:
   - master
+  - "/^Feature-.*$/"
+env:
+    global:
+    - secure: D5HPaNoM+cbZLcfqGvudY3irPd27q89npzr7jlaVjs1m782bii8XCKWwrwNQfge/7mtaY7RRDxdFJkRssVno5HaLItOg/MT6gBinyQGenPZXeh7ia2CYkeuiRhKrEfKAMhCcoe5RafYbCDWq8w5eZ6iMnRoFUiA66cWGlF1vBI4=

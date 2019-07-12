@@ -1,0 +1,20 @@
+#!/bin/bash -v
+
+for loop in src/Serialize/*.cpp; do
+    file=${loop##*/}
+    base=${file%%.cpp}
+    echo cp ${file} build/include/ThorSerialize/${base}.source
+    cp ${loop} build/include/ThorSerialize/${base}.source
+done
+
+git clone --single-branch --branch header-only https://Loki-Astari:${TMP}@github.com/Loki-Astari/ThorsSerializer.git /tmp/TS
+
+rm /tmp/TS/ThorSerialize/*
+cp build/include/ThorSerialize/*  /tmp/TS/ThorSerialize/
+cd /tmp/TS
+git checkout ThorSerialize/SerializeConfig.h
+
+git add ThorSerialize/*
+git commit -m "Update the header only build to latest version"
+git push
+
