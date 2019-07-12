@@ -24,6 +24,13 @@ Unlike other libraries this one does not require you to build DOM of you object 
 * [Documentation Usage](doc/usage.md)
 * [Documentation Internal](https://lokiastari.com/ThorsSerializer/)
 
+# Header Only
+
+To install header only version
+
+git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsSerializer.git
+
+
 -----
 [One Page](doc/full.md)
 
