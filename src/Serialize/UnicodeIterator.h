@@ -18,6 +18,7 @@
  *  std::copy(std::bin(input), std::end(input), make_UnicodePushBackIterator(text));
  */
 
+#include "SerializeConfig.h"
 #include <iterator>
 #include <vector>
 

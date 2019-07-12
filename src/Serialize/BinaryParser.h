@@ -225,5 +225,9 @@ class BinaryParser: public ParserInterface
     }
 }
 
+#if defined(HEADER_ONLY) && HEADER_ONLY == 1
+#include "BinaryParser.source"
+#endif
+
 #endif
 #endif

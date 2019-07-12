@@ -82,5 +82,9 @@ class YamlParser: public ParserInterface
     }
 }
 
+#if defined(HEADER_ONLY) && HEADER_ONLY == 1
+#include "YamlParser.source"
+#endif
+
 #endif
 #endif
