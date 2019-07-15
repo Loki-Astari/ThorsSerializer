@@ -17,6 +17,7 @@
  *      will not cause an error.
  */
 
+#include "SerializeConfig.h"
 #include "Serialize.h"
 #include "JsonManualLexer.h"
 #include <istream>
@@ -74,5 +75,9 @@ class JsonParser: public ParserInterface
 };
     }
 }
+
+#if defined(HEADER_ONLY) && HEADER_ONLY == 1
+#include "JsonParser.source"
+#endif
 
 #endif

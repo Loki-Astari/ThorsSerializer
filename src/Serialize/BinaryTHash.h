@@ -7,6 +7,7 @@
  * but fast. It is designed to guard against accidental changes not deliberate attacks.
  */
 
+#include "SerializeConfig.h"
 #include <cstdlib>
 
 namespace ThorsAnvil
@@ -19,6 +20,10 @@ std::size_t thash(std::size_t restul = 0);
 
     }
 }
+
+#if defined(HEADER_ONLY) && HEADER_ONLY == 1
+#include "BinaryThash.source"
+#endif
 
 #ifndef COVERAGE_TEST
 #include "BinaryTHash.tpp"
