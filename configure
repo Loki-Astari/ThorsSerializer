@@ -708,7 +708,8 @@ StdFlag11
 CXXMaxLanguage
 NO_DEPRECATED_REGISTER_TEST
 NO_UNUSED_PRIVATE_FIELD_TEST
-LITERAL_WARNING
+LITERAL_WARNING_RANGE
+LITERAL_WARNING_SUFFIX
 BINARY_REP
 EGREP
 GREP
@@ -6202,14 +6203,20 @@ fi
 SERIALIZATION_EXTERN_LIBS="$with_yamllib  $SERIALIZATION_EXTERN_LIBS"
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -ansi" >&5
-$as_echo_n "checking whether C compiler accepts -ansi... " >&6; }
-if ${ax_cv_check_cflags___ansi+:} false; then :
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -ansi" >&5
+$as_echo_n "checking whether C++ compiler accepts -ansi... " >&6; }
+if ${ax_cv_check_cxxflags___ansi+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -ansi"
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -ansi"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6221,31 +6228,32 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv_check_cflags___ansi=yes
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___ansi=yes
 else
-  ax_cv_check_cflags___ansi=no
+  ax_cv_check_cxxflags___ansi=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
+  CXXFLAGS=$ax_check_save_flags
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___ansi" >&5
-$as_echo "$ax_cv_check_cflags___ansi" >&6; }
-if test "x$ax_cv_check_cflags___ansi" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___ansi" >&5
+$as_echo "$ax_cv_check_cxxflags___ansi" >&6; }
+if test "x$ax_cv_check_cxxflags___ansi" = xyes; then :
   CXXFLAGS="$CXXFLAGS -ansi"
 
 else
   :
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wno-literal-suffix" >&5
-$as_echo_n "checking whether C compiler accepts -Wno-literal-suffix... " >&6; }
-if ${ax_cv_check_cflags___Wno_literal_suffix+:} false; then :
+as_CACHEVAR=`$as_echo "ax_cv_check_cxxflags_$CXX_STD_FLAG -Werror -Wall -Wextra_-Wno-literal-suffix" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-literal-suffix" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-literal-suffix... " >&6; }
+if eval \${$as_CACHEVAR+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -Wno-literal-suffix"
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS $CXX_STD_FLAG -Werror -Wall -Wextra -Wno-literal-suffix"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6257,31 +6265,33 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv_check_cflags___Wno_literal_suffix=yes
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  eval "$as_CACHEVAR=yes"
 else
-  ax_cv_check_cflags___Wno_literal_suffix=no
+  eval "$as_CACHEVAR=no"
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
+  CXXFLAGS=$ax_check_save_flags
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wno_literal_suffix" >&5
-$as_echo "$ax_cv_check_cflags___Wno_literal_suffix" >&6; }
-if test "x$ax_cv_check_cflags___Wno_literal_suffix" = xyes; then :
-  LITERAL_WARNING=-Wno-literal-suffix
+eval ac_res=\$$as_CACHEVAR
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_CACHEVAR"\" = x"yes"; then :
+  LITERAL_WARNING_SUFFIX=-Wno-literal-suffix
 
 else
   :
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wno-literal-range" >&5
-$as_echo_n "checking whether C compiler accepts -Wno-literal-range... " >&6; }
-if ${ax_cv_check_cflags___Wno_literal_range+:} false; then :
+as_CACHEVAR=`$as_echo "ax_cv_check_cxxflags_$CXX_STD_FLAG -Werror -Wall -Wextra_-Wno-literal-range" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-literal-range" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wno-literal-range... " >&6; }
+if eval \${$as_CACHEVAR+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -Wno-literal-range"
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS $CXX_STD_FLAG -Werror -Wall -Wextra -Wno-literal-range"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6293,22 +6303,29 @@ main ()
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv_check_cflags___Wno_literal_range=yes
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  eval "$as_CACHEVAR=yes"
 else
-  ax_cv_check_cflags___Wno_literal_range=no
+  eval "$as_CACHEVAR=no"
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
+  CXXFLAGS=$ax_check_save_flags
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wno_literal_range" >&5
-$as_echo "$ax_cv_check_cflags___Wno_literal_range" >&6; }
-if test "x$ax_cv_check_cflags___Wno_literal_range" = xyes; then :
-  LITERAL_WARNING=-Wno-literal-range
+eval ac_res=\$$as_CACHEVAR
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_CACHEVAR"\" = x"yes"; then :
+  LITERAL_WARNING_RANGE=-Wno-literal-range
 
 else
   :
 fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
@@ -6722,6 +6739,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
 
 fi
+
 
 
 case `pwd` in

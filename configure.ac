@@ -30,9 +30,11 @@ AX_THOR_LIB_SELECT
 
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], ["$with_yamllib  $SERIALIZATION_EXTERN_LIBS"])
 
+AC_LANG_PUSH([C++])
 AX_CHECK_COMPILE_FLAG([-ansi], [AC_SUBST([CXXFLAGS], ["$CXXFLAGS -ansi"])])
-AX_CHECK_COMPILE_FLAG([-Wno-literal-suffix], [AC_SUBST([LITERAL_WARNING], [-Wno-literal-suffix])])
-AX_CHECK_COMPILE_FLAG([-Wno-literal-range],  [AC_SUBST([LITERAL_WARNING], [-Wno-literal-range])])
+AX_CHECK_COMPILE_FLAG([-Wno-literal-suffix], [AC_SUBST([LITERAL_WARNING_SUFFIX], [-Wno-literal-suffix])], [], [$CXX_STD_FLAG -Werror -Wall -Wextra])
+AX_CHECK_COMPILE_FLAG([-Wno-literal-range],  [AC_SUBST([LITERAL_WARNING_RANGE],  [-Wno-literal-range])],  [], [$CXX_STD_FLAG -Werror -Wall -Wextra])
+AC_LANG_POP([C++])
 
 AX_THOR_FUNC_LANG_FLAG(17)
 AX_THOR_FUNC_TEST_COMP([
@@ -40,6 +42,7 @@ AX_THOR_FUNC_TEST_COMP([
 int main() {
     std::index_sequence<1,2,3,4>    seq;
 }])
+
 LT_INIT
 
 export cwd=`pwd`
