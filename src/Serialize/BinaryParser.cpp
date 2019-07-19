@@ -55,7 +55,7 @@ ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserSt
                                                " Was expecting Key/Value",
                                                " Got: ParserToken(",
                                                static_cast<int>(nextToken),
-                                               ")");
+                                               ")"));
             }
         }
     }
