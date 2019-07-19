@@ -9,8 +9,8 @@
 using namespace ThorsAnvil::Serialize;
 using ParserToken = ParserInterface::ParserToken;
 
-JsonParser::JsonParser(std::istream& stream, ParseType parseStrictness)
-    : ParserInterface(stream, parseStrictness)
+JsonParser::JsonParser(std::istream& stream, ParserConfig config)
+    : ParserInterface(stream, config)
     , lexer(stream)
     , currentEnd(Done)
     , currentState(Init)

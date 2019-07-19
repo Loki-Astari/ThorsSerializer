@@ -16,21 +16,21 @@ namespace ThorsAnvil
 template<typename Format, typename T>
 class Exporter
 {
-    using OutputType = PrinterInterface::OutputType;
-    T const&    value;
-    OutputType  characteristics;
-    bool        catchException;
+    using PrinterConfig = PrinterInterface::PrinterConfig;
+    T const&        value;
+    PrinterConfig   config;
+    bool            catchException;
     public:
-        Exporter(T const& value, OutputType characteristics, bool catchException = false)
+        Exporter(T const& value, PrinterConfig config, bool catchException = false)
             : value(value)
-            , characteristics(characteristics)
+            , config(config)
             , catchException(catchException)
         {}
         friend std::ostream& operator<<(std::ostream& stream, Exporter const& data)
         {
             try
             {
-                typename Format::Printer    printer(stream, data.characteristics);
+                typename Format::Printer    printer(stream, data.config);
                 Serializer                  serializer(printer);
 
                 serializer.print(data.value);
@@ -49,9 +49,9 @@ class Exporter
 };
 
 template<typename Format, typename T>
-Exporter<Format, T> Export(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default)
+Exporter<Format, T> Export(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{})
 {
-    return Exporter<Format, T>(value, characteristics);
+    return Exporter<Format, T>(value, config);
 }
 
 

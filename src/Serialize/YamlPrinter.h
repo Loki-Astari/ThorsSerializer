@@ -27,7 +27,7 @@ class YamlPrinter: public PrinterInterface
     void emit(T const& data);
     void emitNull();
     public:
-        YamlPrinter(std::ostream& output, OutputType characteristics = OutputType::Default);
+        YamlPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
         ~YamlPrinter();
         virtual void openDoc()                              override;
         virtual void closeDoc()                             override;

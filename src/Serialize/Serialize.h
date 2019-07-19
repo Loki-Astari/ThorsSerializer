@@ -46,14 +46,28 @@ class ParserInterface
     public:
         enum class ParseType   {Weak, Strict, Exact};
         enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
+        struct ParserConfig
+        {
+            ParserConfig(ParseType parseStrictness = ParseType::Weak, std::string const& polymorphicMarker = "__type")
+                : parseStrictness(parseStrictness)
+                , polymorphicMarker(polymorphicMarker)
+            {}
+            ParserConfig(std::string const& polymorphicMarker)
+                : parseStrictness(ParseType::Weak)
+                , polymorphicMarker(polymorphicMarker)
+            {}
+            ParseType       parseStrictness;
+            std::string     polymorphicMarker;
+        };
+
         std::istream&   input;
         ParserToken     pushBack;
-        ParseType       parseStrictness;
+        ParserConfig    config;
 
-        ParserInterface(std::istream& input, ParseType parseStrictness = ParseType::Weak)
+        ParserInterface(std::istream& input, ParserConfig  config = ParserConfig{})
             : input(input)
             , pushBack(ParserToken::Error)
-            , parseStrictness(parseStrictness)
+            , config(config)
         {}
         virtual ~ParserInterface() {}
                 ParserToken     getToken();
@@ -96,16 +110,29 @@ class PrinterInterface
 {
     public:
         enum class OutputType {Default, Stream, Config};
+        struct PrinterConfig
+        {
+            PrinterConfig(OutputType characteristics = OutputType::Default, std::string const& polymorphicMarker = "__type")
+                : characteristics(characteristics)
+                , polymorphicMarker(polymorphicMarker)
+            {}
+            PrinterConfig(std::string const& polymorphicMarker)
+                : characteristics(OutputType::Default)
+                , polymorphicMarker(polymorphicMarker)
+            {}
+            OutputType      characteristics;
+            std::string     polymorphicMarker;
+        };
         // Default:     What ever the implementation likes.
         // Stream:      Compressed for over the wire protocol.
         // Config:      Human readable (potentially config file like)
 
         std::ostream&   output;
-        OutputType      characteristics;
+        PrinterConfig   config;
 
-        PrinterInterface(std::ostream& output, OutputType characteristics = OutputType::Default)
+        PrinterInterface(std::ostream& output, PrinterConfig config = PrinterConfig{})
             : output(output)
-            , characteristics(characteristics)
+            , config(config)
         {}
         virtual ~PrinterInterface() {}
         virtual void openDoc()                          = 0;

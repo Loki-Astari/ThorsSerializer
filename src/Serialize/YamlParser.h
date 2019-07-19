@@ -50,7 +50,7 @@ class YamlParser: public ParserInterface
     template<typename T>
     T scan();
     public:
-        YamlParser(std::istream& input, ParseType parseStrictness = ParseType::Weak);
+        YamlParser(std::istream& input, ParserConfig config = ParserConfig{});
         virtual ~YamlParser();
 
         virtual ParserToken     getNextToken()                  override;
