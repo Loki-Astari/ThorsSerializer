@@ -38,8 +38,8 @@ void YamlPrinter::checkYamlResultCode(std::function<int(yaml_event_t&)> init, ch
     checkYamlResultCode(code2, method, "yaml_emitter_emit");
 }
 
-YamlPrinter::YamlPrinter(std::ostream& output, OutputType characteristics)
-    : PrinterInterface(output, characteristics)
+YamlPrinter::YamlPrinter(std::ostream& output, PrinterConfig config)
+    : PrinterInterface(output, config)
     , error(false)
 {
     checkYamlResultCode(yaml_emitter_initialize(&emitter), "YamlPrinter", "yaml_emitter_initialize");
@@ -82,7 +82,7 @@ void YamlPrinter::closeDoc()
 void YamlPrinter::openMap()
 {
     yaml_mapping_style_t    style;
-    switch (this->characteristics)
+    switch (this->config.characteristics)
     {
         case PrinterInterface::OutputType::Stream:  style   = YAML_FLOW_MAPPING_STYLE;  break;
         case PrinterInterface::OutputType::Config:  style   = YAML_BLOCK_MAPPING_STYLE; break;
@@ -105,7 +105,7 @@ void YamlPrinter::closeMap()
 void YamlPrinter::openArray(std::size_t)
 {
     yaml_sequence_style_t    style;
-    switch (this->characteristics)
+    switch (this->config.characteristics)
     {
         case PrinterInterface::OutputType::Stream:  style   = YAML_FLOW_SEQUENCE_STYLE; break;
         case PrinterInterface::OutputType::Config:  style   = YAML_BLOCK_SEQUENCE_STYLE;break;

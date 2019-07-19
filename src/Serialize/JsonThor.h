@@ -34,9 +34,9 @@ struct Json
 // @param catchExceptions   'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
 // @return                  Object that can be passed to operator<< for serialization.
 template<typename T>
-Exporter<Json, T> jsonExport(T const& value, PrinterInterface::OutputType characteristics = PrinterInterface::OutputType::Default, bool catchExceptions = false)
+Exporter<Json, T> jsonExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
 {
-    return Exporter<Json, T>(value, characteristics, catchExceptions);
+    return Exporter<Json, T>(value, config, catchExceptions);
 }
 // @function-api
 // @param value             The object to be de-serialized.

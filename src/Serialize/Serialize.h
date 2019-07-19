@@ -110,16 +110,29 @@ class PrinterInterface
 {
     public:
         enum class OutputType {Default, Stream, Config};
+        struct PrinterConfig
+        {
+            PrinterConfig(OutputType characteristics = OutputType::Default, std::string const& polymorphicMarker = "__type")
+                : characteristics(characteristics)
+                , polymorphicMarker(polymorphicMarker)
+            {}
+            PrinterConfig(std::string const& polymorphicMarker)
+                : characteristics(OutputType::Default)
+                , polymorphicMarker(polymorphicMarker)
+            {}
+            OutputType      characteristics;
+            std::string     polymorphicMarker;
+        };
         // Default:     What ever the implementation likes.
         // Stream:      Compressed for over the wire protocol.
         // Config:      Human readable (potentially config file like)
 
         std::ostream&   output;
-        OutputType      characteristics;
+        PrinterConfig   config;
 
-        PrinterInterface(std::ostream& output, OutputType characteristics = OutputType::Default)
+        PrinterInterface(std::ostream& output, PrinterConfig config = PrinterConfig{})
             : output(output)
-            , characteristics(characteristics)
+            , config(config)
         {}
         virtual ~PrinterInterface() {}
         virtual void openDoc()                          = 0;

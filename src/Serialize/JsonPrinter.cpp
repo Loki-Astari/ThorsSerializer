@@ -109,8 +109,8 @@ char const*  Prefix::space[]   = {" ",  "",  " "};
 char const*  Prefix::comma[]   = {", ", ",", ", "};
 char const*  Prefix::colon[]   = {": ", ":", ": "};
 
-JsonPrinter::JsonPrinter(std::ostream& output, OutputType characteristics)
-    : PrinterInterface(output, characteristics)
+JsonPrinter::JsonPrinter(std::ostream& output, PrinterConfig config)
+    : PrinterInterface(output, config)
 {
     state.emplace_back(0, TraitType::Value);
 }
@@ -122,7 +122,7 @@ void JsonPrinter::closeDoc()
 
 void JsonPrinter::openMap()
 {
-    output << PrefixMap(characteristics, state.size(), state.back()) << "{";
+    output << PrefixMap(config.characteristics, state.size(), state.back()) << "{";
     state.emplace_back(0, TraitType::Map);
 }
 void JsonPrinter::closeMap()
@@ -132,11 +132,11 @@ void JsonPrinter::closeMap()
         throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to closeMap(): Currently not in a map");
     }
     state.pop_back();
-    output << PrefixMapClose(characteristics, state.size(), state.back()) << "}";
+    output << PrefixMapClose(config.characteristics, state.size(), state.back()) << "}";
 }
 void JsonPrinter::openArray(std::size_t)
 {
-    output << PrefixArray(characteristics, state.size(), state.back()) << "[";
+    output << PrefixArray(config.characteristics, state.size(), state.back()) << "[";
     state.emplace_back(0, TraitType::Array);
 }
 void JsonPrinter::closeArray()
@@ -146,7 +146,7 @@ void JsonPrinter::closeArray()
         throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to closeArray(): Currently not in an array");
     }
     state.pop_back();
-    output << PrefixArrayClose(characteristics, state.size(), state.back()) << "]";
+    output << PrefixArrayClose(config.characteristics, state.size(), state.back()) << "]";
 }
 
 void JsonPrinter::addKey(std::string const& key)
@@ -155,7 +155,7 @@ void JsonPrinter::addKey(std::string const& key)
     {
         throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to addKey(): Currently not in a map");
     }
-    output << PrefixKey(characteristics, state.size(), state.back()) << '"' << key << '"';
+    output << PrefixKey(config.characteristics, state.size(), state.back()) << '"' << key << '"';
 }
 
 template<typename T>
@@ -176,21 +176,21 @@ struct FormatDouble
     }
 };
 
-void JsonPrinter::addValue(short value)                 {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
-void JsonPrinter::addValue(int value)                   {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
-void JsonPrinter::addValue(long value)                  {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
-void JsonPrinter::addValue(long long value)             {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(short value)                 {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(int value)                   {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(long value)                  {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(long long value)             {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
 
-void JsonPrinter::addValue(unsigned short value)        {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
-void JsonPrinter::addValue(unsigned int value)          {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
-void JsonPrinter::addValue(unsigned long value)         {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
-void JsonPrinter::addValue(unsigned long long value)    {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(unsigned short value)        {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(unsigned int value)          {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(unsigned long value)         {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addValue(unsigned long long value)    {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
 
-void JsonPrinter::addValue(float value)                 {output << PrefixValue(characteristics, state.size(), state.back()) << FormatDouble<float>(value);}
-void JsonPrinter::addValue(double value)                {output << PrefixValue(characteristics, state.size(), state.back()) << FormatDouble<double>(value);}
-void JsonPrinter::addValue(long double value)           {output << PrefixValue(characteristics, state.size(), state.back()) << FormatDouble<long double>(value);}
+void JsonPrinter::addValue(float value)                 {output << PrefixValue(config.characteristics, state.size(), state.back()) << FormatDouble<float>(value);}
+void JsonPrinter::addValue(double value)                {output << PrefixValue(config.characteristics, state.size(), state.back()) << FormatDouble<double>(value);}
+void JsonPrinter::addValue(long double value)           {output << PrefixValue(config.characteristics, state.size(), state.back()) << FormatDouble<long double>(value);}
 
-void JsonPrinter::addValue(bool value)                  {output << PrefixValue(characteristics, state.size(), state.back()) << std::boolalpha << value;}
+void JsonPrinter::addValue(bool value)                  {output << PrefixValue(config.characteristics, state.size(), state.back()) << std::boolalpha << value;}
 
 auto isEscape = [](char c)
 {
@@ -198,7 +198,7 @@ auto isEscape = [](char c)
 };
 void JsonPrinter::addValue(std::string const& value)
 {
-    output << PrefixValue(characteristics, state.size(), state.back()) << '"';
+    output << PrefixValue(config.characteristics, state.size(), state.back()) << '"';
 
     auto begin  = std::begin(value);
     auto end    = std::end(value);
@@ -274,6 +274,6 @@ void JsonPrinter::addValue(std::string const& value)
     output << '"';
 }
 
-void JsonPrinter::addRawValue(std::string const& value) {output << PrefixValue(characteristics, state.size(), state.back()) << value;}
+void JsonPrinter::addRawValue(std::string const& value) {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
 
-void JsonPrinter::addNull()                             {output << PrefixValue(characteristics, state.size(), state.back()) << "null";}
+void JsonPrinter::addNull()                             {output << PrefixValue(config.characteristics, state.size(), state.back()) << "null";}

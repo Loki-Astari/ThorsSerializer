@@ -18,7 +18,7 @@ class JsonPrinter: public PrinterInterface
 {
     std::vector<std::pair<int, TraitType>> state;
     public:
-        JsonPrinter(std::ostream& output, OutputType characteristics = OutputType::Default);
+        JsonPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
         virtual void openDoc()                              override;
         virtual void closeDoc()                             override;
 
