@@ -45,7 +45,7 @@ class JsonParser: public ParserInterface
     template<typename T>
     T scan();
     public:
-        JsonParser(std::istream& stream, ParseType parseStrictness = ParseType::Weak);
+        JsonParser(std::istream& stream, ParserConfig config = ParserConfig{});
         virtual ParserToken getNextToken()                      override;
         virtual std::string getKey()                            override;
 

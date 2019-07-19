@@ -202,7 +202,7 @@ class DeSerializationForBlock
                     memberFound[key] = true;
                 }
             }
-            if (parser.parseStrictness == ParserInterface::ParseType::Exact)
+            if (parser.config.parseStrictness == ParserInterface::ParseType::Exact)
             {
                 HeedAllValues<T>    check;
                 check(memberFound);

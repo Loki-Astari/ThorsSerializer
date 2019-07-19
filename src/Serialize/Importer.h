@@ -16,20 +16,21 @@ namespace ThorsAnvil
 template<typename Format, typename T>
 class Importer
 {
-    T& value;
-    ParserInterface::ParseType parseStrictness;
-    bool    catchException;
+    using ParserConfig = ParserInterface::ParserConfig;
+    T&              value;
+    ParserConfig    config;
+    bool            catchException;
     public:
-        Importer(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak, bool catchException = false)
+        Importer(T& value, ParserConfig config = ParserConfig{}, bool catchException = false)
             : value(value)
-            , parseStrictness(parseStrictness)
+            , config(config)
             , catchException(catchException)
         {}
         friend std::istream& operator>>(std::istream& stream, Importer const& data)
         {
             try
             {
-                typename Format::Parser     parser(stream, data.parseStrictness);
+                typename Format::Parser     parser(stream, data.config);
                 DeSerializer                deSerializer(parser);
 
                 deSerializer.parse(data.value);
@@ -47,9 +48,9 @@ class Importer
 };
 
 template<typename Format, typename T>
-Importer<Format, T> Import(T const& value)
+Importer<Format, T> Import(T const& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{})
 {
-    return Importer<Format, T>(value);
+    return Importer<Format, T>(value, config);
 }
 
 

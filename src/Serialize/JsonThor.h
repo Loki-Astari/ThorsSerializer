@@ -44,9 +44,9 @@ Exporter<Json, T> jsonExport(T const& value, PrinterInterface::OutputType charac
 // @param catchExceptions   'false:    exceptions propogate.        'true':   parsing exceptions are stopped.
 // @return                  Object that can be passed to operator>> for de-serialization.
 template<typename T>
-Importer<Json, T> jsonImport(T& value, ParserInterface::ParseType parseStrictness = ParserInterface::ParseType::Weak, bool catchExceptions = false)
+Importer<Json, T> jsonImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{}, bool catchExceptions = false)
 {
-    return Importer<Json, T>(value, parseStrictness, catchExceptions);
+    return Importer<Json, T>(value, config, catchExceptions);
 }
     }
 }
