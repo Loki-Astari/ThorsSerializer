@@ -301,8 +301,8 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
 
 
     std::string keyValue;
-    if (parser.getKey() != "__type")
-    {   throw std::runtime_error("ThorsAnvil::Serialize::tryParsePolyMorphicObject: Invalid PolyMorphic Object. Expecting Key Name __type");
+    if (parser.getKey() != parser.config.polymorphicMarker)
+    {   throw std::runtime_error(std::string("ThorsAnvil::Serialize::tryParsePolyMorphicObject: Invalid PolyMorphic Object. Expecting Key Name ") + parser.config.polymorphicMarker);
     }
 
     tokenType = parser.getToken();
@@ -578,7 +578,7 @@ class SerializerForBlock
         }
         void printPolyMorphicMembers(std::string const& type)
         {
-            printer.addKey("__type");
+            printer.addKey(printer.config.polymorphicMarker);
             printer.addValue(type);
             printMembers();
         }
