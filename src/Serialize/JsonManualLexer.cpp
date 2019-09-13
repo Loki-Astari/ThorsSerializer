@@ -7,11 +7,13 @@
 
 using namespace ThorsAnvil::Serialize;
 
+HEADER_ONLY_INCLUDE
 JsonManualLexer::JsonManualLexer(std::istream& str)
     : str(str)
     , lastNull(false)
 {}
 
+HEADER_ONLY_INCLUDE
 int JsonManualLexer::yylex()
 {
     char    next;
@@ -61,21 +63,25 @@ int JsonManualLexer::yylex()
     }
 }
 
+HEADER_ONLY_INCLUDE
 void JsonManualLexer::readTrue()
 {
     checkFixed("true", 4);
 }
 
+HEADER_ONLY_INCLUDE
 void JsonManualLexer::readFalse()
 {
     checkFixed("false", 5);
 }
 
+HEADER_ONLY_INCLUDE
 void JsonManualLexer::readNull()
 {
     checkFixed("null", 4);
 }
 
+HEADER_ONLY_INCLUDE
 void JsonManualLexer::ignoreRawValue()
 {
     if (lastToken == ThorsAnvil::Serialize::JSON_STRING)
@@ -94,6 +100,7 @@ void JsonManualLexer::ignoreRawValue()
     }
 }
 
+HEADER_ONLY_INCLUDE
 std::string JsonManualLexer::getRawString()
 {
     switch (lastToken)
@@ -143,11 +150,13 @@ std::string JsonManualLexer::getRawString()
     }
 }
 
+HEADER_ONLY_INCLUDE
 std::string JsonManualLexer::getString()
 {
     return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator<char>(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator<char>(str)));
 }
 
+HEADER_ONLY_INCLUDE
 bool JsonManualLexer::getLastBool() const
 {
     if (lastToken == ThorsAnvil::Serialize::JSON_TRUE || lastToken == ThorsAnvil::Serialize::JSON_FALSE)
@@ -160,11 +169,13 @@ bool JsonManualLexer::getLastBool() const
     }
 }
 
+HEADER_ONLY_INCLUDE
 bool JsonManualLexer::isLastNull() const
 {
     return lastNull;
 }
 
+HEADER_ONLY_INCLUDE
 char JsonManualLexer::readDigits(char next)
 {
     if (!std::isdigit(next))
@@ -178,6 +189,7 @@ char JsonManualLexer::readDigits(char next)
     }
     return next;
 }
+HEADER_ONLY_INCLUDE
 bool JsonManualLexer::readNumber(int next)
 {
     bool isInteger = true;
@@ -236,6 +248,7 @@ bool JsonManualLexer::readNumber(int next)
     return isInteger;
 }
 
+HEADER_ONLY_INCLUDE
 void JsonManualLexer::checkFixed(char const* check, std::size_t size)
 {
     buffer.resize(size);
@@ -247,6 +260,7 @@ void JsonManualLexer::checkFixed(char const* check, std::size_t size)
     }
 }
 
+HEADER_ONLY_INCLUDE
 void JsonManualLexer::error()
 {
     throw std::runtime_error("ThorsAnvil::Serialize::JsonLexer: Invalid Character in Lexer");

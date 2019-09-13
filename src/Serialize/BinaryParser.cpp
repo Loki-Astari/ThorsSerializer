@@ -6,9 +6,11 @@
 
 using namespace ThorsAnvil::Serialize;
 
+HEADER_ONLY_INCLUDE
 BinaryParserUtilBase::~BinaryParserUtilBase()
 {}
 
+HEADER_ONLY_INCLUDE
 BinaryParserUtilBase::BinaryParserUtilBase(bool root, ParserToken first, ParserToken last, ParserToken nextValue)
     : nextToken(first)
     , objClose(last)
@@ -20,6 +22,7 @@ BinaryParserUtilBase::BinaryParserUtilBase(bool root, ParserToken first, ParserT
     , finished(false)
 {}
 
+HEADER_ONLY_INCLUDE
 ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserState& state)
 {
     if (!started)
