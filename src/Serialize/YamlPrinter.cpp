@@ -10,6 +10,7 @@ extern "C"
 
 using namespace ThorsAnvil::Serialize;
 
+HEADER_ONLY_INCLUDE
 int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size)
 {
     YamlPrinter*     owner = reinterpret_cast<YamlPrinter*>(data);
@@ -19,6 +20,7 @@ int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size)
     return result ? 1 : 0;
 }
 
+HEADER_ONLY_INCLUDE
 void YamlPrinter::checkYamlResultCode(int code, char const* method, char const* msg)
 {
     static std::string const  msgBase   = "ThorsAnvil::Serialize::YamlPrinter::";
@@ -29,6 +31,7 @@ void YamlPrinter::checkYamlResultCode(int code, char const* method, char const* 
         throw std::runtime_error(msgBase + method + ": " + msg);
     }
 }
+HEADER_ONLY_INCLUDE
 void YamlPrinter::checkYamlResultCode(std::function<int(yaml_event_t&)> init, char const* method, char const* msg)
 {
     yaml_event_t    event;
@@ -38,6 +41,7 @@ void YamlPrinter::checkYamlResultCode(std::function<int(yaml_event_t&)> init, ch
     checkYamlResultCode(code2, method, "yaml_emitter_emit");
 }
 
+HEADER_ONLY_INCLUDE
 YamlPrinter::YamlPrinter(std::ostream& output, PrinterConfig config)
     : PrinterInterface(output, config)
     , error(false)
@@ -50,6 +54,7 @@ YamlPrinter::YamlPrinter(std::ostream& output, PrinterConfig config)
             "yaml_stream_start_event_initialize");
     state.emplace_back(0, TraitType::Value);
 }
+HEADER_ONLY_INCLUDE
 YamlPrinter::~YamlPrinter()
 {
     if (!error)
@@ -63,6 +68,7 @@ YamlPrinter::~YamlPrinter()
     yaml_emitter_delete(&emitter);
 }
 
+HEADER_ONLY_INCLUDE
 void YamlPrinter::openDoc()
 {
     checkYamlResultCode(
@@ -70,6 +76,7 @@ void YamlPrinter::openDoc()
             "openDoc",
             "yaml_document_start_event_initialize");
 }
+HEADER_ONLY_INCLUDE
 void YamlPrinter::closeDoc()
 {
     checkYamlResultCode(
@@ -79,6 +86,7 @@ void YamlPrinter::closeDoc()
     checkYamlResultCode(yaml_emitter_flush(&emitter), "closeDoc", "yaml_emitter_flush");
 }
 
+HEADER_ONLY_INCLUDE
 void YamlPrinter::openMap()
 {
     yaml_mapping_style_t    style;
@@ -94,6 +102,7 @@ void YamlPrinter::openMap()
             "yaml_mapping_start_event_initialize");
     state.emplace_back(0, TraitType::Map);
 }
+HEADER_ONLY_INCLUDE
 void YamlPrinter::closeMap()
 {
     checkYamlResultCode(
@@ -102,6 +111,7 @@ void YamlPrinter::closeMap()
             "yaml_mapping_end_event_initialize");
     state.pop_back();
 }
+HEADER_ONLY_INCLUDE
 void YamlPrinter::openArray(std::size_t)
 {
     yaml_sequence_style_t    style;
@@ -117,6 +127,7 @@ void YamlPrinter::openArray(std::size_t)
             "yaml_sequence_start_event_initialize");
     state.emplace_back(0, TraitType::Array);
 }
+HEADER_ONLY_INCLUDE
 void YamlPrinter::closeArray()
 {
     checkYamlResultCode(
@@ -149,6 +160,7 @@ void YamlPrinter::emit(T const& data)
         "yaml_scalar_event_initialize");
     ++state.back().first;
 }
+HEADER_ONLY_INCLUDE
 void YamlPrinter::emitNull()
 {
     static yaml_char_t nullObject[] = "null";
@@ -170,6 +182,7 @@ void YamlPrinter::emitNull()
     ++state.back().first;
 }
 
+HEADER_ONLY_INCLUDE
 void YamlPrinter::addKey(std::string const& key)
 {
     if (state.back().second != TraitType::Map && state.back().first % 2 != 1)

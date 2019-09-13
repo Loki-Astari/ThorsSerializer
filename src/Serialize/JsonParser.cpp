@@ -9,6 +9,7 @@
 using namespace ThorsAnvil::Serialize;
 using ParserToken = ParserInterface::ParserToken;
 
+HEADER_ONLY_INCLUDE
 JsonParser::JsonParser(std::istream& stream, ParserConfig config)
     : ParserInterface(stream, config)
     , lexer(stream)
@@ -17,6 +18,7 @@ JsonParser::JsonParser(std::istream& stream, ParserConfig config)
     , started(false)
 {}
 
+HEADER_ONLY_INCLUDE
 ParserToken JsonParser::getNextToken()
 {
     /* Handle States were we are not going to read any more */
@@ -135,19 +137,23 @@ ParserToken JsonParser::getNextToken()
     throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Reached an Unnamed State");
 }
 
+HEADER_ONLY_INCLUDE
 std::string JsonParser::getString()
 {
     return lexer.getString();
 }
+HEADER_ONLY_INCLUDE
 std::string JsonParser::getRawString()
 {
     return lexer.getRawString();
 }
+HEADER_ONLY_INCLUDE
 void JsonParser::ignoreDataValue()
 {
     lexer.ignoreRawValue();
 }
 
+HEADER_ONLY_INCLUDE
 std::string JsonParser::getKey()
 {
     return getString();
@@ -159,35 +165,38 @@ inline T JsonParser::scan()
     return lexer.scan<T>();
 }
 
-void JsonParser::getValue(short& value)                         {value = scan<short>();}
-void JsonParser::getValue(int& value)                           {value = scan<int>();}
-void JsonParser::getValue(long& value)                          {value = scan<long>();}
-void JsonParser::getValue(long long& value)                     {value = scan<long long>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(short& value)                         {value = scan<short>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(int& value)                           {value = scan<int>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(long& value)                          {value = scan<long>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(long long& value)                     {value = scan<long long>();}
 
-void JsonParser::getValue(unsigned short& value)                {value = scan<unsigned short>();}
-void JsonParser::getValue(unsigned int& value)                  {value = scan<unsigned int>();}
-void JsonParser::getValue(unsigned long& value)                 {value = scan<unsigned long>();}
-void JsonParser::getValue(unsigned long long& value)            {value = scan<unsigned long long>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned short& value)                {value = scan<unsigned short>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned int& value)                  {value = scan<unsigned int>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned long& value)                 {value = scan<unsigned long>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned long long& value)            {value = scan<unsigned long long>();}
 
-void JsonParser::getValue(float& value)                         {value = scan<float>();}
-void JsonParser::getValue(double& value)                        {value = scan<double>();}
-void JsonParser::getValue(long double& value)                   {value = scan<long double>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(float& value)                         {value = scan<float>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(double& value)                        {value = scan<double>();}
+HEADER_ONLY_INCLUDE void JsonParser::getValue(long double& value)                   {value = scan<long double>();}
 
-void JsonParser::getValue(bool& value)
+HEADER_ONLY_INCLUDE void JsonParser::getValue(bool& value)
 {
     value = lexer.getLastBool();
 }
 
+HEADER_ONLY_INCLUDE
 void JsonParser::getValue(std::string& value)
 {
     value = getString();
 }
 
+HEADER_ONLY_INCLUDE
 bool JsonParser::isValueNull()
 {
     return lexer.isLastNull();
 }
 
+HEADER_ONLY_INCLUDE
 std::string JsonParser::getRawValue()
 {
     return getRawString();

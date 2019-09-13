@@ -9,6 +9,7 @@ extern "C"
     int thorsanvilYamlStreamReader(void* data, unsigned char* buffer, size_t size, size_t* size_read);
 }
 
+HEADER_ONLY_INCLUDE
 int thorsanvilYamlStreamReader(void* data, unsigned char* buffer, size_t size, size_t* size_read)
 {
     YamlParser*     owner = reinterpret_cast<YamlParser*>(data);
@@ -21,6 +22,7 @@ int thorsanvilYamlStreamReader(void* data, unsigned char* buffer, size_t size, s
     return result;
 }
 
+HEADER_ONLY_INCLUDE
 YamlParser::YamlParser(std::istream& input, ParserConfig config)
     : ParserInterface(input, config)
     , first(true)
@@ -30,6 +32,7 @@ YamlParser::YamlParser(std::istream& input, ParserConfig config)
     yaml_parser_set_input(&parser, thorsanvilYamlStreamReader, this);
 }
 
+HEADER_ONLY_INCLUDE
 YamlParser::~YamlParser()
 {
     if (!first)
@@ -39,6 +42,7 @@ YamlParser::~YamlParser()
     yaml_parser_delete(&parser);
 }
 
+HEADER_ONLY_INCLUDE
 ParserInterface::ParserToken YamlParser::getNextToken()
 {
     // enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
@@ -129,12 +133,14 @@ ParserInterface::ParserToken YamlParser::getNextToken()
     return ParserToken::Error;
 }
 
+HEADER_ONLY_INCLUDE
 ParserInterface::ParserToken YamlParser::parsingError()
 {
     error = true;
     return ParserToken::Error;
 }
 
+HEADER_ONLY_INCLUDE
 void YamlParser::generateParsingException(std::function<bool ()> test, std::string const& msg)
 {
     if (test())
@@ -144,6 +150,7 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
     }
 }
 
+HEADER_ONLY_INCLUDE
 std::string YamlParser::getString()
 {
 //int   plain_implicit
@@ -183,20 +190,21 @@ T YamlParser::scan()
 }
 
 
-void YamlParser::getValue(short& value)                 {value   = scan<short>();}
-void YamlParser::getValue(int& value)                   {value   = scan<int>();}
-void YamlParser::getValue(long& value)                  {value   = scan<long>();}
-void YamlParser::getValue(long long& value)             {value   = scan<long long>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(short& value)                 {value   = scan<short>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(int& value)                   {value   = scan<int>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(long& value)                  {value   = scan<long>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(long long& value)             {value   = scan<long long>();}
 
-void YamlParser::getValue(unsigned short& value)        {value   = scan<unsigned short>();}
-void YamlParser::getValue(unsigned int& value)          {value   = scan<unsigned int>();}
-void YamlParser::getValue(unsigned long& value)         {value   = scan<unsigned long>();}
-void YamlParser::getValue(unsigned long long& value)    {value   = scan<unsigned long long>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned short& value)        {value   = scan<unsigned short>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned int& value)          {value   = scan<unsigned int>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned long& value)         {value   = scan<unsigned long>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned long long& value)    {value   = scan<unsigned long long>();}
 
-void YamlParser::getValue(float& value)                 {value   = scan<float>();}
-void YamlParser::getValue(double& value)                {value   = scan<double>();}
-void YamlParser::getValue(long double& value)           {value   = scan<long double>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(float& value)                 {value   = scan<float>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(double& value)                {value   = scan<double>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(long double& value)           {value   = scan<long double>();}
 
+HEADER_ONLY_INCLUDE
 void YamlParser::getValue(bool& value)
 {
     char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
@@ -216,11 +224,13 @@ void YamlParser::getValue(bool& value)
     }
 }
 
+HEADER_ONLY_INCLUDE
 void YamlParser::getValue(std::string& value)
 {
     value = getString();
 }
 
+HEADER_ONLY_INCLUDE
 bool YamlParser::isValueNull()
 {
     char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
@@ -230,6 +240,7 @@ bool YamlParser::isValueNull()
        ||  (length == 1 && strncmp(buffer, "~", 1) == 0);
 }
 
+HEADER_ONLY_INCLUDE
 std::string YamlParser::getRawValue()
 {
     return getString();

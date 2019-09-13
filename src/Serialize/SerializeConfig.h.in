@@ -86,6 +86,9 @@
 /* Enable to use header only libraries */
 #undef HEADER_ONLY
 
+/* For header only convery to inline */
+#undef HEADER_ONLY_INCLUDE
+
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
 #if defined AC_APPLE_UNIVERSAL_BUILD
