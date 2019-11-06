@@ -26,7 +26,7 @@ Unlike other libraries this one does not require you to build DOM of you object 
 
 # HomeBrew
 
-Can be installed via brew on Moc and Linux
+Can be installed via brew on Mac and Linux
 
 https://formulae.brew.sh/formula/thors-serializer
 
