@@ -24,6 +24,14 @@ Unlike other libraries this one does not require you to build DOM of you object 
 * [Documentation Usage](doc/usage.md)
 * [Documentation Internal](https://lokiastari.com/ThorsSerializer/)
 
+# HomeBrew
+
+Can be installed via brew on Moc and Linux
+
+https://formulae.brew.sh/formula/thors-serializer
+
+    brew install thors-serializer
+
 # Header Only
 
 To install header only version
