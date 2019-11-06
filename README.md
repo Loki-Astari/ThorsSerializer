@@ -28,9 +28,11 @@ Unlike other libraries this one does not require you to build DOM of you object 
 
 Can be installed via brew on Mac and Linux
 
-https://formulae.brew.sh/formula/thors-serializer
-
     brew install thors-serializer
+
+* Mac: https://formulae.brew.sh/formula/thors-serializer
+* Linux: https://formulae.brew.sh/formula-linux/thors-serializer
+
 
 # Header Only
 
