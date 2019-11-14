@@ -4,6 +4,7 @@
 #include "Serialize.h"
 #include "Serialize.tpp"
 #include "Traits.h"
+#include "SerUtil.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
 #include <string>
@@ -44,8 +45,19 @@ struct Bike: public Vehicle
 };
 struct User
 {
+    ~User() { delete transport; }
     int         age;
     Vehicle*    transport;
+};
+struct UserUniquePtr
+{
+  int age;
+  std::unique_ptr<Vehicle> transport;
+};
+struct UserSharedPtr
+{
+  int age;
+  std::shared_ptr<Vehicle> transport;
 };
 }
 
@@ -53,6 +65,8 @@ ThorsAnvil_MakeTrait(PolymorphicTest::Vehicle, speed);
 ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Car, make);
 ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Bike, stroke);
 ThorsAnvil_MakeTrait(PolymorphicTest::User, age, transport);
+ThorsAnvil_MakeTrait(PolymorphicTest::UserUniquePtr, age, transport);
+ThorsAnvil_MakeTrait(PolymorphicTest::UserSharedPtr, age, transport);
 
 TEST(PolymorphicTest, JsonNullPointer)
 {
@@ -329,3 +343,50 @@ TEST(PolymorphicTest, BsonReadBike)
 }
 
 
+TEST(PolymorphicTest, UsingUniquePtr)
+{
+  std::stringstream data;
+
+  { // Export
+    PolymorphicTest::UserUniquePtr user1 { 10, std::make_unique<PolymorphicTest::Bike>(18, 7) };
+    data << ThorsAnvil::Serialize::jsonExporter(user1);
+
+    std::string result = data.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x) {return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
+  }
+
+  { // Import
+    PolymorphicTest::UserUniquePtr user2;
+    data >> ThorsAnvil::Serialize::jsonImporter(user2);
+
+    EXPECT_EQ(user2.age, 10);
+    PolymorphicTest::Bike& bike = dynamic_cast<PolymorphicTest::Bike&>(*user2.transport);
+    EXPECT_EQ(bike.speed, 18);
+    EXPECT_EQ(bike.stroke, 7);
+  }
+}
+
+TEST(PolymorphicTest, UsingSharedPtr)
+{
+  std::stringstream data;
+
+  { // Export
+    PolymorphicTest::UserSharedPtr user1 { 10, std::make_shared<PolymorphicTest::Bike>(18, 7) };
+    data << ThorsAnvil::Serialize::jsonExporter(user1);
+
+    std::string result = data.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x) {return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
+  }
+
+  { // Import
+    PolymorphicTest::UserSharedPtr user2;
+    data >> ThorsAnvil::Serialize::jsonImporter(user2);
+
+    EXPECT_EQ(user2.age, 10);
+    PolymorphicTest::Bike& bike = dynamic_cast<PolymorphicTest::Bike&>(*user2.transport);
+    EXPECT_EQ(bike.speed, 18);
+    EXPECT_EQ(bike.stroke, 7);
+  }
+}

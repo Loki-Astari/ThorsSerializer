@@ -318,6 +318,14 @@ struct ConvertPointer<std::unique_ptr<T>>
         return std::unique_ptr<T>{result};
     }
 };
+template<typename T>
+struct ConvertPointer<std::shared_ptr<T>>
+{
+    static std::shared_ptr<T> assign(T* result)
+    {
+        return std::shared_ptr<T>{result};
+    }
+};
 template<class T>
 auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, int) -> decltype(object->parsePolyMorphicObject(parent, parser), void())
 {
