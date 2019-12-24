@@ -32,8 +32,8 @@ struct Binary
     class BinaryParserWrapper: public BinaryParser<X>
     {
         public:
-            BinaryParserWrapper(std::istream& stream, ParserInterface::ParseType /*Ignored*/)
-                : BinaryParser<X>(stream)
+            BinaryParserWrapper(std::istream& stream, ParserInterface::ParserConfig /*Ignored*/)
+                : BinaryParser<X>(stream, ParserInterface::ParserConfig{ParserInterface::ParseType::Strict})
             {}
     };
     public:
@@ -45,17 +45,17 @@ struct Binary
 // @param value             The object to be serialized.
 // @return                  Object that can be passed to operator<< for serialization.
 template<typename T>
-Exporter<Binary<T>, T> binExport(T const& value, bool catchExceptions = false)
+Exporter<Binary<T>, T> binExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
 {
-    return Exporter<Binary<T>, T>(value, PrinterInterface::OutputType::Stream, catchExceptions);
+    return Exporter<Binary<T>, T>(value, config, catchExceptions);
 }
 // @function-api
 // @param value             The object to be de-serialized.
 // @return                  Object that can be passed to operator>> for de-serialization.
 template<typename T>
-Importer<Binary<T>, T> binImport(T& value, bool catchExceptions = false)
+Importer<Binary<T>, T> binImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{ParserInterface::ParseType::Strict}, bool catchExceptions = false)
 {
-    return Importer<Binary<T>, T>(value, ParserInterface::ParseType::Strict, catchExceptions);
+    return Importer<Binary<T>, T>(value, config, catchExceptions);
 }
     }
 }

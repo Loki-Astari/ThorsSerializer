@@ -83,8 +83,8 @@ TEST(BinaryParserTest, ArrayWithTwoArray)
 }
 TEST(BinaryParserTest, ArrayWithMap)
 {
-    std::stringstream   stream(std::string("\x47\x22\x7e\xd9\x00\x00\x00\x01", 8)); // [{}]
-    TA::BinaryParser<std::vector<MapEmptyTest>>      parser(stream);
+    std::stringstream   stream(std::string("\xfd\x0e\x05\xca\x00\x00\x00\x01", 8)); // [{}]
+    TA::BinaryParser<std::vector<BinaryParserTest::MapEmptyTest>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -95,8 +95,8 @@ TEST(BinaryParserTest, ArrayWithMap)
 }
 TEST(BinaryParserTest, ArrayWithTwoMap)
 {
-    std::stringstream   stream(std::string("\x47\x22\x7e\xd9\x00\x00\x00\x02", 8)); // [{},{}]
-    TA::BinaryParser<std::vector<MapEmptyTest>>      parser(stream);
+    std::stringstream   stream(std::string("\xfd\x0e\x05\xca\x00\x00\x00\x02", 8)); // [{},{}]
+    TA::BinaryParser<std::vector<BinaryParserTest::MapEmptyTest>>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -109,8 +109,8 @@ TEST(BinaryParserTest, ArrayWithTwoMap)
 }
 TEST(BinaryParserTest, MapEmpty)
 {
-    std::stringstream               stream(std::string("\x08\x0b\xe0\x3b", 4));
-    TA::BinaryParser<MapEmptyTest>  parser(stream);
+    std::stringstream               stream(std::string("\x00\x00\x00\x00", 4));
+    TA::BinaryParser<BinaryParserTest::MapEmptyTest>  parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -120,7 +120,7 @@ TEST(BinaryParserTest, MapEmpty)
 TEST(BinaryParserTest, MapOneValue)
 {
     std::stringstream               stream(std::string("\x00\x3a\x22\xc7\x00\x00\x00\x0c", 8));
-    TA::BinaryParser<MapOneValue>   parser(stream);
+    TA::BinaryParser<BinaryParserTest::MapOneValue>   parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -132,7 +132,7 @@ TEST(BinaryParserTest, MapOneValue)
 TEST(BinaryParserTest, MapTwoValue)
 {
     std::stringstream               stream(std::string("\xa7\x1b\xe8\x72\x00\x00\x00\x0c\x00\x00\x00\x0d", 12));
-    TA::BinaryParser<MapTwoValue>   parser(stream);
+    TA::BinaryParser<BinaryParserTest::MapTwoValue>   parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -146,7 +146,7 @@ TEST(BinaryParserTest, MapTwoValue)
 TEST(BinaryParserTest, MapThreeValue)
 {
     std::stringstream               stream(std::string("\xbc\xd9\x07\xdb\x00\x00\x00\x0c\x00\x00\x00\x0d\x00\x00\x00\x0e", 16));
-    TA::BinaryParser<MapThreeValue> parser(stream);
+    TA::BinaryParser<BinaryParserTest::MapThreeValue> parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -162,7 +162,7 @@ TEST(BinaryParserTest, MapThreeValue)
 TEST(BinaryParserTest, MapWithArray)
 {
     std::stringstream   stream(std::string("\x47\xeb\xc5\x75\x00\x00\x00\x00", 8)); // {"one": []}
-    TA::BinaryParser<MapWithArray>      parser(stream);
+    TA::BinaryParser<BinaryParserTest::MapWithArray>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -175,7 +175,7 @@ TEST(BinaryParserTest, MapWithArray)
 TEST(BinaryParserTest, MapWithTwoArray)
 {
     std::stringstream   stream(std::string("\x9c\x3c\xee\x5a\x00\x00\x00\x00\x00\x00\x00\x00", 12)); // {"one": [], "two": []}
-    TA::BinaryParser<MapWithTwoArray>      parser(stream);
+    TA::BinaryParser<BinaryParserTest::MapWithTwoArray>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -190,8 +190,8 @@ TEST(BinaryParserTest, MapWithTwoArray)
 }
 TEST(BinaryParserTest, MapWithMap)
 {
-    std::stringstream   stream(std::string("\x15\xd0\x5b\xd1", 4)); // R"({"one": {}})"
-    TA::BinaryParser<MapWithMap>      parser(stream);
+    std::stringstream   stream(std::string("\x00\x02\x61\xe2", 4)); // R"({"one": {}})"
+    TA::BinaryParser<BinaryParserTest::MapWithMap>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -203,8 +203,8 @@ TEST(BinaryParserTest, MapWithMap)
 }
 TEST(BinaryParserTest, MapWithTwoMap)
 {
-    std::stringstream   stream(std::string("\xf8\x2c\xdc\x96", 4)); // {"one": {}, "two": {}}
-    TA::BinaryParser<MapWithTwoMap>      parser(stream);
+    std::stringstream   stream(std::string("\xd7\x63\xe8\x10", 4)); // {"one": {}, "two": {}}
+    TA::BinaryParser<BinaryParserTest::MapWithTwoMap>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -220,7 +220,7 @@ TEST(BinaryParserTest, MapWithTwoMap)
 TEST(BinaryParserTest, GetKeyValue)
 {
     std::stringstream   stream(std::string("\x00\x3a\x22\xc7\x00\x00\x00\x0F", 8)); // {"One": 15}
-    TA::BinaryParser<MapOneValue>      parser(stream);
+    TA::BinaryParser<BinaryParserTest::MapOneValue>      parser(stream);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());

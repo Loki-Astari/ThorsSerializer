@@ -84,21 +84,21 @@ ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserSt
 #include "BinaryParser.tpp"
 #include "test/BinaryParserTest.h"
 
-template ThorsAnvil::Serialize::BinaryParserUtil<MapWithMap,      (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<MapOneValue,     (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<MapTwoValue,     (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<MapEmptyTest,    (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<MapWithArray,    (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<MapThreeValue,   (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<MapWithTwoMap,   (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<MapWithTwoArray, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapWithMap,      (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapOneValue,     (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapTwoValue,     (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapEmptyTest,    (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapWithArray,    (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapThreeValue,   (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapWithTwoMap,   (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapWithTwoArray, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
 
-template ThorsAnvil::Serialize::BinaryParserUtil<Base,            (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<Derived,         (ThorsAnvil::Serialize::TraitType)1>::BinaryParserUtil(bool);
-template ThorsAnvil::Serialize::BinaryParserUtil<int,             (ThorsAnvil::Serialize::TraitType)2>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::Base,            (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::Derived,         (ThorsAnvil::Serialize::TraitType)1>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<int,                               (ThorsAnvil::Serialize::TraitType)2>::BinaryParserUtil(bool);
 
 // Array Specialization
-template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<MapEmptyTest>,     (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<BinaryParserTest::MapEmptyTest>,     (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<std::string>,      (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<std::vector<int>>, (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<int>,              (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
