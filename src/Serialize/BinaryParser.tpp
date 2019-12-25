@@ -72,7 +72,7 @@ template<typename T>
 template<typename Tuple, std::size_t... Seq>
 void BinaryParserMapParentCommon<T>::fillMembers(Tuple const& members, std::index_sequence<Seq...> const&)
 {
-    auto discard = {(addMember(std::get<Seq>(members)),1)...};
+    int discard[] = {0, (addMember(std::get<Seq>(members)),1)...};
     (void)discard;
 }
 

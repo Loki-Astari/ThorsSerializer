@@ -34,7 +34,7 @@ class BinaryPrinter: public PrinterInterface
         output.write(value.c_str(), size);
     }
     public:
-        BinaryPrinter(std::ostream& output, OutputType characteristics = OutputType::Default)
+        BinaryPrinter(std::ostream& output, PrinterInterface::PrinterConfig characteristics = PrinterConfig{})
             : PrinterInterface(output, characteristics)
         {}
         virtual void openDoc()                              override    {write(TBin::host2Net(static_cast<TBin::BinForm32>(thash<T>())));}
