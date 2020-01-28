@@ -31,7 +31,7 @@
  * Macros for counting the number of arguments
  * Currently set up for a max of 20.
  */
-#define NUM_ARGS(...)          NUM_ARGS_(0, __VA_ARGS__, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 09, 08, 07, 06, 05, 04, 03, 02, 01, 00, Ignore)
+#define NUM_ARGS(...)          NUM_ARGS_(0, __VA_ARGS__, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 00, Ignore)
 #define NUM_ARGS_(Zero, One, I1, I2, I3, I4 ,I5, I6, I7, I8, I9, I10, I11, I12, I13, I14, I15, I16, I17, I18, I19, I20, I21, I22, I23, I24, I25, I26, I27, I28, I29, I30, I31, I32, I33, I34, I35, I36, I37, I38, I39, I40, I41, I42, I43, A, ...)  A
 
 /*
@@ -94,16 +94,16 @@
 #define REP_OF_13(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_12(Act, TC, P1, __VA_ARGS__)
 #define REP_OF_12(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_11(Act, TC, P1, __VA_ARGS__)
 #define REP_OF_11(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_10(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_10(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_09(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_09(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_08(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_08(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_07(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_07(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_06(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_06(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_05(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_05(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_04(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_04(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_03(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_03(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_02(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_02(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1, P2), REP_OF_01(Act, TC, P1, __VA_ARGS__)
-#define REP_OF_01(Act, TC, P1, P2, One)     EXPAND(Act, TC, P1, P2)
+#define REP_OF_10(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_9(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_9(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_8(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_8(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_7(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_7(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_6(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_6(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_5(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_5(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_4(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_4(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_3(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_3(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2), REP_OF_2(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_2(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1, P2), REP_OF_1(Act, TC, P1, __VA_ARGS__)
+#define REP_OF_1(Act, TC, P1, P2, One)     EXPAND(Act, TC, P1, P2)
 #define REP_OF_00(Act, TC, P1, One)         LAST_ ## Act(TC, P1)
 
 #define ALT_REP_OF_N(Act, E, P, S, Count)  ALT_REP_OF_N_(Act, E, P, S, Count)
@@ -142,16 +142,16 @@
 #define ALT_REP_OF_13(Act, E, P, S)     P ALT_EXPAND(Act, E, 13), ALT_REP_OF_12(Act, E,  , S)
 #define ALT_REP_OF_12(Act, E, P, S)     P ALT_EXPAND(Act, E, 12), ALT_REP_OF_11(Act, E,  , S)
 #define ALT_REP_OF_11(Act, E, P, S)     P ALT_EXPAND(Act, E, 11), ALT_REP_OF_10(Act, E,  , S)
-#define ALT_REP_OF_10(Act, E, P, S)     P ALT_EXPAND(Act, E, 10), ALT_REP_OF_09(Act, E,  , S)
-#define ALT_REP_OF_09(Act, E, P, S)     P ALT_EXPAND(Act, E, 09), ALT_REP_OF_08(Act, E,  , S)
-#define ALT_REP_OF_08(Act, E, P, S)     P ALT_EXPAND(Act, E, 08), ALT_REP_OF_07(Act, E,  , S)
-#define ALT_REP_OF_07(Act, E, P, S)     P ALT_EXPAND(Act, E, 07), ALT_REP_OF_06(Act, E,  , S)
-#define ALT_REP_OF_06(Act, E, P, S)     P ALT_EXPAND(Act, E, 06), ALT_REP_OF_05(Act, E,  , S)
-#define ALT_REP_OF_05(Act, E, P, S)     P ALT_EXPAND(Act, E, 05), ALT_REP_OF_04(Act, E,  , S)
-#define ALT_REP_OF_04(Act, E, P, S)     P ALT_EXPAND(Act, E, 04), ALT_REP_OF_03(Act, E,  , S)
-#define ALT_REP_OF_03(Act, E, P, S)     P ALT_EXPAND(Act, E, 03), ALT_REP_OF_02(Act, E,  , S)
-#define ALT_REP_OF_02(Act, E, P, S)     P ALT_EXPAND(Act, E, 02), ALT_REP_OF_01(Act, E,  , S)
-#define ALT_REP_OF_01(Act, E, P, S)     P ALT_EXPAND(Act, E, 01) S
+#define ALT_REP_OF_10(Act, E, P, S)     P ALT_EXPAND(Act, E, 10), ALT_REP_OF_9(Act, E,  , S)
+#define ALT_REP_OF_9(Act, E, P, S)     P ALT_EXPAND(Act, E, 9), ALT_REP_OF_8(Act, E,  , S)
+#define ALT_REP_OF_8(Act, E, P, S)     P ALT_EXPAND(Act, E, 8), ALT_REP_OF_7(Act, E,  , S)
+#define ALT_REP_OF_7(Act, E, P, S)     P ALT_EXPAND(Act, E, 7), ALT_REP_OF_6(Act, E,  , S)
+#define ALT_REP_OF_6(Act, E, P, S)     P ALT_EXPAND(Act, E, 6), ALT_REP_OF_5(Act, E,  , S)
+#define ALT_REP_OF_5(Act, E, P, S)     P ALT_EXPAND(Act, E, 5), ALT_REP_OF_4(Act, E,  , S)
+#define ALT_REP_OF_4(Act, E, P, S)     P ALT_EXPAND(Act, E, 4), ALT_REP_OF_3(Act, E,  , S)
+#define ALT_REP_OF_3(Act, E, P, S)     P ALT_EXPAND(Act, E, 3), ALT_REP_OF_2(Act, E,  , S)
+#define ALT_REP_OF_2(Act, E, P, S)     P ALT_EXPAND(Act, E, 2), ALT_REP_OF_1(Act, E,  , S)
+#define ALT_REP_OF_1(Act, E, P, S)     P ALT_EXPAND(Act, E, 1) S
 #define ALT_REP_OF_00(Act, E, P, S)     LAST_ ## Act(E, 00)
 
 /*

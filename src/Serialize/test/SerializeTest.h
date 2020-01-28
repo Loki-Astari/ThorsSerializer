@@ -15,6 +15,9 @@ struct EumHolder
     RGB value;
 };
 
+// Added after an issue with enum's with 8 or 9 items
+enum class OctalValues { OCT1, OCT2, OCT3, OCT4, OCT5, OCT6, OCT7, OCT8 };
+
 class SerializeTestExtra
 {
     public:
@@ -103,6 +106,7 @@ struct CornerCaseClass
 }
 
 ThorsAnvil_MakeEnum(SerializeTest::RGB, Red, Green, Blue);
+ThorsAnvil_MakeEnum(SerializeTest::OctalValues, OCT1, OCT2, OCT3, OCT4, OCT5, OCT6, OCT7, OCT8);
 ThorsAnvil_MakeTrait(SerializeTest::EumHolder, value);
 ThorsAnvil_MakeTrait(SerializeTest::SerializeTestExtra, theInteger, aNonRealValue, test, normalString);
 ThorsAnvil_ExpandTrait(SerializeTest::SerializeTestExtra, SerializeTest::SerializeExact, anotherValue);
