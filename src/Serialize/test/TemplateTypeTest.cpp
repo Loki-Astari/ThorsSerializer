@@ -32,9 +32,9 @@ struct TemplateInheritFromTemplate: public TemplateType<T>
 }
 
 
-ThorsAnvil_Template_MakeTrait(01, TemplateTypeTest::TemplateType, templateMember); 
+ThorsAnvil_Template_MakeTrait(1, TemplateTypeTest::TemplateType, templateMember); 
 ThorsAnvil_ExpandTrait(TemplateTypeTest::TemplateType<int>, TemplateTypeTest::NormalInheritFromTemplate, normalName);
-ThorsAnvil_Template_ExpandTrait(01, TemplateTypeTest::TemplateType<T01>, TemplateTypeTest::TemplateInheritFromTemplate, alternative);
+ThorsAnvil_Template_ExpandTrait(1, TemplateTypeTest::TemplateType<T1>, TemplateTypeTest::TemplateInheritFromTemplate, alternative);
 
 TEST(TemplateTypeTest, templateTest)
 {
