@@ -1,3 +1,5 @@
+# ThorsSerializer
+
 [![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
 [![codecov.io](http://codecov.io/github/Loki-Astari/ThorsSerializer/coverage.svg?branch=master)](http://codecov.io/github/Loki-Astari/ThorsSerializer?branch=master)   
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=81920)](http://codereview.stackexchange.com/q/81920/507)
@@ -5,7 +7,7 @@
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7567)](http://codereview.stackexchange.com/q/7567/507)
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7536)](http://codereview.stackexchange.com/q/7536/507)
 
-# Benchmark Results:
+## Benchmark Results
 Conformance [mac](https://LokiAstari.com/Json/Conformance.osx.html) [linux](https://LokiAstari.com/Json/Conformance.linux.html)  
 Performance [max](https://LokiAstari.com/Json/Performance.osx.html) [linux](https://LokiAstari.com/Json/Performance.linux.html)  
 For details see: [JsonBenchmark](https://github.com/Loki-Astari/JsonBenchmark)  
@@ -24,7 +26,7 @@ Unlike other libraries this one does not require you to build DOM of you object 
 * [Documentation Usage](doc/usage.md)
 * [Documentation Internal](https://lokiastari.com/ThorsSerializer/)
 
-# HomeBrew
+## HomeBrew
 
 Can be installed via brew on Mac and Linux
 
@@ -33,14 +35,18 @@ Can be installed via brew on Mac and Linux
 * Mac: https://formulae.brew.sh/formula/thors-serializer
 * Linux: https://formulae.brew.sh/formula-linux/thors-serializer
 
-
-# Header Only
+## Header Only
 
 To install header only version
 
     git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsSerializer.git
 
+## Contributors
+
+Added the all-contributers bot to generate the table.
+
 
 -----
+
 [One Page](doc/full.md)
 
