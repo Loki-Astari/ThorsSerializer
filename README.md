@@ -35,7 +35,6 @@ Can be installed via brew on Mac and Linux
 * Mac: https://formulae.brew.sh/formula/thors-serializer
 * Linux: https://formulae.brew.sh/formula-linux/thors-serializer
 
-
 ## Header Only
 
 To install header only version
