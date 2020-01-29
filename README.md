@@ -40,6 +40,10 @@ To install header only version
 
     git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsSerializer.git
 
+# Contributors
+
+Added the all-contributers bot to generate the table.
+
 
 -----
 [One Page](doc/full.md)
