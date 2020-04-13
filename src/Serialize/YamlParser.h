@@ -17,7 +17,6 @@
  *      will not cause an error.
  */
 
-#include "SerializeConfig.h"
 #ifdef HAVE_YAML
 
 #include "Serialize.h"

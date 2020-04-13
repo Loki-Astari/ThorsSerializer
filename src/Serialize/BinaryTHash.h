@@ -7,7 +7,6 @@
  * but fast. It is designed to guard against accidental changes not deliberate attacks.
  */
 
-#include "SerializeConfig.h"
 #include <cstdlib>
 
 namespace ThorsAnvil

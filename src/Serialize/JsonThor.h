@@ -11,7 +11,6 @@
  *      std::cin  >> jsonImport(object); // converts Json to a C++ object from an input stream
  */
 
-#include "SerializeConfig.h"
 #include "JsonParser.h"
 #include "JsonPrinter.h"
 #include "Exporter.h"

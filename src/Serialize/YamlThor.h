@@ -11,7 +11,6 @@
  *      std::cin  >> yamlImport(object); // converts Yaml to a C++ object from an input stream
  */
 
-#include "SerializeConfig.h"
 #ifdef HAVE_YAML
 
 #include "YamlParser.h"

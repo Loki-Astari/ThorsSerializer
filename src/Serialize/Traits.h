@@ -20,7 +20,6 @@
  * See README.md for examples.
  */
 
-#include "SerializeConfig.h"
 #include <string>
 #include <tuple>
 #include <map>

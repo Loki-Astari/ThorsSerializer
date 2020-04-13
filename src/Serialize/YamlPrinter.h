@@ -1,7 +1,6 @@
 #ifndef THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
 #define THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
 
-#include "SerializeConfig.h"
 #include <functional>
 #ifdef  HAVE_YAML
 

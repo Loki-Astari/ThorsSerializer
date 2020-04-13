@@ -22,7 +22,6 @@
  *      the object is popped from the stack.
  */
 
-#include "SerializeConfig.h"
 #ifdef NETWORK_BYTE_ORDER
 
 #include "Serialize.h"

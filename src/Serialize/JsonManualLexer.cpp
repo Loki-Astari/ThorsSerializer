@@ -1,3 +1,4 @@
+#include "SerializeConfig.h"
 #include "JsonManualLexer.h"
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"

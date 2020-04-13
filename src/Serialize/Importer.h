@@ -5,7 +5,6 @@
  * it creates an object of type DeSerializer and calls it appropriately.
  */
 
-#include "SerializeConfig.h"
 #include "Serialize.h"
 
 namespace ThorsAnvil

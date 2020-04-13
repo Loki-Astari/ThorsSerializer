@@ -5,7 +5,6 @@
  *  See documentation in JsonParser.h
  */
 
-#include "SerializeConfig.h"
 #include "Serialize.h"
 #include <vector>
 

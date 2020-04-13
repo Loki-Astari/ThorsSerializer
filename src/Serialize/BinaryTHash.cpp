@@ -1,3 +1,4 @@
+#include "SerializeConfig.h"
 #include "BinaryTHash.h"
 
 #ifdef COVERAGE_TEST

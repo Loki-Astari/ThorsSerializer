@@ -1,3 +1,4 @@
+#include "SerializeConfig.h"
 #include "Serialize.h"
 
 using ThorsAnvil::Serialize::ParserInterface;

@@ -1,3 +1,4 @@
+#include "SerializeConfig.h"
 #include "JsonPrinter.h"
 #include <iomanip>
 #include <algorithm>
