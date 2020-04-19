@@ -7,3 +7,6 @@
 [submodule "third/ThorsIOUtil"]
 	path = third/ThorsIOUtil
 	url = https://github.com/Loki-Astari/ThorsIOUtil.git
+[submodule "third/ThorsStorage"]
+	path = third/ThorsStorage
+	url = https://github.com/Loki-Astari/ThorsStorage.git
