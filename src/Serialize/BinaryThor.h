@@ -48,6 +48,12 @@ Exporter<Binary<T>, T> binExporter(T const& value, PrinterInterface::PrinterConf
 {
     return Exporter<Binary<T>, T>(value, config);
 }
+template<typename T>
+[[deprecated]] Exporter<Binary<T>, T> binExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
+{
+    config.catchExceptions = catchExceptions;
+    return binExporter(value, config);
+}
 // @function-api
 // @param value             The object to be de-serialized.
 // @return                  Object that can be passed to operator>> for de-serialization.
@@ -55,6 +61,12 @@ template<typename T>
 Importer<Binary<T>, T> binImporter(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{ParserInterface::ParseType::Strict})
 {
     return Importer<Binary<T>, T>(value, config);
+}
+template<typename T>
+[[deprecated]] Importer<Binary<T>, T> binImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{ParserInterface::ParseType::Strict}, bool catchExceptions = false)
+{
+    config.catchExceptions = catchExceptions;
+    return binImporter(value, config);
 }
     }
 }

@@ -38,6 +38,12 @@ Exporter<Json, T> jsonExporter(T const& value, PrinterInterface::PrinterConfig c
 {
     return Exporter<Json, T>(value, config);
 }
+template<typename T>
+[[deprecated]] Exporter<Json, T> jsonExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
+{
+    config.catchExceptions = catchExceptions;
+    return jsonExporter(value, config);
+}
 // @function-api
 // @param value                     The object to be de-serialized.
 // @param config.parseStrictness    'Weak':    ignore missing extra fields. 'Strict': Any missing or extra fields throws exception.
@@ -48,6 +54,12 @@ template<typename T>
 Importer<Json, T> jsonImporter(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{})
 {
     return Importer<Json, T>(value, config);
+}
+template<typename T>
+[[deprecated]] Importer<Json, T> jsonImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{}, bool catchExceptions = false)
+{
+    config.catchExceptions = catchExceptions;
+    return jsonImporter(value, config);
 }
     }
 }

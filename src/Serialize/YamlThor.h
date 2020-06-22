@@ -40,6 +40,12 @@ Exporter<Yaml, T> yamlExporter(T const& value, PrinterInterface::PrinterConfig c
 {
     return Exporter<Yaml, T>(value, config);
 }
+template<typename T>
+[[deprecated]] Exporter<Yaml, T> yamlExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
+{
+    config.catchExceptions = catchExceptions;
+    return yamlExporter(value, config);
+}
 // @function-api
 // @param value                     The object to be de-serialized.
 // @param config.parseStrictness    'Weak':    ignore missing extra fields. 'Strict': Any missing or extra fields throws exception.
@@ -50,6 +56,12 @@ template<typename T>
 Importer<Yaml, T> yamlImporter(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{})
 {
     return Importer<Yaml, T>(value, config);
+}
+template<typename T>
+[[deprecated]] Importer<Yaml, T> yamlImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{}, bool catchExceptions = false)
+{
+    config.catchExceptions = catchExceptions;
+    return yamlImporter(value, config);
 }
     }
 }
