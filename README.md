@@ -41,6 +41,10 @@ To install header only version
 
     git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsSerializer.git
 
+## Version 2
+
+I have deprecated the jsonImport() and jsonExport() functions. These have been replaced with jsonImporter() and jsonExporter() functions (though the original versions still exist but are marked `[[deprecated]]`). The main difference is that the new functions catch exceptions (by default) this makes the serialization work like normal C++ serialization and simply set the bad bit on the stream.
+
 ## Contributors
 
 Added the all-contributers bot to generate the table.
