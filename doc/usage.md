@@ -73,10 +73,10 @@ The appropriate declarations for all the standard containers are provided. You s
 
     int main()
     {
-        using ThorsAnvil::Serialize::jsonExport;
+        using ThorsAnvil::Serialize::jsonExporter;
         using ThorsAnvil::Serialize::PrinterInterface;
         std::vector<int>    data {1,2,3,4,5};
-        std::cout << ThorsAnvil::Serialize::jsonExport(data, PrinterInterface::OutputType::Stream);
+        std::cout << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
     }
 ````
 
@@ -84,16 +84,16 @@ The appropriate declarations for all the standard containers are provided. You s
 ### Json
 * Include the header file "ThorSerialize/JsonThor.h".
 * There are two functions in the namespace `ThorsAnvil::Serialize`.
- * `jsonExport(<YourObject>, characteristics = Default);`
- * `jsonImport(<YourObject>);`
+ * `jsonExporter(<YourObject>, characteristics = Default);`
+ * `jsonImporter(<YourObject>);`
 
 Both these methods return an object that simply contains a reference to `YourObject` (no actual serialization happens). When this object is serialized to a stream using `operator<<` or `operator>>` respectively then the code will read/write the appropriate members and serialize/deserialzie them to/from the stream. Because the returned object contains a reference to the object that needs to be serialized; the lifespan should be shorted than `YourObject` to avoid a dangling reference. Therefore it is usually best to just use them directly in the stream operation.
 
 ````c++
     std::vector<int>        data{1,2,3,4,5,6};
 
-    std::cout << jsonExport(data);
-    std::cin  >> jsonImport(data);
+    std::cout << jsonExporter(data);
+    std::cin  >> jsonImporter(data);
 ````
 
 On export there is a second parameter `characteristics` that allows some simple control on serialization (it basically affects white space to make debugging easier). Values are:
@@ -129,10 +129,10 @@ The JSON "Object" is a set of "name"/"value" pairs. But the name part is always 
     int main()
     {
         std::map<std::string, int>      data1{{"M": 1}};
-        std::cout << jsonExport(data1) << "\n";             // {"M":1}
+        std::cout << jsonExporter(data1) << "\n";             // {"M":1}
 
         std::map<int,int>               data2{{15,2}};
-        std::cout << jsonExport(data2) << "\n";             // [{"first":15, "second":2}]
+        std::cout << jsonExporter(data2) << "\n";             // [{"first":15, "second":2}]
     }
 ````
 
@@ -155,7 +155,7 @@ If it finds a "Key" that it does not recognize (or know how to decode) then it w
         // Or Short hand
 
         T object;
-        stream >> TS::jsonImport(object, PT::Strict);
+        stream >> TS::jsonImporter(object, PT::Strict);
 ````
 
 ## Strict Vs Exact Parsing.
@@ -176,5 +176,5 @@ Strict parsing does not allow extra parameters in the Json input. Exact parsing 
         // Or Short hand
 
         T object;
-        stream >> TS::jsonImport(object, PT::Exact);    // 
+        stream >> TS::jsonImporter(object, PT::Exact);    // 
 ````

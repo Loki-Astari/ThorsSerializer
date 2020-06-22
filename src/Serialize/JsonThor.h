@@ -3,12 +3,12 @@
 /*
  * Defines the Json Serialization interface
  *      ThorsAnvil::Serialize::Json
- *      ThorsAnvil::Serialize::jsonExport
- *      ThorsAnvil::Serialize::jsonImport
+ *      ThorsAnvil::Serialize::jsonExporter
+ *      ThorsAnvil::Serialize::jsonImporter
  *
  * Usage:
- *      std::cout << jsonExport(object); // converts object to Json on an output stream
- *      std::cin  >> jsonImport(object); // converts Json to a C++ object from an input stream
+ *      std::cout << jsonExporter(object); // converts object to Json on an output stream
+ *      std::cin  >> jsonImporter(object); // converts Json to a C++ object from an input stream
  */
 
 #include "JsonParser.h"

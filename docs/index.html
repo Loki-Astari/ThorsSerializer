@@ -208,7 +208,7 @@
                 <ul class="toc-list-h2">
                     
     <li>
-        <a href="#binExport" class="toc-h2 toc-link" data-title="binExport">binExport</a>
+        <a href="#binExport" class="toc-h2 toc-link" data-title="binExporter">binExporter</a>
     
                 <ul class="toc-list-h3">
                     
@@ -219,7 +219,7 @@
     </li>
 
     <li>
-        <a href="#binImport" class="toc-h2 toc-link" data-title="binImport">binImport</a>
+        <a href="#binImporter" class="toc-h2 toc-link" data-title="binImporter">binImporter</a>
     
                 <ul class="toc-list-h3">
                     
@@ -230,7 +230,7 @@
     </li>
 
     <li>
-        <a href="#jsonExport" class="toc-h2 toc-link" data-title="jsonExport">jsonExport</a>
+        <a href="#jsonExporter" class="toc-h2 toc-link" data-title="jsonExporter">jsonExporter</a>
     
                 <ul class="toc-list-h3">
                     
@@ -241,7 +241,7 @@
     </li>
 
     <li>
-        <a href="#jsonImport" class="toc-h2 toc-link" data-title="jsonImport">jsonImport</a>
+        <a href="#jsonImporter" class="toc-h2 toc-link" data-title="jsonImporter">jsonImporter</a>
     
                 <ul class="toc-list-h3">
                     
@@ -252,7 +252,7 @@
     </li>
 
     <li>
-        <a href="#yamlExport" class="toc-h2 toc-link" data-title="yamlExport">yamlExport</a>
+        <a href="#yamlExporter" class="toc-h2 toc-link" data-title="yamlExporter">yamlExporter</a>
     
                 <ul class="toc-list-h3">
                     
@@ -263,7 +263,7 @@
     </li>
 
     <li>
-        <a href="#yamlImport" class="toc-h2 toc-link" data-title="yamlImport">yamlImport</a>
+        <a href="#yamlImporter" class="toc-h2 toc-link" data-title="yamlImporter">yamlImporter</a>
     
                 <ul class="toc-list-h3">
                     
@@ -323,13 +323,13 @@
             
             
                 
-                    <li>Exporter&lt;T, Json&gt; jsonExport
+                    <li>Exporter&lt;T, Json&gt; jsonExporter
                     
                     ( T const& value )
                     
                     </li>
                 
-                    <li>Importer&lt;T, Json&gt; jsonImport
+                    <li>Importer&lt;T, Json&gt; jsonImporter
                     
                     ( T& value )
                     
@@ -360,13 +360,13 @@
             
             
                 
-                    <li>Exporter&lt;T, Yaml&gt; yamlExport
+                    <li>Exporter&lt;T, Yaml&gt; yamlExporter
                     
                     ( T const& value )
                     
                     </li>
                 
-                    <li>Importer&lt;T, Yaml&gt; yamlImport
+                    <li>Importer&lt;T, Yaml&gt; yamlImporter
                     
                     ( T& value )
                     
@@ -397,13 +397,13 @@
             
             
                 
-                    <li>Exporter&lt;T, Binary&gt; binaryExport
+                    <li>Exporter&lt;T, Binary&gt; binaryExporter
                     
                     ( T const& value )
                     
                     </li>
                 
-                    <li>Importer&lt;T, Binary&gt; binaryImport
+                    <li>Importer&lt;T, Binary&gt; binaryImporter
                     
                     ( T& value )
                     
@@ -578,17 +578,17 @@
         <p>There are two serialization formats supported out o the box (JSON/YAML) and an experimental binary format (I would love if somebody added the google Protocol Buffers).</p>
 <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 int main()
 {
-    std::cout &lt;&lt; jsonExport(12) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(12) &lt;&lt; "\n";
 
     int value;
-    std::cin &gt;&gt; jsonImport(value);
+    std::cin &gt;&gt; jsonImporter(value);
 }</code></pre>
-<p>Each format has two commands <code>&lt;format&gt;Import(&lt;object&gt;)</code> and <code>&lt;format&gt;Export(&lt;object&gt;)</code>. e.g. <code>jsonExport(12)</code>.</p>
+<p>Each format has two commands <code>&lt;format&gt;Importer(&lt;object&gt;)</code> and <code>&lt;format&gt;Exporter(&lt;object&gt;)</code>. e.g. <code>jsonExporter(12)</code>.</p>
 <p>These functions return a very lightweight object (it simply contains a reference to the object being serialized) that can be passed to the standard stream operators. Thats at it for a the user of serialization library.</p>
 <p>To include all the functionality all you need to do is include <code>#include "ThorSerialize/&lt;format&gt;Thor.h"</code> and link against <code>libThorSerialize17.so</code>.</p>
 
@@ -598,7 +598,7 @@ int main()
     
     <h3 id="Format">Format</h3>
     
-        <pre><code class="C++ language-C++">    std::cout &lt;&lt; jsonExport(mark) &lt;&lt; "\n";
+        <pre><code class="C++ language-C++">    std::cout &lt;&lt; jsonExporter(mark) &lt;&lt; "\n";
 ...
     {
         "name": "mark",
@@ -613,7 +613,7 @@ int main()
     }
 ...
     using OutputType = ThorsAnvil::Serialize::PrinterInterface::OutputType;
-    std::cout &lt;&lt; jsonExport(mark, OutputType::Stream) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(mark, OutputType::Stream) &lt;&lt; "\n";
 ...
 {"name":"mark","score":10,"damage":5,"team":{"red":66,"green":42,"blue":23}}</code></pre>
 <p>By default the generated JSON is verbose and easy for humans to read. This also makes it longer than required. You can compact the output by <code>OutputType::Stream</code> in the <code>jsonFormat()</code>.</p>
@@ -624,11 +624,11 @@ int main()
     
     <h3 id="Strictness">Strictness</h3>
     
-        <pre><code class="C++ language-C++">    std::cin &lt;&lt; jsonImport(dst) &lt;&lt; "\n";
+        <pre><code class="C++ language-C++">    std::cin &lt;&lt; jsonImporter(dst) &lt;&lt; "\n";
 ...
     using ParseType = ThorsAnvil::Serialize::ParserInterface::ParseType;
-    std::cin &gt;&gt; jsonImport(dst, ParseType::Strict);</code></pre>
-<p>By default the parser is forgiving; extra or missing fields are simply ignored. If you want to use <strong>Strict</strong> parsing then you specify this as part of the <code>jsonImport()</code>. In this mode all fields are required no additional fields are allowed. If either of these constraints are broken then an exception is thrown.</p>
+    std::cin &gt;&gt; jsonImporter(dst, ParseType::Strict);</code></pre>
+<p>By default the parser is forgiving; extra or missing fields are simply ignored. If you want to use <strong>Strict</strong> parsing then you specify this as part of the <code>jsonImporter()</code>. In this mode all fields are required no additional fields are allowed. If either of these constraints are broken then an exception is thrown.</p>
 
     
     
@@ -637,17 +637,17 @@ int main()
     <h3 id="Exceptions">Exceptions</h3>
     
         <pre><code class="C++ language-C++">    using OutputType = ThorsAnvil::Serialize::PrinterInterface::OutputType;
-    while(std::cout &lt;&lt; jsonExport(12, OutputType::Default, true) &lt;&lt; "\n")
+    while(std::cout &lt;&lt; jsonExporter(12, OutputType::Default, true) &lt;&lt; "\n")
     {
         // Successfully wrote an object to the output
     }
     ...
     using ParseType = ThorsAnvil::Serialize::ParserInterface::ParseType;
-    while(std::cin &gt;&gt; jsonImport(dst, ParseType::Weak, true))
+    while(std::cin &gt;&gt; jsonImporter(dst, ParseType::Weak, true))
     {
         // Successfully read an object from the input
     }</code></pre>
-<p>By default the ThorsSerializer will throw an exception when it encounters a parsing error (it also sets the stream state to fail). If you would prefer for the stream to swallow the exception (but still set the stream state to fail) then you can modify this behavior in <code>jsonImport()</code> and <code>jsonExport()</code>.</p>
+<p>By default the ThorsSerializer will throw an exception when it encounters a parsing error (it also sets the stream state to fail). If you would prefer for the stream to swallow the exception (but still set the stream state to fail) then you can modify this behavior in <code>jsonImporter()</code> and <code>jsonExporter()</code>.</p>
 
     
     
@@ -668,8 +668,8 @@ int main()
     
         <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 int main()
 {
@@ -678,10 +678,10 @@ int main()
     bool        v3 = true;
     std::string v4 = "A string";
 
-    std::cout &lt;&lt; jsonExport(v1) &lt;&lt; " "
-              &lt;&lt; jsonExport(v2) &lt;&lt; " "
-              &lt;&lt; jsonExport(v3) &lt;&lt; " "
-              &lt;&lt; jsonExport(v4) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(v1) &lt;&lt; " "
+              &lt;&lt; jsonExporter(v2) &lt;&lt; " "
+              &lt;&lt; jsonExporter(v3) &lt;&lt; " "
+              &lt;&lt; jsonExporter(v4) &lt;&lt; "\n";
 }
 ...
  12  13.5  true  "A string"</code></pre>
@@ -697,13 +697,13 @@ int main()
         <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 #include "ThorSerialize/SerUtil.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 int main()
 {
     std::vector&lt;int&gt;    data = {1,2,3,4,5,6,7};
-    std::cout &lt;&lt; jsonExport(data) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(data) &lt;&lt; "\n";
 }
 ...
  [ 1, 2, 3, 4, 5, 6, 7]</code></pre>
@@ -736,8 +736,8 @@ int main()
         <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 #include "ThorSerialize/Traits.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 enum Color { red, green, blue };
 ThorsAnvil_MakeEnum(Color, red, green, blue);
@@ -745,7 +745,7 @@ ThorsAnvil_MakeEnum(Color, red, green, blue);
 int main()
 {
     Color c = red;
-    std::cout &lt;&lt; jsonExport(c) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(c) &lt;&lt; "\n";
 }
 ...
  "red"</code></pre>
@@ -771,13 +771,13 @@ ThorsAnvil_MakeTrait(Shirt, red, green, blue);</code></pre>
 <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 #include "Shirt.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 int main()
 {
     Shirt          shirt{10, 20, 45};
-    std::cout &lt;&lt; jsonExport(shirt) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(shirt) &lt;&lt; "\n";
 }
 ...
     {
@@ -810,13 +810,13 @@ ThorsAnvil_MakeTrait(TeamMember, name, score, damage, team);</code></pre>
 <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 #include "TeamMember.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 int main()
 {
     TeamMember          mark("mark", 10, 5, Shirt{66, 42, 23});
-    std::cout &lt;&lt; jsonExport(mark) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(mark) &lt;&lt; "\n";
 }
 ...
     {
@@ -848,13 +848,13 @@ ThorsAnvil_ExpandTrait(TeamMember, ExtendedTeamMember, extension);</code></pre>
 <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 #include "ExtendedTeamMember.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 int main()
 {
     ExtendedTeamMember          rangers("Rangers", 10, 5, Shirt{66, 42, 23}, true);
-    std::cout &lt;&lt; jsonExport(rangers) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(rangers) &lt;&lt; "\n";
 }
 ...
     {
@@ -874,8 +874,8 @@ int main()
 <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 #include "ThorSerialize/Traits.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 struct Base1
 {
@@ -901,7 +901,7 @@ ThorsAnvil_ExpandTrait(Base1Base2Parent, Object, good);
 int main()
 {
     Object  object{12, "Test", true};
-    std::cout &lt;&lt; jsonExport(object) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(object) &lt;&lt; "\n";
 }
 ...
     {
@@ -923,18 +923,18 @@ Multiple parent types must be combined using the template class <code>ThorsAnvil
 #include "TeamMember.h"
 
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 int main()
 {
     std::unique_ptr&lt;TeamMember&gt;     data;
-    std::cout &lt;&lt; jsonExport(data) &lt;&lt; "\n";
-    std::cout &lt;&lt; jsonExport(data.get()) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(data) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(data.get()) &lt;&lt; "\n";
 
     data.reset(new TeamMember{"Tim", 33, 2, Shirt{12, 13, 14}});
-    std::cout &lt;&lt; jsonExport(data) &lt;&lt; "\n";
-    std::cout &lt;&lt; jsonExport(data.get()) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(data) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(data.get()) &lt;&lt; "\n";
 }
 ...
  null
@@ -972,8 +972,8 @@ int main()
 <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 #include "TeamMember.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 struct Vehicle
 {
@@ -1012,7 +1012,7 @@ ThorsAnvil_ExpandTrait(Vehicle, Bike, stroke);
 int main()
 {
     Vehicle* v = new Bike(12,3);
-    std::cout &lt;&lt; jsonExport(v) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(v) &lt;&lt; "\n";
 }
 ...
     {
@@ -1031,8 +1031,8 @@ int main()
         <pre><code class="C++ language-C++">#include "ThorSerialize/JsonThor.h"
 #include "ThorSerialize/Traits.h"
 
-using ThorsAnvil::Serialize::jsonExport;
-using ThorsAnvil::Serialize::jsonImport;
+using ThorsAnvil::Serialize::jsonExporter;
+using ThorsAnvil::Serialize::jsonImporter;
 
 struct ID
 {
@@ -1045,7 +1045,7 @@ ThorsAnvil_MakeTraitCustom(ID);
 int main()
 {
     ID  id{23};
-    std::cout &lt;&lt; jsonExport(id) &lt;&lt; "\n";
+    std::cout &lt;&lt; jsonExporter(id) &lt;&lt; "\n";
 }
 ...
  23</code></pre>
@@ -1258,13 +1258,13 @@ class Traits&lt;ArrayType&gt;
             
             
                 
-                    <li>Exporter&lt;Binary<T&gt;, T> binExport
+                    <li>Exporter&lt;Binary<T&gt;, T> binExporter
                     
                     ()
                     
                     </li>
                 
-                    <li>Importer&lt;Binary<T&gt;, T> binImport
+                    <li>Importer&lt;Binary<T&gt;, T> binImporter
                     
                     ()
                     
@@ -1281,13 +1281,13 @@ class Traits&lt;ArrayType&gt;
             
             
                 
-                    <li>Exporter&lt;Json, T&gt; jsonExport
+                    <li>Exporter&lt;Json, T&gt; jsonExporter
                     
                     ()
                     
                     </li>
                 
-                    <li>Importer&lt;Json, T&gt; jsonImport
+                    <li>Importer&lt;Json, T&gt; jsonImporter
                     
                     ()
                     
@@ -1304,13 +1304,13 @@ class Traits&lt;ArrayType&gt;
             
             
                 
-                    <li>Exporter&lt;Yaml, T&gt; yamlExport
+                    <li>Exporter&lt;Yaml, T&gt; yamlExporter
                     
                     ()
                     
                     </li>
                 
-                    <li>Importer&lt;Yaml, T&gt; yamlImport
+                    <li>Importer&lt;Yaml, T&gt; yamlImporter
                     
                     ()
                     
@@ -1328,7 +1328,7 @@ class Traits&lt;ArrayType&gt;
     
         
     
-    <h2 id="binExport">binExport</h2>
+    <h2 id="binExporter">binExporter</h2>
     
         <div class="classTable">
     <div class="classLayout">
@@ -1370,7 +1370,7 @@ class Traits&lt;ArrayType&gt;
     
 
     
-    <h2 id="binImport">binImport</h2>
+    <h2 id="binImporter">binImporter</h2>
     
         <div class="classTable">
     <div class="classLayout">
@@ -1412,7 +1412,7 @@ class Traits&lt;ArrayType&gt;
     
 
     
-    <h2 id="jsonExport">jsonExport</h2>
+    <h2 id="jsonExporter">jsonExporter</h2>
     
         <div class="classTable">
     <div class="classLayout">
@@ -1456,7 +1456,7 @@ class Traits&lt;ArrayType&gt;
     
 
     
-    <h2 id="jsonImport">jsonImport</h2>
+    <h2 id="jsonImporter">jsonImporter</h2>
     
         <div class="classTable">
     <div class="classLayout">
@@ -1500,7 +1500,7 @@ class Traits&lt;ArrayType&gt;
     
 
     
-    <h2 id="yamlExport">yamlExport</h2>
+    <h2 id="yamlExporter">yamlExporter</h2>
     
         <div class="classTable">
     <div class="classLayout">
@@ -1544,7 +1544,7 @@ class Traits&lt;ArrayType&gt;
     
 
     
-    <h2 id="yamlImport">yamlImport</h2>
+    <h2 id="yamlImporter">yamlImporter</h2>
     
         <div class="classTable">
     <div class="classLayout">

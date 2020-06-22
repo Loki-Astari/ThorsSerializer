@@ -3,12 +3,12 @@
 /*
  * Defines the Binary Serialization interface
  *      ThorsAnvil::Serialize::Binary
- *      ThorsAnvil::Serialize::binExport
- *      ThorsAnvil::Serialize::binImport
+ *      ThorsAnvil::Serialize::binExporter
+ *      ThorsAnvil::Serialize::binImporter
  *
  * Usage:
- *      std::cout << binExport(object); // converts object to Binary on an output stream
- *      std::cin  >> binImport(object); // converts Binary to a C++ object from an input stream
+ *      std::cout << binExporter(object); // converts object to Binary on an output stream
+ *      std::cin  >> binImporter(object); // converts Binary to a C++ object from an input stream
  */
 
 #ifdef NETWORK_BYTE_ORDER

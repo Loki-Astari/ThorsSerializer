@@ -35,10 +35,10 @@ ThorsAnvil_MakeTrait(X::TeamMember, name, score, damage, team);
 
 int main()
 {
-    using ThorsAnvil::Serialize::jsonExport;
+    using ThorsAnvil::Serialize::jsonExporter;
 
     X::TeamMember          mark("mark", 10, 5, X::Shirt{255,0,0});
     // Use the export function to serialize
-    std::cout << jsonExport(mark) << "\n";
+    std::cout << jsonExporter(mark) << "\n";
 }
 

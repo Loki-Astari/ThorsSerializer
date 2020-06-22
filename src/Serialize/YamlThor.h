@@ -3,12 +3,12 @@
 /*
  * Defines the Yaml Serialization interface
  *      ThorsAnvil::Serialize::Yaml
- *      ThorsAnvil::Serialize::yamlExport
- *      ThorsAnvil::Serialize::yamlImport
+ *      ThorsAnvil::Serialize::yamlExporter
+ *      ThorsAnvil::Serialize::yamlImporter
  *
  * Usage:
- *      std::cout << yamlExport(object); // converts object to Yaml on an output stream
- *      std::cin  >> yamlImport(object); // converts Yaml to a C++ object from an input stream
+ *      std::cout << yamlExporter(object); // converts object to Yaml on an output stream
+ *      std::cin  >> yamlImporter(object); // converts Yaml to a C++ object from an input stream
  */
 
 #ifdef HAVE_YAML
