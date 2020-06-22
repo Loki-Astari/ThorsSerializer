@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
 #include "Serialize.h"
@@ -96,10 +96,10 @@ TEST(Issue38Test, Connection)
     std::stringstream stream(input);
 
     Issue38::Connection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -116,10 +116,10 @@ TEST(Issue38Test, IPConnection)
     std::stringstream stream(input);
 
     Issue38::IPConnection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -137,10 +137,10 @@ TEST(Issue38Test, IPv4Connection)
     std::stringstream stream(input);
 
     Issue38::IPv4Connection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -159,10 +159,10 @@ TEST(Issue38Test, IPv6Connection)
     std::stringstream stream(input);
 
     Issue38::IPv6Connection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -178,10 +178,10 @@ TEST(Issue38Test, TcpConnection)
     std::stringstream stream(input);
 
     Issue38::TcpConnection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -197,10 +197,10 @@ TEST(Issue38Test, UdpConnection)
     std::stringstream stream(input);
 
     Issue38::UdpConnection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -220,10 +220,10 @@ TEST(Issue38Test, Tcp4Connection)
     std::stringstream stream(input);
 
     Issue38::Tcp4Connection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -244,10 +244,10 @@ TEST(Issue38Test, Tcp6Connection)
     std::stringstream stream(input);
 
     Issue38::Tcp6Connection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -267,10 +267,10 @@ TEST(Issue38Test, Udp4Connection)
     std::stringstream stream(input);
 
     Issue38::Udp4Connection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -291,10 +291,10 @@ TEST(Issue38Test, Udp6Connection)
     std::stringstream stream(input);
 
     Issue38::Udp6Connection  test;
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 
     std::stringstream output;
-    output << ThorsAnvil::Serialize::jsonExport(test);
+    output << ThorsAnvil::Serialize::jsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));

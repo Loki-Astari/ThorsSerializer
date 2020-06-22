@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
 #include "Serialize.h"
@@ -38,39 +38,42 @@ ThorsAnvil_Template_ExpandTrait(1, TemplateTypeTest::TemplateType<T1>, TemplateT
 
 TEST(TemplateTypeTest, templateTest)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     std::string         inputStr(R"({"templateMember":[1,2,3,4]})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::TemplateType<int>   data;
 
-    input  >> ThorsAnvil::Serialize::jsonImport(data);
-    output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
+    output << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }
 
 TEST(TemplateTypeTest, normalInheritingFromtemplateTest)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     std::string         inputStr(R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::NormalInheritFromTemplate   data;
 
-    input  >> ThorsAnvil::Serialize::jsonImport(data);
-    output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
+    output << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }
 
 TEST(TemplateTypeTest, templateInheritingFromtemplateTest)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     std::string         inputStr(R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::TemplateInheritFromTemplate<int>   data;
 
-    input  >> ThorsAnvil::Serialize::jsonImport(data);
-    output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
+    output << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }

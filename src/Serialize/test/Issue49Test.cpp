@@ -1,3 +1,4 @@
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
 #include "Serialize.h"
@@ -23,7 +24,7 @@ TEST(Issue49Test, StreamScientific)
     std::stringstream stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::scientific;
-    stream << ThorsAnvil::Serialize::jsonExport(testData);
+    stream << ThorsAnvil::Serialize::jsonExporter(testData, false);
 
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -35,7 +36,7 @@ TEST(Issue49Test, StreamFixed)
     std::stringstream stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::fixed;
-    stream << ThorsAnvil::Serialize::jsonExport(testData);
+    stream << ThorsAnvil::Serialize::jsonExporter(testData, false);
 
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -47,7 +48,7 @@ TEST(Issue49Test, StreamHex)
     std::stringstream stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::hex;
-    stream << ThorsAnvil::Serialize::jsonExport(testData);
+    stream << ThorsAnvil::Serialize::jsonExporter(testData, false);
 
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -59,7 +60,7 @@ TEST(Issue49Test, StreamGeneral)
     std::stringstream stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
-    stream << ThorsAnvil::Serialize::jsonExport(testData);
+    stream << ThorsAnvil::Serialize::jsonExporter(testData, false);
 
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
@@ -72,7 +73,7 @@ TEST(Issue49Test, ImportScientific)
     std::stringstream stream(input);
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
-    stream >> ThorsAnvil::Serialize::jsonImport(testData);
+    stream >> ThorsAnvil::Serialize::jsonImporter(testData, false);
 
     EXPECT_EQ(Issue49::FloatFormat::scientific, testData);
 }
@@ -82,7 +83,7 @@ TEST(Issue49Test, ImportFixed)
     std::stringstream stream(input);
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
-    stream >> ThorsAnvil::Serialize::jsonImport(testData);
+    stream >> ThorsAnvil::Serialize::jsonImporter(testData, false);
 
     EXPECT_EQ(Issue49::FloatFormat::fixed, testData);
 }
@@ -92,7 +93,7 @@ TEST(Issue49Test, ImportHex)
     std::stringstream stream(input);
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
-    stream >> ThorsAnvil::Serialize::jsonImport(testData);
+    stream >> ThorsAnvil::Serialize::jsonImporter(testData, false);
 
     EXPECT_EQ(Issue49::FloatFormat::hex, testData);
 }
@@ -102,7 +103,7 @@ TEST(Issue49Test, ImportGeneral)
     std::stringstream stream(input);
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::scientific;
-    stream >> ThorsAnvil::Serialize::jsonImport(testData);
+    stream >> ThorsAnvil::Serialize::jsonImporter(testData, false);
 
     EXPECT_EQ(Issue49::FloatFormat::general, testData);
 }

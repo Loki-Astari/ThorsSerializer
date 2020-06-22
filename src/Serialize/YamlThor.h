@@ -30,24 +30,26 @@ struct Yaml
 };
 
 // @function-api
-// @param value             The object to be serialized.
-// @param characteristics   'Default': is verbose and logical. 'Stream': remove all white space.
-// @param catchExceptions   'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
-// @return                  Object that can be passed to operator<< for serialization.
+// @param value                     The object to be serialized.
+// @param config.characteristics    'Default': uses Config/Stream depending on global config. 'Config':  Is verbose and logical. 'Stream':  Remove all white space.
+// @param config.polymorphicMarker  Jason object name for holding the polymorphic class name of the type. Default: __type
+// @param config.catchExceptions    'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
+// @return                          Object that can be passed to operator<< for serialization.
 template<typename T>
-Exporter<Yaml, T> yamlExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
+Exporter<Yaml, T> yamlExporter(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{})
 {
-    return Exporter<Yaml, T>(value, config, catchExceptions);
+    return Exporter<Yaml, T>(value, config);
 }
 // @function-api
-// @param value             The object to be de-serialized.
-// @param parseStrictness   'Weak':    ignore missing extra fields. 'Strict': Any missing or extra fields throws exception.
-// @param catchExceptions   'false:    exceptions propogate.        'true':   parsing exceptions are stopped.
-// @return                  Object that can be passed to operator>> for de-serialization.
+// @param value                     The object to be de-serialized.
+// @param config.parseStrictness    'Weak':    ignore missing extra fields. 'Strict': Any missing or extra fields throws exception.
+// @param config.polymorphicMarker  Jason object name for holding the polymorphic class name of the type. Default: __type
+// @param config.catchExceptions    'false:    exceptions propogate.        'true':   parsing exceptions are stopped.
+// @return                          Object that can be passed to operator>> for de-serialization.
 template<typename T>
-Importer<Yaml, T> yamlImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{}, bool catchExceptions = false)
+Importer<Yaml, T> yamlImporter(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{})
 {
-    return Importer<Yaml, T>(value, config, catchExceptions);
+    return Importer<Yaml, T>(value, config);
 }
     }
 }

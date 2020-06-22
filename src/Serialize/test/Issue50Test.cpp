@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
 #include "Serialize.h"
@@ -59,7 +59,7 @@ TEST(Issue50Test, NullPointer)
     Issue50Test::User    user1{10, nullptr};
 
     std::stringstream   data;
-    data << ThorsAnvil::Serialize::jsonExport(user1, "$type"s);
+    data << ThorsAnvil::Serialize::jsonExporter(user1, "$type"s);
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
@@ -72,7 +72,7 @@ TEST(Issue50Test, VehiclePointer)
     Issue50Test::User    user1{10, new Issue50Test::Vehicle(12)};
 
     std::stringstream   data;
-    data << ThorsAnvil::Serialize::jsonExport(user1, "$type"s);
+    data << ThorsAnvil::Serialize::jsonExporter(user1, "$type"s);
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
@@ -85,7 +85,7 @@ TEST(Issue50Test, CarPointer)
     Issue50Test::User    user1{10, new Issue50Test::Car(16, "Turbo")};
 
     std::stringstream   data;
-    data << ThorsAnvil::Serialize::jsonExport(user1, "$type"s);
+    data << ThorsAnvil::Serialize::jsonExporter(user1, "$type"s);
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
@@ -99,7 +99,7 @@ TEST(Issue50Test, BikePointer)
     Issue50Test::User    user1{10, new Issue50Test::Bike(18, 7)};
 
     std::stringstream   data;
-    data << ThorsAnvil::Serialize::jsonExport(user1, "$type"s);
+    data << ThorsAnvil::Serialize::jsonExporter(user1, "$type"s);
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
@@ -113,7 +113,7 @@ TEST(Issue50Test, ReadNull)
     std::stringstream   stream(R"({"age":10,"transport":null})");
     Issue50Test::User                user1 {12, new Issue50Test::Vehicle(12)};
 
-    stream >> ThorsAnvil::Serialize::jsonImport(user1, "$type"s);
+    stream >> ThorsAnvil::Serialize::jsonImporter(user1, "$type"s);
     EXPECT_EQ(user1.age, 10);
     EXPECT_EQ(user1.transport, nullptr);
 }
@@ -125,7 +125,7 @@ TEST(Issue50Test, ReadVehicle)
     std::stringstream   stream(R"({"age":10,"transport":{"$type":"Issue50Test::Vehicle","speed":12}})");
     Issue50Test::User                user1 {12, new Issue50Test::Vehicle(13)};
 
-    stream >> ThorsAnvil::Serialize::jsonImport(user1, "$type"s);
+    stream >> ThorsAnvil::Serialize::jsonImporter(user1, "$type"s);
     EXPECT_EQ(user1.age, 10);
     ASSERT_NE(user1.transport, nullptr);
     EXPECT_EQ(user1.transport->speed, 12);
@@ -138,7 +138,7 @@ TEST(Issue50Test, ReadCar)
     std::stringstream   stream(R"({"age":10,"transport":{"$type":"Issue50Test::Car","speed":16,"make":"Turbo"}})");
     Issue50Test::User                user1 {12, new Issue50Test::Vehicle(14)};
 
-    stream >> ThorsAnvil::Serialize::jsonImport(user1, "$type"s);
+    stream >> ThorsAnvil::Serialize::jsonImporter(user1, "$type"s);
     EXPECT_EQ(user1.age, 10);
     ASSERT_NE(user1.transport, nullptr);
     EXPECT_EQ(user1.transport->speed, 16);
@@ -155,7 +155,7 @@ TEST(Issue50Test, ReadBike)
     std::stringstream   stream(R"({"age":10,"transport":{"$type":"Issue50Test::Bike","speed":18,"stroke":7}})");
     Issue50Test::User                user1 {12, new Issue50Test::Vehicle(15)};
 
-    stream >> ThorsAnvil::Serialize::jsonImport(user1, "$type"s);
+    stream >> ThorsAnvil::Serialize::jsonImporter(user1, "$type"s);
     EXPECT_EQ(user1.age, 10);
     ASSERT_NE(user1.transport, nullptr);
     EXPECT_EQ(user1.transport->speed, 18);

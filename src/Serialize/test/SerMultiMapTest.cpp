@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "SerUtil.h"
@@ -13,7 +13,7 @@ TEST(SerMultiMapTest, serialize)
     data.insert(std::make_pair(56, 901));
 
     std::stringstream       stream;
-    stream << TS::jsonExport(data);
+    stream << TS::jsonExporter(data, false);
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
@@ -25,7 +25,7 @@ TEST(SerMultiMapTest, deSerialize)
     std::multimap<int, double>  data;
 
     std::stringstream       stream(R"([{"first":64,"second":12}, {"first":118,"second":14}, {"first":118,"second": 112}])");
-    stream >> TS::jsonImport(data);
+    stream >> TS::jsonImporter(data, false);
 
     EXPECT_TRUE(data.find(64) != data.end());
     EXPECT_TRUE(data.find(118) != data.end());
@@ -40,7 +40,7 @@ TEST(SerMultiMapTest, serializeStringKey)
     data.insert(std::make_pair("TestValue",  903));
 
     std::stringstream       stream;
-    stream << TS::jsonExport(data);
+    stream << TS::jsonExporter(data, false);
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
@@ -52,7 +52,7 @@ TEST(SerMultiMapTest, deSerializeStringKey)
     std::multimap<std::string, bool>  data;
 
     std::stringstream       stream(R"({"OneFileDay":true, "TheLastStand":false, "OfMiceAndMen":true, "1":true, "1":false})");
-    stream >> TS::jsonImport(data);
+    stream >> TS::jsonImporter(data, false);
 
     EXPECT_TRUE(data.find("OneFileDay") != data.end());
     EXPECT_TRUE(data.find("TheLastStand") != data.end());

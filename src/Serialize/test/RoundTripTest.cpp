@@ -1,5 +1,4 @@
 #include "SerializeConfig.h"
-
 #include "gtest/gtest.h"
 #include "test/BinaryParserTest.h"
 #include "BinaryThor.h"
@@ -16,7 +15,7 @@ TEST(RoundTripTest, BinaryMap)
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
-    stream << TA::binExport(base);
+    stream << TA::binExporter(base, false);
 
     std::string expected("\x1c\xa2\x7d\xce"     // THash of Base    \x00\x00
                          "\x00\x00\x00\x0a"     // 10
@@ -30,7 +29,7 @@ TEST(RoundTripTest, BinaryMap)
     }
 
     BinaryParserTest::Base    base2 {};
-    stream >> TA::binImport(base2);
+    stream >> TA::binImporter(base2, false);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
 }
@@ -44,7 +43,7 @@ TEST(RoundTripTest, BinaryParent)
     deri.flt    = 234.875;
     std::stringstream   stream;
 
-    stream << TA::binExport(deri);
+    stream << TA::binExporter(deri, false);
 
     std::string expected("\xf1\x21\x74\x88"     // THash of Derived
                          "\x00\x00\x00\x0a"     // 10
@@ -71,7 +70,7 @@ TEST(RoundTripTest, BinaryParent)
     }
 
     BinaryParserTest::Derived             deri2 {};
-    stream >> TA::binImport(deri2);
+    stream >> TA::binImporter(deri2, false);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632
     EXPECT_EQ(56789,    deri2.der);     // 10
@@ -82,7 +81,7 @@ TEST(RoundTripTest, BinaryArray)
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
     std::stringstream   stream;
 
-    stream << TA::binExport(data);
+    stream << TA::binExporter(data, false);
 
     std::string expected("\xea\xb0\x50\x2f"     // THash of vector<int>
                          "\x00\x00\x00\x06"     // data.size()
@@ -101,7 +100,7 @@ TEST(RoundTripTest, BinaryArray)
     }
 
     std::vector<int>    data2 {};
-    stream >> TA::binImport(data2);
+    stream >> TA::binImporter(data2, false);
     EXPECT_EQ(10,     data2[0]);
     EXPECT_EQ(1024,   data2[1]);
     EXPECT_EQ(9,      data2[2]);
@@ -114,7 +113,7 @@ TEST(RoundTripTest, BinaryValue)
     int                 data = 68456231;
     std::stringstream   stream;
 
-    stream << TA::binExport(data);
+    stream << TA::binExporter(data, false);
 
     std::string expected("\x00\x00\x00\x49" "\x04\x14\x8F\x27", 8);
     EXPECT_EQ(expected.size(), stream.str().size());
@@ -124,16 +123,17 @@ TEST(RoundTripTest, BinaryValue)
     }
 
     int                 data2;
-    stream >> TA::binImport(data2);
+    stream >> TA::binImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }
 #endif
 TEST(RoundTripTest, JsonMap)
 {   
+    using ThorsAnvil::Serialize::PrinterInterface;
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
-    stream << TA::jsonExport(base, TA::PrinterInterface::OutputType::Stream);
+    stream << TA::jsonExporter(base, PrinterInterface::OutputType::Stream);
 
     std::string expected(R"({"ace":10,"val":1024})");
 
@@ -144,13 +144,14 @@ TEST(RoundTripTest, JsonMap)
     }
 
     BinaryParserTest::Base    base2 {};
-    stream >> TA::jsonImport(base2);
+    stream >> TA::jsonImporter(base2, false);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
 }
 
 TEST(RoundTripTest, JsonParent)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     BinaryParserTest::Derived             deri;
     deri.ace    = 10;
     deri.val    = 1024;
@@ -158,7 +159,7 @@ TEST(RoundTripTest, JsonParent)
     deri.flt    = 234.875;
     std::stringstream   stream;
 
-    stream << TA::jsonExport(deri, TA::PrinterInterface::OutputType::Stream);
+    stream << TA::jsonExporter(deri, PrinterInterface::OutputType::Stream);
 
     std::string expected(R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
 
@@ -169,7 +170,7 @@ TEST(RoundTripTest, JsonParent)
     }
 
     BinaryParserTest::Derived             deri2 {};
-    stream >> TA::jsonImport(deri2);
+    stream >> TA::jsonImporter(deri2, false);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632
     EXPECT_EQ(56789,    deri2.der);     // 10
@@ -177,10 +178,11 @@ TEST(RoundTripTest, JsonParent)
 }
 TEST(RoundTripTest, JsonArray)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
     std::stringstream   stream;
 
-    stream << TA::jsonExport(data, TA::PrinterInterface::OutputType::Stream);
+    stream << TA::jsonExporter(data, PrinterInterface::OutputType::Stream);
 
     std::string expected(R"([10,1024,9,367,12,34])");
 
@@ -191,7 +193,7 @@ TEST(RoundTripTest, JsonArray)
     }
 
     std::vector<int>    data2 {};
-    stream >> TA::jsonImport(data2);
+    stream >> TA::jsonImporter(data2, false);
     EXPECT_EQ(10,     data2[0]);
     EXPECT_EQ(1024,   data2[1]);
     EXPECT_EQ(9,      data2[2]);
@@ -201,10 +203,11 @@ TEST(RoundTripTest, JsonArray)
 }
 TEST(RoundTripTest, JsonValue)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     int                 data = 68456231;
     std::stringstream   stream;
 
-    stream << TA::jsonExport(data, TA::PrinterInterface::OutputType::Stream);
+    stream << TA::jsonExporter(data, PrinterInterface::OutputType::Stream);
 
     std::string expected("68456231");
     EXPECT_EQ(expected.size(), stream.str().size());
@@ -214,16 +217,17 @@ TEST(RoundTripTest, JsonValue)
     }
 
     int                 data2;
-    stream >> TA::jsonImport(data2);
+    stream >> TA::jsonImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }
 #ifdef HAVE_YAML
 TEST(RoundTripTest, YamlMap)
 {   
+    using ThorsAnvil::Serialize::PrinterInterface;
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
-    stream << TA::yamlExport(base, TA::PrinterInterface::OutputType::Stream);
+    stream << TA::yamlExporter(base, PrinterInterface::OutputType::Stream);
 
     std::string expected("--- {ace: 10, val: 1024}\n...\n");
 
@@ -234,13 +238,14 @@ TEST(RoundTripTest, YamlMap)
     }
 
     BinaryParserTest::Base    base2 {};
-    stream >> TA::yamlImport(base2);
+    stream >> TA::yamlImporter(base2, false);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
 }
 
 TEST(RoundTripTest, YamlParent)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     BinaryParserTest::Derived             deri;
     deri.ace    = 10;
     deri.val    = 1024;
@@ -248,7 +253,7 @@ TEST(RoundTripTest, YamlParent)
     deri.flt    = 234.875;
     std::stringstream   stream;
 
-    stream << TA::yamlExport(deri, TA::PrinterInterface::OutputType::Stream);
+    stream << TA::yamlExporter(deri, PrinterInterface::OutputType::Stream);
 
     std::string expected("--- {ace: 10, val: 1024, der: 56789, flt: 234.875}\n...\n");
 
@@ -259,7 +264,7 @@ TEST(RoundTripTest, YamlParent)
     }
 
     BinaryParserTest::Derived             deri2 {};
-    stream >> TA::yamlImport(deri2);
+    stream >> TA::yamlImporter(deri2, false);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632
     EXPECT_EQ(56789,    deri2.der);     // 10
@@ -267,10 +272,11 @@ TEST(RoundTripTest, YamlParent)
 }
 TEST(RoundTripTest, YamlArray)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
     std::stringstream   stream;
 
-    stream << TA::yamlExport(data, TA::PrinterInterface::OutputType::Stream);
+    stream << TA::yamlExporter(data, PrinterInterface::OutputType::Stream);
 
     std::string expected("--- [10, 1024, 9, 367, 12, 34]\n...\n");
 
@@ -281,7 +287,7 @@ TEST(RoundTripTest, YamlArray)
     }
 
     std::vector<int>    data2 {};
-    stream >> TA::yamlImport(data2);
+    stream >> TA::yamlImporter(data2, false);
     EXPECT_EQ(10,     data2[0]);
     EXPECT_EQ(1024,   data2[1]);
     EXPECT_EQ(9,      data2[2]);
@@ -291,10 +297,11 @@ TEST(RoundTripTest, YamlArray)
 }
 TEST(RoundTripTest, YamlValue)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     int                 data = 68456231;
     std::stringstream   stream;
 
-    stream << TA::yamlExport(data, TA::PrinterInterface::OutputType::Stream);
+    stream << TA::yamlExporter(data, PrinterInterface::OutputType::Stream);
 
     std::string expected("--- 68456231\n...\n");
     EXPECT_EQ(expected.size(), stream.str().size());
@@ -304,7 +311,7 @@ TEST(RoundTripTest, YamlValue)
     }
 
     int                 data2;
-    stream >> TA::yamlImport(data2);
+    stream >> TA::yamlImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }
 

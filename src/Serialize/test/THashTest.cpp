@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "THashTest.h"
 #include "BinaryTHash.h"

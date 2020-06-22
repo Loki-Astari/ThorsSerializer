@@ -2,6 +2,11 @@
 #include "Serialize.h"
 
 using ThorsAnvil::Serialize::ParserInterface;
+#pragma vera-pushoff
+using namespace std::string_literals;
+#pragma vera-pop
+
+std::string const ThorsAnvil::Serialize::defaultPolymorphicMarker = "__type"s;
 
 HEADER_ONLY_INCLUDE
 void ParserInterface::ignoreValue()

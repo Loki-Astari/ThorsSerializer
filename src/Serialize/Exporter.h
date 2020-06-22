@@ -18,12 +18,10 @@ class Exporter
     using PrinterConfig = PrinterInterface::PrinterConfig;
     T const&        value;
     PrinterConfig   config;
-    bool            catchException;
     public:
-        Exporter(T const& value, PrinterConfig config, bool catchException = false)
+        Exporter(T const& value, PrinterConfig config)
             : value(value)
             , config(config)
-            , catchException(catchException)
         {}
         friend std::ostream& operator<<(std::ostream& stream, Exporter const& data)
         {
@@ -37,7 +35,7 @@ class Exporter
             catch (...)
             {
                 stream.setstate(std::ios::failbit);
-                if (!data.catchException)
+                if (!data.config.catchExceptions)
                 {
                     throw;
                 }

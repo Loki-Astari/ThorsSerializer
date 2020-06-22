@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "SerUtil.h"
@@ -11,7 +11,7 @@ TEST(SerMemoryTest, serialize)
     std::pair<int, double>  data(56, 78.901);
 
     std::stringstream       stream;
-    stream << TS::jsonExport(data);
+    stream << TS::jsonExporter(data, false);
     std::string result = stream.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
@@ -23,7 +23,7 @@ TEST(SerMemoryTest, deSerialize)
     std::pair<int, double>  data;
 
     std::stringstream       stream(R"({"first":22,"second":45.67})");
-    stream >> TS::jsonImport(data);
+    stream >> TS::jsonImporter(data, false);
 
     EXPECT_EQ(data.first, 22);
     EXPECT_EQ(data.second, 45.67);
