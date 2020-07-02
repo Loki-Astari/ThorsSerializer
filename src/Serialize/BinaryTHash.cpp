@@ -2,6 +2,7 @@
 #include "BinaryTHash.h"
 
 #ifdef COVERAGE_TEST
+#ifdef COVERAGE_Serialize
 /*
  * This code is only compiled into the unit tests for code coverage purposes
  * It is not part of the live code.
@@ -70,4 +71,5 @@ HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<std::vecto
 HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<std::vector<bool>>(std::size_t);
 HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<std::vector<double>>(std::size_t);
 
+#endif
 #endif

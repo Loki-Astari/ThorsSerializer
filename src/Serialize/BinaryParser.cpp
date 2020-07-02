@@ -76,6 +76,8 @@ ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserSt
 }
 
 #ifdef COVERAGE_TEST
+#ifdef COVERAGE_Serialize
+
 
 /*
  * This code is only compiled into the unit tests for code coverage purposes
@@ -104,5 +106,6 @@ template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<std::vector<int>>, 
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<int>,              (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<bool>,             (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<double>,           (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+#endif
 #endif
 #endif
