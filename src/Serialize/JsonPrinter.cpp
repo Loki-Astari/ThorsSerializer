@@ -202,13 +202,13 @@ HEADER_ONLY_INCLUDE void JsonPrinter::addValue(long double value)           {out
 HEADER_ONLY_INCLUDE void JsonPrinter::addValue(bool value)                  {output << PrefixValue(config.characteristics, state.size(), state.back()) << std::boolalpha << value;}
 
 HEADER_ONLY_INCLUDE
-auto isEscape = [](char c)
-{
-    return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
-};
-HEADER_ONLY_INCLUDE
 void JsonPrinter::addValue(std::string const& value)
 {
+    static auto isEscape = [](char c)
+    {
+        return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
+    };
+
     output << PrefixValue(config.characteristics, state.size(), state.back()) << '"';
 
     auto begin  = std::begin(value);
