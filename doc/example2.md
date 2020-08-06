@@ -39,7 +39,7 @@ This allows us to import and export object of the above class really easily.
 ````c++
     int main()
     {
-        using ThorsAnvil::Serialize::jsonExport;
+        using ThorsAnvil::Serialize::jsonExporter;
         using ThorsAnvil::Serialize::PrinterInterface;
 
         MyClass   data {56, 23.456, "Hi there"};
@@ -47,18 +47,18 @@ This allows us to import and export object of the above class really easily.
 
         // This generates a simple Json Object (wordy)
         std::cout << "Version 1\n";
-        std::cout << jsonExport(data) << "\n\n\n";
+        std::cout << jsonExporter(data) << "\n\n\n";
 
         // This generates a compact Json 
         std::cout << "Version 2 (Stream)\n";
-        std::cout << jsonExport(data, PrinterInterface::OutputType::Stream) << "\n\n\n";
+        std::cout << jsonExporter(data, PrinterInterface::OutputType::Stream) << "\n\n\n";
 
         // Standard containers work automatically.
         // As long as the type held by the container has had an appropriate
         // Traits declaration.
         std::vector<MyClass>   vec(4, data);
         std::cout << "Vector\n";
-        std::cout << jsonExport(vec) << "\n";
+        std::cout << jsonExporter(vec) << "\n";
     }
 ````
     

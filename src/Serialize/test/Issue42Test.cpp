@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
 #include "Serialize.h"
@@ -47,5 +47,5 @@ TEST(Issue42Test, PointerUniquePtrMultiple)
          }
       ]})";
     istringstream stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(test);
+    stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
 }

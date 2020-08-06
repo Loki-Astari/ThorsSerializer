@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
 #include "Serialize.h"
@@ -24,13 +24,14 @@ ThorsAnvil_MakeTrait(StaticMemberTest::StaticMember, normalMember, staticMember)
 
 TEST(StaticMemberTest, serializeStaticMember)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     std::string         inputStr(R"({"normalMember":7,"staticMember":14})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
     StaticMemberTest::StaticMember        data;
 
-    input  >> ThorsAnvil::Serialize::jsonImport(data);
-    output << ThorsAnvil::Serialize::jsonExport(data, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
+    output << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }

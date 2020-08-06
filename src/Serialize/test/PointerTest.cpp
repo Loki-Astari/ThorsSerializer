@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
 #include "Serialize.h"
@@ -23,7 +23,7 @@ TEST(PointerTest, BuildStringFromTree)
 {
     PointerTest::Tree*   root = new PointerTest::Tree{34, new PointerTest::Tree{22, new PointerTest::Tree{10, nullptr, nullptr}, nullptr}, new PointerTest::Tree{50, nullptr, new PointerTest::Tree{70, nullptr, nullptr}}};
     std::stringstream data;
-    data << ThorsAnvil::Serialize::jsonExport(root);
+    data << ThorsAnvil::Serialize::jsonExporter(root, false);
     std::string result = data.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"value":34,"left":{"value":22,"left":{"value":10,"left":null,"right":null},"right":null},"right":{"value":50,"left":null,"right":{"value":70,"left":null,"right":null}}})");
@@ -59,7 +59,7 @@ TEST(PointerTest, BuildTreeFromString)
     std::stringstream   jsonStream(json);
     PointerTest::Tree* root = nullptr;
 
-    jsonStream >> ThorsAnvil::Serialize::jsonImport(root);
+    jsonStream >> ThorsAnvil::Serialize::jsonImporter(root, false);
     ASSERT_NE(root, nullptr);
     EXPECT_EQ(root->value, 34);
     ASSERT_NE(root->left, nullptr);

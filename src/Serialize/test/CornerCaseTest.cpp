@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "JsonParser.h"
 #include "test/SerializeTest.h"

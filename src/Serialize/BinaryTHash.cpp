@@ -10,6 +10,7 @@
 #include "BinaryTHash.tpp"
 #include "test/THashTest.h"
 #include "test/BinaryParserTest.h"
+#include "test/IgnoreUneededData.h"
 
 
 HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<THashTest::D1>(std::size_t);
@@ -70,6 +71,8 @@ HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<std::vecto
 HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<std::vector<std::vector<int>>>(std::size_t);
 HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<std::vector<bool>>(std::size_t);
 HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<std::vector<double>>(std::size_t);
+HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<IgnoreUneededData::ThingVersion>(std::size_t);
+HEADER_ONLY_INCLUDE template std::size_t ThorsAnvil::Serialize::thash<IgnoreUneededData::Thing>(std::size_t);
 
 #endif
 #endif

@@ -18,12 +18,10 @@ class Importer
     using ParserConfig = ParserInterface::ParserConfig;
     T&              value;
     ParserConfig    config;
-    bool            catchException;
     public:
-        Importer(T& value, ParserConfig config = ParserConfig{}, bool catchException = false)
+        Importer(T& value, ParserConfig config = ParserConfig{})
             : value(value)
             , config(config)
-            , catchException(catchException)
         {}
         friend std::istream& operator>>(std::istream& stream, Importer const& data)
         {
@@ -37,7 +35,7 @@ class Importer
             catch (...)
             {
                 stream.setstate(std::ios::failbit);
-                if (!data.catchException)
+                if (!data.config.catchExceptions)
                 {
                     throw;
                 }

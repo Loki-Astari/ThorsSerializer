@@ -15,8 +15,8 @@ The serialization class reads/writes built-in data by default and reads/writes t
 
 There are two main functions for export and import that can be used with streams.
 ```C++ XXX
-    <formatName>Export(<object>)    eg   jsonExport(o)
-    <formatNAme>Import(<object>)    eg   jsonImport(o)
+    <formatName>Exporter(<object>)    eg   jsonExporter(o)
+    <formatNAme>Importer(<object>)    eg   jsonImporter(o)
 ```
 The object part of the above declaration is any object that has a type with ThorsAnvil::Serialize::Traits<> declaration defined for that type. Traits declarations are already provided for all std:: container types and it is simple to provide declarations for user defined types (See below).
 
@@ -31,7 +31,7 @@ A simple example of usage would be (link against libThorSerialize14.dynlib)
     int main()
     {
         std::vector<int>    data { 1, 2, 3, 4, 5, 6, 7, 8 };
-        std::cout << TS::jsonExport(data) << "\n";
+        std::cout << TS::jsonExporter(data) << "\n";
     }
 
     // Output
@@ -66,7 +66,7 @@ A simple example of a traits class definition for a user defined type.
     };
 
     // This macros crates the appropriate Traits class specialized for the
-    // user defined class allowing it to be used by jsonImport() and jsonExport()
+    // user defined class allowing it to be used by jsonImporter() and jsonExporter()
     ThorsAnvil_MakeTrait(MyClass, member1, data2, name);
 ```
 
@@ -81,7 +81,7 @@ This is all that is need to make a class serialize-able.
     int main()
     {
         MyClass     object(15, 100.123, "A string");
-        std::cout << TS::jsonExport(object) << "\n";
+        std::cout << TS::jsonExporter(object) << "\n";
     }
 
     // Output
@@ -100,7 +100,7 @@ A serialize-able class can be a member/parent or contained in another serialize-
     int main()
     {
         std::vector<MyClass>    vec1{ {23, 89.99, "obj1"}, {67, 89.98. "obj2"}, {32, 23.45, "obj3"}};
-        std::cout << TS::jsonExport(vec1) << "\n";
+        std::cout << TS::jsonExporter(vec1) << "\n";
     }
 
     // Output
@@ -133,7 +133,7 @@ A user defined class that inherits from a serialize-able class can also be exten
     };
 
     // This macros crates the appropriate Traits class specialized for the
-    // user defined class allowing it to be used by jsonImport() and jsonExport()
+    // user defined class allowing it to be used by jsonImporter() and jsonExporter()
     ThorsAnvil_ExpandTrait(MyClass, MySubClass, parentName);
 
 The only real difference is exchanging the `ThorsAnvil_MakeTrait` for `ThorsAnvil_ExpandTrait` macro. Both macros accept any number of field names.
@@ -211,11 +211,11 @@ For simplicity we have stream adapters.
 
     namespace TS = ThorsAnvil::Serialize;
 
-    std::cout << TS::jsonExport(object1);
-    std::cin  >> TS::jsonImport(object1);
+    std::cout << TS::jsonExporter(object1);
+    std::cin  >> TS::jsonImporter(object1);
 
-    std::cout << TS::yamlExport(object1);
-    std::cin  >> TS::yamlImport(object1);
+    std::cout << TS::yamlExporter(object1);
+    std::cin  >> TS::yamlImporter(object1);
 
 All standard types have a serialization defined for them. To add one for your class.
 

@@ -1,4 +1,4 @@
-
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "Serialize.h"
 #include "Serialize.tpp"
@@ -48,7 +48,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, QuantitiesEmpty)
     PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
     std::string                 str = R"({})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_EQ(nullptr, t.quantities);
 }
 TEST(PolyMorphicSerializerUniquePointerTest, Quantities)
@@ -56,7 +56,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, Quantities)
     PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
     std::string                 str = R"({"quantities":[15,23]})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_NE(nullptr, t.quantities);
     EXPECT_EQ(15, (*t.quantities)[0]);
     EXPECT_EQ(23, (*t.quantities)[1]);
@@ -66,7 +66,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultEmpty)
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_EQ(nullptr, t.maxQuantities);
 }
 TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResult)
@@ -74,7 +74,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResult)
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({"maxQuantities":{}})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_NE(nullptr, t.maxQuantities);
     EXPECT_EQ(nullptr, t.maxQuantities->quantities);
 }
@@ -83,7 +83,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultWithQuantities)
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_NE(nullptr, t.maxQuantities);
     EXPECT_NE(nullptr, t.maxQuantities->quantities);
     EXPECT_EQ(34, (*t.maxQuantities->quantities)[0]);
@@ -94,7 +94,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResultEmpty)
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_EQ(nullptr, t.maxQuantities);
 }
 TEST(PolyMorphicSerializerUniquePointerTest, TourResult)
@@ -102,7 +102,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResult)
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({"maxQuantities":{}})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_NE(nullptr, t.maxQuantities);
     EXPECT_EQ(nullptr, t.maxQuantities->quantities);
 }
@@ -111,7 +111,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResultWithQuantities)
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_NE(nullptr, t.maxQuantities);
     EXPECT_NE(nullptr, t.maxQuantities->quantities);
     EXPECT_EQ(34, (*t.maxQuantities->quantities)[0]);
@@ -122,7 +122,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourEmpty)
     PolyMorphicSerializerUniquePointerTest::Tour                        t{};
     std::string                 str = R"({})";;
     std::istringstream          stream(str);
-    stream >> ThorsAnvil::Serialize::jsonImport(t);
+    stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_EQ(nullptr, t.result);
 }
 

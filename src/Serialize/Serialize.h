@@ -40,6 +40,8 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+extern std::string const defaultPolymorphicMarker;
+
 class ParserInterface
 {
     public:
@@ -47,16 +49,31 @@ class ParserInterface
         enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
         struct ParserConfig
         {
-            ParserConfig(ParseType parseStrictness = ParseType::Weak, std::string const& polymorphicMarker = "__type")
+            ParserConfig(ParseType parseStrictness = ParseType::Weak,
+                         std::string const& polymorphicMarker = defaultPolymorphicMarker,
+                         bool catchExceptions = true)
                 : parseStrictness(parseStrictness)
                 , polymorphicMarker(polymorphicMarker)
+                , catchExceptions(catchExceptions)
             {}
-            ParserConfig(std::string const& polymorphicMarker)
+            ParserConfig(std::string const& polymorphicMarker, bool catchExceptions = true)
                 : parseStrictness(ParseType::Weak)
                 , polymorphicMarker(polymorphicMarker)
+                , catchExceptions(catchExceptions)
+            {}
+            ParserConfig(bool catchExceptions)
+                : parseStrictness(ParseType::Weak)
+                , polymorphicMarker(defaultPolymorphicMarker)
+                , catchExceptions(catchExceptions)
+            {}
+            ParserConfig(ParseType parseStrictness, bool catchExceptions)
+                : parseStrictness(parseStrictness)
+                , polymorphicMarker(defaultPolymorphicMarker)
+                , catchExceptions(catchExceptions)
             {}
             ParseType       parseStrictness;
             std::string     polymorphicMarker;
+            bool            catchExceptions;
         };
 
         std::istream&   input;
@@ -111,16 +128,32 @@ class PrinterInterface
         enum class OutputType {Default, Stream, Config};
         struct PrinterConfig
         {
-            PrinterConfig(OutputType characteristics = OutputType::Default, std::string const& polymorphicMarker = "__type")
+            PrinterConfig(OutputType characteristics = OutputType::Default,
+                          std::string const& polymorphicMarker = defaultPolymorphicMarker,
+                          bool catchExceptions = true)
                 : characteristics(characteristics)
                 , polymorphicMarker(polymorphicMarker)
+                , catchExceptions(catchExceptions)
             {}
-            PrinterConfig(std::string const& polymorphicMarker)
+            PrinterConfig(std::string const& polymorphicMarker,
+                          bool catchExceptions = true)
                 : characteristics(OutputType::Default)
                 , polymorphicMarker(polymorphicMarker)
+                , catchExceptions(catchExceptions)
+            {}
+            PrinterConfig(bool catchExceptions)
+                : characteristics(OutputType::Default)
+                , polymorphicMarker(defaultPolymorphicMarker)
+                , catchExceptions(catchExceptions)
+            {}
+            PrinterConfig(OutputType characteristic, bool catchExceptions)
+                : characteristics(characteristic)
+                , polymorphicMarker(defaultPolymorphicMarker)
+                , catchExceptions(catchExceptions)
             {}
             OutputType      characteristics;
             std::string     polymorphicMarker;
+            bool            catchExceptions;
         };
         // Default:     What ever the implementation likes.
         // Stream:      Compressed for over the wire protocol.

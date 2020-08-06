@@ -40,16 +40,16 @@
 
     int main()
     {
-        using ThorsAnvil::Serialize::jsonExport;
+        using ThorsAnvil::Serialize::jsonExporter;
 
         TeamMember          mark("mark", 10, 5, Shirt{255,0,0});
         // Use the export function to serialize
-        std::cout << jsonExport(mark) << "\n";
+        std::cout << jsonExporter(mark) << "\n";
         
         TeamMember          john("Empty", 0, 0, Shirt{0,0,0});
         std::stringstream   input(R"({"name": "John","score": 13,"team":{"red": 0,"green": 0,"blue": 255, "black":25}})");
-        input >> jsonImport(john);
-        std::cout << jsonExport(john) << "\n";
+        input >> jsonImporter(john);
+        std::cout << jsonExporter(john) << "\n";
     }
 ````
 

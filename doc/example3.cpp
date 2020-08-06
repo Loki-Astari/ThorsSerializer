@@ -47,13 +47,13 @@ int main()
     Vehicle*    init = new Bike(15, 2);
 
     std::stringstream   stream;
-    stream << ThorsAnvil::Serialize::jsonExport(init);
-    std::cout << ThorsAnvil::Serialize::jsonExport(init) << "\n\n";
+    stream << ThorsAnvil::Serialize::jsonExporter(init);
+    std::cout << ThorsAnvil::Serialize::jsonExporter(init) << "\n\n";
 
     Vehicle*    result = nullptr;
-    std::cout << ThorsAnvil::Serialize::jsonExport(result) << "\n\n";
-    stream >> ThorsAnvil::Serialize::jsonImport(result);
+    std::cout << ThorsAnvil::Serialize::jsonExporter(result) << "\n\n";
+    stream >> ThorsAnvil::Serialize::jsonImporter(result);
 
-    std::cout << ThorsAnvil::Serialize::jsonExport(result) << "\n\n";
+    std::cout << ThorsAnvil::Serialize::jsonExporter(result) << "\n\n";
 }
 

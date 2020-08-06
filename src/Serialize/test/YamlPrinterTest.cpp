@@ -1,4 +1,3 @@
-
 #include "SerializeConfig.h"
 #ifdef  HAVE_YAML
 #include "gtest/gtest.h"

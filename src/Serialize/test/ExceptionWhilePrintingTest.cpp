@@ -1,3 +1,4 @@
+#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include <sstream>
@@ -12,7 +13,7 @@ TEST(ExceptionWhilePrintingTest, NormalPrint)
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExport(obj);
+        stream << ThorsAnvil::Serialize::jsonExporter(obj, false);
     }
     catch(...)
     {
@@ -28,13 +29,14 @@ TEST(ExceptionWhilePrintingTest, NormalPrint)
 
 TEST(ExceptionWhilePrintingTest, NormalPrintCatchEnabled)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     std::stringstream   stream;
     ExceptionTest::ThrowablePrint      obj(false, 16);
     bool                thrown = false;
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExport(obj, ThorsAnvil::Serialize::PrinterInterface::OutputType::Default, true);
+        stream << ThorsAnvil::Serialize::jsonExporter(obj, PrinterInterface::OutputType::Default);
     }
     catch(...)
     {
@@ -55,7 +57,7 @@ TEST(ExceptionWhilePrintingTest, ThrowPrint)
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExport(obj);
+        stream << ThorsAnvil::Serialize::jsonExporter(obj, false);
     }
     catch(...)
     {
@@ -70,13 +72,14 @@ TEST(ExceptionWhilePrintingTest, ThrowPrint)
 
 TEST(ExceptionWhilePrintingTest, ThrowPrintCatchEnabled)
 {
+    using ThorsAnvil::Serialize::PrinterInterface;
     std::stringstream   stream;
     ExceptionTest::ThrowablePrint      obj(true, 18);
     bool                thrown = false;
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExport(obj, ThorsAnvil::Serialize::PrinterInterface::OutputType::Default, true);
+        stream << ThorsAnvil::Serialize::jsonExporter(obj, PrinterInterface::OutputType::Default);
     }
     catch(...)
     {
@@ -97,7 +100,7 @@ TEST(ExceptionWhilePrintingTest, NormalStream)
 
     try
     {
-        stream >> ThorsAnvil::Serialize::jsonImport(obj);
+        stream >> ThorsAnvil::Serialize::jsonImporter(obj, false);
     }
     catch(...)
     {
@@ -113,13 +116,14 @@ TEST(ExceptionWhilePrintingTest, NormalStream)
 
 TEST(ExceptionWhilePrintingTest, NormalStreamCatchEnabled)
 {
+    using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream   stream(R"(20 "Data")");
     ExceptionTest::ThrowablePrint      obj(false, 2);
     bool                thrown = false;
 
     try
     {
-        stream >> ThorsAnvil::Serialize::jsonImport(obj, ThorsAnvil::Serialize::ParserInterface::ParseType::Weak, true);
+        stream >> ThorsAnvil::Serialize::jsonImporter(obj, ParserInterface::ParseType::Weak);
     }
     catch(...)
     {
@@ -140,7 +144,7 @@ TEST(ExceptionWhilePrintingTest, ThrowStream)
 
     try
     {
-        stream >> ThorsAnvil::Serialize::jsonImport(obj);
+        stream >> ThorsAnvil::Serialize::jsonImporter(obj, false);
     }
     catch(...)
     {
@@ -155,13 +159,14 @@ TEST(ExceptionWhilePrintingTest, ThrowStream)
 
 TEST(ExceptionWhilePrintingTest, ThrowStreamCatchEnabled)
 {
+    using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream   stream("22");
     ExceptionTest::ThrowablePrint      obj(true, 4);
     bool                thrown = false;
 
     try
     {
-        stream >> ThorsAnvil::Serialize::jsonImport(obj, ThorsAnvil::Serialize::ParserInterface::ParseType::Weak, true);
+        stream >> ThorsAnvil::Serialize::jsonImporter(obj, ParserInterface::ParseType::Weak);
     }
     catch(...)
     {

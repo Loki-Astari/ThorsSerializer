@@ -85,6 +85,7 @@ ParserToken BinaryParserUtilBase::getNextToken(ParserInterface& parser, ParserSt
  */
 #include "BinaryParser.tpp"
 #include "test/BinaryParserTest.h"
+#include "test/IgnoreUneededData.h"
 
 template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapWithMap,      (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<BinaryParserTest::MapOneValue,     (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
@@ -106,6 +107,8 @@ template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<std::vector<int>>, 
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<int>,              (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<bool>,             (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
 template ThorsAnvil::Serialize::BinaryParserUtil<std::vector<double>,           (ThorsAnvil::Serialize::TraitType)4>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<IgnoreUneededData::ThingVersion, (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
+template ThorsAnvil::Serialize::BinaryParserUtil<IgnoreUneededData::Thing,        (ThorsAnvil::Serialize::TraitType)3>::BinaryParserUtil(bool);
 #endif
 #endif
 #endif
