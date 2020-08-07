@@ -3,7 +3,6 @@
 
 #include "Traits.h"
 #include "Serialize.h"
-#include "BinaryTHash.h"
 #include <utility>
 #include <string>
 #include <map>
@@ -152,10 +151,6 @@ class ContainerMemberExtractorInserter
 {
     public:
         constexpr ContainerMemberExtractorInserter() {}
-        constexpr std::size_t getHash(std::size_t start) const
-        {
-            return thash<C>(start);
-        }
         void operator()(PrinterInterface& printer, C const& object) const
         {
             PutValueType<V>     valuePutter(printer);
@@ -178,10 +173,6 @@ class ContainerMemberExtractorEmplacer
 {
     public:
         constexpr ContainerMemberExtractorEmplacer() {}
-        constexpr std::size_t getHash(std::size_t start) const
-        {
-            return thash<C>(start);
-        }
         void operator()(PrinterInterface& printer, C const& object) const
         {
             PutValueType<V>     valuePutter(printer);
@@ -802,10 +793,6 @@ class ContainerTuppleExtractor
         }
     public:
         constexpr ContainerTuppleExtractor() {}
-        constexpr std::size_t getHash(std::size_t start) const
-        {
-            return thash<int>(start);
-        }
         void operator()(PrinterInterface& printer, C const& object) const
         {
             printTupleValues(printer, object, std::make_index_sequence<sizeof...(Args)>());

@@ -3,7 +3,6 @@
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "YamlThor.h"
-#include "BinaryThor.h"
 
 TEST(DeprecatedTest, Json)
 {
@@ -25,16 +24,4 @@ TEST(DeprecatedTest, Yaml)
     IgnoreUneededData::Thing objver;
     data >> TA::yamlImport(objver);
 }
-#ifdef NETWORK_BYTE_ORDER
-TEST(DeprecatedTest, Binary)
-{
-    IgnoreUneededData::Thing obj;
-
-    std::stringstream data;
-    data << TA::binExport(obj);
-
-    IgnoreUneededData::Thing objver;
-    data >> TA::binImport(objver);
-}
-#endif
 
