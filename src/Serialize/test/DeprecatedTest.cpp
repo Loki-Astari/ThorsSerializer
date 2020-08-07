@@ -25,6 +25,7 @@ TEST(DeprecatedTest, Yaml)
     IgnoreUneededData::Thing objver;
     data >> TA::yamlImport(objver);
 }
+#ifdef NETWORK_BYTE_ORDER
 TEST(DeprecatedTest, Binary)
 {
     IgnoreUneededData::Thing obj;
@@ -35,4 +36,5 @@ TEST(DeprecatedTest, Binary)
     IgnoreUneededData::Thing objver;
     data >> TA::binImport(objver);
 }
+#endif
 
