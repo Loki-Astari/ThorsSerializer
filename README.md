@@ -43,7 +43,7 @@ To install header only version
 
 ## Version 2
 
-I have deprecated the jsonImport() and jsonExport() functions. These have been replaced with jsonImporter() and jsonExporter() functions (though the original versions still exist but are marked `[[deprecated]]`). The main difference is that the new functions catch exceptions (by default) this makes the serialization work like normal C++ serialization and simply set the bad bit on the stream.
+I have deprecated the `jsonImport()` and `jsonExport()` functions. These have been replaced with `jsonImporter()` and `jsonExporter()` functions (though the original versions still exist but are marked `[[deprecated]]`). The main difference is that the new functions catch exceptions (by default) this makes the serialization work like normal C++ serialization and simply set the bad bit on the stream.
 
 ## Contributors
 
