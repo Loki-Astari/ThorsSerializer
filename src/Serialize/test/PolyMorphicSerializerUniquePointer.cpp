@@ -4,6 +4,7 @@
 #include "Serialize.tpp"
 #include "Traits.h"
 #include "JsonThor.h"
+#include "BsonThor.h"
 #include "SerUtil.h"
 #include <iostream>
 
@@ -43,7 +44,7 @@ ThorsAnvil_MakeTrait(PolyMorphicSerializerUniquePointerTest::AbstractTourResult,
 ThorsAnvil_ExpandTrait(PolyMorphicSerializerUniquePointerTest::AbstractTourResult, PolyMorphicSerializerUniquePointerTest::TourResult);
 ThorsAnvil_MakeTrait(PolyMorphicSerializerUniquePointerTest::Tour, result);
 
-TEST(PolyMorphicSerializerUniquePointerTest, QuantitiesEmpty)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonQuantitiesEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
     std::string                 str = R"({})";;
@@ -51,7 +52,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, QuantitiesEmpty)
     stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_EQ(nullptr, t.quantities);
 }
-TEST(PolyMorphicSerializerUniquePointerTest, Quantities)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
     std::string                 str = R"({"quantities":[15,23]})";;
@@ -61,7 +62,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, Quantities)
     EXPECT_EQ(15, (*t.quantities)[0]);
     EXPECT_EQ(23, (*t.quantities)[1]);
 }
-TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultEmpty)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonAbstractTourResultEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({})";;
@@ -69,7 +70,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultEmpty)
     stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_EQ(nullptr, t.maxQuantities);
 }
-TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResult)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonAbstractTourResult)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({"maxQuantities":{}})";;
@@ -78,7 +79,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResult)
     EXPECT_NE(nullptr, t.maxQuantities);
     EXPECT_EQ(nullptr, t.maxQuantities->quantities);
 }
-TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultWithQuantities)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonAbstractTourResultWithQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
     std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
@@ -89,7 +90,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, AbstractTourResultWithQuantities)
     EXPECT_EQ(34, (*t.maxQuantities->quantities)[0]);
     EXPECT_EQ(56, (*t.maxQuantities->quantities)[1]);
 }
-TEST(PolyMorphicSerializerUniquePointerTest, TourResultEmpty)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonTourResultEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({})";;
@@ -97,7 +98,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResultEmpty)
     stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_EQ(nullptr, t.maxQuantities);
 }
-TEST(PolyMorphicSerializerUniquePointerTest, TourResult)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonTourResult)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({"maxQuantities":{}})";;
@@ -106,7 +107,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResult)
     EXPECT_NE(nullptr, t.maxQuantities);
     EXPECT_EQ(nullptr, t.maxQuantities->quantities);
 }
-TEST(PolyMorphicSerializerUniquePointerTest, TourResultWithQuantities)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonTourResultWithQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
     std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
@@ -117,7 +118,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourResultWithQuantities)
     EXPECT_EQ(34, (*t.maxQuantities->quantities)[0]);
     EXPECT_EQ(56, (*t.maxQuantities->quantities)[1]);
 }
-TEST(PolyMorphicSerializerUniquePointerTest, TourEmpty)
+TEST(PolyMorphicSerializerUniquePointerTest, JsonTourEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::Tour                        t{};
     std::string                 str = R"({})";;
@@ -125,4 +126,88 @@ TEST(PolyMorphicSerializerUniquePointerTest, TourEmpty)
     stream >> ThorsAnvil::Serialize::jsonImporter(t, false);
     EXPECT_EQ(nullptr, t.result);
 }
+
+TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantitiesEmpty)
+{
+    PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
+    std::string                 str = R"({})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_EQ(nullptr, t.quantities);
+}
+TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantities)
+{
+    PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
+    std::string                 str = R"({"quantities":[15,23]})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_NE(nullptr, t.quantities);
+    EXPECT_EQ(15, (*t.quantities)[0]);
+    EXPECT_EQ(23, (*t.quantities)[1]);
+}
+TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultEmpty)
+{
+    PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
+    std::string                 str = R"({})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_EQ(nullptr, t.maxQuantities);
+}
+TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResult)
+{
+    PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
+    std::string                 str = R"({"maxQuantities":{}})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_NE(nullptr, t.maxQuantities);
+    EXPECT_EQ(nullptr, t.maxQuantities->quantities);
+}
+TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultWithQuantities)
+{
+    PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
+    std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_NE(nullptr, t.maxQuantities);
+    EXPECT_NE(nullptr, t.maxQuantities->quantities);
+    EXPECT_EQ(34, (*t.maxQuantities->quantities)[0]);
+    EXPECT_EQ(56, (*t.maxQuantities->quantities)[1]);
+}
+TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultEmpty)
+{
+    PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
+    std::string                 str = R"({})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_EQ(nullptr, t.maxQuantities);
+}
+TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResult)
+{
+    PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
+    std::string                 str = R"({"maxQuantities":{}})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_NE(nullptr, t.maxQuantities);
+    EXPECT_EQ(nullptr, t.maxQuantities->quantities);
+}
+TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultWithQuantities)
+{
+    PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
+    std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_NE(nullptr, t.maxQuantities);
+    EXPECT_NE(nullptr, t.maxQuantities->quantities);
+    EXPECT_EQ(34, (*t.maxQuantities->quantities)[0]);
+    EXPECT_EQ(56, (*t.maxQuantities->quantities)[1]);
+}
+TEST(PolyMorphicSerializerUniquePointerTest, BsonTourEmpty)
+{
+    PolyMorphicSerializerUniquePointerTest::Tour                        t{};
+    std::string                 str = R"({})";;
+    std::istringstream          stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
+    EXPECT_EQ(nullptr, t.result);
+}
+
 

@@ -6,6 +6,7 @@
 #include "SerUtil.h"
 #include "Traits.h"
 #include "JsonThor.h"
+#include "BsonThor.h"
 #include <string>
 #include <sstream>
 
@@ -36,7 +37,7 @@ ThorsAnvil_Template_MakeTrait(1, TemplateTypeTest::TemplateType, templateMember)
 ThorsAnvil_ExpandTrait(TemplateTypeTest::TemplateType<int>, TemplateTypeTest::NormalInheritFromTemplate, normalName);
 ThorsAnvil_Template_ExpandTrait(1, TemplateTypeTest::TemplateType<T1>, TemplateTypeTest::TemplateInheritFromTemplate, alternative);
 
-TEST(TemplateTypeTest, templateTest)
+TEST(TemplateTypeTest, JsontemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         inputStr(R"({"templateMember":[1,2,3,4]})");
@@ -50,7 +51,7 @@ TEST(TemplateTypeTest, templateTest)
     EXPECT_EQ(output.str(), inputStr);
 }
 
-TEST(TemplateTypeTest, normalInheritingFromtemplateTest)
+TEST(TemplateTypeTest, JsonnormalInheritingFromtemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         inputStr(R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
@@ -64,7 +65,7 @@ TEST(TemplateTypeTest, normalInheritingFromtemplateTest)
     EXPECT_EQ(output.str(), inputStr);
 }
 
-TEST(TemplateTypeTest, templateInheritingFromtemplateTest)
+TEST(TemplateTypeTest, JsontemplateInheritingFromtemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         inputStr(R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
@@ -77,4 +78,47 @@ TEST(TemplateTypeTest, templateInheritingFromtemplateTest)
 
     EXPECT_EQ(output.str(), inputStr);
 }
+
+TEST(TemplateTypeTest, BsontemplateTest)
+{
+    using ThorsAnvil::Serialize::PrinterInterface;
+    std::string         inputStr(R"({"templateMember":[1,2,3,4]})");
+    std::stringstream   input(inputStr);
+    std::stringstream   output;
+    TemplateTypeTest::TemplateType<int>   data;
+
+    input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
+    output << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream);
+
+    EXPECT_EQ(output.str(), inputStr);
+}
+
+TEST(TemplateTypeTest, BsonnormalInheritingFromtemplateTest)
+{
+    using ThorsAnvil::Serialize::PrinterInterface;
+    std::string         inputStr(R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
+    std::stringstream   input(inputStr);
+    std::stringstream   output;
+    TemplateTypeTest::NormalInheritFromTemplate   data;
+
+    input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
+    output << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream);
+
+    EXPECT_EQ(output.str(), inputStr);
+}
+
+TEST(TemplateTypeTest, BsontemplateInheritingFromtemplateTest)
+{
+    using ThorsAnvil::Serialize::PrinterInterface;
+    std::string         inputStr(R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
+    std::stringstream   input(inputStr);
+    std::stringstream   output;
+    TemplateTypeTest::TemplateInheritFromTemplate<int>   data;
+
+    input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
+    output << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream);
+
+    EXPECT_EQ(output.str(), inputStr);
+}
+
 

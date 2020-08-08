@@ -5,6 +5,7 @@
 #include "Serialize.tpp"
 #include "Traits.h"
 #include "JsonThor.h"
+#include "BsonThor.h"
 #include <string>
 #include <sstream>
 #include <cctype>
@@ -52,7 +53,7 @@ ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Car, make);
 ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Bike, stroke);
 ThorsAnvil_MakeTrait(PolymorphicTest::User, age, transport);
 
-TEST(PolymorphicTest, NullPointer)
+TEST(PolymorphicTest, JsonNullPointer)
 {
     PolymorphicTest::User    user1{10, nullptr};
 
@@ -63,7 +64,7 @@ TEST(PolymorphicTest, NullPointer)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":null})");
 }
-TEST(PolymorphicTest, VehiclePointer)
+TEST(PolymorphicTest, JsonVehiclePointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Vehicle(12)};
 
@@ -74,7 +75,7 @@ TEST(PolymorphicTest, VehiclePointer)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
 }
-TEST(PolymorphicTest, CarPointer)
+TEST(PolymorphicTest, JsonCarPointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Car(16, "Turbo")};
 
@@ -86,7 +87,7 @@ TEST(PolymorphicTest, CarPointer)
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
 }
 
-TEST(PolymorphicTest, BikePointer)
+TEST(PolymorphicTest, JsonBikePointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Bike(18, 7)};
 
@@ -98,7 +99,7 @@ TEST(PolymorphicTest, BikePointer)
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
 }
 
-TEST(PolymorphicTest, ReadNull)
+TEST(PolymorphicTest, JsonReadNull)
 {
     std::stringstream   stream(R"({"age":10,"transport":null})");
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(12)};
@@ -108,7 +109,7 @@ TEST(PolymorphicTest, ReadNull)
     EXPECT_EQ(user1.transport, nullptr);
 }
 
-TEST(PolymorphicTest, ReadVehicle)
+TEST(PolymorphicTest, JsonReadVehicle)
 {
     std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(13)};
@@ -119,7 +120,7 @@ TEST(PolymorphicTest, ReadVehicle)
     EXPECT_EQ(user1.transport->speed, 12);
 }
 
-TEST(PolymorphicTest, ReadCar)
+TEST(PolymorphicTest, JsonReadCar)
 {
     std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(14)};
@@ -134,7 +135,7 @@ TEST(PolymorphicTest, ReadCar)
     EXPECT_EQ(car->make, "Turbo");
 }
 
-TEST(PolymorphicTest, ReadBike)
+TEST(PolymorphicTest, JsonReadBike)
 {
     std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(15)};
@@ -148,4 +149,102 @@ TEST(PolymorphicTest, ReadBike)
     ASSERT_NE(bike, nullptr);
     EXPECT_EQ(bike->stroke, 7);
 }
+
+TEST(PolymorphicTest, BsonNullPointer)
+{
+    PolymorphicTest::User    user1{10, nullptr};
+
+    std::stringstream   data;
+    data << ThorsAnvil::Serialize::bsonExporter(user1, false);
+    std::string result = data.str();
+
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"age":10,"transport":null})");
+}
+TEST(PolymorphicTest, BsonVehiclePointer)
+{
+    PolymorphicTest::User    user1{10, new PolymorphicTest::Vehicle(12)};
+
+    std::stringstream   data;
+    data << ThorsAnvil::Serialize::bsonExporter(user1, false);
+    std::string result = data.str();
+
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
+}
+TEST(PolymorphicTest, BsonCarPointer)
+{
+    PolymorphicTest::User    user1{10, new PolymorphicTest::Car(16, "Turbo")};
+
+    std::stringstream   data;
+    data << ThorsAnvil::Serialize::bsonExporter(user1, false);
+    std::string result = data.str();
+
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+}
+
+TEST(PolymorphicTest, BsonBikePointer)
+{
+    PolymorphicTest::User    user1{10, new PolymorphicTest::Bike(18, 7)};
+
+    std::stringstream   data;
+    data << ThorsAnvil::Serialize::bsonExporter(user1, false);
+    std::string result = data.str();
+
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+}
+
+TEST(PolymorphicTest, BsonReadNull)
+{
+    std::stringstream   stream(R"({"age":10,"transport":null})");
+    PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(12)};
+
+    stream >> ThorsAnvil::Serialize::bsonImporter(user1, false);
+    EXPECT_EQ(user1.age, 10);
+    EXPECT_EQ(user1.transport, nullptr);
+}
+
+TEST(PolymorphicTest, BsonReadVehicle)
+{
+    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
+    PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(13)};
+
+    stream >> ThorsAnvil::Serialize::bsonImporter(user1, false);
+    EXPECT_EQ(user1.age, 10);
+    ASSERT_NE(user1.transport, nullptr);
+    EXPECT_EQ(user1.transport->speed, 12);
+}
+
+TEST(PolymorphicTest, BsonReadCar)
+{
+    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+    PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(14)};
+
+    stream >> ThorsAnvil::Serialize::bsonImporter(user1, false);
+    EXPECT_EQ(user1.age, 10);
+    ASSERT_NE(user1.transport, nullptr);
+    EXPECT_EQ(user1.transport->speed, 16);
+
+    PolymorphicTest::Car* car = dynamic_cast<PolymorphicTest::Car*>(user1.transport);
+    ASSERT_NE(car, nullptr);
+    EXPECT_EQ(car->make, "Turbo");
+}
+
+TEST(PolymorphicTest, BsonReadBike)
+{
+    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+    PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(15)};
+
+    stream >> ThorsAnvil::Serialize::bsonImporter(user1, false);
+    EXPECT_EQ(user1.age, 10);
+    ASSERT_NE(user1.transport, nullptr);
+    EXPECT_EQ(user1.transport->speed, 18);
+
+    PolymorphicTest::Bike* bike = dynamic_cast<PolymorphicTest::Bike*>(user1.transport);
+    ASSERT_NE(bike, nullptr);
+    EXPECT_EQ(bike->stroke, 7);
+}
+
 

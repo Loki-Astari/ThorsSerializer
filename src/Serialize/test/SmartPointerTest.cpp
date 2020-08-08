@@ -2,10 +2,11 @@
 #include "gtest/gtest.h"
 #include "SmartPointerTest.h"
 #include "JsonThor.h"
+#include "BsonThor.h"
 #include "SerUtil.h"
 #include <memory>
 
-TEST(SmartPointerTest, CreateNormalPtrNull)
+TEST(SmartPointerTest, JsonCreateNormalPtrNull)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream           stream(R"(null)");
@@ -20,7 +21,7 @@ TEST(SmartPointerTest, CreateNormalPtrNull)
     EXPECT_EQ(data, nullptr);
 }
 
-TEST(SmartPointerTest, CreateNormalPtrObject)
+TEST(SmartPointerTest, JsonCreateNormalPtrObject)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
@@ -38,7 +39,7 @@ TEST(SmartPointerTest, CreateNormalPtrObject)
     delete data;
 }
 
-TEST(SmartPointerTest, CreateUniquePtrNull)
+TEST(SmartPointerTest, JsonCreateUniquePtrNull)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
@@ -55,7 +56,7 @@ TEST(SmartPointerTest, CreateUniquePtrNull)
     EXPECT_EQ(data, nullptr);
 }
 
-TEST(SmartPointerTest, CreateUniquePtrObject)
+TEST(SmartPointerTest, JsonCreateUniquePtrObject)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
@@ -74,7 +75,7 @@ TEST(SmartPointerTest, CreateUniquePtrObject)
     EXPECT_EQ(data->name, "This is a test");
 }
 
-TEST(SmartPointerTest, CreateSharedPtrNull)
+TEST(SmartPointerTest, JsonCreateSharedPtrNull)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
@@ -91,7 +92,7 @@ TEST(SmartPointerTest, CreateSharedPtrNull)
     EXPECT_EQ(data, nullptr);
 }
 
-TEST(SmartPointerTest, CreateSharedPtrObject)
+TEST(SmartPointerTest, JsonCreateSharedPtrObject)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
@@ -110,7 +111,7 @@ TEST(SmartPointerTest, CreateSharedPtrObject)
     EXPECT_EQ(data->name, "This is a test");
 }
 
-TEST(SmartPointerTest, SerializeNormalPtrNull)
+TEST(SmartPointerTest, JsonSerializeNormalPtrNull)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::stringstream           stream;
@@ -125,7 +126,7 @@ TEST(SmartPointerTest, SerializeNormalPtrNull)
     EXPECT_EQ(stream.str(), " null");
 }
 
-TEST(SmartPointerTest, SerializeNormalPtrObject)
+TEST(SmartPointerTest, JsonSerializeNormalPtrObject)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::stringstream           stream;
@@ -141,7 +142,7 @@ TEST(SmartPointerTest, SerializeNormalPtrObject)
     delete data;
 }
 
-TEST(SmartPointerTest, SerializeUniquePtrNull)
+TEST(SmartPointerTest, JsonSerializeUniquePtrNull)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
@@ -158,7 +159,7 @@ TEST(SmartPointerTest, SerializeUniquePtrNull)
     EXPECT_EQ(stream.str(), " null");
 }
 
-TEST(SmartPointerTest, SerializeUniquePtrObject)
+TEST(SmartPointerTest, JsonSerializeUniquePtrObject)
 {
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
     using ThorsAnvil::Serialize::PrinterInterface;
@@ -175,7 +176,7 @@ TEST(SmartPointerTest, SerializeUniquePtrObject)
     EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
 }
 
-TEST(SmartPointerTest, SerializeSharedPtrNull)
+TEST(SmartPointerTest, JsonSerializeSharedPtrNull)
 {
     using  ThorsAnvil::Serialize::PrinterInterface;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
@@ -192,7 +193,7 @@ TEST(SmartPointerTest, SerializeSharedPtrNull)
     EXPECT_EQ(stream.str(), " null");
 }
 
-TEST(SmartPointerTest, SerializeSharedPtrObject)
+TEST(SmartPointerTest, JsonSerializeSharedPtrObject)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
@@ -208,4 +209,209 @@ TEST(SmartPointerTest, SerializeSharedPtrObject)
     EXPECT_EQ(import, true);
     EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
 }
+
+TEST(SmartPointerTest, BsonCreateNormalPtrNull)
+{
+    using ThorsAnvil::Serialize::ParserInterface;
+    std::stringstream           stream(R"(null)");
+    SmartPtrTest::Object*       data = nullptr;
+    bool                        import = false;
+
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(data, nullptr);
+}
+
+TEST(SmartPointerTest, BsonCreateNormalPtrObject)
+{
+    using ThorsAnvil::Serialize::ParserInterface;
+    std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
+    SmartPtrTest::Object*       data = nullptr;
+    bool                        import = false;
+
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    ASSERT_NE(data, nullptr);
+    EXPECT_EQ(data->id, 456);
+    EXPECT_EQ(data->name, "This is a test");
+    delete data;
+}
+
+TEST(SmartPointerTest, BsonCreateUniquePtrNull)
+{
+    using ThorsAnvil::Serialize::ParserInterface;
+    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
+
+    std::stringstream           stream(R"(null)");
+    UniObject                   data;
+    bool                        import = false;
+
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(data, nullptr);
+}
+
+TEST(SmartPointerTest, BsonCreateUniquePtrObject)
+{
+    using ThorsAnvil::Serialize::ParserInterface;
+    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
+
+    std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
+    UniObject                   data;
+    bool                        import = false;
+
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    ASSERT_NE(data.get(), nullptr);
+    EXPECT_EQ(data->id, 456);
+    EXPECT_EQ(data->name, "This is a test");
+}
+
+TEST(SmartPointerTest, BsonCreateSharedPtrNull)
+{
+    using ThorsAnvil::Serialize::ParserInterface;
+    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
+
+    std::stringstream           stream(R"(null)");
+    UniObject                   data;
+    bool                        import = false;
+
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(data, nullptr);
+}
+
+TEST(SmartPointerTest, BsonCreateSharedPtrObject)
+{
+    using ThorsAnvil::Serialize::ParserInterface;
+    using UniObject = std::shared_ptr<SmartPtrTest::Object>;
+
+    std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
+    UniObject                   data;
+    bool                        import = false;
+
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    ASSERT_NE(data.get(), nullptr);
+    EXPECT_EQ(data->id, 456);
+    EXPECT_EQ(data->name, "This is a test");
+}
+
+TEST(SmartPointerTest, BsonSerializeNormalPtrNull)
+{
+    using ThorsAnvil::Serialize::PrinterInterface;
+    std::stringstream           stream;
+    SmartPtrTest::Object*       data = nullptr;
+    bool                        import = false;
+
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Default))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(stream.str(), " null");
+}
+
+TEST(SmartPointerTest, BsonSerializeNormalPtrObject)
+{
+    using ThorsAnvil::Serialize::PrinterInterface;
+    std::stringstream           stream;
+    SmartPtrTest::Object*       data = new SmartPtrTest::Object{456, "This is a test"};
+    bool                        import = false;
+
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+    delete data;
+}
+
+TEST(SmartPointerTest, BsonSerializeUniquePtrNull)
+{
+    using ThorsAnvil::Serialize::PrinterInterface;
+    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
+
+    std::stringstream           stream;
+    UniObject                   data;
+    bool                        import = false;
+
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Default))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(stream.str(), " null");
+}
+
+TEST(SmartPointerTest, BsonSerializeUniquePtrObject)
+{
+    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
+    using ThorsAnvil::Serialize::PrinterInterface;
+
+    std::stringstream           stream;
+    SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
+    bool                        import = false;
+
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+}
+
+TEST(SmartPointerTest, BsonSerializeSharedPtrNull)
+{
+    using  ThorsAnvil::Serialize::PrinterInterface;
+    using UniObject = std::shared_ptr<SmartPtrTest::Object>;
+
+    std::stringstream           stream;
+    UniObject                   data;
+    bool                        import = false;
+
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Default))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(stream.str(), " null");
+}
+
+TEST(SmartPointerTest, BsonSerializeSharedPtrObject)
+{
+    using ThorsAnvil::Serialize::PrinterInterface;
+    using UniObject = std::shared_ptr<SmartPtrTest::Object>;
+
+    std::stringstream           stream;
+    SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
+    bool                        import = false;
+
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+}
+
 

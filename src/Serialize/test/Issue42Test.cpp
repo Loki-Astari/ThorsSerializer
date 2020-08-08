@@ -4,6 +4,7 @@
 #include "Serialize.h"
 #include "Traits.h"
 #include "JsonThor.h"
+#include "BsonThor.h"
 #include "SerUtil.h"
 #include <memory>
 #include <iostream>
@@ -37,7 +38,7 @@ ThorsAnvil_MakeTrait(Issue42Test::BaseVehicle, isPreloaded);
 ThorsAnvil_ExpandTrait(Issue42Test::BaseVehicle, Issue42Test::Vehicle, id);
 ThorsAnvil_MakeTrait(Issue42Test::Fleet, vehicles);
 
-TEST(Issue42Test, PointerUniquePtrMultiple)
+TEST(Issue42Test, JsonPointerUniquePtrMultiple)
 {
     Issue42Test::Fleet test {};
     string str = R"( {"vehicles":[
@@ -48,4 +49,16 @@ TEST(Issue42Test, PointerUniquePtrMultiple)
       ]})";
     istringstream stream(str);
     stream >> ThorsAnvil::Serialize::jsonImporter(test, false);
+}
+TEST(Issue42Test, BsonPointerUniquePtrMultiple)
+{
+    Issue42Test::Fleet test {};
+    string str = R"( {"vehicles":[
+         {
+            "__type": "Issue42Test::Vehicle",
+            "id":0
+         }
+      ]})";
+    istringstream stream(str);
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
 }

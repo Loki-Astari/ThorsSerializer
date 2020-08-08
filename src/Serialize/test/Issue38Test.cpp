@@ -4,6 +4,7 @@
 #include "Serialize.h"
 #include "Traits.h"
 #include "JsonThor.h"
+#include "BsonThor.h"
 #include "SerUtil.h"
 #include <memory>
 #include <iostream>
@@ -87,7 +88,7 @@ ThorsAnvil_ExpandTrait(Issue38::Udp6ConnectionParent, Issue38::Udp6Connection, f
 
 #include <iostream>
 
-TEST(Issue38Test, Connection)
+TEST(Issue38Test, JsonConnection)
 {
     std::string input = R"(
     {
@@ -106,7 +107,7 @@ TEST(Issue38Test, Connection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, IPConnection)
+TEST(Issue38Test, JsonIPConnection)
 {
     std::string input = R"(
     {
@@ -126,7 +127,7 @@ TEST(Issue38Test, IPConnection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, IPv4Connection)
+TEST(Issue38Test, JsonIPv4Connection)
 {
     std::string input = R"(
     {
@@ -147,7 +148,7 @@ TEST(Issue38Test, IPv4Connection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, IPv6Connection)
+TEST(Issue38Test, JsonIPv6Connection)
 {
     std::string input = R"(
     {
@@ -169,7 +170,7 @@ TEST(Issue38Test, IPv6Connection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, TcpConnection)
+TEST(Issue38Test, JsonTcpConnection)
 {
     std::string input = R"(
     {
@@ -188,7 +189,7 @@ TEST(Issue38Test, TcpConnection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, UdpConnection)
+TEST(Issue38Test, JsonUdpConnection)
 {
     std::string input = R"(
     {
@@ -207,7 +208,7 @@ TEST(Issue38Test, UdpConnection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, Tcp4Connection)
+TEST(Issue38Test, JsonTcp4Connection)
 {
     std::string input = R"(
     {
@@ -230,7 +231,7 @@ TEST(Issue38Test, Tcp4Connection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, Tcp6Connection)
+TEST(Issue38Test, JsonTcp6Connection)
 {
     std::string input = R"(
     {
@@ -254,7 +255,7 @@ TEST(Issue38Test, Tcp6Connection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, Udp4Connection)
+TEST(Issue38Test, JsonUdp4Connection)
 {
     std::string input = R"(
     {
@@ -277,7 +278,7 @@ TEST(Issue38Test, Udp4Connection)
     input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
     EXPECT_EQ(input, result);
 }
-TEST(Issue38Test, Udp6Connection)
+TEST(Issue38Test, JsonUdp6Connection)
 {
     std::string input = R"(
     {
@@ -295,6 +296,220 @@ TEST(Issue38Test, Udp6Connection)
 
     std::stringstream output;
     output << ThorsAnvil::Serialize::jsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonConnection)
+{
+    std::string input = R"(
+    {
+        "active": true
+    })";
+    std::stringstream stream(input);
+
+    Issue38::Connection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonIPConnection)
+{
+    std::string input = R"(
+    {
+        "active": true,
+        "port":   22
+    })";
+    std::stringstream stream(input);
+
+    Issue38::IPConnection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonIPv4Connection)
+{
+    std::string input = R"(
+    {
+        "active": true,
+        "port": 56,
+        "v4Name": "LongPort"
+    })";
+    std::stringstream stream(input);
+
+    Issue38::IPv4Connection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonIPv6Connection)
+{
+    std::string input = R"(
+    {
+        "active": true,
+        "port": 67,
+        "v6Name": "ShortPort",
+        "cost": 12.5
+    })";
+    std::stringstream stream(input);
+
+    Issue38::IPv6Connection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonTcpConnection)
+{
+    std::string input = R"(
+    {
+        "blocks": 8
+    })";
+    std::stringstream stream(input);
+
+    Issue38::TcpConnection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonUdpConnection)
+{
+    std::string input = R"(
+    {
+        "listeners": 12
+    })";
+    std::stringstream stream(input);
+
+    Issue38::UdpConnection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonTcp4Connection)
+{
+    std::string input = R"(
+    {
+        "active": true,
+        "port": 56,
+        "v4Name": "LongPort",
+        "blocks": 8,
+        "data": [15, 67]
+    })";
+    std::stringstream stream(input);
+
+    Issue38::Tcp4Connection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonTcp6Connection)
+{
+    std::string input = R"(
+    {
+        "active": true,
+        "port": 56,
+        "v6Name": "LongPort",
+        "cost": 12,
+        "blocks": 88,
+        "sync": [15, 67]
+    })";
+    std::stringstream stream(input);
+
+    Issue38::Tcp6Connection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonUdp4Connection)
+{
+    std::string input = R"(
+    {
+        "active": true,
+        "port": 67,
+        "v4Name": "ShortPort",
+        "listeners": 999,
+        "fly": [13, 14, 12.5]
+    })";
+    std::stringstream stream(input);
+
+    Issue38::Udp4Connection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
+
+    std::string result  = output.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    input.erase(std::remove_if(std::begin(input),  std::end(input),  [](char x){return ::isspace(x);}), std::end(input));
+    EXPECT_EQ(input, result);
+}
+TEST(Issue38Test, BsonUdp6Connection)
+{
+    std::string input = R"(
+    {
+        "active": true,
+        "port": 56,
+        "v6Name": "LongPort",
+        "cost": 88,
+        "listeners": 101,
+        "fancy": ["long", "way", "down"]
+    })";
+    std::stringstream stream(input);
+
+    Issue38::Udp6Connection  test;
+    stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
+
+    std::stringstream output;
+    output << ThorsAnvil::Serialize::bsonExporter(test, false);
 
     std::string result  = output.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));

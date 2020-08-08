@@ -1,9 +1,10 @@
 #include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "JsonPrinter.h"
+#include "BsonPrinter.h"
 #include <algorithm>
 
-TEST(JsonPrinterTest, ArrayTokens)
+TEST(PrinterTest, JsonArrayTokens)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -17,7 +18,7 @@ TEST(JsonPrinterTest, ArrayTokens)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ("{}", result);
 }
-TEST(JsonPrinterTest, MapTokens)
+TEST(PrinterTest, JsonMapTokens)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -31,7 +32,7 @@ TEST(JsonPrinterTest, MapTokens)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ("[]", result);
 }
-TEST(JsonPrinterTest, ArrayValues)
+TEST(PrinterTest, JsonArrayValues)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -53,7 +54,7 @@ TEST(JsonPrinterTest, ArrayValues)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ(R"([true,false,55,56,78.89,57,58,"Astring"])", result);
 }
-TEST(JsonPrinterTest, MapValues)
+TEST(PrinterTest, JsonMapValues)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -77,7 +78,7 @@ TEST(JsonPrinterTest, MapValues)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ(R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K6":"Astring"})", result);
 }
-TEST(JsonPrinterTest, MapWithMapValues)
+TEST(PrinterTest, JsonMapWithMapValues)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -107,7 +108,7 @@ TEST(JsonPrinterTest, MapWithMapValues)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ(R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89},"K6":"Astring"})", result);
 }
-TEST(JsonPrinterTest, MapWithArrayValues)
+TEST(PrinterTest, JsonMapWithArrayValues)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -140,7 +141,7 @@ TEST(JsonPrinterTest, MapWithArrayValues)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ(R"({"K1":[true,false,55,56,57,58,60,61],"K3":56,"K4":[78.89],"K6":"Astring"})", result);
 }
-TEST(JsonPrinterTest, ArrayWithMapValues)
+TEST(PrinterTest, JsonArrayWithMapValues)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -166,7 +167,7 @@ TEST(JsonPrinterTest, ArrayWithMapValues)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ(R"([{"K1":true,"K2":false},56,{"K4":78.89},"Astring"])", result);
 }
-TEST(JsonPrinterTest, ArrayWithArrayValues)
+TEST(PrinterTest, JsonArrayWithArrayValues)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
@@ -189,7 +190,7 @@ TEST(JsonPrinterTest, ArrayWithArrayValues)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ(R"([[true,false],56,[78.89],"Astring"])", result);
 }
-TEST(JsonPrinterTest, CheckStreeamIsCompressed)
+TEST(PrinterTest, JsonCheckStreeamIsCompressed)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
@@ -215,7 +216,7 @@ TEST(JsonPrinterTest, CheckStreeamIsCompressed)
     int             space   = std::count_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);});
     EXPECT_EQ(0, space);
 }
-TEST(JsonPrinterTest, CloseMapWithArray)
+TEST(PrinterTest, JsonCloseMapWithArray)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
@@ -226,7 +227,7 @@ TEST(JsonPrinterTest, CloseMapWithArray)
         printer.closeArray();
     );
 }
-TEST(JsonPrinterTest, CloseArrayWithMap)
+TEST(PrinterTest, JsonCloseArrayWithMap)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
@@ -237,7 +238,7 @@ TEST(JsonPrinterTest, CloseArrayWithMap)
         printer.closeMap();
     );
 }
-TEST(JsonPrinterTest, PuttingKeyInArray)
+TEST(PrinterTest, JsonPuttingKeyInArray)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
@@ -248,7 +249,7 @@ TEST(JsonPrinterTest, PuttingKeyInArray)
         printer.addKey("This old house");
     );
 }
-TEST(JsonPrinterTest, AddRawValueTest)
+TEST(PrinterTest, JsonAddRawValueTest)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
@@ -264,7 +265,7 @@ TEST(JsonPrinterTest, AddRawValueTest)
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"K1":12})");
 }
-TEST(JsonPrinterTest, DoubleZeroNeedsDot)
+TEST(PrinterTest, JsonDoubleZeroNeedsDot)
 {
     std::stringstream                   stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
@@ -279,4 +280,282 @@ TEST(JsonPrinterTest, DoubleZeroNeedsDot)
     auto find = result.find('.');
     EXPECT_NE(std::string::npos, find);
 }
+
+TEST(PrinterTest, BsonArrayTokens)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.openMap();
+    printer.closeMap();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ("{}", result);
+}
+TEST(PrinterTest, BsonMapTokens)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    printer.closeArray();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ("[]", result);
+}
+TEST(PrinterTest, BsonArrayValues)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    printer.addValue(true);
+    printer.addValue(false);
+    printer.addValue(static_cast<short>(55));
+    printer.addValue(56);
+    printer.addValue(78.89);
+    printer.addValue(57l);
+    printer.addValue(58ll);
+    printer.addValue(std::string("Astring"));
+    printer.closeArray();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ(R"([true,false,55,56,78.89,57,58,"Astring"])", result);
+}
+TEST(PrinterTest, BsonMapValues)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.openMap();
+    printer.addKey("K1");
+    printer.addValue(true);
+    printer.addKey("K2");
+    printer.addValue(false);
+    printer.addKey("K3");
+    printer.addValue(56);
+    printer.addKey("K4");
+    printer.addValue(78.89);
+    printer.addKey("K6");
+    printer.addValue(std::string("Astring"));
+    printer.closeMap();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ(R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K6":"Astring"})", result);
+}
+TEST(PrinterTest, BsonMapWithMapValues)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.openMap();
+    printer.addKey("K1");
+    printer.openMap();
+    printer.addKey("K1");
+    printer.addValue(true);
+    printer.addKey("K2");
+    printer.addValue(false);
+    printer.closeMap();
+    printer.addKey("K3");
+    printer.addValue(56);
+    printer.addKey("K4");
+    printer.openMap();
+    printer.addKey("K4");
+    printer.addValue(78.89);
+    printer.closeMap();
+    printer.addKey("K6");
+    printer.addValue(std::string("Astring"));
+    printer.closeMap();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ(R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89},"K6":"Astring"})", result);
+}
+TEST(PrinterTest, BsonMapWithArrayValues)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.openMap();
+    printer.addKey("K1");
+    printer.openArray(-1);
+    printer.addValue(true);
+    printer.addValue(false);
+    printer.addValue(static_cast<unsigned short>(55));
+    printer.addValue(56u);
+    printer.addValue(57ul);
+    printer.addValue(58ull);
+    printer.addValue(60.f);
+    printer.addValue(61.0L);
+    printer.closeArray();
+    printer.addKey("K3");
+    printer.addValue(56);
+    printer.addKey("K4");
+    printer.openArray(-1);
+    printer.addValue(78.89);
+    printer.closeArray();
+    printer.addKey("K6");
+    printer.addValue(std::string("Astring"));
+    printer.closeMap();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ(R"({"K1":[true,false,55,56,57,58,60,61],"K3":56,"K4":[78.89],"K6":"Astring"})", result);
+}
+TEST(PrinterTest, BsonArrayWithMapValues)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    printer.openMap();
+    printer.addKey("K1");
+    printer.addValue(true);
+    printer.addKey("K2");
+    printer.addValue(false);
+    printer.closeMap();
+    printer.addValue(56);
+    printer.openMap();
+    printer.addKey("K4");
+    printer.addValue(78.89);
+    printer.closeMap();
+    printer.addValue(std::string("Astring"));
+    printer.closeArray();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ(R"([{"K1":true,"K2":false},56,{"K4":78.89},"Astring"])", result);
+}
+TEST(PrinterTest, BsonArrayWithArrayValues)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    printer.openArray(-1);
+    printer.addValue(true);
+    printer.addValue(false);
+    printer.closeArray();
+    printer.addValue(56);
+    printer.openArray(-1);
+    printer.addValue(78.89);
+    printer.closeArray();
+    printer.addValue(std::string("Astring"));
+    printer.closeArray();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ(R"([[true,false],56,[78.89],"Astring"])", result);
+}
+TEST(PrinterTest, BsonCheckStreeamIsCompressed)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    printer.openMap();
+    printer.addKey("K1");
+    printer.addValue(true);
+    printer.addKey("K2");
+    printer.addValue(false);
+    printer.closeMap();
+    printer.addValue(56);
+    printer.openMap();
+    printer.addKey("K4");
+    printer.addValue(78.89);
+    printer.closeMap();
+    printer.addValue(std::string("Astring"));
+    printer.closeArray();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    int             space   = std::count_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);});
+    EXPECT_EQ(0, space);
+}
+TEST(PrinterTest, BsonCloseMapWithArray)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+
+    printer.openDoc();
+    printer.openMap();
+    ASSERT_ANY_THROW(
+        printer.closeArray();
+    );
+}
+TEST(PrinterTest, BsonCloseArrayWithMap)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    ASSERT_ANY_THROW(
+        printer.closeMap();
+    );
+}
+TEST(PrinterTest, BsonPuttingKeyInArray)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    ASSERT_ANY_THROW(
+        printer.addKey("This old house");
+    );
+}
+TEST(PrinterTest, BsonAddRawValueTest)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+
+    printer.openDoc();
+    printer.openMap();
+    printer.addKey("K1");
+    printer.addRawValue("12");
+    printer.closeMap();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"K1":12})");
+}
+TEST(PrinterTest, BsonDoubleZeroNeedsDot)
+{
+    std::stringstream                   stream;
+    ThorsAnvil::Serialize::BsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+
+    printer.openDoc();
+    printer.openArray(-1);
+    printer.addValue(0.0);
+    printer.closeArray();
+    printer.closeDoc();
+
+    std::string     result  = stream.str();
+    auto find = result.find('.');
+    EXPECT_NE(std::string::npos, find);
+}
+
 
