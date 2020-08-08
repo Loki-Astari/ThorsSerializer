@@ -1,12 +1,10 @@
 #include "SerializeConfig.h"
 #include "gtest/gtest.h"
-#include "JsonParser.h"
 #include "test/SerializeTest.h"
 #include "SerUtil.h"
 #include "UnicodeIterator.h"
 
 namespace TA=ThorsAnvil::Serialize;
-using TA::JsonParser;
 using TA::ParserInterface;
 using TA::DeSerializer;
 
