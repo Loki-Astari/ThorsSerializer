@@ -87,7 +87,7 @@ void YamlPrinter::closeDoc()
 }
 
 HEADER_ONLY_INCLUDE
-void YamlPrinter::openMap()
+void YamlPrinter::openMap(std::size_t)
 {
     yaml_mapping_style_t    style;
     switch (this->config.characteristics)

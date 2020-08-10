@@ -15,6 +15,7 @@
 #include "BsonPrinter.h"
 #include "Exporter.h"
 #include "Importer.h"
+#include "SerUtil.h"
 
 namespace ThorsAnvil
 {

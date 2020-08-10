@@ -3,6 +3,7 @@
 #define THORS_ANVIL_SERIALIZE_TEST_IGNORE_UNEEDED_DATA
 
 #include "../Serialize.h"
+#include "../SerUtil.h"
 
 namespace TA=ThorsAnvil::Serialize;
 

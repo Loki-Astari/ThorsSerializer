@@ -1,7 +1,9 @@
 #ifndef THORS_ANVIL_SERIALIZE_SERIALIZE_TPP
 #define THORS_ANVIL_SERIALIZE_SERIALIZE_TPP
 
+#include "SerUtil.h"
 #include "ThorsIOUtil/Utility.h"
+#include "ThorsSerializerUtil.h"
 #include <algorithm>
 #include <sstream>
 #include <type_traits>
@@ -66,14 +68,6 @@ class ApplyActionToParent<TraitType::Parent, T, I>
 /* ------------------- HeedAllValues ---------------------------- */
 template<typename T>
 struct HeedAllValues;
-
-template <typename, typename = void>
-struct HasParent: std::false_type
-{};
-
-template <class T>
-struct HasParent<T, std::enable_if_t<(sizeof(typename Traits<T>::Parent) >= 0)>>: std::true_type
-{};
 
 template<typename T>
 typename std::enable_if<! HasParent<T>::value>::type
@@ -566,7 +560,12 @@ class SerializerForBlock
             , printer(printer)
             , object(object)
         {
-            printer.openMap();
+            std::size_t size = 0;
+            if (printer.printerUsesSize())
+            {
+                size = Traits<T>::getPrintSize(printer, object);
+            }
+            printer.openMap(size);
         }
         ~SerializerForBlock()
         {
@@ -718,7 +717,12 @@ class SerializerForBlock<TraitType::Array, T>
             , printer(printer)
             , object(object)
         {
-            printer.openArray(SerializeArraySize<T>::size(object));
+            std::size_t size = 0;
+            if (printer.printerUsesSize())
+            {
+                size = Traits<T>::getPrintSize(printer, object);
+            }
+            printer.openArray(size);
         }
         ~SerializerForBlock()
         {

@@ -23,7 +23,7 @@ TEST(YamlPrinterTest, ArrayTokens)
     ThorsAnvil::Serialize::YamlPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.closeMap();
     printer.closeDoc();
 
@@ -73,7 +73,7 @@ TEST(YamlPrinterTest, MapValues)
     ThorsAnvil::Serialize::YamlPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
@@ -97,9 +97,9 @@ TEST(YamlPrinterTest, MapWithMapValues)
     ThorsAnvil::Serialize::YamlPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
@@ -108,7 +108,7 @@ TEST(YamlPrinterTest, MapWithMapValues)
     printer.addKey("K3");
     printer.addValue(56);
     printer.addKey("K4");
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.closeMap();
@@ -127,7 +127,7 @@ TEST(YamlPrinterTest, MapWithArrayValues)
     ThorsAnvil::Serialize::YamlPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.openArray(-1);
     printer.addValue(true);
@@ -161,14 +161,14 @@ TEST(YamlPrinterTest, ArrayWithMapValues)
 
     printer.openDoc();
     printer.openArray(-1);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
     printer.addValue(false);
     printer.closeMap();
     printer.addValue(56);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.closeMap();
@@ -209,7 +209,7 @@ TEST(YamlPrinterTest, CloseMapWithArray)
     ThorsAnvil::Serialize::YamlPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     ASSERT_ANY_THROW(
         printer.closeArray();
     );

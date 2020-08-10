@@ -17,6 +17,7 @@
 #include "YamlPrinter.h"
 #include "Exporter.h"
 #include "Importer.h"
+#include "SerUtil.h"
 
 namespace ThorsAnvil
 {

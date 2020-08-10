@@ -23,7 +23,7 @@ void BsonPrinter::closeDoc()
 {}
 
 HEADER_ONLY_INCLUDE
-void BsonPrinter::openMap()
+void BsonPrinter::openMap(std::size_t)
 {}
 
 HEADER_ONLY_INCLUDE

@@ -125,7 +125,7 @@ void JsonPrinter::closeDoc()
 {}
 
 HEADER_ONLY_INCLUDE
-void JsonPrinter::openMap()
+void JsonPrinter::openMap(std::size_t)
 {
     output << PrefixMap(config.characteristics, state.size(), state.back()) << "{";
     state.emplace_back(0, TraitType::Map);
