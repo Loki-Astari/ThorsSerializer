@@ -125,7 +125,7 @@ void JsonPrinter::closeDoc()
 {}
 
 HEADER_ONLY_INCLUDE
-void JsonPrinter::openMap()
+void JsonPrinter::openMap(std::size_t)
 {
     output << PrefixMap(config.characteristics, state.size(), state.back()) << "{";
     state.emplace_back(0, TraitType::Map);
@@ -185,15 +185,15 @@ struct FormatDouble
     }
 };
 
-HEADER_ONLY_INCLUDE void JsonPrinter::addValue(short value)                 {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+HEADER_ONLY_INCLUDE void JsonPrinter::addValue(short int value)             {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
 HEADER_ONLY_INCLUDE void JsonPrinter::addValue(int value)                   {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
-HEADER_ONLY_INCLUDE void JsonPrinter::addValue(long value)                  {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
-HEADER_ONLY_INCLUDE void JsonPrinter::addValue(long long value)             {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+HEADER_ONLY_INCLUDE void JsonPrinter::addValue(long int value)              {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+HEADER_ONLY_INCLUDE void JsonPrinter::addValue(long long int value)         {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
 
-HEADER_ONLY_INCLUDE void JsonPrinter::addValue(unsigned short value)        {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+HEADER_ONLY_INCLUDE void JsonPrinter::addValue(unsigned short int value)    {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
 HEADER_ONLY_INCLUDE void JsonPrinter::addValue(unsigned int value)          {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
-HEADER_ONLY_INCLUDE void JsonPrinter::addValue(unsigned long value)         {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
-HEADER_ONLY_INCLUDE void JsonPrinter::addValue(unsigned long long value)    {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+HEADER_ONLY_INCLUDE void JsonPrinter::addValue(unsigned long int value)     {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
+HEADER_ONLY_INCLUDE void JsonPrinter::addValue(unsigned long long int value){output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
 
 HEADER_ONLY_INCLUDE void JsonPrinter::addValue(float value)                 {output << PrefixValue(config.characteristics, state.size(), state.back()) << FormatDouble<float>(value);}
 HEADER_ONLY_INCLUDE void JsonPrinter::addValue(double value)                {output << PrefixValue(config.characteristics, state.size(), state.back()) << FormatDouble<double>(value);}

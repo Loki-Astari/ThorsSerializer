@@ -190,15 +190,15 @@ T YamlParser::scan()
 }
 
 
-HEADER_ONLY_INCLUDE void YamlParser::getValue(short& value)                 {value   = scan<short>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(short int& value)             {value   = scan<short int>();}
 HEADER_ONLY_INCLUDE void YamlParser::getValue(int& value)                   {value   = scan<int>();}
-HEADER_ONLY_INCLUDE void YamlParser::getValue(long& value)                  {value   = scan<long>();}
-HEADER_ONLY_INCLUDE void YamlParser::getValue(long long& value)             {value   = scan<long long>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(long int& value)              {value   = scan<long int>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(long long int& value)         {value   = scan<long long int>();}
 
-HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned short& value)        {value   = scan<unsigned short>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned short int& value)    {value   = scan<unsigned short int>();}
 HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned int& value)          {value   = scan<unsigned int>();}
-HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned long& value)         {value   = scan<unsigned long>();}
-HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned long long& value)    {value   = scan<unsigned long long>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned long int& value)     {value   = scan<unsigned long int>();}
+HEADER_ONLY_INCLUDE void YamlParser::getValue(unsigned long long int& value){value   = scan<unsigned long long int>();}
 
 HEADER_ONLY_INCLUDE void YamlParser::getValue(float& value)                 {value   = scan<float>();}
 HEADER_ONLY_INCLUDE void YamlParser::getValue(double& value)                {value   = scan<double>();}

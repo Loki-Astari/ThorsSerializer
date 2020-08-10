@@ -21,7 +21,7 @@ class JsonPrinter: public PrinterInterface
         virtual void openDoc()                              override;
         virtual void closeDoc()                             override;
 
-        virtual void openMap()                              override;
+        virtual void openMap(std::size_t size)              override;
         virtual void closeMap()                             override;
         virtual void openArray(std::size_t size)            override;
         virtual void closeArray()                           override;

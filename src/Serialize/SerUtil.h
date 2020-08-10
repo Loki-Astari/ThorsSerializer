@@ -18,6 +18,41 @@
 #include <memory>
 
 /*
+ * Basic Types:
+ * ============
+ *
+ * Traits<short int>
+ * Traits<int>
+ * Traits<long int>
+ * Traits<long long int>
+ * Traits<unsigned short int>
+ * Traits<unsigned int>
+ * Traits<unsigned long int>
+ * Traits<unsigned long long int>
+ *
+ * Traits<float>
+ * Traits<double>
+ * Traits<long double>
+ *
+ * Traits<bool>
+ *
+ * Traits<std::string>
+ *
+ * Partial Types:
+ * ==============
+ * Pointer Types
+ *  Traits<T*>
+ *
+ * Special Thor Types
+ * ==================
+ *  Traits<Parents<>>
+ *
+ * Container Types:
+ * ================
+ *
+ * MapLike
+ * ArrayLike
+ *
  * GetValueType
  * PutValueType
  * MemberInserter
@@ -54,6 +89,148 @@ namespace ThorsAnvil
 {
     namespace Serialize
     {
+
+/*
+ * Declare types that can be read/written directly by the parser/printer
+ * as value types. Other compound types need to use the Serializer/Deserializer
+ */
+
+#define THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(TYPE)                \
+template<>                                                          \
+class Traits<TYPE>                                                  \
+{                                                                   \
+    public:                                                         \
+        static constexpr TraitType type = TraitType::Value;         \
+        static std::size_t getPrintSize(PrinterInterface& printer, TYPE const& value) \
+        {                                                           \
+            return printer.getSizeValue(value);                     \
+        }                                                           \
+}
+
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(short int);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(int);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(long int);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(long long int);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(unsigned short int);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(unsigned int);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(unsigned long int);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(unsigned long long int);
+
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(float);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(double);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(long double);
+
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(bool);
+
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(std::string);
+
+#if 0
+template<> class Traits<short int>              {public: THORSANVIL_TRAITS_FOR_VALUE(short int)};
+template<> class Traits<int>                    {public: THORSANVIL_TRAITS_FOR_VALUE(int)};
+template<> class Traits<long int>               {public: THORSANVIL_TRAITS_FOR_VALUE(long int)};
+template<> class Traits<long long int>          {public: THORSANVIL_TRAITS_FOR_VALUE(long long int)};
+
+template<> class Traits<unsigned short int>     {public: THORSANVIL_TRAITS_FOR_VALUE(unsigned short int)};
+template<> class Traits<unsigned int>           {public: THORSANVIL_TRAITS_FOR_VALUE(unsigned int)};
+template<> class Traits<unsigned long int>      {public: THORSANVIL_TRAITS_FOR_VALUE(unsigned long int)};
+template<> class Traits<unsigned long long int> {public: THORSANVIL_TRAITS_FOR_VALUE(unsigned long long int)};
+
+template<> class Traits<float>                  {public: THORSANVIL_TRAITS_FOR_VALUE(float)};
+template<> class Traits<double>                 {public: THORSANVIL_TRAITS_FOR_VALUE(double)};
+template<> class Traits<long double>            {public: THORSANVIL_TRAITS_FOR_VALUE(long double)};
+
+template<> class Traits<bool>                   {public: THORSANVIL_TRAITS_FOR_VALUE(bool)};
+
+template<> class Traits<std::string>            {public: THORSANVIL_TRAITS_FOR_VALUE(std::string const&)};
+#endif
+
+/*
+ * A specialization for pointer objects.
+ * They are a pointer type. When serialized a pointer will emit:
+ *      If the pointer is nullptr:      A "null" object.
+ *      Otherwise de-reference the pointer and emit like normal.
+ *
+ * If the de-referenced type has a Traits class then it will be normally
+ * serialized. Otherwise there will be an error.
+ */
+template<typename T>
+class Traits<T*>
+{
+    public:
+        static constexpr TraitType type = TraitType::Pointer;
+        static T*   alloc()         {return new T;}
+        static void release(T* p)   {delete p;}
+        static std::size_t getPrintSize(PrinterInterface& printer, T* object)
+        {
+            if (object)
+            {
+                return Traits<T>::getPrintSize(printer, *object);
+            }
+            return printer.getSizeNull();
+        }
+};
+
+/*
+ * Specialization of Parents so we can handle them in normal streaming operations
+ */
+template<typename... Args>
+class Traits<Parents<Args...>>
+{
+    public:
+        static constexpr TraitType type = TraitType::Parent;
+
+        template<typename ChildType, std::size_t Index>
+        static std::size_t getPrintSizeTotalParent(PrinterInterface& printer, ChildType const& object, std::size_t& count, std::size_t& memberSize)
+        {
+            using Parent = typename std::tuple_element<Index, std::tuple<Args...>>::type;
+            return Traits<Parent>::getPrintSizeTotal(printer, static_cast<Parent const&>(object), count, memberSize);
+        }
+
+        template<typename ChildType, std::size_t... Seq>
+        static std::size_t getPrintSizeTotalAllParents(PrinterInterface& printer, ChildType const& object, std::size_t& count, std::size_t& memberSize, std::index_sequence<Seq...> const&)
+        {
+            auto sums = {0UL, getPrintSizeTotalParent<ChildType, Seq>(printer, object, count, memberSize)...};
+            return *(sums.end() - 1);
+        }
+
+        template<typename ChildType>
+        static std::size_t getPrintSizeTotal(PrinterInterface& printer, ChildType const& object, std::size_t& count, std::size_t& memberSize)
+        {
+            return getPrintSizeTotalAllParents(printer, object, count, memberSize, std::make_index_sequence<sizeof...(Args)>());
+        }
+};
+
+/* Container Helper */
+
+template<typename C, typename T>
+struct MapLike
+{
+    static std::size_t getPrintSize(PrinterInterface& printer, C const& object)
+    {
+        std::size_t result = printer.getSizeMap(std::size(object));
+        for (auto const& value: object)
+        {
+            result += std::size(value.first);
+            result += Traits<T>::getPrintSize(printer, value.second);
+        }
+        return result;
+    }
+};
+
+template<typename C, typename T>
+struct ArrayLike
+{
+    static std::size_t getPrintSize(PrinterInterface& printer, C const& object)
+    {
+        std::size_t result = printer.getSizeArray(std::size(object));
+        for (auto const& val: object)
+        {
+            result += Traits<T>::getPrintSize(printer, val);
+        }
+        return result;
+    }
+};
+
 
 /* ------------------------------- GetValueType ------------------------------- */
 /*
@@ -204,6 +381,14 @@ class Traits<std::pair<F, S>>
             static constexpr Members members{ REP_N(THOR_VALUEACTION, 00, Self, first, second, 1) };
             return members;
         }
+        static std::size_t getPrintSize(PrinterInterface& printer, std::pair<F, S> const& object)
+        {
+            return printer.getSizeMap(2)
+                 + strlen("first")
+                 + strlen("second")
+                 + Traits<typename std::decay<F>::type>::getPrintSize(printer, object.first)
+                 + Traits<typename std::decay<S>::type>::getPrintSize(printer, object.second);
+        }
 };
 
 /* ------------------------------- Traits<std::initializer_list<T>> ------------------------------- */
@@ -222,7 +407,7 @@ class MemberInserter<std::initializer_list<T>>
 };
 
 template<typename T>
-class Traits<std::initializer_list<T>>
+class Traits<std::initializer_list<T>>: public ArrayLike<std::initializer_list<T>, T>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -250,7 +435,7 @@ class MemberEmplacer<std::array<T, N>>
 };
 
 template<typename T, std::size_t N>
-class Traits<std::array<T, N>>
+class Traits<std::array<T, N>>: public ArrayLike<std::array<T, N>, T>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -279,7 +464,7 @@ class MemberEmplacer<std::list<T, Allocator>>
 };
 
 template<typename T, typename Allocator>
-class Traits<std::list<T, Allocator>>
+class Traits<std::list<T, Allocator>>: public ArrayLike<std::list<T, Allocator>, T>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -307,7 +492,7 @@ class MemberEmplacer<std::vector<T, Allocator>>
         }
 };
 template<typename T, typename Allocator>
-class Traits<std::vector<T, Allocator>>
+class Traits<std::vector<T, Allocator>>: public ArrayLike<std::vector<T, Allocator>, T>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -333,7 +518,7 @@ class MemberInserter<std::vector<bool, Allocator>>
         }
 };
 template<typename Allocator>
-class Traits<std::vector<bool, Allocator>>
+class Traits<std::vector<bool, Allocator>>: public ArrayLike<std::vector<bool, Allocator>, bool>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -362,7 +547,7 @@ class MemberEmplacer<std::deque<T, Allocator>>
 };
 
 template<typename T, typename Allocator>
-class Traits<std::deque<T, Allocator>>
+class Traits<std::deque<T, Allocator>>: public ArrayLike<std::deque<T, Allocator>, T>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -390,7 +575,7 @@ class MemberInserter<std::set<Key, Compare, Allocator>>
 };
 
 template<typename Key, typename Compare, typename Allocator>
-class Traits<std::set<Key, Compare, Allocator>>
+class Traits<std::set<Key, Compare, Allocator>>: public ArrayLike<std::set<Key, Compare, Allocator>, Key>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -418,7 +603,7 @@ class MemberInserter<std::unordered_set<Key, Hash, KeyEqual, Allocator>>
 };
 
 template<typename Key, typename Hash, typename KeyEqual, typename Allocator>
-class Traits<std::unordered_set<Key, Hash, KeyEqual, Allocator>>
+class Traits<std::unordered_set<Key, Hash, KeyEqual, Allocator>>: public ArrayLike<std::unordered_set<Key, Hash, KeyEqual, Allocator>, Key>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -446,7 +631,7 @@ class MemberInserter<std::multiset<Key, Compare, Allocator>>
 };
 
 template<typename Key, typename Compare, typename Allocator>
-class Traits<std::multiset<Key, Compare, Allocator>>
+class Traits<std::multiset<Key, Compare, Allocator>>: public ArrayLike<std::multiset<Key, Compare, Allocator>, Key>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -474,7 +659,7 @@ class MemberInserter<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>
 };
 
 template<typename Key, typename Hash, typename KeyEqual, typename Allocator>
-class Traits<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>
+class Traits<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>>: public ArrayLike<std::unordered_multiset<Key, Hash, KeyEqual, Allocator>, Key>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -502,7 +687,7 @@ class MemberInserter<std::map<Key, T, Compare, Allocator>>
 };
 
 template<typename Key, typename T, typename Compare, typename Allocator>
-class Traits<std::map<Key, T, Compare, Allocator>>
+class Traits<std::map<Key, T, Compare, Allocator>>: public ArrayLike<std::map<Key, T, Compare, Allocator>, typename std::map<Key, T, Compare, Allocator>::value_type>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -519,7 +704,7 @@ class Traits<std::map<Key, T, Compare, Allocator>>
  * This allows maps that have string keys to be represented directly by Json Map objects.
  */
 template<typename Value>
-class Traits<std::map<std::string, Value>>
+class Traits<std::map<std::string, Value>>: public MapLike<std::map<std::string, Value>, Value>
 {
     public:
         static constexpr TraitType type = TraitType::Map;
@@ -567,7 +752,7 @@ class MemberInserter<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>>
 };
 
 template<typename Key, typename T, typename Hash, typename KeyEqual, typename Allocator>
-class Traits<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>>
+class Traits<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>>: public ArrayLike<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>, typename std::unordered_map<Key, T, Hash, KeyEqual, Allocator>::value_type>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -584,7 +769,7 @@ class Traits<std::unordered_map<Key, T, Hash, KeyEqual, Allocator>>
  * This allows unordered_maps that have string keys to be represented directly by Json Map objects.
  */
 template<typename Value>
-class Traits<std::unordered_map<std::string, Value>>
+class Traits<std::unordered_map<std::string, Value>>: public MapLike<std::unordered_map<std::string, Value>, Value>
 {
     public:
         static constexpr TraitType type = TraitType::Map;
@@ -633,7 +818,7 @@ class MemberInserter<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>>
 };
 
 template<typename Key, typename T, typename Hash, typename KeyEqual, typename Allocator>
-class Traits<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>>
+class Traits<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>>: public ArrayLike<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>, typename std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>::value_type>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -646,7 +831,7 @@ class Traits<std::unordered_multimap<Key, T, Hash, KeyEqual, Allocator>>
 };
 
 template<typename Value>
-class Traits<std::unordered_multimap<std::string, Value>>
+class Traits<std::unordered_multimap<std::string, Value>>: public MapLike<std::unordered_multimap<std::string, Value>, Value>
 {
     public:
         static constexpr TraitType type = TraitType::Map;
@@ -695,7 +880,7 @@ class MemberInserter<std::multimap<Key, T, Compare, Allocator>>
 };
 
 template<typename Key, typename T, typename Compare, typename Allocator>
-class Traits<std::multimap<Key, T, Compare, Allocator>>
+class Traits<std::multimap<Key, T, Compare, Allocator>>: public ArrayLike<std::multimap<Key, T, Compare, Allocator>, typename std::multimap<Key, T, Compare, Allocator>::value_type>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
@@ -708,7 +893,7 @@ class Traits<std::multimap<Key, T, Compare, Allocator>>
 };
 
 template<typename Value>
-class Traits<std::multimap<std::string, Value>>
+class Traits<std::multimap<std::string, Value>>: public MapLike<std::multimap<std::string, Value>, Value>
 {
     public:
         static constexpr TraitType type = TraitType::Map;
@@ -742,19 +927,6 @@ class Traits<std::multimap<std::string, Value>>
 };
 
 /* ------------------------------- Traits<std::tupple<Type...>> ------------------------------- */
-
-/* Since we treat a tupple like an array.
- * We need some way to get the size of the expected array.
- */
-template<typename... Args>
-class SerializeArraySize<std::tuple<Args...>>
-{
-    public:
-        static std::size_t size(std::tuple<Args...> const&)
-        {
-            return sizeof...(Args);
-        }
-};
 
 /*
  * This is the object that parses/prints data from/to the stream
@@ -811,11 +983,32 @@ class Traits<std::tuple<Args...>>
 {
     public:
         static constexpr TraitType type = TraitType::Array;
-        
+
         static ContainerTuppleExtractor<Args...> const& getMembers()
         {
             static constexpr ContainerTuppleExtractor<Args...> members;
             return members;
+        }
+
+        template<typename E>
+        static std::size_t getPrintSizeElement(PrinterInterface& printer, E const& object)
+        {
+            return Traits<E>::getPrintSize(printer, object);
+        }
+
+        template<std::size_t... Seq>
+        static std::size_t getPrintSizeAllElement(PrinterInterface& printer, std::tuple<Args...> const& object, std::index_sequence<Seq...> const&)
+        {
+           auto parts = {std::size_t(0), getPrintSizeElement(printer, std::get<Seq>(object))...};
+           std::size_t result = 0;
+           for (auto value: parts) {result += value;}
+           return result;
+        }
+        static std::size_t getPrintSize(PrinterInterface& printer, std::tuple<Args...> const& object)
+        {
+            std::size_t result = printer.getSizeArray(sizeof...(Args));
+            result += getPrintSizeAllElement(printer, object, std::make_index_sequence<sizeof...(Args)>());
+            return result;
         }
 };
 
@@ -832,6 +1025,14 @@ class Traits<std::unique_ptr<T>>
         static constexpr TraitType type = TraitType::Pointer;
         static std::unique_ptr<T>   alloc()         {return std::make_unique<T>();}
         static void release(std::unique_ptr<T>& p)  {p.reset();}
+        static std::size_t getPrintSize(PrinterInterface& printer, std::unique_ptr<T> const& object)
+        {
+            if (object)
+            {
+                return Traits<T>::getPrintSize(printer, *object);
+            }
+            return printer.getSizeNull();
+        }
 };
 
 template<typename T>

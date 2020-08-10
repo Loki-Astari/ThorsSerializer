@@ -169,7 +169,7 @@ class PrinterInterface
         virtual ~PrinterInterface() {}
         virtual void openDoc()                          = 0;
         virtual void closeDoc()                         = 0;
-        virtual void openMap()                          = 0;
+        virtual void openMap(std::size_t size)          = 0;
         virtual void closeMap()                         = 0;
         virtual void openArray(std::size_t size)        = 0;
         virtual void closeArray()                       = 0;
@@ -200,17 +200,35 @@ class PrinterInterface
 
         void addValue(void*)        = delete;
         void addValue(void const*)  = delete;
+
+        virtual bool        printerUsesSize()                       {return false;}
+        virtual std::size_t getSizeMap(std::size_t /*count*/)       {return 0;}
+        virtual std::size_t getSizeArray(std::size_t /*count*/)     {return 0;}
+        virtual std::size_t getSizeNull()                           {return 0;}
+        virtual std::size_t getSizeValue(short int)                 {return 0;}
+        virtual std::size_t getSizeValue(int)                       {return 0;}
+        virtual std::size_t getSizeValue(long int)                  {return 0;}
+        virtual std::size_t getSizeValue(long long int)             {return 0;}
+        virtual std::size_t getSizeValue(unsigned short int)        {return 0;}
+        virtual std::size_t getSizeValue(unsigned int)              {return 0;}
+        virtual std::size_t getSizeValue(unsigned long int)         {return 0;}
+        virtual std::size_t getSizeValue(unsigned long long int)    {return 0;}
+        virtual std::size_t getSizeValue(float)                     {return 0;}
+        virtual std::size_t getSizeValue(double)                    {return 0;}
+        virtual std::size_t getSizeValue(long double)               {return 0;}
+        virtual std::size_t getSizeValue(bool)                      {return 0;}
+        virtual std::size_t getSizeValue(std::string const&)        {return 0;}
 };
 
 template<typename T>
 T scanValue(char const* buffer, char** end);
 
-template<>  inline short                   scanValue<short>(char const* buffer, char** end)                   {return std::strtol(buffer, end, 10);}
+template<>  inline short int               scanValue<short int>(char const* buffer, char** end)               {return std::strtol(buffer, end, 10);}
 template<>  inline int                     scanValue<int>(char const* buffer, char** end)                     {return std::strtol(buffer, end, 10);}
 template<>  inline long int                scanValue<long int>(char const* buffer, char** end)                {return std::strtol(buffer, end, 10);}
 template<>  inline long long int           scanValue<long long int>(char const* buffer, char** end)           {return std::strtoll(buffer, end, 10);}
 
-template<>  inline unsigned short          scanValue<unsigned short>(char const* buffer, char** end)          {return std::strtoul(buffer, end, 10);}
+template<>  inline unsigned short int      scanValue<unsigned short int>(char const* buffer, char** end)      {return std::strtoul(buffer, end, 10);}
 template<>  inline unsigned int            scanValue<unsigned int>(char const* buffer, char** end)            {return std::strtoul(buffer, end, 10);}
 template<>  inline unsigned long int       scanValue<unsigned long int>(char const* buffer, char** end)       {return std::strtoul(buffer, end, 10);}
 template<>  inline unsigned long long int  scanValue<unsigned long long int>(char const* buffer, char** end)  {return std::strtoull(buffer, end, 10);}
@@ -445,6 +463,23 @@ inline Serializer::~Serializer()
         printer.closeDoc();
     }
 }
+
+template<typename T, bool = HasParent<T>::value>
+struct CalcSizeHelper
+{
+    std::size_t getPrintSize(PrinterInterface& printer, T const& /*object*/, std::size_t& count, std::size_t& memberSize)
+    {
+        return memberSize + printer.getSizeMap(count);
+    }
+};
+template<typename T>
+struct CalcSizeHelper<T, true>
+{
+    std::size_t getPrintSize(PrinterInterface& printer, T const& object, std::size_t& count, std::size_t& memberSize)
+    {
+        return ThorsAnvil::Serialize::Traits<typename Traits<T>::Parent>::getPrintSizeTotal(printer, object, count, memberSize);
+    }
+};
 
     }
 }

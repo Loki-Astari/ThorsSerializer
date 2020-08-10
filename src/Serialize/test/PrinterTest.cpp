@@ -10,7 +10,7 @@ TEST(PrinterTest, JsonArrayTokens)
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.closeMap();
     printer.closeDoc();
 
@@ -60,7 +60,7 @@ TEST(PrinterTest, JsonMapValues)
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
@@ -84,9 +84,9 @@ TEST(PrinterTest, JsonMapWithMapValues)
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
@@ -95,7 +95,7 @@ TEST(PrinterTest, JsonMapWithMapValues)
     printer.addKey("K3");
     printer.addValue(56);
     printer.addKey("K4");
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.closeMap();
@@ -114,7 +114,7 @@ TEST(PrinterTest, JsonMapWithArrayValues)
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.openArray(-1);
     printer.addValue(true);
@@ -148,14 +148,14 @@ TEST(PrinterTest, JsonArrayWithMapValues)
 
     printer.openDoc();
     printer.openArray(-1);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
     printer.addValue(false);
     printer.closeMap();
     printer.addValue(56);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.closeMap();
@@ -197,14 +197,14 @@ TEST(PrinterTest, JsonCheckStreeamIsCompressed)
 
     printer.openDoc();
     printer.openArray(-1);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
     printer.addValue(false);
     printer.closeMap();
     printer.addValue(56);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.closeMap();
@@ -222,7 +222,7 @@ TEST(PrinterTest, JsonCloseMapWithArray)
     ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     ASSERT_ANY_THROW(
         printer.closeArray();
     );
@@ -255,7 +255,7 @@ TEST(PrinterTest, JsonAddRawValueTest)
     ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addRawValue("12");
     printer.closeMap();
@@ -287,7 +287,7 @@ TEST(PrinterTest, BsonArrayTokens)
     ThorsAnvil::Serialize::BsonPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.closeMap();
     printer.closeDoc();
 
@@ -337,7 +337,7 @@ TEST(PrinterTest, BsonMapValues)
     ThorsAnvil::Serialize::BsonPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
@@ -361,9 +361,9 @@ TEST(PrinterTest, BsonMapWithMapValues)
     ThorsAnvil::Serialize::BsonPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
@@ -372,7 +372,7 @@ TEST(PrinterTest, BsonMapWithMapValues)
     printer.addKey("K3");
     printer.addValue(56);
     printer.addKey("K4");
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.closeMap();
@@ -391,7 +391,7 @@ TEST(PrinterTest, BsonMapWithArrayValues)
     ThorsAnvil::Serialize::BsonPrinter  printer(stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.openArray(-1);
     printer.addValue(true);
@@ -425,14 +425,14 @@ TEST(PrinterTest, BsonArrayWithMapValues)
 
     printer.openDoc();
     printer.openArray(-1);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
     printer.addValue(false);
     printer.closeMap();
     printer.addValue(56);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.closeMap();
@@ -474,14 +474,14 @@ TEST(PrinterTest, BsonCheckStreeamIsCompressed)
 
     printer.openDoc();
     printer.openArray(-1);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addValue(true);
     printer.addKey("K2");
     printer.addValue(false);
     printer.closeMap();
     printer.addValue(56);
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.closeMap();
@@ -499,7 +499,7 @@ TEST(PrinterTest, BsonCloseMapWithArray)
     ThorsAnvil::Serialize::BsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     ASSERT_ANY_THROW(
         printer.closeArray();
     );
@@ -532,7 +532,7 @@ TEST(PrinterTest, BsonAddRawValueTest)
     ThorsAnvil::Serialize::BsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
 
     printer.openDoc();
-    printer.openMap();
+    printer.openMap(-1);
     printer.addKey("K1");
     printer.addRawValue("12");
     printer.closeMap();
