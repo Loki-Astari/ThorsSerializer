@@ -1,6 +1,8 @@
 #ifndef THORS_ANVIL_SERIALIZER_THORSSERIALIZERUTIL_H
 #define THORS_ANVIL_SERIALIZER_THORSSERIALIZERUTIL_H
 
+#include <type_traits>
+
 namespace ThorsAnvil
 {
     namespace Serialize

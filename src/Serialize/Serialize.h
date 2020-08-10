@@ -205,7 +205,6 @@ class PrinterInterface
         virtual std::size_t getSizeMap(std::size_t /*count*/)       {return 0;}
         virtual std::size_t getSizeArray(std::size_t /*count*/)     {return 0;}
         virtual std::size_t getSizeNull()                           {return 0;}
-        virtual std::size_t getSizeEnum()                           {return 0;}
         virtual std::size_t getSizeValue(short int)                 {return 0;}
         virtual std::size_t getSizeValue(int)                       {return 0;}
         virtual std::size_t getSizeValue(long int)                  {return 0;}

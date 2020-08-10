@@ -367,9 +367,10 @@ class Traits<EnumName>                                                  \
             }                                                           \
             throw std::runtime_error(msg + " Invalid Enum Value");      \
         }                                                               \
-        static std::size_t getPrintSize(PrinterInterface& printer, EnumName const&)\
+        static std::size_t getPrintSize(PrinterInterface& printer, EnumName const& value)\
         {                                                               \
-            return printer.getSizeEnum();                               \
+            auto find = getValues().find(value);                        \
+            return printer.getSizeValue(find->second);                  \
         }                                                               \
 };                                                                      \
 }}                                                                      \

@@ -1,7 +1,7 @@
 
 THORSANVIL_ROOT				= $(realpath ../)
 
-TARGET						= ThorsIOUtil Serialize ThorsStorage
+TARGET						= GitUtility ThorsIOUtil Serialize ThorsStorage
 
 include $(THORSANVIL_ROOT)/build/tools/Project.Makefile
 
