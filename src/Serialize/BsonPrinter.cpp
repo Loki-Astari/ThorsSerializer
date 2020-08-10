@@ -42,15 +42,15 @@ HEADER_ONLY_INCLUDE
 void BsonPrinter::addKey(std::string const& /*key*/)
 {}
 
-HEADER_ONLY_INCLUDE void BsonPrinter::addValue(short /*value*/)                 {}
+HEADER_ONLY_INCLUDE void BsonPrinter::addValue(short int /*value*/)             {}
 HEADER_ONLY_INCLUDE void BsonPrinter::addValue(int /*value*/)                   {}
-HEADER_ONLY_INCLUDE void BsonPrinter::addValue(long /*value*/)                  {}
-HEADER_ONLY_INCLUDE void BsonPrinter::addValue(long long /*value*/)             {}
+HEADER_ONLY_INCLUDE void BsonPrinter::addValue(long int /*value*/)              {}
+HEADER_ONLY_INCLUDE void BsonPrinter::addValue(long long int /*value*/)         {}
 
-HEADER_ONLY_INCLUDE void BsonPrinter::addValue(unsigned short /*value*/)        {}
+HEADER_ONLY_INCLUDE void BsonPrinter::addValue(unsigned short int /*value*/)    {}
 HEADER_ONLY_INCLUDE void BsonPrinter::addValue(unsigned int /*value*/)          {}
-HEADER_ONLY_INCLUDE void BsonPrinter::addValue(unsigned long /*value*/)         {}
-HEADER_ONLY_INCLUDE void BsonPrinter::addValue(unsigned long long /*value*/)    {}
+HEADER_ONLY_INCLUDE void BsonPrinter::addValue(unsigned long int /*value*/)     {}
+HEADER_ONLY_INCLUDE void BsonPrinter::addValue(unsigned long long int /*value*/){}
 
 HEADER_ONLY_INCLUDE void BsonPrinter::addValue(float /*value*/)                 {}
 HEADER_ONLY_INCLUDE void BsonPrinter::addValue(double /*value*/)                {}

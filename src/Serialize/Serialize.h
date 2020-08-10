@@ -206,11 +206,11 @@ class PrinterInterface
         virtual std::size_t getSizeArray(std::size_t /*count*/)     {return 0;}
         virtual std::size_t getSizeNull()                           {return 0;}
         virtual std::size_t getSizeEnum()                           {return 0;}
-        virtual std::size_t getSizeValue(short)                     {return 0;}
+        virtual std::size_t getSizeValue(short int)                 {return 0;}
         virtual std::size_t getSizeValue(int)                       {return 0;}
         virtual std::size_t getSizeValue(long int)                  {return 0;}
         virtual std::size_t getSizeValue(long long int)             {return 0;}
-        virtual std::size_t getSizeValue(unsigned short)            {return 0;}
+        virtual std::size_t getSizeValue(unsigned short int)        {return 0;}
         virtual std::size_t getSizeValue(unsigned int)              {return 0;}
         virtual std::size_t getSizeValue(unsigned long int)         {return 0;}
         virtual std::size_t getSizeValue(unsigned long long int)    {return 0;}
@@ -224,12 +224,12 @@ class PrinterInterface
 template<typename T>
 T scanValue(char const* buffer, char** end);
 
-template<>  inline short                   scanValue<short>(char const* buffer, char** end)                   {return std::strtol(buffer, end, 10);}
+template<>  inline short int               scanValue<short int>(char const* buffer, char** end)               {return std::strtol(buffer, end, 10);}
 template<>  inline int                     scanValue<int>(char const* buffer, char** end)                     {return std::strtol(buffer, end, 10);}
 template<>  inline long int                scanValue<long int>(char const* buffer, char** end)                {return std::strtol(buffer, end, 10);}
 template<>  inline long long int           scanValue<long long int>(char const* buffer, char** end)           {return std::strtoll(buffer, end, 10);}
 
-template<>  inline unsigned short          scanValue<unsigned short>(char const* buffer, char** end)          {return std::strtoul(buffer, end, 10);}
+template<>  inline unsigned short int      scanValue<unsigned short int>(char const* buffer, char** end)      {return std::strtoul(buffer, end, 10);}
 template<>  inline unsigned int            scanValue<unsigned int>(char const* buffer, char** end)            {return std::strtoul(buffer, end, 10);}
 template<>  inline unsigned long int       scanValue<unsigned long int>(char const* buffer, char** end)       {return std::strtoul(buffer, end, 10);}
 template<>  inline unsigned long long int  scanValue<unsigned long long int>(char const* buffer, char** end)  {return std::strtoull(buffer, end, 10);}
