@@ -6,6 +6,7 @@
  */
 
 #include "Serialize.h"
+#include "BsonUtil.h"
 #include <vector>
 
 namespace ThorsAnvil
@@ -16,6 +17,8 @@ namespace ThorsAnvil
 class BsonPrinter: public PrinterInterface
 {
     std::string currentKey;
+    std::vector<BsonContainer>  currentContainer;
+    std::vector<std::size_t>    arrayIndex;
     public:
         BsonPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
         virtual void openDoc()                                      override;

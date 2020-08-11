@@ -21,6 +21,7 @@ HEADER_ONLY_INCLUDE bool BsonPrinter::printerUsesSize()                         
 HEADER_ONLY_INCLUDE void BsonPrinter::openDoc()                                 {}
 HEADER_ONLY_INCLUDE void BsonPrinter::closeDoc()                                {}
 
+
 // Add a new Key
 HEADER_ONLY_INCLUDE
 void BsonPrinter::addKey(std::string const& key)
@@ -34,7 +35,16 @@ void BsonPrinter::writeKey(char value)
     if (!currentKey.empty())
     {
         output.write(&value, 1);
-        output.write(currentKey.c_str(), currentKey.size() + 1);
+        if (currentContainer.back() == BsonContainer::Array)
+        {
+            output << arrayIndex.back();
+            output.write("", 1);
+            ++arrayIndex.back();
+        }
+        else
+        {
+            output.write(currentKey.c_str(), currentKey.size() + 1);
+        }
     }
 }
 
@@ -62,12 +72,14 @@ void BsonPrinter::openMap(std::size_t size)
 {
     writeKey('\x03');
     writeSize<std::int32_t>(size);
+    currentContainer.emplace_back(BsonContainer::Array);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::closeMap()
 {
     output.write("",1);
+    currentContainer.pop_back();
 }
 
 // ARRAY
@@ -110,13 +122,17 @@ HEADER_ONLY_INCLUDE
 void BsonPrinter::openArray(std::size_t size)
 {
     writeKey('\x04');
+    currentKey = "OPEN";
     writeSize<std::int32_t>(size);
+    currentContainer.emplace_back(BsonContainer::Array);
+    arrayIndex.emplace_back(0);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::closeArray()
 {
     output.write("",1);
+    currentContainer.pop_back();
 }
 
 using IntTypes = std::tuple<std::int32_t, std::int64_t>;
