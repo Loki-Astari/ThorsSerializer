@@ -49,12 +49,19 @@ class BsonPrinter: public PrinterInterface
         virtual void addRawValue(std::string const& value)          override;
 
         virtual void addNull()                                      override;
+    private:
 
         void writeKey(char value);
         template<typename Int>
         void writeSize(Int size);
         template<std::size_t size, typename Int>
         void writeInt(Int value);
+        template<std::size_t size, typename Float>
+        void writeFloat(Float value);
+        void writeBool(bool value);
+        void writeString(std::string const& value);
+        void writeNull();
+        void writeBinary(std::string const& value);
 
         virtual bool        printerUsesSize()                       override;
         virtual std::size_t getSizeMap(std::size_t /*count*/)       override;
