@@ -211,7 +211,8 @@ HEADER_ONLY_INCLUDE void BsonPrinter::addRawValue(std::string const& value)     
 
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(float)                    {return 8;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(double)                   {return 8;}
-HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(long double)              {return 16;}
+HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(long double)              {return 8;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(bool)                     {return 1;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(std::string const& value) {return 4 + value.size() + 1;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeNull()                          {return 0;}
+// TODO Seems to be a missing size getter for the RawValue.

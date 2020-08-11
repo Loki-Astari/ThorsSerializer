@@ -5,6 +5,7 @@
 #include <map>
 #include <cstdlib>
 #include <cstring>
+#include <boost/endian/conversion.hpp>
 
 using namespace ThorsAnvil::Serialize;
 using ParserToken = ParserInterface::ParserToken;
@@ -38,56 +39,72 @@ void BsonParser::readKey()
     std::int64_t                valueInt64;
 #endif
 
+static constexpr ValueType intReadType[]    = {ValueType::Int32, ValueType::Int64};
+static constexpr ValueType floatReadType[]  = {ValueType::Double64, ValueType::Double128};
+
 HEADER_ONLY_INCLUDE
 template<std::size_t size, typename Int>
-Int BsonParser::readInt(bool)
+Int BsonParser::readSize(bool)
 {
-    //currentValue = Int32;
-    //currentValue = Int64;
-    Int x = 0;
-    return x;
+    Int docSize;
+    input.read(reinterpret_cast<char*>(&docSize), sizeof(docSize));
+    return boost::endian::little_to_native(size);
+}
+
+HEADER_ONLY_INCLUDE
+template<std::size_t size, typename Int>
+Int BsonParser::readInt(bool use)
+{
+    currentValue = intReadType[size/4 - 1];
+    return readSize<size, Int>(use);
 }
 
 HEADER_ONLY_INCLUDE
 template<std::size_t size>
 IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat(bool)
 {
+    currentValue = floatReadType[size/8 - 1];
     IEEE_754::_2008::Binary<size * 8> result;
     input.read(reinterpret_cast<char*>(&result), size);
-
-    if constexpr (size == 8)
-    {
-        currentValue = Double64;
-    }
-    else if constexpr (size == 16)
-    {
-        currentValue = Double128;
-    }
     return result;
 }
 
 HEADER_ONLY_INCLUDE
-void BsonParser::readBool(bool)
+bool BsonParser::readBool(bool)
 {
-    currentValue = Bool;
+    currentValue = ValueType::Bool;
+    bool result;
+    input.read(reinterpret_cast<char*>(&result) ,1);
+    return result;
 }
 
 HEADER_ONLY_INCLUDE
-void BsonParser::readString(bool)
+std::string BsonParser::readString(bool)
 {
-    currentValue = String;
+    currentValue = ValueType::String;
+    std::int32_t size = readSize<4, std::int32_t>(true);
+    std::string     result(size, '\0');
+    input.read(&result[0], size);
+    result.resize(size - 1);
+    return result;
 }
 
 HEADER_ONLY_INCLUDE
 void BsonParser::readNull(bool)
 {
-    currentValue = Null;
+    currentValue = ValueType::Null;
 }
 
 HEADER_ONLY_INCLUDE
-void BsonParser::readBinary(bool)
+std::string BsonParser::readBinary(bool)
 {
-    currentValue = Binary;
+    currentValue = ValueType::Binary;
+    std::int32_t size = readSize<4, std::int32_t>(true);
+    char subType;
+    input.read(reinterpret_cast<char*>(&subType), 1);
+    std::string result(size, '\0');
+    input.read(&result[0], size);
+    return result;
 }
 
 HEADER_ONLY_INCLUDE
@@ -185,15 +202,15 @@ void BsonParser::readValue(bool useValue)
 {
     switch (nextType)
     {
-        case '\x01':    valueFloat64 = readFloat<8>(useValue);     break;
-        case '\x02':    readString(useValue);       break;
-        case '\x05':    readBinary(useValue);       break;
-        case '\x08':    readBool(useValue);         break;
-        case '\x0A':    readNull(useValue);         break;
-        case '\x10':    valueInt32 = readInt<4, std::int32_t>(useValue);       break;
-        case '\x12':    valueInt64 = readInt<8, std::int64_t>(useValue);       break;
+        case '\x01':    valueFloat64    = readFloat<8>(useValue);                   break;
+        case '\x02':    valueString     = readString(useValue);                     break;
+        case '\x05':    valueBinary     = readBinary(useValue);                     break;
+        case '\x08':    valueBool       = readBool(useValue);                       break;
+        case '\x0A':                      readNull(useValue);                       break;
+        case '\x10':    valueInt32      = readInt<4, std::int32_t>(useValue);       break;
+        case '\x12':    valueInt64      = readInt<8, std::int64_t>(useValue);       break;
 #if 0
-        case '\x13':    valueFloat128 = readFloat<16>(useValue);    break;
+        case '\x13':    valueFloat128   = readFloat<16>(useValue);                  break;
 #endif
         default:
             throw std::runtime_error("ThorsAnvil::Serialize::BsonParser::getNextToken: Un-known Value type");
@@ -223,8 +240,8 @@ HEADER_ONLY_INCLUDE
 template<typename Int>
 Int BsonParser::returnIntValue()
 {
-    if (currentValue == Int32) {return valueInt32;}
-    if (currentValue == Int64) {return valueInt64;}
+    if (currentValue == ValueType::Int32) {return valueInt32;}
+    if (currentValue == ValueType::Int64) {return valueInt64;}
     badType();
 }
 
@@ -232,9 +249,9 @@ HEADER_ONLY_INCLUDE
 template<typename Float>
 Float BsonParser::returnFloatValue()
 {
-    if (currentValue == Double64)   {return valueFloat64;}
+    if (currentValue == ValueType::Double64)   {return valueFloat64;}
 #if 0
-    if (currentValue == Double128)  {return valueFloat128;}
+    if (currentValue == ValueType::Double128)  {return valueFloat128;}
 #endif
     badType();
 }
@@ -259,9 +276,9 @@ HEADER_ONLY_INCLUDE void BsonParser::getValue(float& value)                     
 HEADER_ONLY_INCLUDE void BsonParser::getValue(double& value)                        {value = returnFloatValue<double>();}
 HEADER_ONLY_INCLUDE void BsonParser::getValue(long double& value)                   {value = returnFloatValue<long double>();}
 
-HEADER_ONLY_INCLUDE void BsonParser::getValue(bool& value)                          {if (currentValue == Bool)      {value = valueBool;}    badType();}
-HEADER_ONLY_INCLUDE void BsonParser::getValue(std::string& value)                   {if (currentValue == String)    {value = valueString;}  badType();}
+HEADER_ONLY_INCLUDE void BsonParser::getValue(bool& value)                          {if (currentValue == ValueType::Bool)      {value = valueBool;}    badType();}
+HEADER_ONLY_INCLUDE void BsonParser::getValue(std::string& value)                   {if (currentValue == ValueType::String)    {value = valueString;}  badType();}
 
-HEADER_ONLY_INCLUDE bool BsonParser::isValueNull()                                  {return (currentValue == Null);}
+HEADER_ONLY_INCLUDE bool BsonParser::isValueNull()                                  {return (currentValue == ValueType::Null);}
 
-HEADER_ONLY_INCLUDE std::string BsonParser::getRawValue()                           {if (currentValue == Binary)    {return valueBinary;}   badType();}
+HEADER_ONLY_INCLUDE std::string BsonParser::getRawValue()                           {if (currentValue == ValueType::Binary)    {return valueBinary;}   badType();}

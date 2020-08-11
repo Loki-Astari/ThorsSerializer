@@ -29,11 +29,10 @@ namespace ThorsAnvil
     {
 
 enum class BsonContainer  {Map, Array};
+enum class ValueType {Int32, Int64, Double64, Double128, Bool, String, Null, Binary};
 
 class BsonParser: public ParserInterface
 {
-    enum ValueType {Int32, Int64, Double64, Double128, Bool, String, Null, Binary};
-
     std::vector<BsonContainer>  currentContainer;
     std::vector<std::size_t>    dataLeft;
     std::vector<std::size_t>    dataSize;
@@ -84,6 +83,9 @@ class BsonParser: public ParserInterface
         virtual std::string getRawValue()                       override;
     private:
 
+        template<std::size_t size, typename Int>
+        Int readSize(bool);
+
         template<typename Int>
         Int returnIntValue();
         template<typename Float>
@@ -98,10 +100,10 @@ class BsonParser: public ParserInterface
         template<std::size_t Size>
         IEEE_754::_2008::Binary<Size * 8> readFloat(bool);
 
-        void readBool(bool);
-        void readString(bool);
+        bool readBool(bool);
+        std::string readString(bool);
         void readNull(bool);
-        void readBinary(bool);
+        std::string readBinary(bool);
 
         [[noreturn]]
         void badType();
