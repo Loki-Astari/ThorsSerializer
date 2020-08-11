@@ -26,6 +26,10 @@
 #include <map>
 #include <functional>
 #include <memory>
+#include <utility>
+#include <type_traits>
+#include <stdexcept>
+#include <cstddef>
 
 /*
  * Macros for counting the number of arguments
@@ -402,36 +406,6 @@ namespace ThorsAnvil
     {
 
 /*
- * Defines the generic type that all serialization types can expand on
- */
-enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Serialize};
-
-/*
- * A class for holding multiple header types.
- * Multiple enheritance is a rare case but it does happen (has been requested).
- * Because we are using macros I can allow a comma seporated list of parents so we have to
- * group the types into a single unique type "Parents". Then we will specialize the parsing
- * and printing code to handle this as a special case.
- */
-template<typename... P>
-struct Parents: public std::tuple<P...> {};
-
-/*
- * To help the macros check the parent type we need to extract the type.
- * There is a special case when we use "Parents" to get the first type
- */
-template<typename T>
-struct GetPrimaryParentType
-{
-    using type = T;
-};
-template<typename... Args>
-struct GetPrimaryParentType<Parents<Args...>>
-{
-    using type = typename std::tuple_element<0, std::tuple<Args...>>::type;
-};
-
-/*
  * The traits type.
  * Specialized for each type we want to serialize
  */
@@ -570,6 +544,7 @@ struct ThorsAnvil_InitPolyMorphicType<T, false>
 {
     ThorsAnvil_InitPolyMorphicType(char const*){}
 };
+
 
     }
 }
