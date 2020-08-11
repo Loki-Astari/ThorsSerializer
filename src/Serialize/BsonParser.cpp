@@ -48,7 +48,7 @@ Int BsonParser::readSize(bool)
 {
     Int docSize;
     input.read(reinterpret_cast<char*>(&docSize), sizeof(docSize));
-    return boost::endian::little_to_native(size);
+    return boost::endian::little_to_native(docSize);
 }
 
 HEADER_ONLY_INCLUDE
@@ -56,6 +56,7 @@ template<std::size_t size, typename Int>
 Int BsonParser::readInt(bool use)
 {
     currentValue = intReadType[size/4 - 1];
+    dataLeft.back() -= size;
     return readSize<size, Int>(use);
 }
 
@@ -66,6 +67,7 @@ IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat(bool)
     currentValue = floatReadType[size/8 - 1];
     IEEE_754::_2008::Binary<size * 8> result;
     input.read(reinterpret_cast<char*>(&result), size);
+    dataLeft.back() -= size;
     return result;
 }
 
@@ -75,6 +77,7 @@ bool BsonParser::readBool(bool)
     currentValue = ValueType::Bool;
     bool result;
     input.read(reinterpret_cast<char*>(&result) ,1);
+    dataLeft.back() -= 1;
     return result;
 }
 
@@ -83,8 +86,10 @@ std::string BsonParser::readString(bool)
 {
     currentValue = ValueType::String;
     std::int32_t size = readSize<4, std::int32_t>(true);
+    dataLeft.back() -= 4;
     std::string     result(size, '\0');
     input.read(&result[0], size);
+    dataLeft.back() -= size;
     result.resize(size - 1);
     return result;
 }
@@ -100,10 +105,13 @@ std::string BsonParser::readBinary(bool)
 {
     currentValue = ValueType::Binary;
     std::int32_t size = readSize<4, std::int32_t>(true);
+    dataLeft.back() -= 4;
     char subType;
     input.read(reinterpret_cast<char*>(&subType), 1);
+    dataLeft.back() -= 1;
     std::string result(size, '\0');
     input.read(&result[0], size);
+    dataLeft.back() -= size;
     return result;
 }
 
@@ -126,15 +134,15 @@ ParserToken BsonParser::getNextToken()
         case ParserToken::MapStart:
         case ParserToken::ArrayStart:
         {
-            std::int32_t    size = readInt<4, std::int32_t>(true);
-            dataLeft.emplace_back(size);
+            std::int32_t    size = readSize<4, std::int32_t>(true);
             dataSize.emplace_back(size);
-            if (dataLeft.back() == 0)
+            dataLeft.emplace_back(size);
+            dataLeft.back() -= 4;
+            if (dataLeft.back() == 1)
             {
                 nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
                 break;
             }
-            readKey();
             nextToken = ParserToken::Key;
             break;
         }
@@ -143,6 +151,7 @@ ParserToken BsonParser::getNextToken()
         {
             char    mark;
             input.read(&mark, 1);
+            dataLeft.back() -= 1;
             if (mark != '\x00')
             {
                 throw std::runtime_error("Bad Marker");
@@ -162,12 +171,12 @@ ParserToken BsonParser::getNextToken()
                 nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
                 break;
             }
-            readKey();
             nextToken = ParserToken::Key;
             break;
         }
         case ParserToken::Key:
         {
+            readKey();
             nextToken = ParserToken::Value;
             if (nextType == '\x03')
             {
@@ -215,12 +224,11 @@ void BsonParser::readValue(bool useValue)
         default:
             throw std::runtime_error("ThorsAnvil::Serialize::BsonParser::getNextToken: Un-known Value type");
     }
-    if (dataLeft.back() == 0)
+    if (dataLeft.back() == 1)
     {
         nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
         return;
     }
-    readKey();
     nextToken = ParserToken::Key;
 }
 
