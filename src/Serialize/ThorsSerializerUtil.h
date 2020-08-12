@@ -152,26 +152,31 @@ class PrinterInterface
                 : characteristics(characteristics)
                 , polymorphicMarker(polymorphicMarker)
                 , catchExceptions(catchExceptions)
+                , parserInfo(0)
             {}
             PrinterConfig(std::string const& polymorphicMarker,
                           bool catchExceptions = true)
                 : characteristics(OutputType::Default)
                 , polymorphicMarker(polymorphicMarker)
                 , catchExceptions(catchExceptions)
+                , parserInfo(0)
             {}
             PrinterConfig(bool catchExceptions)
                 : characteristics(OutputType::Default)
                 , polymorphicMarker(defaultPolymorphicMarker)
                 , catchExceptions(catchExceptions)
+                , parserInfo(0)
             {}
             PrinterConfig(OutputType characteristic, bool catchExceptions)
                 : characteristics(characteristic)
                 , polymorphicMarker(defaultPolymorphicMarker)
                 , catchExceptions(catchExceptions)
+                , parserInfo(0)
             {}
             OutputType      characteristics;
             std::string     polymorphicMarker;
             bool            catchExceptions;
+            long            parserInfo;
         };
         // Default:     What ever the implementation likes.
         // Stream:      Compressed for over the wire protocol.

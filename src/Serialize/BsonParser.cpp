@@ -123,7 +123,21 @@ ParserToken BsonParser::getNextToken()
     {
         case ParserToken::DocStart:
         {
-            nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapStart : ParserToken::ArrayStart;
+            switch (currentContainer.back())
+            {
+                case BsonContainer::Map:    nextToken = ParserToken::MapStart;  break;
+                case BsonContainer::Array:  nextToken = ParserToken::ArrayStart;break;
+                case BsonContainer::Value:
+                {
+                    nextToken = ParserToken::Key;
+                    currentContainer.emplace_back(BsonContainer::Value);
+                    std::int32_t    size = readSize<4, std::int32_t>(true);
+                    dataSize.emplace_back(size);
+                    dataLeft.emplace_back(size);
+                    dataLeft.back() -= 4;
+                    break;
+                }
+            }
             break;
         }
         case ParserToken::DocEnd:
@@ -168,10 +182,9 @@ ParserToken BsonParser::getNextToken()
             dataSize.pop_back();
             if (dataLeft.back() == 1)
             {
-                nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
+                nextToken = ParserToken::Key;
                 break;
             }
-            nextToken = ParserToken::Key;
             break;
         }
         case ParserToken::Key:
@@ -188,11 +201,13 @@ ParserToken BsonParser::getNextToken()
                 currentContainer.push_back(BsonContainer::Array);
                 nextToken = ParserToken::ArrayStart;
             }
-            if (currentContainer.back() == BsonContainer::Array)
+            if (currentContainer.back() == BsonContainer::Array || currentContainer.back() == BsonContainer::Value)
             {
-                return getNextToken();
+                return getNextToken();;
             }
             break;
+            // Array and Value fall through to read the value we
+            // Want to extract next.
         }
         case ParserToken::Value:
         {
@@ -226,7 +241,18 @@ void BsonParser::readValue(bool useValue)
     }
     if (dataLeft.back() == 1)
     {
-        nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
+        switch (currentContainer.back())
+        {
+            case BsonContainer::Map:    nextToken = ParserToken::MapEnd;    break;
+            case BsonContainer::Array:  nextToken = ParserToken::ArrayEnd;  break;
+            case BsonContainer::Value:
+            {
+                nextToken = ParserToken::DocEnd;
+                input.ignore();
+                break;
+            }
+        }
+
         return;
     }
     nextToken = ParserToken::Key;

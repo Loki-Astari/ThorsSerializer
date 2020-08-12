@@ -19,7 +19,16 @@ BsonPrinter::BsonPrinter(std::ostream& output, PrinterConfig config)
 HEADER_ONLY_INCLUDE bool BsonPrinter::printerUsesSize()                         {return true;}
 
 HEADER_ONLY_INCLUDE void BsonPrinter::openDoc()                                 {}
-HEADER_ONLY_INCLUDE void BsonPrinter::closeDoc()                                {}
+HEADER_ONLY_INCLUDE void BsonPrinter::closeDoc()
+{
+    if (config.parserInfo == static_cast<long>(BsonContainer::Value))
+    {
+        // The Map and Array close themselves.
+        // But values need to be closed here.
+        // See:  writeKey() for details.
+        output.write("", 1);
+    }
+}
 
 
 // Add a new Key
@@ -30,7 +39,7 @@ void BsonPrinter::addKey(std::string const& key)
 }
 
 HEADER_ONLY_INCLUDE
-void BsonPrinter::writeKey(char value)
+void BsonPrinter::writeKey(char value, std::size_t size)
 {
     if (!currentContainer.empty())
     {
@@ -45,6 +54,20 @@ void BsonPrinter::writeKey(char value)
         {
             output.write(currentKey.c_str(), currentKey.size() + 1);
         }
+    }
+    else if (size != 0)
+    {
+        // This happens if you try and write a basic type directly to the stream.
+        // BSON only supports Map/Array as the top level object.
+        // So when we write a single value we wrap it just like an array.
+        //
+        // <4 byte Doc Size> <1 byte Type info> <2 byte Index "0"> <value> <1 byte doc term>
+        std::int32_t totalSize = 4 + 1 + 2 + size + 1;
+        writeSize(totalSize);
+        output.write(&value, 1);
+        output.write("0", 2);
+        // The value will now write itself.
+        // then the docClose() will at the document terminator.
     }
 }
 
@@ -70,7 +93,7 @@ std::size_t BsonPrinter::getSizeMap(std::size_t count)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::openMap(std::size_t size)
 {
-    writeKey('\x03');
+    writeKey('\x03', 0);
     writeSize<std::int32_t>(size);
     currentContainer.emplace_back(BsonContainer::Map);
 }
@@ -121,7 +144,7 @@ std::size_t BsonPrinter::getSizeArray(std::size_t count)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::openArray(std::size_t size)
 {
-    writeKey('\x04');
+    writeKey('\x04', 0);
     writeSize<std::int32_t>(size);
     currentContainer.emplace_back(BsonContainer::Array);
     arrayIndex.emplace_back(0);
@@ -147,7 +170,7 @@ void BsonPrinter::writeInt(Int value)
     using IntType = typename std::tuple_element<Size/4 - 1, IntTypes>::type;
 
     IntType             output = value;
-    writeKey(intKey[Size/4 - 1]);
+    writeKey(intKey[Size/4 - 1], Size);
     writeSize<IntType>(output);
 }
 
@@ -156,14 +179,14 @@ template<std::size_t Size, typename Float>
 void BsonPrinter::writeFloat(Float value)
 {
     IEEE_754::_2008::Binary<Size * 8>   outputValue = value;
-    writeKey(floatKey[Size/8 - 1]);
+    writeKey(floatKey[Size/8 - 1], Size);
     output.write(reinterpret_cast<char*>(&outputValue), Size);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeBool(bool value)
 {
-    writeKey('\x08');
+    writeKey('\x08', 1);
     char outVal = (value ? '\x01' : '\x00');
     output.write(&outVal, 1);
 }
@@ -171,7 +194,7 @@ void BsonPrinter::writeBool(bool value)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeString(std::string const& value)
 {
-    writeKey('\x02');
+    writeKey('\x02', 4 + value.size() + 1);
     writeSize<std::int32_t>(value.size() + 1);
     output.write(value.c_str(), value.size() + 1);
 }
@@ -179,13 +202,13 @@ void BsonPrinter::writeString(std::string const& value)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeNull()
 {
-    writeKey('\x0A');
+    writeKey('\x0A', 0);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeBinary(std::string const& value)
 {
-    writeKey('\x05');    // binary
+    writeKey('\x05', 4 + 1 + value.size());    // binary
     writeSize<std::int32_t>(value.size());
     output.write("\x80", 1);
     output.write(value.c_str(), value.size());

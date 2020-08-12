@@ -54,7 +54,7 @@ class BsonPrinter: public PrinterInterface
         virtual void addNull()                                      override;
     private:
 
-        void writeKey(char value);
+        void writeKey(char value, std::size_t size);
         template<typename Int>
         void writeSize(Int size);
         template<std::size_t size, typename Int>
