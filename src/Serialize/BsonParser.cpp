@@ -166,7 +166,7 @@ ParserToken BsonParser::getNextToken()
             }
             dataLeft.back() -= dataSize.back();
             dataSize.pop_back();
-            if (dataLeft.back() == 0)
+            if (dataLeft.back() == 1)
             {
                 nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
                 break;
@@ -234,9 +234,7 @@ void BsonParser::readValue(bool useValue)
 
 HEADER_ONLY_INCLUDE
 void BsonParser::ignoreDataValue()
-{
-    readValue(false);
-}
+{}
 
 HEADER_ONLY_INCLUDE
 std::string BsonParser::getKey()

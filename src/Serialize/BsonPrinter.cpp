@@ -32,7 +32,7 @@ void BsonPrinter::addKey(std::string const& key)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeKey(char value)
 {
-    if (!currentKey.empty())
+    if (!currentContainer.empty())
     {
         output.write(&value, 1);
         if (currentContainer.back() == BsonContainer::Array)
@@ -72,7 +72,7 @@ void BsonPrinter::openMap(std::size_t size)
 {
     writeKey('\x03');
     writeSize<std::int32_t>(size);
-    currentContainer.emplace_back(BsonContainer::Array);
+    currentContainer.emplace_back(BsonContainer::Map);
 }
 
 HEADER_ONLY_INCLUDE
@@ -122,7 +122,6 @@ HEADER_ONLY_INCLUDE
 void BsonPrinter::openArray(std::size_t size)
 {
     writeKey('\x04');
-    currentKey = "OPEN";
     writeSize<std::int32_t>(size);
     currentContainer.emplace_back(BsonContainer::Array);
     arrayIndex.emplace_back(0);
