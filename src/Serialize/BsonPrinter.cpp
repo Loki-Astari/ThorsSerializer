@@ -55,7 +55,7 @@ void BsonPrinter::writeKey(char value, std::size_t size)
             output.write(currentKey.c_str(), currentKey.size() + 1);
         }
     }
-    else if (size != 0)
+    else if (size != static_cast<std::size_t>(-1))
     {
         // This happens if you try and write a basic type directly to the stream.
         // BSON only supports Map/Array as the top level object.
@@ -93,7 +93,7 @@ std::size_t BsonPrinter::getSizeMap(std::size_t count)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::openMap(std::size_t size)
 {
-    writeKey('\x03', 0);
+    writeKey('\x03', -1);
     writeSize<std::int32_t>(size);
     currentContainer.emplace_back(BsonContainer::Map);
 }
@@ -144,7 +144,7 @@ std::size_t BsonPrinter::getSizeArray(std::size_t count)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::openArray(std::size_t size)
 {
-    writeKey('\x04', 0);
+    writeKey('\x04', -1);
     writeSize<std::int32_t>(size);
     currentContainer.emplace_back(BsonContainer::Array);
     arrayIndex.emplace_back(0);

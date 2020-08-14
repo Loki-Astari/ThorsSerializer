@@ -184,9 +184,20 @@ ParserToken BsonParser::getNextToken()
             dataSize.pop_back();
             if (dataLeft.back() == 1)
             {
-                nextToken = ParserToken::Key;
+                switch (currentContainer.back())
+                {
+                    case BsonContainer::Map:    nextToken = ParserToken::MapEnd;    break;
+                    case BsonContainer::Array:  nextToken = ParserToken::ArrayEnd;  break;
+                    case BsonContainer::Value:
+                    {
+                        nextToken = ParserToken::DocEnd;
+                        input.ignore();
+                        break;
+                    }
+                }
                 break;
             }
+            nextToken = ParserToken::Key;
             break;
         }
         case ParserToken::Key:
