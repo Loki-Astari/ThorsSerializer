@@ -204,6 +204,7 @@ ParserToken BsonParser::getNextToken()
         {
             readKey();
             nextToken = ParserToken::Value;
+            BsonContainer   currentContainerType = currentContainer.back();
             if (nextType == '\x03')
             {
                 currentContainer.push_back(BsonContainer::Map);
@@ -214,7 +215,7 @@ ParserToken BsonParser::getNextToken()
                 currentContainer.push_back(BsonContainer::Array);
                 nextToken = ParserToken::ArrayStart;
             }
-            if (currentContainer.back() == BsonContainer::Array || currentContainer.back() == BsonContainer::Value)
+            if (currentContainerType == BsonContainer::Array || currentContainerType == BsonContainer::Value)
             {
                 return getNextToken();;
             }
