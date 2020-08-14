@@ -52,7 +52,8 @@ class BsonPrinter: public PrinterInterface
         virtual void addRawValue(std::string const& value)          override;
 
         virtual void addNull()                                      override;
-    private:
+    protected:
+        // Protected to allow unit tests
 
         void writeKey(char value, std::size_t size);
         template<typename Int>
@@ -83,6 +84,7 @@ class BsonPrinter: public PrinterInterface
         virtual std::size_t getSizeValue(long double)               override;
         virtual std::size_t getSizeValue(bool)                      override;
         virtual std::size_t getSizeValue(std::string const&)        override;
+        virtual std::size_t getSizeRaw(std::size_t)                 override;
 };
 
     }

@@ -35,6 +35,10 @@ HEADER_ONLY_INCLUDE void BsonPrinter::closeDoc()
 HEADER_ONLY_INCLUDE
 void BsonPrinter::addKey(std::string const& key)
 {
+    if (currentContainer.back() != BsonContainer::Map)
+    {
+        throw std::runtime_error("Adding a Key to a non map object");
+    }
     currentKey = key;
 }
 
@@ -101,6 +105,10 @@ void BsonPrinter::openMap(std::size_t size)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::closeMap()
 {
+    if (currentContainer.back() != BsonContainer::Map)
+    {
+        throw std::runtime_error("Closing an unopened Array");
+    }
     output.write("",1);
     currentContainer.pop_back();
 }
@@ -153,8 +161,13 @@ void BsonPrinter::openArray(std::size_t size)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::closeArray()
 {
+    if (currentContainer.back() != BsonContainer::Array)
+    {
+        throw std::runtime_error("Closing an unopened Array");
+    }
     output.write("",1);
     currentContainer.pop_back();
+    arrayIndex.pop_back();
 }
 
 using IntTypes = std::tuple<std::int32_t, std::int64_t>;
@@ -254,4 +267,4 @@ HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(long double)          
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(bool)                     {return 1;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(std::string const& value) {return 4 + value.size() + 1;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeNull()                          {return 0;}
-// TODO Seems to be a missing size getter for the RawValue.
+HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeRaw(std::size_t size)           {return 4 + 1 + size;}

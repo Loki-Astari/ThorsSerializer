@@ -331,6 +331,7 @@ class PrinterInterface
         virtual std::size_t getSizeValue(long double)               {return 0;}
         virtual std::size_t getSizeValue(bool)                      {return 0;}
         virtual std::size_t getSizeValue(std::string const&)        {return 0;}
+        virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 };
 
 template<typename T, bool = HasParent<T>::value>
