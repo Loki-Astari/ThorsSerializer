@@ -4,12 +4,102 @@
 #include <type_traits>
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <cstddef>
 
 namespace ThorsAnvil
 {
     namespace Serialize
     {
+
+struct EscapeString
+{
+    std::string const& value;
+    EscapeString(std::string const& value)
+        : value(value)
+    {}
+    friend std::ostream& operator<<(std::ostream& stream, EscapeString const& data)
+    {
+        std::string const& value = data.value;
+
+        static auto isEscape = [](char c)
+        {
+            return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
+        };
+
+        auto begin  = std::begin(value);
+        auto end    = std::end(value);
+        auto next = std::find_if(begin, end, isEscape);
+        if (next == end)
+        {
+            stream << value;
+        }
+        else
+        {
+            while (next != end)
+            {
+                stream << std::string(begin, next);
+                if (*next == '"')
+                {
+                    stream << R"(\")";
+                    ++next;
+                }
+                else if (*next == '\\')
+                {
+                    stream << R"(\\)";
+                    ++next;
+                }
+                else if (*next == 0x08)
+                {
+                    stream << R"(\b)";
+                    ++next;
+                }
+                else if (*next == 0x0C)
+                {
+                    stream << R"(\f)";
+                    ++next;
+                }
+                else if (*next == 0x0A)
+                {
+                    stream << R"(\n)";
+                    ++next;
+                }
+                else if (*next == 0x0D)
+                {
+                    stream << R"(\r)";
+                    ++next;
+                }
+                else if (*next == 0x09)
+                {
+                    stream << R"(\t)";
+                    ++next;
+                }
+                else
+                {
+                    stream << R"(\u)"
+                           << std::setw(4)
+                           << std::setfill('0')
+                           << std::hex
+                           << static_cast<unsigned int>(static_cast<unsigned char>(*next))
+                           << std::dec;
+                    ++next;
+                }
+                /*
+                else
+                {
+                    110xxxxx
+
+                    stream << R("\u") << std::setw(4) << std::setfill('0') << std::hex << codepoint;
+                }
+                */
+                begin = next;
+                next = std::find_if(begin, end, isEscape);
+            }
+            stream << std::string(begin, end);
+        }
+        return stream;
+    }
+};
 
 extern std::string const defaultPolymorphicMarker;
 

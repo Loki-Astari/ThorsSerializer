@@ -196,7 +196,8 @@ void BsonPrinter::writeString(std::string const& value)
 {
     writeKey('\x02', 4 + value.size() + 1);
     writeSize<std::int32_t>(value.size() + 1);
-    output.write(value.c_str(), value.size() + 1);
+    output << EscapeString(value);
+    output.write("", 1);
 }
 
 HEADER_ONLY_INCLUDE
@@ -220,11 +221,11 @@ struct MaxTemplate
     static constexpr std::size_t value = (lhs >= rhs) ? lhs : rhs;
 };
 
-HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(short int)                {return sizeof(short int);}
+HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(short int)                {return MaxTemplate<sizeof(short int), 4>::value;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(int)                      {return sizeof(int);}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(long int)                 {return sizeof(long int);}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(long long int)            {return sizeof(long long int);}
-HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned short int)       {return sizeof(unsigned short int);}
+HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned short int)       {return MaxTemplate<sizeof(unsigned short int), 4>::value;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned int)             {return sizeof(unsigned int);}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned long int)        {return sizeof(unsigned long int);}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned long long int)   {return sizeof(unsigned long long int);}

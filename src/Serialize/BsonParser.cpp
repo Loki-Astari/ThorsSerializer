@@ -300,8 +300,8 @@ HEADER_ONLY_INCLUDE
 template<typename Int>
 Int BsonParser::returnIntValue()
 {
-    if (currentValue == ValueType::Int32) {return valueInt32;}
-    if (currentValue == ValueType::Int64) {return valueInt64;}
+    if (currentValue == ValueType::Int32)       {return valueInt32;}
+    if (currentValue == ValueType::Int64)       {return valueInt64;}
     badType();
 }
 
@@ -309,9 +309,11 @@ HEADER_ONLY_INCLUDE
 template<typename Float>
 Float BsonParser::returnFloatValue()
 {
-    if (currentValue == ValueType::Double64)   {return valueFloat64;}
+    if (currentValue == ValueType::Int32)       {return valueInt32;}
+    if (currentValue == ValueType::Int64)       {return valueInt64;}
+    if (currentValue == ValueType::Double64)    {return valueFloat64;}
 #if 0
-    if (currentValue == ValueType::Double128)  {return valueFloat128;}
+    if (currentValue == ValueType::Double128)   {return valueFloat128;}
 #endif
     badType();
 }
@@ -336,9 +338,26 @@ HEADER_ONLY_INCLUDE void BsonParser::getValue(float& value)                     
 HEADER_ONLY_INCLUDE void BsonParser::getValue(double& value)                        {value = returnFloatValue<double>();}
 HEADER_ONLY_INCLUDE void BsonParser::getValue(long double& value)                   {value = returnFloatValue<long double>();}
 
-HEADER_ONLY_INCLUDE void BsonParser::getValue(bool& value)                          {if (currentValue == ValueType::Bool)      {value = valueBool;}    badType();}
-HEADER_ONLY_INCLUDE void BsonParser::getValue(std::string& value)                   {if (currentValue == ValueType::String)    {value = valueString;}  badType();}
+HEADER_ONLY_INCLUDE void BsonParser::getValue(bool& value)                          {if (currentValue != ValueType::Bool)      {badType();}value = valueBool;}
+HEADER_ONLY_INCLUDE void BsonParser::getValue(std::string& value)                   {if (currentValue != ValueType::String)    {badType();}value = valueString;}
 
 HEADER_ONLY_INCLUDE bool BsonParser::isValueNull()                                  {return (currentValue == ValueType::Null);}
 
-HEADER_ONLY_INCLUDE std::string BsonParser::getRawValue()                           {if (currentValue == ValueType::Binary)    {return valueBinary;}   badType();}
+HEADER_ONLY_INCLUDE std::string BsonParser::getRawValue()
+{
+    switch (currentValue)
+    {
+        case ValueType::Int32:          return std::to_string(valueInt32);
+        case ValueType::Int64:          return std::to_string(valueInt64);
+        case ValueType::Double64:       return std::to_string(valueFloat64);
+#if 0
+        case ValueType::Double128:      return std::to_string(valueFloat128);
+#endif
+        case ValueType::Bool:           return valueBool ? "true" : "false";
+        case ValueType::String:         return std::string("\"") + valueString + "\"";
+        case ValueType::Null:           return "null";
+        case ValueType::Binary:         return valueBinary;
+        default:
+            throw std::runtime_error("Invalid Type from RAW");
+    }
+}
