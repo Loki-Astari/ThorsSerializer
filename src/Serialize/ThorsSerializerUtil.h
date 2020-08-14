@@ -393,7 +393,7 @@ class Traits<TYPE>                                                  \
 {                                                                   \
     public:                                                         \
         static constexpr TraitType type = TraitType::Value;         \
-        static std::size_t getPrintSize(PrinterInterface& printer, TYPE const& value) \
+        static std::size_t getPrintSize(PrinterInterface& printer, TYPE const& value, bool) \
         {                                                           \
             return printer.getSizeValue(value);                     \
         }                                                           \
@@ -452,11 +452,11 @@ class Traits<T*>
         static constexpr TraitType type = TraitType::Pointer;
         static T*   alloc()         {return new T;}
         static void release(T* p)   {delete p;}
-        static std::size_t getPrintSize(PrinterInterface& printer, T* object)
+        static std::size_t getPrintSize(PrinterInterface& printer, T* object, bool)
         {
             if (object)
             {
-                return Traits<T>::getPrintSize(printer, *object);
+                return Traits<T>::getPrintSize(printer, *object, true);
             }
             return printer.getSizeNull();
         }

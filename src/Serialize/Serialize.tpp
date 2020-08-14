@@ -555,7 +555,7 @@ class SerializerForBlock
     PrinterInterface&   printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer& parent, PrinterInterface& printer, T const& object)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer, T const& object, bool poly = false)
             : parent(parent)
             , printer(printer)
             , object(object)
@@ -563,7 +563,7 @@ class SerializerForBlock
             std::size_t size = 0;
             if (printer.printerUsesSize())
             {
-                size = Traits<T>::getPrintSize(printer, object);
+                size = Traits<T>::getPrintSize(printer, object, poly);
             }
             printer.openMap(size);
         }
@@ -590,7 +590,7 @@ class SerializerForBlock<TraitType::Value, T>
     PrinterInterface&   printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object, bool /*poly*/ = false)
             : parent(parent)
             , printer(printer)
             , object(object)
@@ -608,7 +608,7 @@ class SerializerForBlock<TraitType::Serialize, T>
     PrinterInterface&   printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object, bool /*poly*/ = false)
             : parent(parent)
             , printer(printer)
             , object(object)
@@ -652,7 +652,7 @@ template<typename T>
 void printPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object)
 {
     using BaseType = typename std::remove_pointer<T>::type;
-    SerializerForBlock<ThorsAnvil::Serialize::Traits<BaseType>::type, BaseType>  block(parent, printer, object);
+    SerializerForBlock<ThorsAnvil::Serialize::Traits<BaseType>::type, BaseType>  block(parent, printer, object, true);
 
     // Note the call to printPolyMorphicMembers() rather than printMembers()
     // this adds the "__type": "<Type Name>"
@@ -666,7 +666,7 @@ class SerializerForBlock<TraitType::Pointer, T>
     PrinterInterface&   printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object, bool /*poly*/ = false)
             : parent(parent)
             , printer(printer)
             , object(object)
@@ -693,7 +693,7 @@ class SerializerForBlock<TraitType::Enum, T>
     PrinterInterface&   printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object, bool /*poly*/ = false)
             : parent(parent)
             , printer(printer)
             , object(object)
@@ -712,7 +712,7 @@ class SerializerForBlock<TraitType::Array, T>
     PrinterInterface& printer;
     T const&            object;
     public:
-        SerializerForBlock(Serializer& parent, PrinterInterface& printer, T const& object)
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer, T const& object, bool /*poly*/ = false)
             : parent(parent)
             , printer(printer)
             , object(object)
@@ -720,7 +720,7 @@ class SerializerForBlock<TraitType::Array, T>
             std::size_t size = 0;
             if (printer.printerUsesSize())
             {
-                size = Traits<T>::getPrintSize(printer, object);
+                size = Traits<T>::getPrintSize(printer, object, false);
             }
             printer.openArray(size);
         }

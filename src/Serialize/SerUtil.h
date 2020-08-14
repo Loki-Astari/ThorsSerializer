@@ -65,13 +65,13 @@ namespace ThorsAnvil
 template<typename C, typename T>
 struct MapLike
 {
-    static std::size_t getPrintSize(PrinterInterface& printer, C const& object)
+    static std::size_t getPrintSize(PrinterInterface& printer, C const& object, bool)
     {
         std::size_t result = printer.getSizeMap(std::size(object));
         for (auto const& value: object)
         {
             result += std::size(value.first);
-            result += Traits<T>::getPrintSize(printer, value.second);
+            result += Traits<T>::getPrintSize(printer, value.second, false);
         }
         return result;
     }
@@ -80,12 +80,12 @@ struct MapLike
 template<typename C, typename T>
 struct ArrayLike
 {
-    static std::size_t getPrintSize(PrinterInterface& printer, C const& object)
+    static std::size_t getPrintSize(PrinterInterface& printer, C const& object, bool)
     {
         std::size_t result = printer.getSizeArray(std::size(object));
         for (auto const& val: object)
         {
-            result += Traits<T>::getPrintSize(printer, val);
+            result += Traits<T>::getPrintSize(printer, val, false);
         }
         return result;
     }
@@ -241,13 +241,13 @@ class Traits<std::pair<F, S>>
             static constexpr Members members{ REP_N(THOR_VALUEACTION, 00, Self, first, second, 1) };
             return members;
         }
-        static std::size_t getPrintSize(PrinterInterface& printer, std::pair<F, S> const& object)
+        static std::size_t getPrintSize(PrinterInterface& printer, std::pair<F, S> const& object, bool)
         {
             return printer.getSizeMap(2)
                  + strlen("first")
                  + strlen("second")
-                 + Traits<typename std::decay<F>::type>::getPrintSize(printer, object.first)
-                 + Traits<typename std::decay<S>::type>::getPrintSize(printer, object.second);
+                 + Traits<typename std::decay<F>::type>::getPrintSize(printer, object.first, false)
+                 + Traits<typename std::decay<S>::type>::getPrintSize(printer, object.second, false);
         }
 };
 
@@ -853,7 +853,7 @@ class Traits<std::tuple<Args...>>
         template<typename E>
         static std::size_t getPrintSizeElement(PrinterInterface& printer, E const& object)
         {
-            return Traits<E>::getPrintSize(printer, object);
+            return Traits<E>::getPrintSize(printer, object, false);
         }
 
         template<std::size_t... Seq>
@@ -864,7 +864,7 @@ class Traits<std::tuple<Args...>>
            for (auto value: parts) {result += value;}
            return result;
         }
-        static std::size_t getPrintSize(PrinterInterface& printer, std::tuple<Args...> const& object)
+        static std::size_t getPrintSize(PrinterInterface& printer, std::tuple<Args...> const& object, bool)
         {
             std::size_t result = printer.getSizeArray(sizeof...(Args));
             result += getPrintSizeAllElement(printer, object, std::make_index_sequence<sizeof...(Args)>());
@@ -885,11 +885,11 @@ class Traits<std::unique_ptr<T>>
         static constexpr TraitType type = TraitType::Pointer;
         static std::unique_ptr<T>   alloc()         {return std::make_unique<T>();}
         static void release(std::unique_ptr<T>& p)  {p.reset();}
-        static std::size_t getPrintSize(PrinterInterface& printer, std::unique_ptr<T> const& object)
+        static std::size_t getPrintSize(PrinterInterface& printer, std::unique_ptr<T> const& object, bool)
         {
             if (object)
             {
-                return Traits<T>::getPrintSize(printer, *object);
+                return Traits<T>::getPrintSize(printer, *object, true);
             }
             return printer.getSizeNull();
         }
@@ -907,6 +907,14 @@ class Traits<std::shared_ptr<T>>
         static constexpr TraitType type = TraitType::Pointer;
         static std::shared_ptr<T>   alloc()         {return std::make_shared<T>();}
         static void release(std::shared_ptr<T>& p)  {p.reset();}
+        static std::size_t getPrintSize(PrinterInterface& printer, std::shared_ptr<T> const& object, bool)
+        {
+            if (object)
+            {
+                return Traits<T>::getPrintSize(printer, *object, true);
+            }
+            return printer.getSizeNull();
+        }
 };
 
 
