@@ -15,6 +15,7 @@ using ParserToken = ParserInterface::ParserToken;
 HEADER_ONLY_INCLUDE
 BsonParser::BsonParser(std::istream& stream, ParserConfig config)
     : ParserInterface(stream, config)
+    , currentValue(ValueType::Obj)
 {
     currentContainer.emplace_back(static_cast<BsonContainer>(config.parserInfo));
     nextToken = ParserToken::DocStart;
@@ -119,6 +120,7 @@ HEADER_ONLY_INCLUDE
 ParserToken BsonParser::getNextToken()
 {
     ParserToken result = nextToken;
+    currentValue    = ValueType::Obj;
     switch (nextToken)
     {
         case ParserToken::DocStart:
@@ -217,7 +219,21 @@ ParserToken BsonParser::getNextToken()
         default:
             throw std::runtime_error("Bad State");
     }
-
+#if 0
+    switch (result)
+    {
+        case ParserToken::Error: std::cerr << "Error";
+        case ParserToken::DocStart:  std::cerr << "DocStart";    break;
+        case ParserToken::DocEnd:    std::cerr << "DocEnd";      break;
+        case ParserToken::MapStart:  std::cerr << "MapStart";    break;
+        case ParserToken::MapEnd:    std::cerr << "MapEnd";      break;
+        case ParserToken::ArrayStart:std::cerr << "ArrayStart";  break;
+        case ParserToken::ArrayEnd:  std::cerr << "ArrayEnd";    break;
+        case ParserToken::Key:       std::cerr << "Key";         break;
+        case ParserToken::Value:     std::cerr << "Value";       break;
+    }
+    std::cerr << "\n";
+#endif
     return result;
 }
 
