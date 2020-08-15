@@ -7,7 +7,7 @@
 
 namespace TS = ThorsAnvil::Serialize;
 
-TEST(SetUnorderedMapTest, Jsonserialize)
+TEST(SerUnorderedMapTest, Jsonserialize)
 {
     std::unordered_map<int, double>  data;
     data[56]    = 78.901;
@@ -20,7 +20,7 @@ TEST(SetUnorderedMapTest, Jsonserialize)
     EXPECT_EQ(result, R"([{"first":56,"second":78.901}])");
 }
 
-TEST(SetUnorderedMapTest, JsondeSerialize)
+TEST(SerUnorderedMapTest, JsondeSerialize)
 {
     std::unordered_map<int, double>  data;
 
@@ -31,7 +31,7 @@ TEST(SetUnorderedMapTest, JsondeSerialize)
     EXPECT_EQ(data[118], 14);
 }
 
-TEST(SetUnorderedMapTest, JsonserializeStringKey)
+TEST(SerUnorderedMapTest, JsonserializeStringKey)
 {
     std::unordered_map<std::string, double>  data;
     data["AStringKey"]      = 78.902;
@@ -47,7 +47,7 @@ TEST(SetUnorderedMapTest, JsonserializeStringKey)
     EXPECT_TRUE(test);
 }
 
-TEST(SetUnorderedMapTest, JsondeSerializeStringKey)
+TEST(SerUnorderedMapTest, JsondeSerializeStringKey)
 {
     std::unordered_map<std::string, bool>  data;
 
@@ -59,7 +59,7 @@ TEST(SetUnorderedMapTest, JsondeSerializeStringKey)
     EXPECT_EQ(data["OfMiceAndMen"], true);
 }
 
-TEST(SetUnorderedMapTest, Bsonserialize)
+TEST(SerUnorderedMapTest, Bsonserialize)
 {
     std::unordered_map<int, double>  data;
     data[56]    = 78.901;
@@ -81,7 +81,7 @@ TEST(SetUnorderedMapTest, Bsonserialize)
     //EXPECT_EQ(result, R"([{"first":56,"second":78.901}])");
 }
 
-TEST(SetUnorderedMapTest, BsondeSerialize)
+TEST(SerUnorderedMapTest, BsondeSerialize)
 {
     std::unordered_map<int, double>  data;
 
@@ -107,7 +107,7 @@ TEST(SetUnorderedMapTest, BsondeSerialize)
     EXPECT_EQ(data[118], 14);
 }
 
-TEST(SetUnorderedMapTest, BsonserializeStringKey)
+TEST(SerUnorderedMapTest, BsonserializeStringKey)
 {
     std::unordered_map<std::string, double>  data;
     data["AStringKey"]      = 78.902;
@@ -137,7 +137,7 @@ TEST(SetUnorderedMapTest, BsonserializeStringKey)
     EXPECT_TRUE(test);
 }
 
-TEST(SetUnorderedMapTest, BsondeSerializeStringKey)
+TEST(SerUnorderedMapTest, BsondeSerializeStringKey)
 {
     std::unordered_map<std::string, bool>  data;
 
