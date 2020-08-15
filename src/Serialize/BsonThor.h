@@ -25,7 +25,7 @@ namespace ThorsAnvil
 template<typename T, TraitType trait = Traits<T>::type>
 struct BsonBaseTypeGetter
 {
-    static const BsonContainer value = BsonContainer::Value;
+    static constexpr BsonContainer value = BsonContainer::Value;
     static void validate(T const&){}
 };
 template<typename T>
@@ -47,10 +47,10 @@ struct BsonBaseTypeGetter<T, TraitType::Array>
     static void validate(T const&){}
 };
 template<typename T>
-struct BsonBaseTypeGetter<T, TraitType::Pointer>
+struct BsonBaseTypeGetter<T*, TraitType::Pointer>
 {
     static constexpr BsonContainer value = BsonBaseTypeGetter<T>::value;
-    static void validate(T const& pointer)
+    static void validate(T* const& pointer)
     {
         if (!pointer)
         {
