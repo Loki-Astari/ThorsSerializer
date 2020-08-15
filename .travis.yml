@@ -24,7 +24,7 @@ branches:
     only:
         - master
         - "/^Feature-.*$/"
-        - "Bson.*"
+        - "/^Bson.*/"
 env:
     global:
     - secure: D5HPaNoM+cbZLcfqGvudY3irPd27q89npzr7jlaVjs1m782bii8XCKWwrwNQfge/7mtaY7RRDxdFJkRssVno5HaLItOg/MT6gBinyQGenPZXeh7ia2CYkeuiRhKrEfKAMhCcoe5RafYbCDWq8w5eZ6iMnRoFUiA66cWGlF1vBI4=
