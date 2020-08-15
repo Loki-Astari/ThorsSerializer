@@ -620,6 +620,12 @@ SerializerForBlock<TraitType::Serialize, T>
         {
             std::stringstream buffer;
             buffer << object;
+            if (printer.printerUsesSize() && parent.isRoot())
+            {
+                // Force a call to getPrintSize()
+                // Otherwise this is not done at the root level.
+                Traits<T>::getPrintSize(printer, object, false);
+            }
             printer.addRawValue(buffer.str());
         }
 };

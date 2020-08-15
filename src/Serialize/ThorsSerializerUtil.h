@@ -526,6 +526,57 @@ std::size_t getNormalPrintSize(PrinterInterface& printer, T const& object, std::
     std::size_t result = Traits<T>::getPrintSizeTotal(printer, object, count, memberSize);
     return result;
 }
+
+template<typename T, typename S = typename T::ThorsSerializerCustomObjectSize>
+auto tryGetSizeFromSerializeType(PrinterInterface& printer, T const& value, int) -> decltype(S::size(value))
+{
+    std::cerr << "GOT THE SIZE\n";
+    std::size_t size = S::size(value);
+    return printer.getSizeRaw(size);
+}
+
+template<typename T>
+auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size_t
+{
+    throw std::runtime_error("BSON backward compatibility");
+    // This function is needed for backward compatibility to make things compile without
+    // requiring user code to be changed.
+    //
+    // It will only ever be used if you are using bsonExporter()
+    // Since this is new code it is not subject to backward compatibility so that is OK.
+    //
+    // If you want to make your code work with the BSON serialization and you have used
+    // ThorsAnvil_MakeTraitCustom() to define an attribute the best way is to change to
+    // the modern technique.
+    //
+    // For a quick hack (rather than an upgrade) you can force the code to use the above function.
+    //
+    //  Assuming you have the following declaration in your code:
+    //      ThorsAnvil_MakeTraitCustom(MySerializableClass)
+    //
+    // To do this you need to add the following to this class:
+    //
+    //          using ThorsSerializerCustomObjectSize = MySizeClass;
+    //
+    // Then for the "MySizeClass" you must add the following static method declaration.
+    //
+    //          static std::size_t size(MySerializableClass const& value)
+    //          {
+    //              // this should return the size in bytes of `value` that will be placed on
+    //              // the output stream by your method
+    //              // std::ostream operator<<(std::ostream& str, MySerializableClass const& value);
+    //              //
+    //          }
+    //
+    // As noted this is a bit convoluted so we urge you to upgrade.
+    // The upgraded method allows for different output depending on the Serialization method
+    //      Json/Yaml/Bson
+    //
+    // Which will make the code more stable.
+    //
+    // Please look at test/ExceptionTest.h for a simple example.
+}
+
     }
 }
 

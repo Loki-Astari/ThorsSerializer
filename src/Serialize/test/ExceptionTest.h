@@ -34,7 +34,7 @@ class ThrowablePrint
             return std::to_string(value.val).size();
         }
 
-        using ThorsSerializer = ThrowablePrint;
+        using ThorsSerializerCustomObjectSize = ThrowablePrint;
 };
 
 }

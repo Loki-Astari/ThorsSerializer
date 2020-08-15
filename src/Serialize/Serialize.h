@@ -157,6 +157,8 @@ class Serializer
 
         template<typename T>
         void printObjectMembers(T const& object);
+
+        bool isRoot() const {return root;}
 };
 /* ------------ BaseTypeGetter Gets base type of pointer ------------------------- */
 template<typename P>

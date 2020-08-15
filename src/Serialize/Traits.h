@@ -319,9 +319,7 @@ class Traits<DataType>                                                  \
     static constexpr TraitType type = TraitType::Serialize;             \
     static std::size_t getPrintSize(PrinterInterface& printer, DataType const& value, bool)\
     {                                                                   \
-        using DataTypeSerializer = typename DataType::ThorsSerializer;  \
-        std::size_t size = DataTypeSerializer::size(value);             \
-        return printer.getSizeRaw(size);                                \
+        return tryGetSizeFromSerializeType(printer, value, 0);          \
     }                                                                   \
 };                                                                      \
 }}                                                                      \
