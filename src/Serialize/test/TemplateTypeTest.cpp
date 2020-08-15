@@ -10,6 +10,8 @@
 #include <string>
 #include <sstream>
 
+using namespace std::string_literals;
+
 namespace TemplateTypeTest
 {
 
@@ -82,7 +84,16 @@ TEST(TemplateTypeTest, JsontemplateInheritingFromtemplateTest)
 TEST(TemplateTypeTest, BsontemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    std::string         inputStr(R"({"templateMember":[1,2,3,4]})");
+    //std::string         inputStr(R"({"templateMember":[1,2,3,4]})");
+    std::string         inputStr("\x36\x00\x00\x00"
+                                 "\x04" "templateMember\x00"
+                                        "\x21\x00\x00\x00"
+                                        "\x10" "0\x00" "\x01\x00\x00\x00"
+                                        "\x10" "1\x00" "\x02\x00\x00\x00"
+                                        "\x10" "2\x00" "\x03\x00\x00\x00"
+                                        "\x10" "3\x00" "\x04\x00\x00\x00"
+                                        "\x00"
+                                 "\x00"s);
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::TemplateType<int>   data;
@@ -96,7 +107,17 @@ TEST(TemplateTypeTest, BsontemplateTest)
 TEST(TemplateTypeTest, BsonnormalInheritingFromtemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    std::string         inputStr(R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
+    //std::string         inputStr(R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
+    std::string         inputStr("\x4D\x00\x00\x00"
+                                 "\x04" "templateMember\x00"
+                                        "\x21\x00\x00\x00"
+                                        "\x10" "0\x00" "\x01\x00\x00\x00"
+                                        "\x10" "1\x00" "\x02\x00\x00\x00"
+                                        "\x10" "2\x00" "\x03\x00\x00\x00"
+                                        "\x10" "3\x00" "\x04\x00\x00\x00"
+                                        "\x00"
+                                 "\x02" "normalName\x00"    "\x07\x00\x00\x00" "A name\x00"
+                                 "\x00"s);
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::NormalInheritFromTemplate   data;
@@ -110,7 +131,23 @@ TEST(TemplateTypeTest, BsonnormalInheritingFromtemplateTest)
 TEST(TemplateTypeTest, BsontemplateInheritingFromtemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    std::string         inputStr(R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
+    //std::string         inputStr(R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
+    std::string         inputStr("\x64\x00\x00\x00"
+                                 "\x04" "templateMember\x00"
+                                        "\x21\x00\x00\x00"
+                                        "\x10" "0\x00" "\x01\x00\x00\x00"
+                                        "\x10" "1\x00" "\x02\x00\x00\x00"
+                                        "\x10" "2\x00" "\x03\x00\x00\x00"
+                                        "\x10" "3\x00" "\x04\x00\x00\x00"
+                                        "\x00"
+                                 "\x04" "alternative\x00"
+                                        "\x21\x00\x00\x00"
+                                        "\x10" "0\x00" "\x05\x00\x00\x00"
+                                        "\x10" "1\x00" "\x06\x00\x00\x00"
+                                        "\x10" "2\x00" "\x07\x00\x00\x00"
+                                        "\x10" "3\x00" "\x08\x00\x00\x00"
+                                        "\x00"
+                                 "\x00"s);
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::TemplateInheritFromTemplate<int>   data;

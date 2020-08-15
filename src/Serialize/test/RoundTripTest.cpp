@@ -10,7 +10,7 @@ using TA::ParserInterface;
 
 
 TEST(RoundTripTest, JsonMap)
-{   
+{
     using ThorsAnvil::Serialize::PrinterInterface;
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
@@ -202,14 +202,21 @@ TEST(RoundTripTest, YamlValue)
 
 
 TEST(RoundTripTest, BsonMap)
-{   
+{
     using ThorsAnvil::Serialize::PrinterInterface;
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
     stream << TA::bsonExporter(base, PrinterInterface::OutputType::Stream);
 
-    std::string expected(R"({"ace":10,"val":1024})");
+    //std::string expected(R"({"ace":10,"val":1024})");
+    static const char expectedRaw[]
+                       = "\x17\x00\x00\x00" // doc size
+                         "\x10" /*Integer*/ "ace\x00" /* ace - fieldName*/ "\x0A\x00\x00\x00" /* 10 */
+                         "\x10" /*Integer*/ "val\x00" /* val - fieldName*/ "\x00\x04\x00\x00" /* 1024 */
+                         "\x00"             // doc terminator
+                        ;
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -235,7 +242,15 @@ TEST(RoundTripTest, BsonParent)
 
     stream << TA::bsonExporter(deri, PrinterInterface::OutputType::Stream);
 
-    std::string expected(R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
+    //std::string expected(R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
+    static const char expectedRaw[]
+                = "\x2D\x00\x00\x00"        // Length
+                  "\x10" "ace\x00"  "\x0A\x00\x00\x00"
+                  "\x10" "val\x00"  "\x00\x04\x00\x00"
+                  "\x10" "der\x00"  "\xD5\xDD\x00\x00"
+                  "\x01" "flt\x00"  "\x00\x00\x00\x00\x00\x5C\x6D\x40"
+                  "\x00";                   // Null Terminator
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -258,7 +273,18 @@ TEST(RoundTripTest, BsonArray)
 
     stream << TA::bsonExporter(data, PrinterInterface::OutputType::Stream);
 
-    std::string expected(R"([10,1024,9,367,12,34])");
+    //std::string expected(R"([10,1024,9,367,12,34])");
+    static const char expectedRaw[]
+                = "\x2F\x00\x00\x00"
+                  "\x10" "0\x00" "\x0A\x00\x00\x00"
+                  "\x10" "1\x00" "\x00\x04\x00\x00"
+                  "\x10" "2\x00" "\x09\x00\x00\x00"
+                  "\x10" "3\x00" "\x6F\x01\x00\x00"
+                  "\x10" "4\x00" "\x0C\x00\x00\x00"
+                  "\x10" "5\x00" "\x22\x00\x00\x00"
+                  "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -283,7 +309,12 @@ TEST(RoundTripTest, BsonValue)
 
     stream << TA::bsonExporter(data, PrinterInterface::OutputType::Stream);
 
-    std::string expected("68456231");
+    //std::string expected("68456231");
+    static const char expectedRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x27\x8F\x14\x04" // 0x04148F27
+                  "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
     {
@@ -294,4 +325,3 @@ TEST(RoundTripTest, BsonValue)
     stream >> TA::bsonImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }
-

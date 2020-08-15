@@ -1154,8 +1154,16 @@ TEST(ParserTest, JsongetRawValue)
 
 TEST(ParserTest, BsonArrayEmpty)
 {
-    std::stringstream   stream("[]");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("[]");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x05\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser          parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1164,8 +1172,17 @@ TEST(ParserTest, BsonArrayEmpty)
 }
 TEST(ParserTest, BsonArrayOneValue)
 {
-    std::stringstream   stream("[12]");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("[12]");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10"  "0\x00"  "\x0C\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1175,8 +1192,18 @@ TEST(ParserTest, BsonArrayOneValue)
 }
 TEST(ParserTest, BsonArrayTwoValue)
 {
-    std::stringstream   stream("[12,13]");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("[12,13]");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x13\x00\x00\x00"
+                  "\x10"  "0\x00"  "\x0C\x00\x00\x00"
+                  "\x10"  "1\x00"  "\x0D\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1187,8 +1214,19 @@ TEST(ParserTest, BsonArrayTwoValue)
 }
 TEST(ParserTest, BsonArrayThreeValue)
 {
-    std::stringstream   stream("[12,13,14]");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("[12,13,14]");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x1A\x00\x00\x00"
+                  "\x10"  "0\x00"  "\x0C\x00\x00\x00"
+                  "\x10"  "1\x00"  "\x0D\x00\x00\x00"
+                  "\x10"  "2\x00"  "\x0E\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1200,8 +1238,19 @@ TEST(ParserTest, BsonArrayThreeValue)
 }
 TEST(ParserTest, BsonArrayWithArray)
 {
-    std::stringstream   stream("[[]]");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("[[]]");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x04"  "0\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1212,8 +1261,22 @@ TEST(ParserTest, BsonArrayWithArray)
 }
 TEST(ParserTest, BsonArrayWithTwoArray)
 {
-    std::stringstream   stream("[[],[]]");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("[[],[]]");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x15\x00\x00\x00"
+                  "\x04"  "0\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x04"  "1\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1226,8 +1289,19 @@ TEST(ParserTest, BsonArrayWithTwoArray)
 }
 TEST(ParserTest, BsonArrayWithMap)
 {
-    std::stringstream   stream("[{}]");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("[{}]");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x03"  "0\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1238,8 +1312,22 @@ TEST(ParserTest, BsonArrayWithMap)
 }
 TEST(ParserTest, BsonArrayWithTwoMap)
 {
-    std::stringstream   stream("[{},{}]");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("[{},{}]");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x15\x00\x00\x00"
+                  "\x03"  "0\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x03"  "1\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1252,8 +1340,15 @@ TEST(ParserTest, BsonArrayWithTwoMap)
 }
 TEST(ParserTest, BsonMapEmpty)
 {
-    std::stringstream   stream("{}");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream("{}");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x05\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1262,8 +1357,16 @@ TEST(ParserTest, BsonMapEmpty)
 }
 TEST(ParserTest, BsonMapOneValue)
 {
-    std::stringstream   stream(R"({"One": 12})");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"({"One": 12})");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0E\x00\x00\x00"
+                  "\x10" "One\x00" "\x0C\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1276,8 +1379,17 @@ TEST(ParserTest, BsonMapOneValue)
 }
 TEST(ParserTest, BsonMapTwoValue)
 {
-    std::stringstream   stream(R"({"one": 12, "two": 13})");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"({"one": 12, "two": 13})");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x17\x00\x00\x00"
+                  "\x10" "One\x00" "\x0C\x00\x00\x00"
+                  "\x10" "Two\x00" "\x0D\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1294,8 +1406,18 @@ TEST(ParserTest, BsonMapTwoValue)
 }
 TEST(ParserTest, BsonMapThreeValue)
 {
-    std::stringstream   stream(R"({"one":12, "two": 13, "three": 14})");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"({"one":12, "two": 13, "three": 14})");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x22\x00\x00\x00"
+                  "\x10" "One\x00" "\x0C\x00\x00\x00"
+                  "\x10" "Two\x00" "\x0D\x00\x00\x00"
+                  "\x10" "Three\x00" "\x0E\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1316,8 +1438,18 @@ TEST(ParserTest, BsonMapThreeValue)
 }
 TEST(ParserTest, BsonMapWithArray)
 {
-    std::stringstream   stream(R"({"one": []})");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"({"one": []})");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0F\x00\x00\x00"
+                  "\x04" "one\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1330,8 +1462,21 @@ TEST(ParserTest, BsonMapWithArray)
 }
 TEST(ParserTest, BsonMapWithTwoArray)
 {
-    std::stringstream   stream(R"({"one": [], "two": []}])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"({"one": [], "two": []}])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x19\x00\x00\x00"
+                  "\x04" "one\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x04" "two\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1348,8 +1493,18 @@ TEST(ParserTest, BsonMapWithTwoArray)
 }
 TEST(ParserTest, BsonMapWithMap)
 {
-    std::stringstream   stream(R"({"one": {}})");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"({"one": {}})");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0F\x00\x00\x00"
+                  "\x03" "one\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1362,8 +1517,21 @@ TEST(ParserTest, BsonMapWithMap)
 }
 TEST(ParserTest, BsonMapWithTwoMap)
 {
-    std::stringstream   stream(R"({"one": {}, "two": {}})");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"({"one": {}, "two": {}})");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x19\x00\x00\x00"
+                  "\x03" "one\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x03" "two\x00"
+                        "\x05\x00\x00\x00"
+                        "\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1380,8 +1548,16 @@ TEST(ParserTest, BsonMapWithTwoMap)
 }
 TEST(ParserTest, BsonGetKeyValue)
 {
-    std::stringstream   stream(R"({"one": 15})");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"({"one": 15})");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0E\x00\x00\x00"
+                  "\x10" "one\x00" "\x0F\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
@@ -1401,8 +1577,21 @@ TEST(ParserTest, BsonGetKeyValue)
 }
 TEST(ParserTest, BsonGetArrayValues)
 {
-    std::stringstream   stream(R"([true, false, 123, 123.4, "A String"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false, 123, 123.4, "A String"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x2F\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x00"
+                  "\x10" "2\x00" "\x7B\x00\x00\x00"
+                  "\x01" "3\x00" "\x9A\x99\x99\x99\x99\xD9\x5E\x40"
+                  "\x02" "4\x00" "\x09\x00\x00\x00" "A String\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1440,29 +1629,20 @@ TEST(ParserTest, BsonGetArrayValues)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonCheckErrorDoesNotRead)
-{
-    std::stringstream   stream("][");
-    TA::BsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-
-    // First Character is an error.
-    EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
-
-    // Subsequent read should also be an error.
-    // But it should not read from the stream
-    EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
-
-    char  next;
-    stream >> next;
-    EXPECT_EQ('[', next);
-}
 
 TEST(ParserTest, BsongetDataFromString_1)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1477,8 +1657,17 @@ TEST(ParserTest, BsongetDataFromString_1)
 
 TEST(ParserTest, BsongetDataFromString_2)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x13\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1491,8 +1680,17 @@ TEST(ParserTest, BsongetDataFromString_2)
 
 TEST(ParserTest, BsongetDataFromString_3)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1505,8 +1703,17 @@ TEST(ParserTest, BsongetDataFromString_3)
 
 TEST(ParserTest, BsongetDataFromString_4)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1519,8 +1726,17 @@ TEST(ParserTest, BsongetDataFromString_4)
 
 TEST(ParserTest, BsongetDataFromString_5)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1533,8 +1749,17 @@ TEST(ParserTest, BsongetDataFromString_5)
 
 TEST(ParserTest, BsongetDataFromString_6)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1547,8 +1772,17 @@ TEST(ParserTest, BsongetDataFromString_6)
 
 TEST(ParserTest, BsongetDataFromString_7)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1561,8 +1795,17 @@ TEST(ParserTest, BsongetDataFromString_7)
 
 TEST(ParserTest, BsongetDataFromString_8)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1575,8 +1818,17 @@ TEST(ParserTest, BsongetDataFromString_8)
 
 TEST(ParserTest, BsongetDataFromString_9)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1590,8 +1842,17 @@ TEST(ParserTest, BsongetDataFromString_9)
 
 TEST(ParserTest, BsongetDataFromString_a)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1604,8 +1865,17 @@ TEST(ParserTest, BsongetDataFromString_a)
 
 TEST(ParserTest, BsongetDataFromString_b)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1618,8 +1888,17 @@ TEST(ParserTest, BsongetDataFromString_b)
 
 TEST(ParserTest, BsongetDataFromString_c)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1628,8 +1907,17 @@ TEST(ParserTest, BsongetDataFromString_c)
 
 TEST(ParserTest, BsongetDataFromString_d)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1643,8 +1931,17 @@ TEST(ParserTest, BsongetDataFromString_d)
 
 TEST(ParserTest, BsongetDataFromString_e)
 {
-    std::stringstream   stream(R"(["Test"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"(["Test"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00" "Test\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1657,8 +1954,17 @@ TEST(ParserTest, BsongetDataFromString_e)
 
 TEST(ParserTest, BsongetDataFromInt_1)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1672,8 +1978,17 @@ TEST(ParserTest, BsongetDataFromInt_1)
 
 TEST(ParserTest, BsongetDataFromInt_2)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1688,8 +2003,17 @@ TEST(ParserTest, BsongetDataFromInt_2)
 
 TEST(ParserTest, BsongetDataFromInt_3)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1703,8 +2027,17 @@ TEST(ParserTest, BsongetDataFromInt_3)
 
 TEST(ParserTest, BsongetDataFromInt_4)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1718,8 +2051,17 @@ TEST(ParserTest, BsongetDataFromInt_4)
 
 TEST(ParserTest, BsongetDataFromInt_5)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1733,8 +2075,17 @@ TEST(ParserTest, BsongetDataFromInt_5)
 
 TEST(ParserTest, BsongetDataFromInt_6)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1748,8 +2099,17 @@ TEST(ParserTest, BsongetDataFromInt_6)
 
 TEST(ParserTest, BsongetDataFromInt_7)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1763,8 +2123,17 @@ TEST(ParserTest, BsongetDataFromInt_7)
 
 TEST(ParserTest, BsongetDataFromInt_8)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1778,8 +2147,17 @@ TEST(ParserTest, BsongetDataFromInt_8)
 
 TEST(ParserTest, BsongetDataFromInt_9)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1793,8 +2171,17 @@ TEST(ParserTest, BsongetDataFromInt_9)
 
 TEST(ParserTest, BsongetDataFromInt_a)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1808,8 +2195,17 @@ TEST(ParserTest, BsongetDataFromInt_a)
 
 TEST(ParserTest, BsongetDataFromInt_b)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1823,8 +2219,17 @@ TEST(ParserTest, BsongetDataFromInt_b)
 
 TEST(ParserTest, BsongetDataFromInt_c)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1838,8 +2243,17 @@ TEST(ParserTest, BsongetDataFromInt_c)
 
 TEST(ParserTest, BsongetDataFromInt_d)
 {
-    std::stringstream   stream(R"([56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x10" "0\x00" "\x38\x00\x00\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1852,8 +2266,17 @@ TEST(ParserTest, BsongetDataFromInt_d)
 
 TEST(ParserTest, BsongetDataFromFloat_1)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1867,8 +2290,17 @@ TEST(ParserTest, BsongetDataFromFloat_1)
 
 TEST(ParserTest, BsongetDataFromFloat_2)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1882,8 +2314,17 @@ TEST(ParserTest, BsongetDataFromFloat_2)
 
 TEST(ParserTest, BsongetDataFromFloat_3)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1897,8 +2338,17 @@ TEST(ParserTest, BsongetDataFromFloat_3)
 
 TEST(ParserTest, BsongetDataFromFloat_4)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1912,8 +2362,17 @@ TEST(ParserTest, BsongetDataFromFloat_4)
 
 TEST(ParserTest, BsongetDataFromFloat_5)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1927,8 +2386,17 @@ TEST(ParserTest, BsongetDataFromFloat_5)
 
 TEST(ParserTest, BsongetDataFromFloat_6)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1942,8 +2410,17 @@ TEST(ParserTest, BsongetDataFromFloat_6)
 
 TEST(ParserTest, BsongetDataFromFloat_7)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1957,8 +2434,17 @@ TEST(ParserTest, BsongetDataFromFloat_7)
 
 TEST(ParserTest, BsongetDataFromFloat_8)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1972,8 +2458,17 @@ TEST(ParserTest, BsongetDataFromFloat_8)
 
 TEST(ParserTest, BsongetDataFromFloat_9)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -1987,8 +2482,17 @@ TEST(ParserTest, BsongetDataFromFloat_9)
 
 TEST(ParserTest, BsongetDataFromFloat_a)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2003,8 +2507,17 @@ TEST(ParserTest, BsongetDataFromFloat_a)
 
 TEST(ParserTest, BsongetDataFromFloat_b)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2019,8 +2532,17 @@ TEST(ParserTest, BsongetDataFromFloat_b)
 
 TEST(ParserTest, BsongetDataFromFloat_c)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2036,8 +2558,17 @@ TEST(ParserTest, BsongetDataFromFloat_c)
 
 TEST(ParserTest, BsongetDataFromFloat_d)
 {
-    std::stringstream   stream(R"([123.56])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([123.56])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0C\x00\x00\x00"
+                  "\x01" "0\x00" "\xA4\x70\x3D\x0A\xD7\xE3\x5E\x40"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2050,8 +2581,18 @@ TEST(ParserTest, BsongetDataFromFloat_d)
 }
 TEST(ParserTest, BsongetDataFromBool_1)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2065,8 +2606,18 @@ TEST(ParserTest, BsongetDataFromBool_1)
 
 TEST(ParserTest, BsongetDataFromBool_2)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2080,8 +2631,18 @@ TEST(ParserTest, BsongetDataFromBool_2)
 
 TEST(ParserTest, BsongetDataFromBool_3)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2095,8 +2656,18 @@ TEST(ParserTest, BsongetDataFromBool_3)
 
 TEST(ParserTest, BsongetDataFromBool_4)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2110,8 +2681,18 @@ TEST(ParserTest, BsongetDataFromBool_4)
 
 TEST(ParserTest, BsongetDataFromBool_5)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2125,8 +2706,18 @@ TEST(ParserTest, BsongetDataFromBool_5)
 
 TEST(ParserTest, BsongetDataFromBool_6)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2140,8 +2731,18 @@ TEST(ParserTest, BsongetDataFromBool_6)
 
 TEST(ParserTest, BsongetDataFromBool_7)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2155,8 +2756,18 @@ TEST(ParserTest, BsongetDataFromBool_7)
 
 TEST(ParserTest, BsongetDataFromBool_8)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2170,8 +2781,18 @@ TEST(ParserTest, BsongetDataFromBool_8)
 
 TEST(ParserTest, BsongetDataFromBool_9)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2185,8 +2806,18 @@ TEST(ParserTest, BsongetDataFromBool_9)
 
 TEST(ParserTest, BsongetDataFromBool_a)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2200,8 +2831,18 @@ TEST(ParserTest, BsongetDataFromBool_a)
 
 TEST(ParserTest, BsongetDataFromBool_b)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2215,8 +2856,18 @@ TEST(ParserTest, BsongetDataFromBool_b)
 
 TEST(ParserTest, BsongetDataFromBool_c)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2230,8 +2881,18 @@ TEST(ParserTest, BsongetDataFromBool_c)
 
 TEST(ParserTest, BsongetDataFromBool_d)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2245,8 +2906,18 @@ TEST(ParserTest, BsongetDataFromBool_d)
 
 TEST(ParserTest, BsongetDataFromBool_e)
 {
-    std::stringstream   stream(R"([true, false])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x0D\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
@@ -2266,8 +2937,21 @@ TEST(ParserTest, BsongetDataFromBool_e)
 }
 TEST(ParserTest, BsongetRawValue)
 {
-    std::stringstream   stream(R"([true, false, 0, 15.4, "The Best"])");
-    TA::BsonParser      parser(stream);
+    //std::stringstream   stream(R"([true, false, 0, 15.4, "The Best"])");
+    using ParserConfig = ParserInterface::ParserConfig;
+    static const char inputRaw[]
+                = "\x2F\x00\x00\x00"
+                  "\x08" "0\x00" "\x01"
+                  "\x08" "1\x00" "\x02"
+                  "\x10" "2\x00" "\x00\x00\x00\x00"
+                  "\x01" "3\x00" "\xCD\xCC\xCC\xCC\xCC\xCC\x2E\x40"
+                  "\x02" "4\x00" "\x09\x00\x00\x00" "The Best\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream   stream(input);
+    ParserConfig        config;
+    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
+    TA::BsonParser      parser(stream, config);
     std::string         value;
 
     EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
@@ -2287,7 +2971,7 @@ TEST(ParserTest, BsongetRawValue)
 
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
     value = parser.getRawValue();
-    EXPECT_EQ(std::string("15.4"), value);
+    EXPECT_EQ(std::string("15.4"), value.substr(0,4));
 
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
     value = parser.getRawValue();

@@ -4,6 +4,7 @@
 #include "BsonThor.h"
 #include <sstream>
 #include <string>
+#include <string_view>
 
 
 TEST(EscapeControl, JsonNormalInput)
@@ -162,7 +163,13 @@ TEST(EscapeControl, JsonOutputContainsCR)
 TEST(EscapeControl, BsonNormalInput)
 {
     using ThorsAnvil::Serialize::ParserInterface;
-    std::stringstream   input("\"String With no special characters\"");
+    //std::stringstream   input("\"String With no special characters\"");
+    static const char inputRaw[]
+                = "\x2E\x00\x00\x00"
+                  "\x02" "0\x00" "\x22\x00\x00\x00" "String With no special characters\x00"
+                  "\x00";
+    std::string inputString(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream input(inputString);
     std::string         value;
     bool                importDone = false;
 
@@ -170,66 +177,6 @@ TEST(EscapeControl, BsonNormalInput)
         importDone = true;
     }
     EXPECT_EQ(importDone, true);
-}
-TEST(EscapeControl, BsonInputContainsTab)
-{
-    using ThorsAnvil::Serialize::ParserInterface;
-    std::stringstream   input("\"\t A string with A tab\"");
-    std::string         value;
-    bool                importDone = false;
-
-    if (input >> ThorsAnvil::Serialize::bsonImporter(value, ParserInterface::ParseType::Weak)) {
-        importDone = true;
-    }
-    EXPECT_EQ(importDone, false);
-}
-TEST(EscapeControl, BsonInputContainsBS)
-{
-    using ThorsAnvil::Serialize::ParserInterface;
-    std::stringstream   input("\"\b A string with A Back Space\"");
-    std::string         value;
-    bool                importDone = false;
-
-    if (input >> ThorsAnvil::Serialize::bsonImporter(value, ParserInterface::ParseType::Weak)) {
-        importDone = true;
-    }
-    EXPECT_EQ(importDone, false);
-}
-TEST(EscapeControl, BsonInputContainsNL)
-{
-    using ThorsAnvil::Serialize::ParserInterface;
-    std::stringstream   input("\"\n A string with A New Line\"");
-    std::string         value;
-    bool                importDone = false;
-
-    if (input >> ThorsAnvil::Serialize::bsonImporter(value, ParserInterface::ParseType::Weak)) {
-        importDone = true;
-    }
-    EXPECT_EQ(importDone, false);
-}
-TEST(EscapeControl, BsonInputContainsFF)
-{
-    using ThorsAnvil::Serialize::ParserInterface;
-    std::stringstream   input("\"\f A string with A Form Feed\"");
-    std::string         value;
-    bool                importDone = false;
-
-    if (input >> ThorsAnvil::Serialize::bsonImporter(value, ParserInterface::ParseType::Weak)) {
-        importDone = true;
-    }
-    EXPECT_EQ(importDone, false);
-}
-TEST(EscapeControl, BsonInputContainsCR)
-{
-    using ThorsAnvil::Serialize::ParserInterface;
-    std::stringstream   input("\"\r A string with A Carridge Return\"");
-    std::string         value;
-    bool                importDone = false;
-
-    if (input >> ThorsAnvil::Serialize::bsonImporter(value, ParserInterface::ParseType::Weak)) {
-        importDone = true;
-    }
-    EXPECT_EQ(importDone, false);
 }
 TEST(EscapeControl, BsonOutputContainsTab)
 {
@@ -241,11 +188,12 @@ TEST(EscapeControl, BsonOutputContainsTab)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
+    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(outputView.find('\t'), std::string::npos);
+    auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 't');
+    EXPECT_EQ(outputView[find+1], 't');
 }
 TEST(EscapeControl, BsonOutputContainsBS)
 {
@@ -257,11 +205,12 @@ TEST(EscapeControl, BsonOutputContainsBS)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
+    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(outputView.find('\t'), std::string::npos);
+    auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 'b');
+    EXPECT_EQ(outputView[find+1], 'b');
 }
 TEST(EscapeControl, BsonOutputContainsNL)
 {
@@ -273,11 +222,12 @@ TEST(EscapeControl, BsonOutputContainsNL)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
+    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(outputView.find('\t'), std::string::npos);
+    auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 'n');
+    EXPECT_EQ(outputView[find+1], 'n');
 }
 TEST(EscapeControl, BsonOutputContainsFF)
 {
@@ -289,11 +239,12 @@ TEST(EscapeControl, BsonOutputContainsFF)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
+    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(outputView.find('\t'), std::string::npos);
+    auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 'f');
+    EXPECT_EQ(outputView[find+1], 'f');
 }
 TEST(EscapeControl, BsonOutputContainsCR)
 {
@@ -305,11 +256,12 @@ TEST(EscapeControl, BsonOutputContainsCR)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
+    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(outputView.find('\t'), std::string::npos);
+    auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 'r');
+    EXPECT_EQ(outputView[find+1], 'r');
 }
 
 

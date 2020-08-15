@@ -86,7 +86,13 @@ TEST(SerializeEnum, BsonRedGreenBlueAtRed)
     std::stringstream   str;
     str << ThorsAnvil::Serialize::bsonExporter(enumHolder, false);
 
-    EXPECT_EQ(R"("Red")", stripspace(str.str()));
+    static const char expectedRaw[]
+                = "\x10\x00\x00\x00"
+                  "\x02" "0\x00" "\x04\x00\x00\x00"  "Red\x00"
+                  "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(expected, str.str());
+    //EXPECT_EQ(R"("Red")", stripspace(str.str()));
 }
 TEST(SerializeEnum, BsonRedGreenBlueAtGreen)
 {
@@ -94,7 +100,13 @@ TEST(SerializeEnum, BsonRedGreenBlueAtGreen)
     std::stringstream   str;
     str << ThorsAnvil::Serialize::bsonExporter(enumHolder, false);
 
-    EXPECT_EQ(R"("Green")", stripspace(str.str()));
+    static const char expectedRaw[]
+                = "\x12\x00\x00\x00"
+                  "\x02" "0\x00" "\x06\x00\x00\x00"  "Green\x00"
+                  "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(expected, str.str());
+    //EXPECT_EQ(R"("Green")", stripspace(str.str()));
 }
 TEST(SerializeEnum, BsonRedGreenBlueAtBlue)
 {
@@ -102,11 +114,23 @@ TEST(SerializeEnum, BsonRedGreenBlueAtBlue)
     std::stringstream   str;
     str << ThorsAnvil::Serialize::bsonExporter(enumHolder, false);
 
-    EXPECT_EQ(R"("Blue")", stripspace(str.str()));
+    static const char expectedRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00"  "Blue\x00"
+                  "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(expected, str.str());
+    //EXPECT_EQ(R"("Blue")", stripspace(str.str()));
 }
 TEST(DeSerializeEnum, BsonRefGreenBlueFromRed)
 {
-    std::stringstream   str(R"("Red")");
+    //std::stringstream   str(R"("Red")");
+    static const char inputRaw[]
+                = "\x10\x00\x00\x00"
+                  "\x02" "0\x00" "\x04\x00\x00\x00"  "Red\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream str(input);
     SerializeTest::RGB     enumHolder {SerializeTest::Green};
 
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
@@ -114,7 +138,13 @@ TEST(DeSerializeEnum, BsonRefGreenBlueFromRed)
 }
 TEST(DeSerializeEnum, BsonRefGreenBlueFromGreen)
 {
-    std::stringstream   str(R"("Green")");
+    //std::stringstream   str(R"("Green")");
+    static const char inputRaw[]
+                = "\x12\x00\x00\x00"
+                  "\x02" "0\x00" "\x06\x00\x00\x00"  "Green\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream str(input);
     SerializeTest::RGB     enumHolder {SerializeTest::Red};
 
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
@@ -122,7 +152,13 @@ TEST(DeSerializeEnum, BsonRefGreenBlueFromGreen)
 }
 TEST(DeSerializeEnum, BsonRefGreenBlueFromBlue)
 {
-    std::stringstream   str(R"("Blue")");
+    //std::stringstream   str(R"("Blue")");
+    static const char inputRaw[]
+                = "\x11\x00\x00\x00"
+                  "\x02" "0\x00" "\x05\x00\x00\x00"  "Blue\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream str(input);
     SerializeTest::RGB     enumHolder {SerializeTest::Green};
 
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
@@ -135,12 +171,24 @@ TEST(SerializeEnum, BsonSerEnumInContainer)
     std::stringstream   str;
 
     str << ThorsAnvil::Serialize::bsonExporter(holder, false);
-    EXPECT_EQ(R"({"value":"Red"})", stripspace(str.str()));
+    static const char expectedRaw[]
+                = "\x14\x00\x00\x00"
+                  "\x02" "value\x00" "\x04\x00\x00\x00"  "Red\x00"
+                  "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(expected, str.str());
+    //EXPECT_EQ(R"({"value":"Red"})", stripspace(str.str()));
 }
 TEST(SerializeEnum, BsonDeSerEnumInContainer)
 {
     SerializeTest::EumHolder  holder { SerializeTest::Red };
-    std::stringstream   str(R"({"value": "Green"})");
+    //std::stringstream   str(R"({"value": "Green"})");
+    static const char inputRaw[]
+                = "\x16\x00\x00\x00"
+                  "\x02" "value\x00" "\x06\x00\x00\x00"  "Green\x00"
+                  "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    std::stringstream str(input);
 
     str >> ThorsAnvil::Serialize::bsonImporter(holder, false);
     EXPECT_EQ(SerializeTest::Green, holder.value);

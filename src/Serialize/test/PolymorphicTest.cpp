@@ -154,12 +154,18 @@ TEST(PolymorphicTest, BsonNullPointer)
 {
     PolymorphicTest::User    user1{10, nullptr};
 
-    std::stringstream   data;
+    std::stringstream   data(std::ios_base::out | std::ios_base::binary);;
     data << ThorsAnvil::Serialize::bsonExporter(user1, false);
     std::string result = data.str();
 
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":null})");
+    static const char expectedRaw[]
+                    = "\x19\x00\x00\x00"
+                      "\x10" "age\x00" "\x0A\x00\x00\x00"
+                      "\x0A" "transport\x00"
+                      "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(result, expected);
+    // R"({"age":10,"transport":null})");
 }
 TEST(PolymorphicTest, BsonVehiclePointer)
 {
@@ -169,8 +175,18 @@ TEST(PolymorphicTest, BsonVehiclePointer)
     data << ThorsAnvil::Serialize::bsonExporter(user1, false);
     std::string result = data.str();
 
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
+    static const char expectedRaw[]
+                    = "\x4E\x00\x00\x00"
+                      "\x10" "age\x00" "\x0A\x00\x00\x00"
+                      "\x03" "transport\x00"
+                            "\x35\x00\x00\x00"
+                            "\x02" "__type\x00" "\x19\x00\x00\x00" "PolymorphicTest::Vehicle\x00"
+                            "\x10" "speed\x00"  "\x0C\x00\x00\x00"
+                            "\x00"
+                      "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(result, expected);
+    //EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
 }
 TEST(PolymorphicTest, BsonCarPointer)
 {
@@ -180,8 +196,19 @@ TEST(PolymorphicTest, BsonCarPointer)
     data << ThorsAnvil::Serialize::bsonExporter(user1, false);
     std::string result = data.str();
 
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+    static const char expectedRaw[]
+                    = "\x5A\x00\x00\x00"
+                      "\x10" "age\x00" "\x0A\x00\x00\x00"
+                      "\x03" "transport\x00"
+                            "\x41\x00\x00\x00"
+                            "\x02" "__type\x00" "\x15\x00\x00\x00" "PolymorphicTest::Car\x00"
+                            "\x10" "speed\x00"  "\x10\x00\x00\x00"
+                            "\x02" "make\x00"   "\x06\x00\x00\x00" "Turbo\x00"
+                            "\x00"
+                      "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(result, expected);
+    //EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
 }
 
 TEST(PolymorphicTest, BsonBikePointer)
@@ -192,13 +219,31 @@ TEST(PolymorphicTest, BsonBikePointer)
     data << ThorsAnvil::Serialize::bsonExporter(user1, false);
     std::string result = data.str();
 
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+    static const char expectedRaw[]
+                    = "\x57\x00\x00\x00"
+                      "\x10" "age\x00" "\x0A\x00\x00\x00"
+                      "\x03" "transport\x00"
+                            "\x3E\x00\x00\x00"
+                            "\x02" "__type\x00" "\x16\x00\x00\x00" "PolymorphicTest::Bike\x00"
+                            "\x10" "speed\x00"  "\x12\x00\x00\x00"
+                            "\x10" "stroke\x00" "\x07\x00\x00\x00"
+                            "\x00"
+                      "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(result, expected);
+    //EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
 }
 
 TEST(PolymorphicTest, BsonReadNull)
 {
-    std::stringstream   stream(R"({"age":10,"transport":null})");
+    static const char inputRaw[]
+                    = "\x19\x00\x00\x00"
+                      "\x10" "age\x00" "\x0A\x00\x00\x00"
+                      "\x0A" "transport\x00"
+                      "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    //std::stringstream   stream(R"({"age":10,"transport":null})");
+    std::stringstream stream(input);
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(12)};
 
     stream >> ThorsAnvil::Serialize::bsonImporter(user1, false);
@@ -208,7 +253,18 @@ TEST(PolymorphicTest, BsonReadNull)
 
 TEST(PolymorphicTest, BsonReadVehicle)
 {
-    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
+    static const char inputRaw[]
+                    = "\x4E\x00\x00\x00"
+                      "\x10" "age\x00" "\x0A\x00\x00\x00"
+                      "\x03" "transport\x00"
+                            "\x35\x00\x00\x00"
+                            "\x02" "__type\x00" "\x19\x00\x00\x00" "PolymorphicTest::Vehicle\x00"
+                            "\x10" "speed\x00"  "\x0C\x00\x00\x00"
+                            "\x00"
+                      "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    //std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
+    std::stringstream stream(input);
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(13)};
 
     stream >> ThorsAnvil::Serialize::bsonImporter(user1, false);
@@ -219,7 +275,19 @@ TEST(PolymorphicTest, BsonReadVehicle)
 
 TEST(PolymorphicTest, BsonReadCar)
 {
-    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+    static const char inputRaw[]
+                    = "\x5A\x00\x00\x00"
+                      "\x10" "age\x00" "\x0A\x00\x00\x00"
+                      "\x03" "transport\x00"
+                            "\x41\x00\x00\x00"
+                            "\x02" "__type\x00" "\x15\x00\x00\x00" "PolymorphicTest::Car\x00"
+                            "\x10" "speed\x00"  "\x10\x00\x00\x00"
+                            "\x02" "make\x00"   "\x06\x00\x00\x00" "Turbo\x00"
+                            "\x00"
+                      "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    //std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+    std::stringstream stream(input);
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(14)};
 
     stream >> ThorsAnvil::Serialize::bsonImporter(user1, false);
@@ -234,7 +302,19 @@ TEST(PolymorphicTest, BsonReadCar)
 
 TEST(PolymorphicTest, BsonReadBike)
 {
-    std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+    static const char inputRaw[]
+                    = "\x57\x00\x00\x00"
+                      "\x10" "age\x00" "\x0A\x00\x00\x00"
+                      "\x03" "transport\x00"
+                            "\x3E\x00\x00\x00"
+                            "\x02" "__type\x00" "\x16\x00\x00\x00" "PolymorphicTest::Bike\x00"
+                            "\x10" "speed\x00"  "\x12\x00\x00\x00"
+                            "\x10" "stroke\x00" "\x07\x00\x00\x00"
+                            "\x00"
+                      "\x00";
+    std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
+    //std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+    std::stringstream stream(input);
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(15)};
 
     stream >> ThorsAnvil::Serialize::bsonImporter(user1, false);
