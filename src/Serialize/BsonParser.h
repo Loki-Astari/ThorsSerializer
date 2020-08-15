@@ -18,7 +18,7 @@
  */
 
 #include "Serialize.h"
-#include "BsonManualLexer.h"
+#include "GitUtility/ieee754_types.h"
 #include <istream>
 #include <string>
 #include <vector>
@@ -28,21 +28,31 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+enum class BsonContainer  {Map, Array};
+enum class ValueType {Int32, Int64, Double64, Double128, Bool, String, Null, Binary};
+
 class BsonParser: public ParserInterface
 {
-    enum State          {Error, Init, OpenM, Key, Colon, ValueM, CommaM, CloseM, OpenA, ValueA, CommaA, CloseA, ValueD, Done};
+    std::vector<BsonContainer>  currentContainer;
+    std::vector<std::size_t>    dataLeft;
+    std::vector<std::size_t>    dataSize;
+    ParserToken                 nextToken;
+    std::string                 nextKey;
+    char                        nextType;
 
-    BsonManualLexer     lexer;
-    std::vector<State>  parrentState;
-    State               currentEnd;
-    State               currentState;
-    bool                started;
+    ValueType                       currentValue;
+    // All these should be in a union or something like that.
+    std::int32_t                    valueInt32;
+    std::int64_t                    valueInt64;
+    IEEE_754::_2008::Binary<64>     valueFloat64;
+#if 0
+    ieee128 not supported consistently
+    IEEE_754::_2008::Binary<128>    valueFloat128;
+#endif
+    bool                            valueBool;
+    std::string                     valueString;
+    std::string                     valueBinary;
 
-    std::string getString();
-    std::string getRawString();
-
-    template<typename T>
-    T scan();
     public:
         BsonParser(std::istream& stream, ParserConfig config = ParserConfig{});
         virtual ParserToken getNextToken()                      override;
@@ -71,6 +81,32 @@ class BsonParser: public ParserInterface
         virtual bool    isValueNull()                           override;
 
         virtual std::string getRawValue()                       override;
+    private:
+
+        template<std::size_t size, typename Int>
+        Int readSize(bool);
+
+        template<typename Int>
+        Int returnIntValue();
+        template<typename Float>
+        Float returnFloatValue();
+
+        void readKey();
+        void readValue(bool useValue);
+
+        template<std::size_t Size, typename Int>
+        Int readInt(bool);
+
+        template<std::size_t Size>
+        IEEE_754::_2008::Binary<Size * 8> readFloat(bool);
+
+        bool readBool(bool);
+        std::string readString(bool);
+        void readNull(bool);
+        std::string readBinary(bool);
+
+        [[noreturn]]
+        void badType();
 };
     }
 }

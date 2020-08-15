@@ -37,6 +37,10 @@ struct Bson
 template<typename T>
 Exporter<Bson, T> bsonExporter(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{})
 {
+    if constexpr (Traits<T>::type != TraitType::Map && Traits<T>::type != TraitType::Array)
+    {
+        throw std::runtime_error("ThorsAnvil::Serialize::bsonExporter: Bson only supports Array/Map at the top level");
+    }
     return Exporter<Bson, T>(value, config);
 }
 
@@ -49,6 +53,18 @@ Exporter<Bson, T> bsonExporter(T const& value, PrinterInterface::PrinterConfig c
 template<typename T>
 Importer<Bson, T> bsonImporter(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{})
 {
+    if constexpr (Traits<T>::type == TraitType::Map)
+    {
+        config.parserInfo = static_cast<long>(BsonContainer::Map);
+    }
+    else if constexpr (Traits<T>::type == TraitType::Array)
+    {
+        config.parserInfo = static_cast<long>(BsonContainer::Array);
+    }
+    else
+    {
+        throw std::runtime_error("ThorsAnvil::Serialize::bsonExporter: Bson only supports Array/Map at the top level");
+    }
     return Importer<Bson, T>(value, config);
 }
 
