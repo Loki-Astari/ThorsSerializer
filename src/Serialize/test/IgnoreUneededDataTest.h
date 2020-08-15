@@ -7,7 +7,7 @@
 
 namespace TA=ThorsAnvil::Serialize;
 
-namespace IgnoreUneededData
+namespace IgnoreUneededDataTest
 {
 
 class Thing
@@ -28,8 +28,8 @@ public:
 }
 
 
-ThorsAnvil_MakeTrait(IgnoreUneededData::ThingVersion, version);
-ThorsAnvil_MakeTrait(IgnoreUneededData::Thing, name, version);
+ThorsAnvil_MakeTrait(IgnoreUneededDataTest::ThingVersion, version);
+ThorsAnvil_MakeTrait(IgnoreUneededDataTest::Thing, name, version);
 
 #endif
 

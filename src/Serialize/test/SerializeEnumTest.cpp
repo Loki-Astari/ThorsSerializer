@@ -13,7 +13,7 @@ std::string stripspace(std::string const& value)
     return result;
 }
 
-TEST(SerializeEnum, JsonRedGreenBlueAtRed)
+TEST(SerializeEnumTest, JsonRedGreenBlueAtRed)
 {
     SerializeTest::RGB      enumHolder {SerializeTest::Red};
     std::stringstream   str;
@@ -21,7 +21,7 @@ TEST(SerializeEnum, JsonRedGreenBlueAtRed)
 
     EXPECT_EQ(R"("Red")", stripspace(str.str()));
 }
-TEST(SerializeEnum, JsonRedGreenBlueAtGreen)
+TEST(SerializeEnumTest, JsonRedGreenBlueAtGreen)
 {
     SerializeTest::RGB      enumHolder {SerializeTest::Green};
     std::stringstream   str;
@@ -29,7 +29,7 @@ TEST(SerializeEnum, JsonRedGreenBlueAtGreen)
 
     EXPECT_EQ(R"("Green")", stripspace(str.str()));
 }
-TEST(SerializeEnum, JsonRedGreenBlueAtBlue)
+TEST(SerializeEnumTest, JsonRedGreenBlueAtBlue)
 {
     SerializeTest::RGB      enumHolder {SerializeTest::Blue};
     std::stringstream   str;
@@ -37,7 +37,7 @@ TEST(SerializeEnum, JsonRedGreenBlueAtBlue)
 
     EXPECT_EQ(R"("Blue")", stripspace(str.str()));
 }
-TEST(DeSerializeEnum, JsonRefGreenBlueFromRed)
+TEST(DeSerializeEnumTest, JsonRefGreenBlueFromRed)
 {
     std::stringstream   str(R"("Red")");
     SerializeTest::RGB     enumHolder {SerializeTest::Green};
@@ -45,7 +45,7 @@ TEST(DeSerializeEnum, JsonRefGreenBlueFromRed)
     str >> ThorsAnvil::Serialize::jsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Red, enumHolder);
 }
-TEST(DeSerializeEnum, JsonRefGreenBlueFromGreen)
+TEST(DeSerializeEnumTest, JsonRefGreenBlueFromGreen)
 {
     std::stringstream   str(R"("Green")");
     SerializeTest::RGB     enumHolder {SerializeTest::Red};
@@ -53,7 +53,7 @@ TEST(DeSerializeEnum, JsonRefGreenBlueFromGreen)
     str >> ThorsAnvil::Serialize::jsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Green, enumHolder);
 }
-TEST(DeSerializeEnum, JsonRefGreenBlueFromBlue)
+TEST(DeSerializeEnumTest, JsonRefGreenBlueFromBlue)
 {
     std::stringstream   str(R"("Blue")");
     SerializeTest::RGB     enumHolder {SerializeTest::Green};
@@ -61,7 +61,7 @@ TEST(DeSerializeEnum, JsonRefGreenBlueFromBlue)
     str >> ThorsAnvil::Serialize::jsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Blue, enumHolder);
 }
-TEST(SerializeEnum, JsonSerEnumInContainer)
+TEST(SerializeEnumTest, JsonSerEnumInContainer)
 {
     SerializeTest::EumHolder  holder { SerializeTest::Red };
 
@@ -70,7 +70,7 @@ TEST(SerializeEnum, JsonSerEnumInContainer)
     str << ThorsAnvil::Serialize::jsonExporter(holder, false);
     EXPECT_EQ(R"({"value":"Red"})", stripspace(str.str()));
 }
-TEST(SerializeEnum, JsonDeSerEnumInContainer)
+TEST(SerializeEnumTest, JsonDeSerEnumInContainer)
 {
     SerializeTest::EumHolder  holder { SerializeTest::Red };
     std::stringstream   str(R"({"value": "Green"})");
@@ -80,7 +80,7 @@ TEST(SerializeEnum, JsonDeSerEnumInContainer)
 }
 
 
-TEST(SerializeEnum, BsonRedGreenBlueAtRed)
+TEST(SerializeEnumTest, BsonRedGreenBlueAtRed)
 {
     SerializeTest::RGB      enumHolder {SerializeTest::Red};
     std::stringstream   str;
@@ -94,7 +94,7 @@ TEST(SerializeEnum, BsonRedGreenBlueAtRed)
     EXPECT_EQ(expected, str.str());
     //EXPECT_EQ(R"("Red")", stripspace(str.str()));
 }
-TEST(SerializeEnum, BsonRedGreenBlueAtGreen)
+TEST(SerializeEnumTest, BsonRedGreenBlueAtGreen)
 {
     SerializeTest::RGB      enumHolder {SerializeTest::Green};
     std::stringstream   str;
@@ -108,7 +108,7 @@ TEST(SerializeEnum, BsonRedGreenBlueAtGreen)
     EXPECT_EQ(expected, str.str());
     //EXPECT_EQ(R"("Green")", stripspace(str.str()));
 }
-TEST(SerializeEnum, BsonRedGreenBlueAtBlue)
+TEST(SerializeEnumTest, BsonRedGreenBlueAtBlue)
 {
     SerializeTest::RGB      enumHolder {SerializeTest::Blue};
     std::stringstream   str;
@@ -122,7 +122,7 @@ TEST(SerializeEnum, BsonRedGreenBlueAtBlue)
     EXPECT_EQ(expected, str.str());
     //EXPECT_EQ(R"("Blue")", stripspace(str.str()));
 }
-TEST(DeSerializeEnum, BsonRefGreenBlueFromRed)
+TEST(DeSerializeEnumTest, BsonRefGreenBlueFromRed)
 {
     //std::stringstream   str(R"("Red")");
     static const char inputRaw[]
@@ -136,7 +136,7 @@ TEST(DeSerializeEnum, BsonRefGreenBlueFromRed)
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Red, enumHolder);
 }
-TEST(DeSerializeEnum, BsonRefGreenBlueFromGreen)
+TEST(DeSerializeEnumTest, BsonRefGreenBlueFromGreen)
 {
     //std::stringstream   str(R"("Green")");
     static const char inputRaw[]
@@ -150,7 +150,7 @@ TEST(DeSerializeEnum, BsonRefGreenBlueFromGreen)
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Green, enumHolder);
 }
-TEST(DeSerializeEnum, BsonRefGreenBlueFromBlue)
+TEST(DeSerializeEnumTest, BsonRefGreenBlueFromBlue)
 {
     //std::stringstream   str(R"("Blue")");
     static const char inputRaw[]
@@ -164,7 +164,7 @@ TEST(DeSerializeEnum, BsonRefGreenBlueFromBlue)
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Blue, enumHolder);
 }
-TEST(SerializeEnum, BsonSerEnumInContainer)
+TEST(SerializeEnumTest, BsonSerEnumInContainer)
 {
     SerializeTest::EumHolder  holder { SerializeTest::Red };
 
@@ -179,7 +179,7 @@ TEST(SerializeEnum, BsonSerEnumInContainer)
     EXPECT_EQ(expected, str.str());
     //EXPECT_EQ(R"({"value":"Red"})", stripspace(str.str()));
 }
-TEST(SerializeEnum, BsonDeSerEnumInContainer)
+TEST(SerializeEnumTest, BsonDeSerEnumInContainer)
 {
     SerializeTest::EumHolder  holder { SerializeTest::Red };
     //std::stringstream   str(R"({"value": "Green"})");

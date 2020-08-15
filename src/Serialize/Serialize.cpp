@@ -15,11 +15,10 @@ using ThorsAnvil::Serialize::ParserInterface;
 #include "JsonThor.h"
 #include "test/SerializeTest.h"
 #include "test/BinaryParserTest.h"
-#include "test/IgnoreUneededData.h"
+#include "test/IgnoreUneededDataTest.h"
 #include "test/ExceptionTest.h"
-#include "test/Twitter.h"
+#include "test/TwitterTest.h"
 #include "test/SmartPointerTest.h"
-#include "test/IgnoreUneededData.h"
 
 
 template void ThorsAnvil::Serialize::Serializer::print<BinaryParserTest::Base>(BinaryParserTest::Base const&);
@@ -91,8 +90,8 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::unordered_multimap
 
 template void ThorsAnvil::Serialize::Serializer::print<std::initializer_list<int>>(std::initializer_list<int> const&);
 
-template void ThorsAnvil::Serialize::Serializer::print<IgnoreUneededData::Thing>(IgnoreUneededData::Thing const&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<IgnoreUneededData::ThingVersion>(IgnoreUneededData::ThingVersion&);
+template void ThorsAnvil::Serialize::Serializer::print<IgnoreUneededDataTest::Thing>(IgnoreUneededDataTest::Thing const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<IgnoreUneededDataTest::ThingVersion>(IgnoreUneededDataTest::ThingVersion&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::CornerCaseClass>(SerializeTest::CornerCaseClass&);
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<SerializeTest::CornerCaseClass*>(SerializeTest::CornerCaseClass*&);
@@ -119,6 +118,6 @@ template void ThorsAnvil::Serialize::Serializer::print<std::unique_ptr<SmartPtrT
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::shared_ptr<SmartPtrTest::Object>>(std::shared_ptr<SmartPtrTest::Object>&);
 template void ThorsAnvil::Serialize::Serializer::print<std::shared_ptr<SmartPtrTest::Object>>(std::shared_ptr<SmartPtrTest::Object> const&);
 
-template void ThorsAnvil::Serialize::DeSerializer::parse<IgnoreUneededData::Thing>(IgnoreUneededData::Thing&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<IgnoreUneededDataTest::Thing>(IgnoreUneededDataTest::Thing&);
 #endif
 #endif

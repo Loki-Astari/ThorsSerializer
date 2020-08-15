@@ -1,4 +1,4 @@
-#include "SerializeConfig.h"
+UnicodeIteratorTest#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "UnicodeIterator.h"
 #include <algorithm>

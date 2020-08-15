@@ -7,7 +7,7 @@
 
 namespace TS = ThorsAnvil::Serialize;
 
-TEST(SerUnorderedMultisetTest, Jsonserialize)
+TEST(SerUnorderedMultiSetTest, Jsonserialize)
 {
     std::unordered_multiset<int>  data{24,8,11,2,2,2};
 
@@ -121,7 +121,7 @@ TEST(SerUnorderedMultisetTest, Jsonserialize)
 
 }
 
-TEST(SerUnorderedMultisetTest, JsondeSerialize)
+TEST(SerUnorderedMultiSetTest, JsondeSerialize)
 {
     std::unordered_multiset<int>  data;
 
@@ -136,7 +136,7 @@ TEST(SerUnorderedMultisetTest, JsondeSerialize)
     EXPECT_EQ(data.count(8), 2);
 }
 
-TEST(SerUnorderedMultisetTest, Bsonserialize)
+TEST(SerUnorderedMultiSetTest, Bsonserialize)
 {
     std::unordered_multiset<int>  data{24,8,11};
 
@@ -193,7 +193,7 @@ TEST(SerUnorderedMultisetTest, Bsonserialize)
     EXPECT_TRUE(test);
 }
 
-TEST(SerUnorderedMultisetTest, BsondeSerialize)
+TEST(SerUnorderedMultiSetTest, BsondeSerialize)
 {
     std::unordered_multiset<int>  data;
 

@@ -2,7 +2,7 @@
 #include "SerUtil.h"
 #include "gtest/gtest.h"
 #include "JsonThor.h"
-#include "test/Twitter.h"
+#include "test/TwitterTest.h"
 #include <fstream>
 
 TEST(TwitterTest, ReadTwitterObject)

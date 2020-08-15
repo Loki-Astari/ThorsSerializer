@@ -7,7 +7,7 @@
 #include <string_view>
 
 
-TEST(EscapeControl, JsonNormalInput)
+TEST(EscapeControlTest, JsonNormalInput)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream   input("\"String With no special characters\"");
@@ -19,7 +19,7 @@ TEST(EscapeControl, JsonNormalInput)
     }
     EXPECT_EQ(importDone, true);
 }
-TEST(EscapeControl, JsonInputContainsTab)
+TEST(EscapeControlTest, JsonInputContainsTab)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream   input("\"\t A string with A tab\"");
@@ -31,7 +31,7 @@ TEST(EscapeControl, JsonInputContainsTab)
     }
     EXPECT_EQ(importDone, false);
 }
-TEST(EscapeControl, JsonInputContainsBS)
+TEST(EscapeControlTest, JsonInputContainsBS)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream   input("\"\b A string with A Back Space\"");
@@ -43,7 +43,7 @@ TEST(EscapeControl, JsonInputContainsBS)
     }
     EXPECT_EQ(importDone, false);
 }
-TEST(EscapeControl, JsonInputContainsNL)
+TEST(EscapeControlTest, JsonInputContainsNL)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream   input("\"\n A string with A New Line\"");
@@ -55,7 +55,7 @@ TEST(EscapeControl, JsonInputContainsNL)
     }
     EXPECT_EQ(importDone, false);
 }
-TEST(EscapeControl, JsonInputContainsFF)
+TEST(EscapeControlTest, JsonInputContainsFF)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream   input("\"\f A string with A Form Feed\"");
@@ -67,7 +67,7 @@ TEST(EscapeControl, JsonInputContainsFF)
     }
     EXPECT_EQ(importDone, false);
 }
-TEST(EscapeControl, JsonInputContainsCR)
+TEST(EscapeControlTest, JsonInputContainsCR)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     std::stringstream   input("\"\r A string with A Carridge Return\"");
@@ -79,7 +79,7 @@ TEST(EscapeControl, JsonInputContainsCR)
     }
     EXPECT_EQ(importDone, false);
 }
-TEST(EscapeControl, JsonOutputContainsTab)
+TEST(EscapeControlTest, JsonOutputContainsTab)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\t A string with A tab");
@@ -95,7 +95,7 @@ TEST(EscapeControl, JsonOutputContainsTab)
     ASSERT_NE(find, std::string::npos);
     EXPECT_EQ(output.str()[find+1], 't');
 }
-TEST(EscapeControl, JsonOutputContainsBS)
+TEST(EscapeControlTest, JsonOutputContainsBS)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\b A string with A Back Space");
@@ -111,7 +111,7 @@ TEST(EscapeControl, JsonOutputContainsBS)
     ASSERT_NE(find, std::string::npos);
     EXPECT_EQ(output.str()[find+1], 'b');
 }
-TEST(EscapeControl, JsonOutputContainsNL)
+TEST(EscapeControlTest, JsonOutputContainsNL)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\n A string with A New Line");
@@ -127,7 +127,7 @@ TEST(EscapeControl, JsonOutputContainsNL)
     ASSERT_NE(find, std::string::npos);
     EXPECT_EQ(output.str()[find+1], 'n');
 }
-TEST(EscapeControl, JsonOutputContainsFF)
+TEST(EscapeControlTest, JsonOutputContainsFF)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\f A string with A Form Feed");
@@ -143,7 +143,7 @@ TEST(EscapeControl, JsonOutputContainsFF)
     ASSERT_NE(find, std::string::npos);
     EXPECT_EQ(output.str()[find+1], 'f');
 }
-TEST(EscapeControl, JsonOutputContainsCR)
+TEST(EscapeControlTest, JsonOutputContainsCR)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\r A string with A Carridge Return");
@@ -160,7 +160,7 @@ TEST(EscapeControl, JsonOutputContainsCR)
     EXPECT_EQ(output.str()[find+1], 'r');
 }
 
-TEST(EscapeControl, BsonNormalInput)
+TEST(EscapeControlTest, BsonNormalInput)
 {
     using ThorsAnvil::Serialize::ParserInterface;
     //std::stringstream   input("\"String With no special characters\"");
@@ -178,7 +178,7 @@ TEST(EscapeControl, BsonNormalInput)
     }
     EXPECT_EQ(importDone, true);
 }
-TEST(EscapeControl, BsonOutputContainsTab)
+TEST(EscapeControlTest, BsonOutputContainsTab)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\t A string with A tab");
@@ -195,7 +195,7 @@ TEST(EscapeControl, BsonOutputContainsTab)
     ASSERT_NE(find, std::string::npos);
     EXPECT_EQ(outputView[find+1], 't');
 }
-TEST(EscapeControl, BsonOutputContainsBS)
+TEST(EscapeControlTest, BsonOutputContainsBS)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\b A string with A Back Space");
@@ -212,7 +212,7 @@ TEST(EscapeControl, BsonOutputContainsBS)
     ASSERT_NE(find, std::string::npos);
     EXPECT_EQ(outputView[find+1], 'b');
 }
-TEST(EscapeControl, BsonOutputContainsNL)
+TEST(EscapeControlTest, BsonOutputContainsNL)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\n A string with A New Line");
@@ -229,7 +229,7 @@ TEST(EscapeControl, BsonOutputContainsNL)
     ASSERT_NE(find, std::string::npos);
     EXPECT_EQ(outputView[find+1], 'n');
 }
-TEST(EscapeControl, BsonOutputContainsFF)
+TEST(EscapeControlTest, BsonOutputContainsFF)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\f A string with A Form Feed");
@@ -246,7 +246,7 @@ TEST(EscapeControl, BsonOutputContainsFF)
     ASSERT_NE(find, std::string::npos);
     EXPECT_EQ(outputView[find+1], 'f');
 }
-TEST(EscapeControl, BsonOutputContainsCR)
+TEST(EscapeControlTest, BsonOutputContainsCR)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
     std::string         value("\r A string with A Carridge Return");

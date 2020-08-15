@@ -7,7 +7,7 @@
 
 namespace TS = ThorsAnvil::Serialize;
 
-TEST(SerMultisetTest, Jsonserialize)
+TEST(SerMultiSetTest, Jsonserialize)
 {
     std::multiset<int>  data{34,24,8,11,2,2,2};
 
@@ -19,7 +19,7 @@ TEST(SerMultisetTest, Jsonserialize)
     EXPECT_EQ(result, R"([2,2,2,8,11,24,34])");
 }
 
-TEST(SerMultisetTest, JsonbeSerialize)
+TEST(SerMultiSetTest, JsonbeSerialize)
 {
     std::multiset<int>  data;
 
@@ -34,7 +34,7 @@ TEST(SerMultisetTest, JsonbeSerialize)
     EXPECT_EQ(data.count(8), 2);
 }
 
-TEST(SerMultisetTest, Bsonserialize)
+TEST(SerMultiSetTest, Bsonserialize)
 {
     std::multiset<int>  data{34,24,8,11,2,2,2};
 
@@ -57,7 +57,7 @@ TEST(SerMultisetTest, Bsonserialize)
     //EXPECT_EQ(result, R"([2,2,2,8,11,24,34])");
 }
 
-TEST(SerMultisetTest, BsonbeSerialize)
+TEST(SerMultiSetTest, BsonbeSerialize)
 {
     std::multiset<int>  data;
 
