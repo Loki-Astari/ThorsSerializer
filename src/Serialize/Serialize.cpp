@@ -17,7 +17,7 @@ using ThorsAnvil::Serialize::ParserInterface;
 #include "test/BinaryParserTest.h"
 #include "test/IgnoreUneededDataTest.h"
 #include "test/ExceptionTest.h"
-#include "test/Twitter.h"
+#include "test/TwitterTest.h"
 #include "test/SmartPointerTest.h"
 
 
