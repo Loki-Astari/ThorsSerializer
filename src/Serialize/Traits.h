@@ -21,6 +21,7 @@
  */
 
 #include "ThorsSerializerUtil.h"
+#include "ThorsIOUtil/Utility.h"
 #include <string>
 #include <tuple>
 #include <map>
@@ -508,7 +509,10 @@ class PolyMorphicRegistry
             auto     find       = cont.find(name);
             if (find == cont.end())
             {
-                throw std::runtime_error("ThorsAnvil::Serialize::PolyMorphicRegistry::getNamedTypeConvertedTo: Non polymorphic type");
+                throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::PolyMorphicRegistry", "getNamedTypeConvertedTo",
+                                                               "Non polymorphic type")
+                                                              );
             }
             void*       data        = find->second();
             AllocType*  dataBase    = reinterpret_cast<AllocType*>(data);

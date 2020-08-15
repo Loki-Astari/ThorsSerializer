@@ -1,6 +1,7 @@
 #ifndef THORS_ANVIL_SERIALIZER_THORSSERIALIZERUTIL_H
 #define THORS_ANVIL_SERIALIZER_THORSSERIALIZERUTIL_H
 
+#include "ThorsIOUtil/Utility.h"
 #include <type_traits>
 #include <string>
 #include <iostream>
@@ -538,7 +539,10 @@ auto tryGetSizeFromSerializeType(PrinterInterface& printer, T const& value, int)
 template<typename T>
 auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size_t
 {
-    throw std::runtime_error("BSON backward compatibility");
+    throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "tryGetSizeFromSerializeType",
+                                                               "BSON backward compatibility. See comments in function.")
+                                                              );
     // This function is needed for backward compatibility to make things compile without
     // requiring user code to be changed.
     //

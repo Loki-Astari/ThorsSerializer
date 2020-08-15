@@ -19,6 +19,7 @@
 
 #include "Serialize.h"
 #include "BsonUtil.h"
+#include "ThorsIOUtil/Utility.h"
 #include <GitUtility/ieee754_types.h>
 #include <istream>
 #include <string>
@@ -106,7 +107,11 @@ class BsonParser: public ParserInterface
         std::string readBinary(bool);
 
         [[noreturn]]
-        void badType()                                      {throw std::runtime_error("Invalid Type in Bson");}
+        void badType()                                      {throw std::runtime_error(
+                                                                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "badType"
+                                                                                                          "Trying to read a type that we can can't convert.")
+                                                                                                          );
+                                                            }
 };
     }
 }

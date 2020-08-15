@@ -1,6 +1,7 @@
 #include "SerializeConfig.h"
 #ifdef HAVE_YAML
 #include "YamlPrinter.h"
+#include "ThorsIOUtil/Utility.h"
 #include <sstream>
 
 extern "C"
@@ -28,7 +29,7 @@ void YamlPrinter::checkYamlResultCode(int code, char const* method, char const* 
     if (code == 0)
     {
         error = true;
-        throw std::runtime_error(msgBase + method + ": " + msg);
+        throw std::runtime_error(ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::YamlPrinter", "checkYamlResultCode", method, ":", msg));
     }
 }
 HEADER_ONLY_INCLUDE
@@ -188,7 +189,10 @@ void YamlPrinter::addKey(std::string const& key)
     if (state.back().second != TraitType::Map && state.back().first % 2 != 1)
     {
         error = true;
-        throw std::runtime_error("ThorsAnvil::Serialize::YamlPrinter: Invalid call to addKey(): Currently not in a map");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::YamlPrinter", "addKey",
+                                                               "Invalid call to addKey(): Currently not in a map")
+                                                              );
     }
     emit(key);
 }

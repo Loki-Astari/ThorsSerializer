@@ -2,6 +2,7 @@
 #include "JsonManualLexer.h"
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
+#include "ThorsIOUtil/Utility.h"
 
 #include <limits>
 #include <cstring>
@@ -131,7 +132,10 @@ std::string JsonManualLexer::getRawString()
             {
                 if (next < 0x20)
                 {
-                    throw std::runtime_error("X");
+                    throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serializer::JsonManualLexer", "getRawString",
+                                                               "Strings should not contain control characters.")
+                                                              );
                 }
                 result.push_back(next);
                 last = next;
@@ -146,7 +150,10 @@ std::string JsonManualLexer::getRawString()
         }
         default:
         {
-            throw std::runtime_error("Not Supported: Unexpected");
+            throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serializer::JsonManualLexer", "getRawString",
+                                                               "Don't know how to retrieve the RAW data from the JSON input")
+                                                              );
         }
     }
 }
@@ -166,7 +173,10 @@ bool JsonManualLexer::getLastBool() const
     }
     else
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser::getValue(): Not a bool");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::JsonParser", "getLastBool",
+                                                               "The last value was not a bool")
+                                                              );
     }
 }
 
@@ -264,5 +274,8 @@ void JsonManualLexer::checkFixed(char const* check, std::size_t size)
 HEADER_ONLY_INCLUDE
 void JsonManualLexer::error()
 {
-    throw std::runtime_error("ThorsAnvil::Serialize::JsonLexer: Invalid Character in Lexer");
+    throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::JsonManualLexer", "error",
+                                                              "Invalid Character in Lexer")
+                                                              );
 }

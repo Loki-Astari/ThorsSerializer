@@ -1,5 +1,6 @@
 #include "SerializeConfig.h"
 #include "BsonPrinter.h"
+#include "ThorsIOUtil/Utility.h"
 #include "GitUtility/ieee754_types.h"
 #include <iomanip>
 #include <algorithm>
@@ -73,7 +74,10 @@ void BsonPrinter::addKey(std::string const& key)
 {
     if (currentContainer.back() != BsonContainer::Map)
     {
-        throw std::runtime_error("Adding a Key to a non map object");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonPrinter", "addKey",
+                                                                "Adding a Key to a non map object")
+                                                              );
     }
     currentKey = key;
 }
@@ -144,7 +148,10 @@ void BsonPrinter::closeMap()
 {
     if (currentContainer.back() != BsonContainer::Map)
     {
-        throw std::runtime_error("Closing an unopened Array");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonPrinter", "closeMap",
+                                                             "Closing an unopened Map")
+                                                              );
     }
     output.write("",1);
     currentContainer.pop_back();
@@ -164,7 +171,10 @@ void BsonPrinter::closeArray()
 {
     if (currentContainer.back() != BsonContainer::Array)
     {
-        throw std::runtime_error("Closing an unopened Array");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonPrinter", "closeArray",
+                                                               "Closing an unopened Array")
+                                                              );
     }
     output.write("",1);
     currentContainer.pop_back();

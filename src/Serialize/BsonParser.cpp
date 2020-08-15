@@ -2,6 +2,7 @@
 #include "BsonParser.h"
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
+#include "ThorsIOUtil/Utility.h"
 #include <map>
 #include <cstdlib>
 #include <cstring>
@@ -76,7 +77,10 @@ ParserToken BsonParser::getNextToken()
             dataLeft.back() -= 1;
             if (mark != '\x00')
             {
-                throw std::runtime_error("Bad Marker");
+                throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "getNextToken",
+                                                              "End of container marker should be '\x00' but is >", static_cast<int>(mark), "<")
+                                        );
             }
             currentContainer.pop_back();
             dataLeft.pop_back();
@@ -125,7 +129,11 @@ ParserToken BsonParser::getNextToken()
             break;
         }
         default:
-            throw std::runtime_error("Bad State");
+
+            throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "getNextToken",
+                                                               "Invalid state reached in switch")
+                                    );
     }
 #if 0
     switch (result)
@@ -161,7 +169,10 @@ void BsonParser::readValue(bool useValue)
         case '\x13':    valueFloat128   = readFloat<16>(useValue);                  break;
 #endif
         default:
-            throw std::runtime_error("ThorsAnvil::Serialize::BsonParser::getNextToken: Un-known Value type");
+            throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "readValue",
+                                                                "Bson: unknown type for a container field")
+                                    );
     }
     if (isEndOfContainer())
     {
@@ -318,6 +329,9 @@ std::string BsonParser::getRawValue()
         case ValueType::Null:           return "null";
         case ValueType::Binary:         return valueBinary;
         default:
-            throw std::runtime_error("Invalid Type from RAW");
+            throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "getRawValue",
+                                    "Could not convert the data into raw output for some reason")
+                                    );
     }
 }
