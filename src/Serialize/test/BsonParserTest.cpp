@@ -1,6 +1,5 @@
 #include "SerializeConfig.h"
 #include "gtest/gtest.h"
-#include "JsonParser.h"
 #include "BsonParser.h"
 
 // enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
@@ -8,1151 +7,7 @@
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 
-TEST(ParserTest, JsonArrayEmpty)
-{
-    std::stringstream   stream("[]");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonArrayOneValue)
-{
-    std::stringstream   stream("[12]");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonArrayTwoValue)
-{
-    std::stringstream   stream("[12,13]");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonArrayThreeValue)
-{
-    std::stringstream   stream("[12,13,14]");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonArrayWithArray)
-{
-    std::stringstream   stream("[[]]");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonArrayWithTwoArray)
-{
-    std::stringstream   stream("[[],[]]");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonArrayWithMap)
-{
-    std::stringstream   stream("[{}]");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonArrayWithTwoMap)
-{
-    std::stringstream   stream("[{},{}]");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonMapEmpty)
-{
-    std::stringstream   stream("{}");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonMapOneValue)
-{
-    std::stringstream   stream(R"({"One": 12})");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonMapTwoValue)
-{
-    std::stringstream   stream(R"({"one": 12, "two": 13})");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonMapThreeValue)
-{
-    std::stringstream   stream(R"({"one":12, "two": 13, "three": 14})");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonMapWithArray)
-{
-    std::stringstream   stream(R"({"one": []})");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonMapWithTwoArray)
-{
-    std::stringstream   stream(R"({"one": [], "two": []}])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonMapWithMap)
-{
-    std::stringstream   stream(R"({"one": {}})");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonMapWithTwoMap)
-{
-    std::stringstream   stream(R"({"one": {}, "two": {}})");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-    parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonGetKeyValue)
-{
-    std::stringstream   stream(R"({"one": 15})");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::MapStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Key,        parser.getToken());
-
-    std::string key     = parser.getKey();
-    EXPECT_EQ("one", key);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    int value;
-    parser.getValue(value);
-    EXPECT_EQ(15, value);
-
-    EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonGetArrayValues)
-{
-    std::stringstream   stream(R"([true, false, 123, 123.4, "A String"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    bool    test1   = false;
-    parser.getValue(test1);
-    EXPECT_EQ(true, test1);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    bool    test2   = true;
-    parser.getValue(test2);
-    EXPECT_EQ(false, test2);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    int    test3   = 0;
-    parser.getValue(test3);
-    EXPECT_EQ(123, test3);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    double test4   = 80;
-    parser.getValue(test4);
-    EXPECT_EQ(1234, (int)(test4*10));
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string    test5;
-    parser.getValue(test5);
-    EXPECT_EQ("A String", test5);
-
-
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
-}
-TEST(ParserTest, JsonCheckErrorDoesNotRead)
-{
-    std::stringstream   stream("][");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-
-    // First Character is an error.
-    EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
-
-    // Subsequent read should also be an error.
-    // But it should not read from the stream
-    EXPECT_EQ(ParserInterface::ParserToken::Error,      parser.getToken());
-
-    char  next;
-    stream >> next;
-    EXPECT_EQ('[', next);
-}
-
-TEST(ParserTest, JsongetDataFromString_1)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    ASSERT_NO_THROW(
-        parser.getValue(value1);
-    );
-    EXPECT_EQ("Test", value1);
-}
-
-TEST(ParserTest, JsongetDataFromString_2)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    short             value2a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2a)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_3)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    int             value2b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2b)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_4)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    long             value2c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2c)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_5)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    long long             value2d;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2d)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_6)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    unsigned short             value2e;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2e)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_7)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    unsigned int             value2f;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2f)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_8)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    unsigned long             value2g;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2g)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_9)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    unsigned long long             value2h;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2h)
-    );
-
-}
-
-TEST(ParserTest, JsongetDataFromString_a)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    float          value3a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3a)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_b)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    double          value3b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3b)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromString_c)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-}
-
-TEST(ParserTest, JsongetDataFromString_d)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    long double          value3c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3c)
-    );
-
-}
-
-TEST(ParserTest, JsongetDataFromString_e)
-{
-    std::stringstream   stream(R"(["Test"])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    bool            value4;
-    ASSERT_ANY_THROW(
-        parser.getValue(value4)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromInt_1)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    ASSERT_ANY_THROW(
-        parser.getValue(value1)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromInt_2)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    short             value2a;
-    ASSERT_NO_THROW(
-        parser.getValue(value2a)
-    );
-    EXPECT_EQ(56, value2a);
-}
-
-TEST(ParserTest, JsongetDataFromInt_3)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    int             value2b;
-    ASSERT_NO_THROW(
-        parser.getValue(value2b)
-    );
-    EXPECT_EQ(56, value2b);
-}
-
-TEST(ParserTest, JsongetDataFromInt_4)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    long             value2c;
-    ASSERT_NO_THROW(
-        parser.getValue(value2c)
-    );
-    EXPECT_EQ(56, value2c);
-}
-
-TEST(ParserTest, JsongetDataFromInt_5)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    long long             value2d;
-    ASSERT_NO_THROW(
-        parser.getValue(value2d)
-    );
-    EXPECT_EQ(56, value2d);
-}
-
-TEST(ParserTest, JsongetDataFromInt_6)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    short             value2e;
-    ASSERT_NO_THROW(
-        parser.getValue(value2e)
-    );
-    EXPECT_EQ(56, value2e);
-}
-
-TEST(ParserTest, JsongetDataFromInt_7)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    int             value2f;
-    ASSERT_NO_THROW(
-        parser.getValue(value2f)
-    );
-    EXPECT_EQ(56, value2f);
-}
-
-TEST(ParserTest, JsongetDataFromInt_8)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    long             value2g;
-    ASSERT_NO_THROW(
-        parser.getValue(value2g)
-    );
-    EXPECT_EQ(56, value2g);
-}
-
-TEST(ParserTest, JsongetDataFromInt_9)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    long long             value2h;
-    ASSERT_NO_THROW(
-        parser.getValue(value2h)
-    );
-    EXPECT_EQ(56, value2h);
-}
-
-TEST(ParserTest, JsongetDataFromInt_a)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    float          value3a;
-    ASSERT_NO_THROW(
-        parser.getValue(value3a)
-    );
-    EXPECT_EQ(56, value3a);
-}
-
-TEST(ParserTest, JsongetDataFromInt_b)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    double          value3b;
-    ASSERT_NO_THROW(
-        parser.getValue(value3b)
-    );
-    EXPECT_EQ(56, value3b);
-}
-
-TEST(ParserTest, JsongetDataFromInt_c)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    long double          value3c;
-    ASSERT_NO_THROW(
-        parser.getValue(value3c)
-    );
-    EXPECT_EQ(56, value3c);
-}
-
-TEST(ParserTest, JsongetDataFromInt_d)
-{
-    std::stringstream   stream(R"([56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    bool            value4;
-    ASSERT_ANY_THROW(
-        parser.getValue(value4)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromFloat_1)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    ASSERT_ANY_THROW(
-        parser.getValue(value1)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromFloat_2)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    short             value2a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2a)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromFloat_3)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    int             value2b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2b)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromFloat_4)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    long             value2c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2c)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromFloat_5)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    long long             value2d;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2d)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromFloat_6)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    unsigned short             value2e;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2e)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromFloat_7)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    unsigned int             value2f;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2f)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromFloat_8)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    unsigned long             value2g;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2g)
-    );
-}
-
-TEST(JsonParserTest, getDataFromFloat_9)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    unsigned long long             value2h;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2h)
-    );
-}
-
-TEST(JsonParserTest, getDataFromFloat_a)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    float          value3a;
-    ASSERT_NO_THROW(
-        parser.getValue(value3a)
-    );
-    EXPECT_EQ(12356, static_cast<int>(value3a * 100 + .5));
-}
-
-TEST(ParserTest, JsongetDataFromFloat_b)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    double          value3b;
-    ASSERT_NO_THROW(
-        parser.getValue(value3b)
-    );
-    EXPECT_EQ(12356, static_cast<int>(value3b * 100 + .5));
-}
-
-TEST(ParserTest, JsongetDataFromFloat_c)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    long double          value3c;
-    ASSERT_NO_THROW(
-        parser.getValue(value3c)
-    );
-    EXPECT_EQ(12356, static_cast<int>(value3c * 100 + .5));
-
-}
-
-TEST(ParserTest, JsongetDataFromFloat_d)
-{
-    std::stringstream   stream(R"([123.56])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    bool            value4;
-    ASSERT_ANY_THROW(
-        parser.getValue(value4)
-    );
-}
-TEST(ParserTest, JsongetDataFromBool_1)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    ASSERT_ANY_THROW(
-        parser.getValue(value1)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_2)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    std::string     value1;
-    ASSERT_ANY_THROW(
-        parser.getValue(value1)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_3)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    short             value2a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2a)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_4)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    int             value2b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2b)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_5)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    long             value2c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2c)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_6)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    long long             value2d;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2d)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_7)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    unsigned short             value2e;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2e)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_8)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    unsigned int             value2f;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2f)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_9)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    unsigned long             value2g;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2g)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_a)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    unsigned long long             value2h;
-    ASSERT_ANY_THROW(
-        parser.getValue(value2h)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_b)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    float          value3a;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3a)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_c)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    double          value3b;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3b)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_d)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    long double          value3c;
-    ASSERT_ANY_THROW(
-        parser.getValue(value3c)
-    );
-}
-
-TEST(ParserTest, JsongetDataFromBool_e)
-{
-    std::stringstream   stream(R"([true, false])");
-    TA::JsonParser      parser(stream);
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    bool            value4 = false;
-    ASSERT_NO_THROW(
-        parser.getValue(value4)
-    );
-    EXPECT_EQ(true, value4);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    ASSERT_NO_THROW(
-        parser.getValue(value4)
-    );
-    EXPECT_EQ(false, value4);
-}
-TEST(ParserTest, JsongetRawValue)
-{
-    std::stringstream   stream(R"([true, false, 0, 15.4, "The Best"])");
-    TA::JsonParser      parser(stream);
-    std::string         value;
-
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart,   parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-
-    value = parser.getRawValue();
-    EXPECT_EQ(std::string("true"), value);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    value = parser.getRawValue();
-    EXPECT_EQ(std::string("false"), value);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    value = parser.getRawValue();
-    EXPECT_EQ(std::string("0"), value);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    value = parser.getRawValue();
-    EXPECT_EQ(std::string("15.4"), value);
-
-    EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
-    value = parser.getRawValue();
-    EXPECT_EQ(std::string("\"The Best\""), value);
-}
-
-
-
-TEST(ParserTest, BsonArrayEmpty)
+TEST(BsonParserTest, ArrayEmpty)
 {
     //std::stringstream   stream("[]");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1170,7 +25,7 @@ TEST(ParserTest, BsonArrayEmpty)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonArrayOneValue)
+TEST(BsonParserTest, ArrayOneValue)
 {
     //std::stringstream   stream("[12]");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1190,7 +45,7 @@ TEST(ParserTest, BsonArrayOneValue)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonArrayTwoValue)
+TEST(BsonParserTest, ArrayTwoValue)
 {
     //std::stringstream   stream("[12,13]");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1212,7 +67,7 @@ TEST(ParserTest, BsonArrayTwoValue)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonArrayThreeValue)
+TEST(BsonParserTest, ArrayThreeValue)
 {
     //std::stringstream   stream("[12,13,14]");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1236,7 +91,7 @@ TEST(ParserTest, BsonArrayThreeValue)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonArrayWithArray)
+TEST(BsonParserTest, ArrayWithArray)
 {
     //std::stringstream   stream("[[]]");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1259,7 +114,7 @@ TEST(ParserTest, BsonArrayWithArray)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonArrayWithTwoArray)
+TEST(BsonParserTest, ArrayWithTwoArray)
 {
     //std::stringstream   stream("[[],[]]");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1287,7 +142,7 @@ TEST(ParserTest, BsonArrayWithTwoArray)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonArrayWithMap)
+TEST(BsonParserTest, ArrayWithMap)
 {
     //std::stringstream   stream("[{}]");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1310,7 +165,7 @@ TEST(ParserTest, BsonArrayWithMap)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonArrayWithTwoMap)
+TEST(BsonParserTest, ArrayWithTwoMap)
 {
     //std::stringstream   stream("[{},{}]");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1338,7 +193,7 @@ TEST(ParserTest, BsonArrayWithTwoMap)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd,   parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonMapEmpty)
+TEST(BsonParserTest, MapEmpty)
 {
     //std::stringstream   stream("{}");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1355,7 +210,7 @@ TEST(ParserTest, BsonMapEmpty)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonMapOneValue)
+TEST(BsonParserTest, MapOneValue)
 {
     //std::stringstream   stream(R"({"One": 12})");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1377,7 +232,7 @@ TEST(ParserTest, BsonMapOneValue)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonMapTwoValue)
+TEST(BsonParserTest, MapTwoValue)
 {
     //std::stringstream   stream(R"({"one": 12, "two": 13})");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1404,7 +259,7 @@ TEST(ParserTest, BsonMapTwoValue)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonMapThreeValue)
+TEST(BsonParserTest, MapThreeValue)
 {
     //std::stringstream   stream(R"({"one":12, "two": 13, "three": 14})");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1436,7 +291,7 @@ TEST(ParserTest, BsonMapThreeValue)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonMapWithArray)
+TEST(BsonParserTest, MapWithArray)
 {
     //std::stringstream   stream(R"({"one": []})");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1460,7 +315,7 @@ TEST(ParserTest, BsonMapWithArray)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonMapWithTwoArray)
+TEST(BsonParserTest, MapWithTwoArray)
 {
     //std::stringstream   stream(R"({"one": [], "two": []}])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1491,7 +346,7 @@ TEST(ParserTest, BsonMapWithTwoArray)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonMapWithMap)
+TEST(BsonParserTest, MapWithMap)
 {
     //std::stringstream   stream(R"({"one": {}})");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1515,7 +370,7 @@ TEST(ParserTest, BsonMapWithMap)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonMapWithTwoMap)
+TEST(BsonParserTest, MapWithTwoMap)
 {
     //std::stringstream   stream(R"({"one": {}, "two": {}})");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1546,7 +401,7 @@ TEST(ParserTest, BsonMapWithTwoMap)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonGetKeyValue)
+TEST(BsonParserTest, GetKeyValue)
 {
     //std::stringstream   stream(R"({"one": 15})");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1575,7 +430,7 @@ TEST(ParserTest, BsonGetKeyValue)
     EXPECT_EQ(ParserInterface::ParserToken::MapEnd,     parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
-TEST(ParserTest, BsonGetArrayValues)
+TEST(BsonParserTest, GetArrayValues)
 {
     //std::stringstream   stream(R"([true, false, 123, 123.4, "A String"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1630,7 +485,7 @@ TEST(ParserTest, BsonGetArrayValues)
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd,     parser.getToken());
 }
 
-TEST(ParserTest, BsongetDataFromString_1)
+TEST(BsonParserTest, getDataFromString_1)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1655,7 +510,7 @@ TEST(ParserTest, BsongetDataFromString_1)
     EXPECT_EQ("Test", value1);
 }
 
-TEST(ParserTest, BsongetDataFromString_2)
+TEST(BsonParserTest, getDataFromString_2)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1678,7 +533,7 @@ TEST(ParserTest, BsongetDataFromString_2)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_3)
+TEST(BsonParserTest, getDataFromString_3)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1701,7 +556,7 @@ TEST(ParserTest, BsongetDataFromString_3)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_4)
+TEST(BsonParserTest, getDataFromString_4)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1724,7 +579,7 @@ TEST(ParserTest, BsongetDataFromString_4)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_5)
+TEST(BsonParserTest, getDataFromString_5)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1747,7 +602,7 @@ TEST(ParserTest, BsongetDataFromString_5)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_6)
+TEST(BsonParserTest, getDataFromString_6)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1770,7 +625,7 @@ TEST(ParserTest, BsongetDataFromString_6)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_7)
+TEST(BsonParserTest, getDataFromString_7)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1793,7 +648,7 @@ TEST(ParserTest, BsongetDataFromString_7)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_8)
+TEST(BsonParserTest, getDataFromString_8)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1816,7 +671,7 @@ TEST(ParserTest, BsongetDataFromString_8)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_9)
+TEST(BsonParserTest, getDataFromString_9)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1840,7 +695,7 @@ TEST(ParserTest, BsongetDataFromString_9)
 
 }
 
-TEST(ParserTest, BsongetDataFromString_a)
+TEST(BsonParserTest, getDataFromString_a)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1863,7 +718,7 @@ TEST(ParserTest, BsongetDataFromString_a)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_b)
+TEST(BsonParserTest, getDataFromString_b)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1886,7 +741,7 @@ TEST(ParserTest, BsongetDataFromString_b)
     );
 }
 
-TEST(ParserTest, BsongetDataFromString_c)
+TEST(BsonParserTest, getDataFromString_c)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1905,7 +760,7 @@ TEST(ParserTest, BsongetDataFromString_c)
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 }
 
-TEST(ParserTest, BsongetDataFromString_d)
+TEST(BsonParserTest, getDataFromString_d)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1929,7 +784,7 @@ TEST(ParserTest, BsongetDataFromString_d)
 
 }
 
-TEST(ParserTest, BsongetDataFromString_e)
+TEST(BsonParserTest, getDataFromString_e)
 {
     //std::stringstream   stream(R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1952,7 +807,7 @@ TEST(ParserTest, BsongetDataFromString_e)
     );
 }
 
-TEST(ParserTest, BsongetDataFromInt_1)
+TEST(BsonParserTest, getDataFromInt_1)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -1976,7 +831,7 @@ TEST(ParserTest, BsongetDataFromInt_1)
     );
 }
 
-TEST(ParserTest, BsongetDataFromInt_2)
+TEST(BsonParserTest, getDataFromInt_2)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2001,7 +856,7 @@ TEST(ParserTest, BsongetDataFromInt_2)
     EXPECT_EQ(56, value2a);
 }
 
-TEST(ParserTest, BsongetDataFromInt_3)
+TEST(BsonParserTest, getDataFromInt_3)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2025,7 +880,7 @@ TEST(ParserTest, BsongetDataFromInt_3)
     EXPECT_EQ(56, value2b);
 }
 
-TEST(ParserTest, BsongetDataFromInt_4)
+TEST(BsonParserTest, getDataFromInt_4)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2049,7 +904,7 @@ TEST(ParserTest, BsongetDataFromInt_4)
     EXPECT_EQ(56, value2c);
 }
 
-TEST(ParserTest, BsongetDataFromInt_5)
+TEST(BsonParserTest, getDataFromInt_5)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2073,7 +928,7 @@ TEST(ParserTest, BsongetDataFromInt_5)
     EXPECT_EQ(56, value2d);
 }
 
-TEST(ParserTest, BsongetDataFromInt_6)
+TEST(BsonParserTest, getDataFromInt_6)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2097,7 +952,7 @@ TEST(ParserTest, BsongetDataFromInt_6)
     EXPECT_EQ(56, value2e);
 }
 
-TEST(ParserTest, BsongetDataFromInt_7)
+TEST(BsonParserTest, getDataFromInt_7)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2121,7 +976,7 @@ TEST(ParserTest, BsongetDataFromInt_7)
     EXPECT_EQ(56, value2f);
 }
 
-TEST(ParserTest, BsongetDataFromInt_8)
+TEST(BsonParserTest, getDataFromInt_8)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2145,7 +1000,7 @@ TEST(ParserTest, BsongetDataFromInt_8)
     EXPECT_EQ(56, value2g);
 }
 
-TEST(ParserTest, BsongetDataFromInt_9)
+TEST(BsonParserTest, getDataFromInt_9)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2169,7 +1024,7 @@ TEST(ParserTest, BsongetDataFromInt_9)
     EXPECT_EQ(56, value2h);
 }
 
-TEST(ParserTest, BsongetDataFromInt_a)
+TEST(BsonParserTest, getDataFromInt_a)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2193,7 +1048,7 @@ TEST(ParserTest, BsongetDataFromInt_a)
     EXPECT_EQ(56, value3a);
 }
 
-TEST(ParserTest, BsongetDataFromInt_b)
+TEST(BsonParserTest, getDataFromInt_b)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2217,7 +1072,7 @@ TEST(ParserTest, BsongetDataFromInt_b)
     EXPECT_EQ(56, value3b);
 }
 
-TEST(ParserTest, BsongetDataFromInt_c)
+TEST(BsonParserTest, getDataFromInt_c)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2241,7 +1096,7 @@ TEST(ParserTest, BsongetDataFromInt_c)
     EXPECT_EQ(56, value3c);
 }
 
-TEST(ParserTest, BsongetDataFromInt_d)
+TEST(BsonParserTest, getDataFromInt_d)
 {
     //std::stringstream   stream(R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2264,7 +1119,7 @@ TEST(ParserTest, BsongetDataFromInt_d)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_1)
+TEST(BsonParserTest, getDataFromFloat_1)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2288,7 +1143,7 @@ TEST(ParserTest, BsongetDataFromFloat_1)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_2)
+TEST(BsonParserTest, getDataFromFloat_2)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2312,7 +1167,7 @@ TEST(ParserTest, BsongetDataFromFloat_2)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_3)
+TEST(BsonParserTest, getDataFromFloat_3)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2336,7 +1191,7 @@ TEST(ParserTest, BsongetDataFromFloat_3)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_4)
+TEST(BsonParserTest, getDataFromFloat_4)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2360,7 +1215,7 @@ TEST(ParserTest, BsongetDataFromFloat_4)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_5)
+TEST(BsonParserTest, getDataFromFloat_5)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2384,7 +1239,7 @@ TEST(ParserTest, BsongetDataFromFloat_5)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_6)
+TEST(BsonParserTest, getDataFromFloat_6)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2408,7 +1263,7 @@ TEST(ParserTest, BsongetDataFromFloat_6)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_7)
+TEST(BsonParserTest, getDataFromFloat_7)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2432,7 +1287,7 @@ TEST(ParserTest, BsongetDataFromFloat_7)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_8)
+TEST(BsonParserTest, getDataFromFloat_8)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2456,7 +1311,7 @@ TEST(ParserTest, BsongetDataFromFloat_8)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_9)
+TEST(BsonParserTest, getDataFromFloat_9)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2480,7 +1335,7 @@ TEST(ParserTest, BsongetDataFromFloat_9)
     );
 }
 
-TEST(ParserTest, BsongetDataFromFloat_a)
+TEST(BsonParserTest, getDataFromFloat_a)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2505,7 +1360,7 @@ TEST(ParserTest, BsongetDataFromFloat_a)
     EXPECT_EQ(12356, static_cast<int>(value3a * 100 + .5));
 }
 
-TEST(ParserTest, BsongetDataFromFloat_b)
+TEST(BsonParserTest, getDataFromFloat_b)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2530,7 +1385,7 @@ TEST(ParserTest, BsongetDataFromFloat_b)
     EXPECT_EQ(12356, static_cast<int>(value3b * 100 + .5));
 }
 
-TEST(ParserTest, BsongetDataFromFloat_c)
+TEST(BsonParserTest, getDataFromFloat_c)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2556,7 +1411,7 @@ TEST(ParserTest, BsongetDataFromFloat_c)
 
 }
 
-TEST(ParserTest, BsongetDataFromFloat_d)
+TEST(BsonParserTest, getDataFromFloat_d)
 {
     //std::stringstream   stream(R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2579,7 +1434,7 @@ TEST(ParserTest, BsongetDataFromFloat_d)
         parser.getValue(value4)
     );
 }
-TEST(ParserTest, BsongetDataFromBool_1)
+TEST(BsonParserTest, getDataFromBool_1)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2604,7 +1459,7 @@ TEST(ParserTest, BsongetDataFromBool_1)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_2)
+TEST(BsonParserTest, getDataFromBool_2)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2629,7 +1484,7 @@ TEST(ParserTest, BsongetDataFromBool_2)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_3)
+TEST(BsonParserTest, getDataFromBool_3)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2654,7 +1509,7 @@ TEST(ParserTest, BsongetDataFromBool_3)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_4)
+TEST(BsonParserTest, getDataFromBool_4)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2679,7 +1534,7 @@ TEST(ParserTest, BsongetDataFromBool_4)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_5)
+TEST(BsonParserTest, getDataFromBool_5)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2704,7 +1559,7 @@ TEST(ParserTest, BsongetDataFromBool_5)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_6)
+TEST(BsonParserTest, getDataFromBool_6)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2729,7 +1584,7 @@ TEST(ParserTest, BsongetDataFromBool_6)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_7)
+TEST(BsonParserTest, getDataFromBool_7)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2754,7 +1609,7 @@ TEST(ParserTest, BsongetDataFromBool_7)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_8)
+TEST(BsonParserTest, getDataFromBool_8)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2779,7 +1634,7 @@ TEST(ParserTest, BsongetDataFromBool_8)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_9)
+TEST(BsonParserTest, getDataFromBool_9)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2804,7 +1659,7 @@ TEST(ParserTest, BsongetDataFromBool_9)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_a)
+TEST(BsonParserTest, getDataFromBool_a)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2829,7 +1684,7 @@ TEST(ParserTest, BsongetDataFromBool_a)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_b)
+TEST(BsonParserTest, getDataFromBool_b)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2854,7 +1709,7 @@ TEST(ParserTest, BsongetDataFromBool_b)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_c)
+TEST(BsonParserTest, getDataFromBool_c)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2879,7 +1734,7 @@ TEST(ParserTest, BsongetDataFromBool_c)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_d)
+TEST(BsonParserTest, getDataFromBool_d)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2904,7 +1759,7 @@ TEST(ParserTest, BsongetDataFromBool_d)
     );
 }
 
-TEST(ParserTest, BsongetDataFromBool_e)
+TEST(BsonParserTest, getDataFromBool_e)
 {
     //std::stringstream   stream(R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
@@ -2935,7 +1790,7 @@ TEST(ParserTest, BsongetDataFromBool_e)
     );
     EXPECT_EQ(false, value4);
 }
-TEST(ParserTest, BsongetRawValue)
+TEST(BsonParserTest, getRawValue)
 {
     //std::stringstream   stream(R"([true, false, 0, 15.4, "The Best"])");
     using ParserConfig = ParserInterface::ParserConfig;
