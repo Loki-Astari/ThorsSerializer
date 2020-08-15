@@ -42,7 +42,8 @@ Exporter<Yaml, T> yamlExporter(T const& value, PrinterInterface::PrinterConfig c
     return Exporter<Yaml, T>(value, config);
 }
 template<typename T>
-[[deprecated]] Exporter<Yaml, T> yamlExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
+[[deprecated("Upgrade to use yamlExporter(). It has a more consistent interface. The difference is exceptions are caught by default and you need to manually turn the    m off. Turning the exceptions on/off is now part of the config object rahter than a seprate parameter.")]]
+Exporter<Yaml, T> yamlExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
 {
     config.catchExceptions = catchExceptions;
     return yamlExporter(value, config);
@@ -59,7 +60,8 @@ Importer<Yaml, T> yamlImporter(T& value, ParserInterface::ParserConfig config = 
     return Importer<Yaml, T>(value, config);
 }
 template<typename T>
-[[deprecated]] Importer<Yaml, T> yamlImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{}, bool catchExceptions = false)
+[[deprecated("Upgrade to use yamlImporter(). It has a more consistent interface. The difference is exceptions are caught by default and you need to manually turn them off. Turning the exceptions on/off is now part of the config object rahter than a seprate parameter.")]]
+Importer<Yaml, T> yamlImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{}, bool catchExceptions = false)
 {
     config.catchExceptions = catchExceptions;
     return yamlImporter(value, config);

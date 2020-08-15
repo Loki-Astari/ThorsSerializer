@@ -243,7 +243,8 @@ class DeSerializationForBlock<TraitType::Value, T>
         }
 };
 template<typename T>
-class DeSerializationForBlock<TraitType::Serialize, T>
+class [[deprecated("This is caused by suing the ThorsAnvil_MakeTraitCustom macro. This is a bit hacky as it simply drops data into the stream. Please upgrade to ThorsAnvil_SelfSerialize as this allows custom behavior depending on the underlying format Json/Yaml/Bson")]]
+DeSerializationForBlock<TraitType::Serialize, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
@@ -602,7 +603,8 @@ class SerializerForBlock<TraitType::Value, T>
         }
 };
 template<typename T>
-class SerializerForBlock<TraitType::Serialize, T>
+class [[deprecated("This is caused by suing the ThorsAnvil_MakeTraitCustom macro. This is a bit hacky as it simply drops data into the stream. Please upgrade to ThorsAnvil_SelfSerialize as this allows custom behavior depending on the underlying format Json/Yaml/Bson")]]
+SerializerForBlock<TraitType::Serialize, T>
 {
     Serializer&         parent;
     PrinterInterface&   printer;

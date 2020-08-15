@@ -40,7 +40,8 @@ Exporter<Json, T> jsonExporter(T const& value, PrinterInterface::PrinterConfig c
     return Exporter<Json, T>(value, config);
 }
 template<typename T>
-[[deprecated]] Exporter<Json, T> jsonExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
+[[deprecated("Upgrade to use jsonExporter(). It has a more consistent interface. The difference is exceptions are caught by default and you need to manually turn the    m off. Turning the exceptions on/off is now part of the config object rahter than a seprate parameter.")]]
+Exporter<Json, T> jsonExport(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{}, bool catchExceptions = false)
 {
     config.catchExceptions = catchExceptions;
     return jsonExporter(value, config);
@@ -57,7 +58,8 @@ Importer<Json, T> jsonImporter(T& value, ParserInterface::ParserConfig config = 
     return Importer<Json, T>(value, config);
 }
 template<typename T>
-[[deprecated]] Importer<Json, T> jsonImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{}, bool catchExceptions = false)
+[[deprecated("Upgrade to use jsonImporter(). It has a more consistent interface. The difference is exceptions are caught by default and you need to manually turn the    m off. Turning the exceptions on/off is now part of the config object rahter than a seprate parameter.")]]
+Importer<Json, T> jsonImport(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{}, bool catchExceptions = false)
 {
     config.catchExceptions = catchExceptions;
     return jsonImporter(value, config);
