@@ -6,6 +6,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cstddef>
+#include <algorithm>
 
 namespace ThorsAnvil
 {
@@ -493,6 +494,38 @@ class Traits<Parents<Args...>>
         }
 };
 
+/* ----- Polymorphic Type check --- */
+template<class T>
+auto tryGetPolyMorphicPrintSize(PrinterInterface& printer, T const& object, bool poly, int) -> decltype(object.getPolyMorphicPrintSize(printer))
+{
+    // This uses a virtual method in the object to
+    // call printPolyMorphicObject() the difference
+    // will be the type of the template used as we will
+    // get the type 'T' of the most derived type of
+    // the actual runtime object.
+    if (poly)
+    {
+        return object.getPolyMorphicPrintSize(printer);
+    }
+    return getNormalPrintSize(printer, object, 0, 0);
+}
+
+template<class T>
+auto tryGetPolyMorphicPrintSize(PrinterInterface& printer, T const& object, bool, long) -> std::size_t
+{
+    // This version is called if the object foes not have a virtual
+    // `printPolyMorphicObject()`. Thus you get a call to the current
+    // object and thus we simply use `T` and we can simply print the
+    // normal members.
+    return getNormalPrintSize(printer, object, 0, 0);
+}
+
+template<typename T>
+std::size_t getNormalPrintSize(PrinterInterface& printer, T const& object, std::size_t count, std::size_t memberSize)
+{
+    std::size_t result = Traits<T>::getPrintSizeTotal(printer, object, count, memberSize);
+    return result;
+}
     }
 }
 

@@ -16,6 +16,7 @@
 #include <tuple>
 #include <initializer_list>
 #include <memory>
+#include <cstring>
 
 /*
  * Container Types:
@@ -244,8 +245,8 @@ class Traits<std::pair<F, S>>
         static std::size_t getPrintSize(PrinterInterface& printer, std::pair<F, S> const& object, bool)
         {
             return printer.getSizeMap(2)
-                 + strlen("first")
-                 + strlen("second")
+                 + std::strlen("first")
+                 + std::strlen("second")
                  + Traits<typename std::decay<F>::type>::getPrintSize(printer, object.first, false)
                  + Traits<typename std::decay<S>::type>::getPrintSize(printer, object.second, false);
         }
