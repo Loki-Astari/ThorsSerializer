@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-
+using namespace std::string_literals;
 using namespace ThorsAnvil::Serialize;
 using namespace std;
 
@@ -117,9 +117,11 @@ TEST(Issue49Test, BsonStreamScientific)
     stream << ThorsAnvil::Serialize::bsonExporter(testData, false);
 
     std::string result = stream.str();
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ("\"scientific\"", result);
+    EXPECT_EQ(result, "\x17\x00\x00\x00"
+                      "\x02" "0\x00" "\x0B\x00\x00\x00" "scientific\x00"
+                      "\x00"s);
+    //EXPECT_EQ("\"scientific\"", result);
 }
 TEST(Issue49Test, BsonStreamFixed)
 {
@@ -129,9 +131,11 @@ TEST(Issue49Test, BsonStreamFixed)
     stream << ThorsAnvil::Serialize::bsonExporter(testData, false);
 
     std::string result = stream.str();
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ("\"fixed\"", result);
+    EXPECT_EQ(result, "\x12\x00\x00\x00"
+                      "\x02" "0\x00" "\x06\x00\x00\x00" "fixed\x00"
+                      "\x00"s);
+    //EXPECT_EQ("\"fixed\"", result);
 }
 TEST(Issue49Test, BsonStreamHex)
 {
@@ -141,9 +145,11 @@ TEST(Issue49Test, BsonStreamHex)
     stream << ThorsAnvil::Serialize::bsonExporter(testData, false);
 
     std::string result = stream.str();
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ("\"hex\"", result);
+    EXPECT_EQ(result, "\x10\x00\x00\x00"
+                      "\x02" "0\x00" "\x04\x00\x00\x00" "hex\x00"
+                      "\x00"s);
+    //EXPECT_EQ("\"hex\"", result);
 }
 TEST(Issue49Test, BsonStreamGeneral)
 {
@@ -153,13 +159,18 @@ TEST(Issue49Test, BsonStreamGeneral)
     stream << ThorsAnvil::Serialize::bsonExporter(testData, false);
 
     std::string result = stream.str();
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ("\"general\"", result);
+    EXPECT_EQ(result, "\x14\x00\x00\x00"
+                      "\x02" "0\x00" "\x08\x00\x00\x00" "general\x00"
+                      "\x00"s);
+    //EXPECT_EQ("\"general\"", result);
 }
 TEST(Issue49Test, BsonImportScientific)
 {
-    std::string input = R"("scientific")";
+    //std::string input = R"("scientific")";
+    std::string input = "\x17\x00\x00\x00"
+                        "\x02" "0\x00" "\x0B\x00\x00\x00" "scientific\x00"
+                        "\x00"s;
     std::stringstream stream(input);
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
@@ -169,7 +180,10 @@ TEST(Issue49Test, BsonImportScientific)
 }
 TEST(Issue49Test, BsonImportFixed)
 {
-    std::string input = R"("fixed")";
+    //std::string input = R"("fixed")";
+    std::string input = "\x12\x00\x00\x00"
+                        "\x02" "0\x00" "\x06\x00\x00\x00" "fixed\x00"
+                        "\x00"s;
     std::stringstream stream(input);
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
@@ -179,7 +193,10 @@ TEST(Issue49Test, BsonImportFixed)
 }
 TEST(Issue49Test, BsonImportHex)
 {
-    std::string input = R"("hex")";
+    //std::string input = R"("hex")";
+    std::string input = "\x10\x00\x00\x00"
+                        "\x02" "0\x00" "\x04\x00\x00\x00" "hex\x00"
+                        "\x00"s;
     std::stringstream stream(input);
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
@@ -189,7 +206,10 @@ TEST(Issue49Test, BsonImportHex)
 }
 TEST(Issue49Test, BsonImportGeneral)
 {
-    std::string input = R"("general")";
+    //std::string input = R"("general")";
+    std::string input = "\x14\x00\x00\x00"
+                        "\x02" "0\x00" "\x08\x00\x00\x00" "general\x00"
+                        "\x00"s;
     std::stringstream stream(input);
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::scientific;

@@ -237,7 +237,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
             using MemberType    = std::decay_t<M>;                      \
             if (staticObjPtr)                                           \
             {                                                           \
-                return Traits<MemberType>::getPrintSize(printer, *staticObjPtr);\
+                return Traits<MemberType>::getPrintSize(printer, *staticObjPtr, false);\
             }                                                           \
             return printer.getSizeNull();                               \
         }                                                               \
@@ -246,7 +246,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
         {                                                               \
             using MemberTypeDec = decltype(object.*memPtr);             \
             using MemberType    = std::decay_t<MemberTypeDec>;          \
-            return Traits<MemberType>::getPrintSize(printer, object.*memPtr);\
+            return Traits<MemberType>::getPrintSize(printer, object.*memPtr, false);\
         }                                                               \
                                                                         \
         template<std::size_t... Seq>                                    \
@@ -276,11 +276,9 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
             return calcHelper.getPrintSize(printer, object, count, memberSize);\
         }                                                               \
                                                                         \
-        static std::size_t getPrintSize(PrinterInterface& printer, MyType const& object)\
+        static std::size_t getPrintSize(PrinterInterface& printer, MyType const& object, bool poly)\
         {                                                               \
-            std::size_t count = 0;                                      \
-            std::size_t memberSize = 0;                                 \
-            return getPrintSizeTotal(printer, object, count, memberSize);\
+            return tryGetPolyMorphicPrintSize(printer, object, poly, 0);\
         }                                                               \
 };                                                                      \
 }}                                                                      \
@@ -316,7 +314,14 @@ namespace ThorsAnvil { namespace Serialize {                            \
 template<>                                                              \
 class Traits<DataType>                                                  \
 {                                                                       \
-    public: static constexpr TraitType type = TraitType::Serialize;     \
+    public:                                                             \
+    static constexpr TraitType type = TraitType::Serialize;             \
+    static std::size_t getPrintSize(PrinterInterface& printer, DataType const& value, bool)\
+    {                                                                   \
+        using DataTypeSerializer = typename DataType::ThorsSerializer;  \
+        std::size_t size = DataTypeSerializer::size(value);             \
+        return printer.getSizeRaw(size);                                \
+    }                                                                   \
 };                                                                      \
 }}                                                                      \
 DO_ASSERT(DataType)
@@ -371,7 +376,7 @@ class Traits<EnumName>                                                  \
             }                                                           \
             throw std::runtime_error(msg + " Invalid Enum Value");      \
         }                                                               \
-        static std::size_t getPrintSize(PrinterInterface& printer, EnumName const& value)\
+        static std::size_t getPrintSize(PrinterInterface& printer, EnumName const& value, bool)\
         {                                                               \
             auto find = getValues().find(value);                        \
             return printer.getSizeValue(find->second);                  \
@@ -393,6 +398,13 @@ DO_ASSERT(EnumName)
                                        ThorsAnvil::Serialize::ParserInterface&     parser)  \
     {                                                                                       \
         ThorsAnvil::Serialize::parsePolyMorphicObject<Type>(parent, parser, *this);         \
+    }                                                                                       \
+    virtual std::size_t getPolyMorphicPrintSize(ThorsAnvil::Serialize::PrinterInterface& printer) const \
+    {                                                                                       \
+        std::size_t count = 1;                                                              \
+        std::size_t memberSize = (printer.config.polymorphicMarker.size() + printer.getSizeValue(std::string(polyMorphicSerializerName())));\
+                                                                                            \
+        return getNormalPrintSize(printer, *this, count, memberSize);                       \
     }                                                                                       \
     static constexpr char const* polyMorphicSerializerName()                                \
     {                                                                                       \

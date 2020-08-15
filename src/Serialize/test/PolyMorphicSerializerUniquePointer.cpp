@@ -130,7 +130,11 @@ TEST(PolyMorphicSerializerUniquePointerTest, JsonTourEmpty)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantitiesEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
-    std::string                 str = R"({})";;
+    //std::string                 str = R"({})";;
+    static const char strRaw[]
+                    = "\x05\x00\x00\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_EQ(nullptr, t.quantities);
@@ -138,7 +142,16 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantitiesEmpty)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
-    std::string                 str = R"({"quantities":[15,23]})";;
+    //std::string                 str = R"({"quantities":[15,23]})";;
+    static const char strRaw[]
+                    = "\x24\x00\x00\x00"
+                      "\x04" "quantities\x00"
+                            "\x13\x00\x00\x00"
+                                "\x10" "0\x00" "\x0F\x00\x00\x00"
+                                "\x10" "1\x00" "\x17\x00\x00\x00"
+                            "\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_NE(nullptr, t.quantities);
@@ -148,7 +161,11 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantities)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
-    std::string                 str = R"({})";;
+    //std::string                 str = R"({})";;
+    static const char strRaw[]
+                    = "\x05\x00\x00\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_EQ(nullptr, t.maxQuantities);
@@ -156,7 +173,14 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultEmpty)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResult)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
-    std::string                 str = R"({"maxQuantities":{}})";;
+    //std::string                 str = R"({"maxQuantities":{}})";;
+    static const char strRaw[]
+                    = "\x19\x00\x00\x00"
+                      "\x03" "maxQuantities\x00"
+                            "\x05\x00\x00\x00"
+                            "\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_NE(nullptr, t.maxQuantities);
@@ -165,7 +189,19 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResult)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultWithQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
-    std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
+    //std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
+    static const char strRaw[]
+                    = "\x38\x00\x00\x00"
+                      "\x03" "maxQuantities\x00"
+                            "\x24\x00\x00\x00"
+                                "\x04" "quantities\x00"
+                                    "\x13\x00\x00\x00"
+                                        "\x10" "0\x00" "\x22\x00\x00\x00"
+                                        "\x10" "1\x00" "\x38\x00\x00\x00"
+                                    "\x00"
+                            "\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_NE(nullptr, t.maxQuantities);
@@ -176,7 +212,11 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultWithQuantitie
 TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
-    std::string                 str = R"({})";;
+    //std::string                 str = R"({})";;
+    static const char strRaw[]
+                    = "\x05\x00\x00\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_EQ(nullptr, t.maxQuantities);
@@ -184,7 +224,14 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultEmpty)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResult)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
-    std::string                 str = R"({"maxQuantities":{}})";;
+    //std::string                 str = R"({"maxQuantities":{}})";;
+    static const char strRaw[]
+                    = "\x19\x00\x00\x00"
+                      "\x03" "maxQuantities\x00"
+                            "\x05\x00\x00\x00"
+                            "\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_NE(nullptr, t.maxQuantities);
@@ -193,7 +240,19 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResult)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultWithQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
-    std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
+    //std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
+    static const char strRaw[]
+                    = "\x38\x00\x00\x00"
+                      "\x03" "maxQuantities\x00"
+                            "\x24\x00\x00\x00"
+                                "\x04" "quantities\x00"
+                                    "\x13\x00\x00\x00"
+                                        "\x10" "0\x00" "\x22\x00\x00\x00"
+                                        "\x10" "1\x00" "\x38\x00\x00\x00"
+                                    "\x00"
+                            "\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_NE(nullptr, t.maxQuantities);
@@ -204,7 +263,11 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultWithQuantities)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonTourEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::Tour                        t{};
-    std::string                 str = R"({})";;
+    //std::string                 str = R"({})";;
+    static const char strRaw[]
+                    = "\x05\x00\x00\x00"
+                      "\x00";
+    std::string                 str(std::begin(strRaw), std::end(strRaw) - 1);
     std::istringstream          stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(t, false);
     EXPECT_EQ(nullptr, t.result);

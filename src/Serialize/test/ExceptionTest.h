@@ -29,6 +29,12 @@ class ThrowablePrint
             }
             return str >> val.val;
         }
+        static std::size_t size(ThrowablePrint const& value)
+        {
+            return std::to_string(value.val).size();
+        }
+
+        using ThorsSerializer = ThrowablePrint;
 };
 
 }

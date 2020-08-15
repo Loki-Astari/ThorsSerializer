@@ -105,6 +105,12 @@ template void ThorsAnvil::Serialize::Serializer::print<std::string>(std::string 
 template void ThorsAnvil::Serialize::DeSerializer::parse<TwitterTest::Twitter>(TwitterTest::Twitter&);
 template void ThorsAnvil::Serialize::Serializer::print<TwitterTest::Twitter>(TwitterTest::Twitter const&);
 
+template void ThorsAnvil::Serialize::Serializer::print<Wrapper>(Wrapper const&);
+template void ThorsAnvil::Serialize::Serializer::print<WrapperUni>(WrapperUni const&);
+template void ThorsAnvil::Serialize::Serializer::print<WrapperShared>(WrapperShared const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<Wrapper>(Wrapper&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<WrapperUni>(WrapperUni&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<WrapperShared>(WrapperShared&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<SmartPtrTest::Object*>(SmartPtrTest::Object*&);
 template void ThorsAnvil::Serialize::Serializer::print<SmartPtrTest::Object*>(SmartPtrTest::Object* const&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<std::unique_ptr<SmartPtrTest::Object>>(std::unique_ptr<SmartPtrTest::Object>&);

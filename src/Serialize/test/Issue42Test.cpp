@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-
+using namespace std::string_literals;
 using namespace ThorsAnvil::Serialize;
 using namespace std;
 
@@ -53,12 +53,17 @@ TEST(Issue42Test, JsonPointerUniquePtrMultiple)
 TEST(Issue42Test, BsonPointerUniquePtrMultiple)
 {
     Issue42Test::Fleet test {};
-    string str = R"( {"vehicles":[
-         {
-            "__type": "Issue42Test::Vehicle",
-            "id":0
-         }
-      ]})";
+    //string str = R"( {"vehicles":[ { "__type": "Issue42Test::Vehicle", "id":0 } ]})";
+    std::string str = "\x45\x00\x00\x00"
+                      "\x04" "vehicles\x00"
+                            "\x36\x00\x00\x00"//54
+                            "\x03" "0\x00"
+                                    "\x2E\x00\x00\x00"
+                                    "\x02" "__type\x00" "\x15\x00\x00\x00" "Issue42Test::Vehicle\x00"
+                                    "\x10" "id\x00"     "\x00\x00\x00\x00"
+                                    "\x00"
+                            "\x00"
+                      "\x00"s;
     istringstream stream(str);
     stream >> ThorsAnvil::Serialize::bsonImporter(test, false);
 }

@@ -15,6 +15,7 @@ using ParserToken = ParserInterface::ParserToken;
 HEADER_ONLY_INCLUDE
 BsonParser::BsonParser(std::istream& stream, ParserConfig config)
     : ParserInterface(stream, config)
+    , currentValue(ValueType::Obj)
 {
     currentContainer.emplace_back(static_cast<BsonContainer>(config.parserInfo));
     nextToken = ParserToken::DocStart;
@@ -48,7 +49,7 @@ Int BsonParser::readSize(bool)
 {
     Int docSize;
     input.read(reinterpret_cast<char*>(&docSize), sizeof(docSize));
-    return boost::endian::little_to_native(size);
+    return boost::endian::little_to_native(docSize);
 }
 
 HEADER_ONLY_INCLUDE
@@ -56,6 +57,7 @@ template<std::size_t size, typename Int>
 Int BsonParser::readInt(bool use)
 {
     currentValue = intReadType[size/4 - 1];
+    dataLeft.back() -= size;
     return readSize<size, Int>(use);
 }
 
@@ -66,6 +68,7 @@ IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat(bool)
     currentValue = floatReadType[size/8 - 1];
     IEEE_754::_2008::Binary<size * 8> result;
     input.read(reinterpret_cast<char*>(&result), size);
+    dataLeft.back() -= size;
     return result;
 }
 
@@ -75,6 +78,7 @@ bool BsonParser::readBool(bool)
     currentValue = ValueType::Bool;
     bool result;
     input.read(reinterpret_cast<char*>(&result) ,1);
+    dataLeft.back() -= 1;
     return result;
 }
 
@@ -83,8 +87,10 @@ std::string BsonParser::readString(bool)
 {
     currentValue = ValueType::String;
     std::int32_t size = readSize<4, std::int32_t>(true);
+    dataLeft.back() -= 4;
     std::string     result(size, '\0');
     input.read(&result[0], size);
+    dataLeft.back() -= size;
     result.resize(size - 1);
     return result;
 }
@@ -100,10 +106,13 @@ std::string BsonParser::readBinary(bool)
 {
     currentValue = ValueType::Binary;
     std::int32_t size = readSize<4, std::int32_t>(true);
+    dataLeft.back() -= 4;
     char subType;
     input.read(reinterpret_cast<char*>(&subType), 1);
+    dataLeft.back() -= 1;
     std::string result(size, '\0');
     input.read(&result[0], size);
+    dataLeft.back() -= size;
     return result;
 }
 
@@ -111,11 +120,26 @@ HEADER_ONLY_INCLUDE
 ParserToken BsonParser::getNextToken()
 {
     ParserToken result = nextToken;
+    currentValue    = ValueType::Obj;
     switch (nextToken)
     {
         case ParserToken::DocStart:
         {
-            nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapStart : ParserToken::ArrayStart;
+            switch (currentContainer.back())
+            {
+                case BsonContainer::Map:    nextToken = ParserToken::MapStart;  break;
+                case BsonContainer::Array:  nextToken = ParserToken::ArrayStart;break;
+                case BsonContainer::Value:
+                {
+                    nextToken = ParserToken::Key;
+                    currentContainer.emplace_back(BsonContainer::Value);
+                    std::int32_t    size = readSize<4, std::int32_t>(true);
+                    dataSize.emplace_back(size);
+                    dataLeft.emplace_back(size);
+                    dataLeft.back() -= 4;
+                    break;
+                }
+            }
             break;
         }
         case ParserToken::DocEnd:
@@ -126,15 +150,15 @@ ParserToken BsonParser::getNextToken()
         case ParserToken::MapStart:
         case ParserToken::ArrayStart:
         {
-            std::int32_t    size = readInt<4, std::int32_t>(true);
-            dataLeft.emplace_back(size);
+            std::int32_t    size = readSize<4, std::int32_t>(true);
             dataSize.emplace_back(size);
-            if (dataLeft.back() == 0)
+            dataLeft.emplace_back(size);
+            dataLeft.back() -= 4;
+            if (dataLeft.back() == 1)
             {
                 nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
                 break;
             }
-            readKey();
             nextToken = ParserToken::Key;
             break;
         }
@@ -143,6 +167,7 @@ ParserToken BsonParser::getNextToken()
         {
             char    mark;
             input.read(&mark, 1);
+            dataLeft.back() -= 1;
             if (mark != '\x00')
             {
                 throw std::runtime_error("Bad Marker");
@@ -157,18 +182,29 @@ ParserToken BsonParser::getNextToken()
             }
             dataLeft.back() -= dataSize.back();
             dataSize.pop_back();
-            if (dataLeft.back() == 0)
+            if (dataLeft.back() == 1)
             {
-                nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
+                switch (currentContainer.back())
+                {
+                    case BsonContainer::Map:    nextToken = ParserToken::MapEnd;    break;
+                    case BsonContainer::Array:  nextToken = ParserToken::ArrayEnd;  break;
+                    case BsonContainer::Value:
+                    {
+                        nextToken = ParserToken::DocEnd;
+                        input.ignore();
+                        break;
+                    }
+                }
                 break;
             }
-            readKey();
             nextToken = ParserToken::Key;
             break;
         }
         case ParserToken::Key:
         {
+            readKey();
             nextToken = ParserToken::Value;
+            BsonContainer   currentContainerType = currentContainer.back();
             if (nextType == '\x03')
             {
                 currentContainer.push_back(BsonContainer::Map);
@@ -179,11 +215,13 @@ ParserToken BsonParser::getNextToken()
                 currentContainer.push_back(BsonContainer::Array);
                 nextToken = ParserToken::ArrayStart;
             }
-            if (currentContainer.back() == BsonContainer::Array)
+            if (currentContainerType == BsonContainer::Array || currentContainerType == BsonContainer::Value)
             {
-                return getNextToken();
+                return getNextToken();;
             }
             break;
+            // Array and Value fall through to read the value we
+            // Want to extract next.
         }
         case ParserToken::Value:
         {
@@ -193,7 +231,21 @@ ParserToken BsonParser::getNextToken()
         default:
             throw std::runtime_error("Bad State");
     }
-
+#if 0
+    switch (result)
+    {
+        case ParserToken::Error: std::cerr << "Error";
+        case ParserToken::DocStart:  std::cerr << "DocStart";    break;
+        case ParserToken::DocEnd:    std::cerr << "DocEnd";      break;
+        case ParserToken::MapStart:  std::cerr << "MapStart";    break;
+        case ParserToken::MapEnd:    std::cerr << "MapEnd";      break;
+        case ParserToken::ArrayStart:std::cerr << "ArrayStart";  break;
+        case ParserToken::ArrayEnd:  std::cerr << "ArrayEnd";    break;
+        case ParserToken::Key:       std::cerr << "Key";         break;
+        case ParserToken::Value:     std::cerr << "Value";       break;
+    }
+    std::cerr << "\n";
+#endif
     return result;
 }
 
@@ -215,20 +267,28 @@ void BsonParser::readValue(bool useValue)
         default:
             throw std::runtime_error("ThorsAnvil::Serialize::BsonParser::getNextToken: Un-known Value type");
     }
-    if (dataLeft.back() == 0)
+    if (dataLeft.back() == 1)
     {
-        nextToken = currentContainer.back() == BsonContainer::Map ? ParserToken::MapEnd: ParserToken::ArrayEnd;
+        switch (currentContainer.back())
+        {
+            case BsonContainer::Map:    nextToken = ParserToken::MapEnd;    break;
+            case BsonContainer::Array:  nextToken = ParserToken::ArrayEnd;  break;
+            case BsonContainer::Value:
+            {
+                nextToken = ParserToken::DocEnd;
+                input.ignore();
+                break;
+            }
+        }
+
         return;
     }
-    readKey();
     nextToken = ParserToken::Key;
 }
 
 HEADER_ONLY_INCLUDE
 void BsonParser::ignoreDataValue()
-{
-    readValue(false);
-}
+{}
 
 HEADER_ONLY_INCLUDE
 std::string BsonParser::getKey()
@@ -240,8 +300,8 @@ HEADER_ONLY_INCLUDE
 template<typename Int>
 Int BsonParser::returnIntValue()
 {
-    if (currentValue == ValueType::Int32) {return valueInt32;}
-    if (currentValue == ValueType::Int64) {return valueInt64;}
+    if (currentValue == ValueType::Int32)       {return valueInt32;}
+    if (currentValue == ValueType::Int64)       {return valueInt64;}
     badType();
 }
 
@@ -249,9 +309,11 @@ HEADER_ONLY_INCLUDE
 template<typename Float>
 Float BsonParser::returnFloatValue()
 {
-    if (currentValue == ValueType::Double64)   {return valueFloat64;}
+    if (currentValue == ValueType::Int32)       {return valueInt32;}
+    if (currentValue == ValueType::Int64)       {return valueInt64;}
+    if (currentValue == ValueType::Double64)    {return valueFloat64;}
 #if 0
-    if (currentValue == ValueType::Double128)  {return valueFloat128;}
+    if (currentValue == ValueType::Double128)   {return valueFloat128;}
 #endif
     badType();
 }
@@ -276,9 +338,26 @@ HEADER_ONLY_INCLUDE void BsonParser::getValue(float& value)                     
 HEADER_ONLY_INCLUDE void BsonParser::getValue(double& value)                        {value = returnFloatValue<double>();}
 HEADER_ONLY_INCLUDE void BsonParser::getValue(long double& value)                   {value = returnFloatValue<long double>();}
 
-HEADER_ONLY_INCLUDE void BsonParser::getValue(bool& value)                          {if (currentValue == ValueType::Bool)      {value = valueBool;}    badType();}
-HEADER_ONLY_INCLUDE void BsonParser::getValue(std::string& value)                   {if (currentValue == ValueType::String)    {value = valueString;}  badType();}
+HEADER_ONLY_INCLUDE void BsonParser::getValue(bool& value)                          {if (currentValue != ValueType::Bool)      {badType();}value = valueBool;}
+HEADER_ONLY_INCLUDE void BsonParser::getValue(std::string& value)                   {if (currentValue != ValueType::String)    {badType();}value = valueString;}
 
 HEADER_ONLY_INCLUDE bool BsonParser::isValueNull()                                  {return (currentValue == ValueType::Null);}
 
-HEADER_ONLY_INCLUDE std::string BsonParser::getRawValue()                           {if (currentValue == ValueType::Binary)    {return valueBinary;}   badType();}
+HEADER_ONLY_INCLUDE std::string BsonParser::getRawValue()
+{
+    switch (currentValue)
+    {
+        case ValueType::Int32:          return std::to_string(valueInt32);
+        case ValueType::Int64:          return std::to_string(valueInt64);
+        case ValueType::Double64:       return std::to_string(valueFloat64);
+#if 0
+        case ValueType::Double128:      return std::to_string(valueFloat128);
+#endif
+        case ValueType::Bool:           return valueBool ? "true" : "false";
+        case ValueType::String:         return std::string("\"") + valueString + "\"";
+        case ValueType::Null:           return "null";
+        case ValueType::Binary:         return valueBinary;
+        default:
+            throw std::runtime_error("Invalid Type from RAW");
+    }
+}

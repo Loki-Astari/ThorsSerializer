@@ -6,6 +6,7 @@
  */
 
 #include "Serialize.h"
+#include "BsonUtil.h"
 #include <vector>
 
 namespace ThorsAnvil
@@ -16,6 +17,8 @@ namespace ThorsAnvil
 class BsonPrinter: public PrinterInterface
 {
     std::string currentKey;
+    std::vector<BsonContainer>  currentContainer;
+    std::vector<std::size_t>    arrayIndex;
     public:
         BsonPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
         virtual void openDoc()                                      override;
@@ -49,9 +52,10 @@ class BsonPrinter: public PrinterInterface
         virtual void addRawValue(std::string const& value)          override;
 
         virtual void addNull()                                      override;
-    private:
+    protected:
+        // Protected to allow unit tests
 
-        void writeKey(char value);
+        void writeKey(char value, std::size_t size);
         template<typename Int>
         void writeSize(Int size);
         template<std::size_t size, typename Int>
@@ -80,6 +84,7 @@ class BsonPrinter: public PrinterInterface
         virtual std::size_t getSizeValue(long double)               override;
         virtual std::size_t getSizeValue(bool)                      override;
         virtual std::size_t getSizeValue(std::string const&)        override;
+        virtual std::size_t getSizeRaw(std::size_t)                 override;
 };
 
     }

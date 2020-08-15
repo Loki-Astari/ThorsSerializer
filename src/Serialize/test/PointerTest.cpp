@@ -82,14 +82,44 @@ TEST(PointerTest, JsonBuildTreeFromString)
 TEST(PointerTest, BsonBuildStringFromTree)
 {
     PointerTest::Tree*   root = new PointerTest::Tree{34, new PointerTest::Tree{22, new PointerTest::Tree{10, nullptr, nullptr}, nullptr}, new PointerTest::Tree{50, nullptr, new PointerTest::Tree{70, nullptr, nullptr}}};
-    std::stringstream data;
+    std::stringstream data(std::ios_base::out | std::ios_base::binary);
     data << ThorsAnvil::Serialize::bsonExporter(root, false);
     std::string result = data.str();
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"value":34,"left":{"value":22,"left":{"value":10,"left":null,"right":null},"right":null},"right":{"value":50,"left":null,"right":{"value":70,"left":null,"right":null}}})");
+
+
+    static const char expectedRaw[]
+                = "\x91\x00\x00\x00"
+                      "\x10" "value\x00" "\x22\x00\x00\x00"
+                      "\x03" "left\x00"
+                            "\x3A\x00\x00\x00"
+                                "\x10" "value\x00" "\x16\x00\x00\x00"
+                                "\x03" "left\x00"
+                                        "\x1D\x00\x00\x00"
+                                            "\x10" "value\x00" "\x0A\x00\x00\x00"
+                                            "\x0A" "left\x00"
+                                            "\x0A" "right\x00"
+                                        "\x00"
+                                "\x0A" "right\x00"
+                            "\x00"
+                      "\x03" "right\x00"
+                            "\x3A\x00\x00\x00"
+                                "\x10" "value\x00" "\x32\x00\x00\x00"
+                                "\x0A" "left\x00"
+                                "\x03" "right\x00"
+                                        "\x1D\x00\x00\x00"
+                                            "\x10" "value\x00" "\x46\x00\x00\x00"
+                                            "\x0A" "left\x00"
+                                            "\x0A" "right\x00"
+                                        "\x00"
+                            "\x00"
+                  "\x00";
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(result, expected);
+    // R"({"value":34,"left":{"value":22,"left":{"value":10,"left":null,"right":null},"right":null},"right":{"value":50,"left":null,"right":{"value":70,"left":null,"right":null}}})");
 }
 TEST(PointerTest, BsonBuildTreeFromString)
 {
+#if 0
     std::string bson(R"(
 {
 	"value": 34,
@@ -116,6 +146,35 @@ TEST(PointerTest, BsonBuildTreeFromString)
 		}
 	}
 })");
+#endif
+    static const char bsonRaw[]
+                = "\x91\x00\x00\x00"
+                      "\x10" "value\x00" "\x22\x00\x00\x00"
+                      "\x03" "left\x00"
+                            "\x3A\x00\x00\x00"
+                                "\x10" "value\x00" "\x16\x00\x00\x00"
+                                "\x03" "left\x00"
+                                        "\x1D\x00\x00\x00"
+                                            "\x10" "value\x00" "\x0A\x00\x00\x00"
+                                            "\x0A" "left\x00"
+                                            "\x0A" "right\x00"
+                                        "\x00"
+                                "\x0A" "right\x00"
+                            "\x00"
+                      "\x03" "right\x00"
+                            "\x3A\x00\x00\x00"
+                                "\x10" "value\x00" "\x32\x00\x00\x00"
+                                "\x0A" "left\x00"
+                                "\x03" "right\x00"
+                                        "\x1D\x00\x00\x00"
+                                            "\x10" "value\x00" "\x46\x00\x00\x00"
+                                            "\x0A" "left\x00"
+                                            "\x0A" "right\x00"
+                                        "\x00"
+                            "\x00"
+                  "\x00";
+
+    std::string bson(std::begin(bsonRaw), std::end(bsonRaw) - 1);
     std::stringstream   bsonStream(bson);
     PointerTest::Tree* root = nullptr;
 

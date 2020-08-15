@@ -4,12 +4,102 @@
 #include <type_traits>
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <cstddef>
 
 namespace ThorsAnvil
 {
     namespace Serialize
     {
+
+struct EscapeString
+{
+    std::string const& value;
+    EscapeString(std::string const& value)
+        : value(value)
+    {}
+    friend std::ostream& operator<<(std::ostream& stream, EscapeString const& data)
+    {
+        std::string const& value = data.value;
+
+        static auto isEscape = [](char c)
+        {
+            return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
+        };
+
+        auto begin  = std::begin(value);
+        auto end    = std::end(value);
+        auto next = std::find_if(begin, end, isEscape);
+        if (next == end)
+        {
+            stream << value;
+        }
+        else
+        {
+            while (next != end)
+            {
+                stream << std::string(begin, next);
+                if (*next == '"')
+                {
+                    stream << R"(\")";
+                    ++next;
+                }
+                else if (*next == '\\')
+                {
+                    stream << R"(\\)";
+                    ++next;
+                }
+                else if (*next == 0x08)
+                {
+                    stream << R"(\b)";
+                    ++next;
+                }
+                else if (*next == 0x0C)
+                {
+                    stream << R"(\f)";
+                    ++next;
+                }
+                else if (*next == 0x0A)
+                {
+                    stream << R"(\n)";
+                    ++next;
+                }
+                else if (*next == 0x0D)
+                {
+                    stream << R"(\r)";
+                    ++next;
+                }
+                else if (*next == 0x09)
+                {
+                    stream << R"(\t)";
+                    ++next;
+                }
+                else
+                {
+                    stream << R"(\u)"
+                           << std::setw(4)
+                           << std::setfill('0')
+                           << std::hex
+                           << static_cast<unsigned int>(static_cast<unsigned char>(*next))
+                           << std::dec;
+                    ++next;
+                }
+                /*
+                else
+                {
+                    110xxxxx
+
+                    stream << R("\u") << std::setw(4) << std::setfill('0') << std::hex << codepoint;
+                }
+                */
+                begin = next;
+                next = std::find_if(begin, end, isEscape);
+            }
+            stream << std::string(begin, end);
+        }
+        return stream;
+    }
+};
 
 extern std::string const defaultPolymorphicMarker;
 
@@ -152,26 +242,31 @@ class PrinterInterface
                 : characteristics(characteristics)
                 , polymorphicMarker(polymorphicMarker)
                 , catchExceptions(catchExceptions)
+                , parserInfo(0)
             {}
             PrinterConfig(std::string const& polymorphicMarker,
                           bool catchExceptions = true)
                 : characteristics(OutputType::Default)
                 , polymorphicMarker(polymorphicMarker)
                 , catchExceptions(catchExceptions)
+                , parserInfo(0)
             {}
             PrinterConfig(bool catchExceptions)
                 : characteristics(OutputType::Default)
                 , polymorphicMarker(defaultPolymorphicMarker)
                 , catchExceptions(catchExceptions)
+                , parserInfo(0)
             {}
             PrinterConfig(OutputType characteristic, bool catchExceptions)
                 : characteristics(characteristic)
                 , polymorphicMarker(defaultPolymorphicMarker)
                 , catchExceptions(catchExceptions)
+                , parserInfo(0)
             {}
             OutputType      characteristics;
             std::string     polymorphicMarker;
             bool            catchExceptions;
+            long            parserInfo;
         };
         // Default:     What ever the implementation likes.
         // Stream:      Compressed for over the wire protocol.
@@ -236,6 +331,7 @@ class PrinterInterface
         virtual std::size_t getSizeValue(long double)               {return 0;}
         virtual std::size_t getSizeValue(bool)                      {return 0;}
         virtual std::size_t getSizeValue(std::string const&)        {return 0;}
+        virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 };
 
 template<typename T, bool = HasParent<T>::value>
@@ -298,7 +394,7 @@ class Traits<TYPE>                                                  \
 {                                                                   \
     public:                                                         \
         static constexpr TraitType type = TraitType::Value;         \
-        static std::size_t getPrintSize(PrinterInterface& printer, TYPE const& value) \
+        static std::size_t getPrintSize(PrinterInterface& printer, TYPE const& value, bool) \
         {                                                           \
             return printer.getSizeValue(value);                     \
         }                                                           \
@@ -357,11 +453,11 @@ class Traits<T*>
         static constexpr TraitType type = TraitType::Pointer;
         static T*   alloc()         {return new T;}
         static void release(T* p)   {delete p;}
-        static std::size_t getPrintSize(PrinterInterface& printer, T* object)
+        static std::size_t getPrintSize(PrinterInterface& printer, T* object, bool)
         {
             if (object)
             {
-                return Traits<T>::getPrintSize(printer, *object);
+                return Traits<T>::getPrintSize(printer, *object, true);
             }
             return printer.getSizeNull();
         }

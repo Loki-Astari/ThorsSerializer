@@ -22,6 +22,43 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+template<typename T, TraitType trait = Traits<T>::type>
+struct BsonBaseTypeGetter
+{
+    static const BsonContainer value = BsonContainer::Value;
+    static void validate(T const&){}
+};
+template<typename T>
+struct BsonBaseTypeGetter<T, TraitType::Map>
+{
+    static constexpr BsonContainer value = BsonContainer::Map;
+    static void validate(T const&){}
+};
+template<typename T>
+struct BsonBaseTypeGetter<T, TraitType::Parent>
+{
+    static constexpr BsonContainer value = BsonContainer::Map;
+    static void validate(T const&){}
+};
+template<typename T>
+struct BsonBaseTypeGetter<T, TraitType::Array>
+{
+    static constexpr BsonContainer value = BsonContainer::Array;
+    static void validate(T const&){}
+};
+template<typename T>
+struct BsonBaseTypeGetter<T, TraitType::Pointer>
+{
+    static constexpr BsonContainer value = BsonBaseTypeGetter<T>::value;
+    static void validate(T const& pointer)
+    {
+        if (!pointer)
+        {
+            throw std::runtime_error("Bson does not support serialization of null at the top level");
+        }
+    }
+};
+
 struct Bson
 {
     using Parser  = BsonParser;
@@ -37,10 +74,9 @@ struct Bson
 template<typename T>
 Exporter<Bson, T> bsonExporter(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{})
 {
-    if constexpr (Traits<T>::type != TraitType::Map && Traits<T>::type != TraitType::Array)
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::bsonExporter: Bson only supports Array/Map at the top level");
-    }
+    config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
+    BsonBaseTypeGetter<T>::validate(value);
+
     return Exporter<Bson, T>(value, config);
 }
 
@@ -53,18 +89,8 @@ Exporter<Bson, T> bsonExporter(T const& value, PrinterInterface::PrinterConfig c
 template<typename T>
 Importer<Bson, T> bsonImporter(T& value, ParserInterface::ParserConfig config = ParserInterface::ParserConfig{})
 {
-    if constexpr (Traits<T>::type == TraitType::Map)
-    {
-        config.parserInfo = static_cast<long>(BsonContainer::Map);
-    }
-    else if constexpr (Traits<T>::type == TraitType::Array)
-    {
-        config.parserInfo = static_cast<long>(BsonContainer::Array);
-    }
-    else
-    {
-        throw std::runtime_error("ThorsAnvil::Serialize::bsonExporter: Bson only supports Array/Map at the top level");
-    }
+    config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
+
     return Importer<Bson, T>(value, config);
 }
 

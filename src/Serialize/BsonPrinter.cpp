@@ -19,22 +19,59 @@ BsonPrinter::BsonPrinter(std::ostream& output, PrinterConfig config)
 HEADER_ONLY_INCLUDE bool BsonPrinter::printerUsesSize()                         {return true;}
 
 HEADER_ONLY_INCLUDE void BsonPrinter::openDoc()                                 {}
-HEADER_ONLY_INCLUDE void BsonPrinter::closeDoc()                                {}
+HEADER_ONLY_INCLUDE void BsonPrinter::closeDoc()
+{
+    if (config.parserInfo == static_cast<long>(BsonContainer::Value))
+    {
+        // The Map and Array close themselves.
+        // But values need to be closed here.
+        // See:  writeKey() for details.
+        output.write("", 1);
+    }
+}
+
 
 // Add a new Key
 HEADER_ONLY_INCLUDE
 void BsonPrinter::addKey(std::string const& key)
 {
+    if (currentContainer.back() != BsonContainer::Map)
+    {
+        throw std::runtime_error("Adding a Key to a non map object");
+    }
     currentKey = key;
 }
 
 HEADER_ONLY_INCLUDE
-void BsonPrinter::writeKey(char value)
+void BsonPrinter::writeKey(char value, std::size_t size)
 {
-    if (!currentKey.empty())
+    if (!currentContainer.empty())
     {
         output.write(&value, 1);
-        output.write(currentKey.c_str(), currentKey.size() + 1);
+        if (currentContainer.back() == BsonContainer::Array)
+        {
+            output << arrayIndex.back();
+            output.write("", 1);
+            ++arrayIndex.back();
+        }
+        else
+        {
+            output.write(currentKey.c_str(), currentKey.size() + 1);
+        }
+    }
+    else if (size != static_cast<std::size_t>(-1))
+    {
+        // This happens if you try and write a basic type directly to the stream.
+        // BSON only supports Map/Array as the top level object.
+        // So when we write a single value we wrap it just like an array.
+        //
+        // <4 byte Doc Size> <1 byte Type info> <2 byte Index "0"> <value> <1 byte doc term>
+        std::int32_t totalSize = 4 + 1 + 2 + size + 1;
+        writeSize(totalSize);
+        output.write(&value, 1);
+        output.write("0", 2);
+        // The value will now write itself.
+        // then the docClose() will at the document terminator.
     }
 }
 
@@ -60,14 +97,20 @@ std::size_t BsonPrinter::getSizeMap(std::size_t count)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::openMap(std::size_t size)
 {
-    writeKey('\x03');
+    writeKey('\x03', -1);
     writeSize<std::int32_t>(size);
+    currentContainer.emplace_back(BsonContainer::Map);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::closeMap()
 {
+    if (currentContainer.back() != BsonContainer::Map)
+    {
+        throw std::runtime_error("Closing an unopened Array");
+    }
     output.write("",1);
+    currentContainer.pop_back();
 }
 
 // ARRAY
@@ -109,14 +152,22 @@ std::size_t BsonPrinter::getSizeArray(std::size_t count)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::openArray(std::size_t size)
 {
-    writeKey('\x04');
+    writeKey('\x04', -1);
     writeSize<std::int32_t>(size);
+    currentContainer.emplace_back(BsonContainer::Array);
+    arrayIndex.emplace_back(0);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::closeArray()
 {
+    if (currentContainer.back() != BsonContainer::Array)
+    {
+        throw std::runtime_error("Closing an unopened Array");
+    }
     output.write("",1);
+    currentContainer.pop_back();
+    arrayIndex.pop_back();
 }
 
 using IntTypes = std::tuple<std::int32_t, std::int64_t>;
@@ -132,7 +183,7 @@ void BsonPrinter::writeInt(Int value)
     using IntType = typename std::tuple_element<Size/4 - 1, IntTypes>::type;
 
     IntType             output = value;
-    writeKey(intKey[Size/4 - 1]);
+    writeKey(intKey[Size/4 - 1], Size);
     writeSize<IntType>(output);
 }
 
@@ -141,14 +192,14 @@ template<std::size_t Size, typename Float>
 void BsonPrinter::writeFloat(Float value)
 {
     IEEE_754::_2008::Binary<Size * 8>   outputValue = value;
-    writeKey(floatKey[Size/8 - 1]);
+    writeKey(floatKey[Size/8 - 1], Size);
     output.write(reinterpret_cast<char*>(&outputValue), Size);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeBool(bool value)
 {
-    writeKey('\x08');
+    writeKey('\x08', 1);
     char outVal = (value ? '\x01' : '\x00');
     output.write(&outVal, 1);
 }
@@ -156,21 +207,22 @@ void BsonPrinter::writeBool(bool value)
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeString(std::string const& value)
 {
-    writeKey('\x02');
+    writeKey('\x02', 4 + value.size() + 1);
     writeSize<std::int32_t>(value.size() + 1);
-    output.write(value.c_str(), value.size() + 1);
+    output << EscapeString(value);
+    output.write("", 1);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeNull()
 {
-    writeKey('\x0A');
+    writeKey('\x0A', 0);
 }
 
 HEADER_ONLY_INCLUDE
 void BsonPrinter::writeBinary(std::string const& value)
 {
-    writeKey('\x05');    // binary
+    writeKey('\x05', 4 + 1 + value.size());    // binary
     writeSize<std::int32_t>(value.size());
     output.write("\x80", 1);
     output.write(value.c_str(), value.size());
@@ -182,11 +234,11 @@ struct MaxTemplate
     static constexpr std::size_t value = (lhs >= rhs) ? lhs : rhs;
 };
 
-HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(short int)                {return sizeof(short int);}
+HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(short int)                {return MaxTemplate<sizeof(short int), 4>::value;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(int)                      {return sizeof(int);}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(long int)                 {return sizeof(long int);}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(long long int)            {return sizeof(long long int);}
-HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned short int)       {return sizeof(unsigned short int);}
+HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned short int)       {return MaxTemplate<sizeof(unsigned short int), 4>::value;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned int)             {return sizeof(unsigned int);}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned long int)        {return sizeof(unsigned long int);}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(unsigned long long int)   {return sizeof(unsigned long long int);}
@@ -215,4 +267,4 @@ HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(long double)          
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(bool)                     {return 1;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeValue(std::string const& value) {return 4 + value.size() + 1;}
 HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeNull()                          {return 0;}
-// TODO Seems to be a missing size getter for the RawValue.
+HEADER_ONLY_INCLUDE std::size_t BsonPrinter::getSizeRaw(std::size_t size)           {return 4 + 1 + size;}

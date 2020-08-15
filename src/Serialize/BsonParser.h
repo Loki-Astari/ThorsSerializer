@@ -18,6 +18,7 @@
  */
 
 #include "Serialize.h"
+#include "BsonUtil.h"
 #include "GitUtility/ieee754_types.h"
 #include <istream>
 #include <string>
@@ -27,9 +28,6 @@ namespace ThorsAnvil
 {
     namespace Serialize
     {
-
-enum class BsonContainer  {Map, Array};
-enum class ValueType {Int32, Int64, Double64, Double128, Bool, String, Null, Binary};
 
 class BsonParser: public ParserInterface
 {
