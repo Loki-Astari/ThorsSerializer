@@ -88,7 +88,6 @@ struct HeedAllValues
     template<typename X>
     int checkAMember(std::map<std::string, bool> const& membersFound, std::pair<char const*, X> const& member)
     {
-        std::cerr << "CheckMember: " << member.first << "\n";
         if (membersFound.find(member.first) == std::end(membersFound))
         {
             throw std::runtime_error(
@@ -257,7 +256,7 @@ class DeSerializationForBlock<TraitType::Value, T>
 };
 template<typename T>
 class [[deprecated("This is caused by suing the ThorsAnvil_MakeTraitCustom macro. This is a bit hacky as it simply drops data into the stream. Please upgrade to ThorsAnvil_SelfSerialize as this allows custom behavior depending on the underlying format Json/Yaml/Bson")]]
-DeSerializationForBlock<TraitType::Serialize, T>
+DeSerializationForBlock<TraitType::Custom_Depricated, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
@@ -645,7 +644,7 @@ class SerializerForBlock<TraitType::Value, T>
 };
 template<typename T>
 class [[deprecated("This is caused by suing the ThorsAnvil_MakeTraitCustom macro. This is a bit hacky as it simply drops data into the stream. Please upgrade to ThorsAnvil_SelfSerialize as this allows custom behavior depending on the underlying format Json/Yaml/Bson")]]
-SerializerForBlock<TraitType::Serialize, T>
+SerializerForBlock<TraitType::Custom_Depricated, T>
 {
     Serializer&         parent;
     PrinterInterface&   printer;

@@ -211,10 +211,10 @@ struct TraitsInfo<T, M, TraitType::Pointer>
     using SerializeMember       = SerializeMemberValue<T, M, TraitType::Pointer>;
 };
 template<typename T, typename M>
-struct TraitsInfo<T, M, TraitType::Serialize>
+struct TraitsInfo<T, M, TraitType::Custom_Depricated>
 {
-    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Serialize>;
-    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Serialize>;
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Custom_Depricated>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Custom_Depricated>;
 };
 
 /* ------------ ParserInterface ------------------------- */

@@ -108,7 +108,7 @@ extern std::string const defaultPolymorphicMarker;
 /*
  * Defines the generic type that all serialization types can expand on
  */
-enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Serialize};
+enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Custom_Depricated, Custom_Serialize};
 
 template<typename T>
 class Traits;
@@ -531,15 +531,18 @@ std::size_t getNormalPrintSize(PrinterInterface& printer, T const& object, std::
 template<typename T, typename S = typename T::ThorsSerializerCustomObjectSize>
 auto tryGetSizeFromSerializeType(PrinterInterface& printer, T const& value, int) -> decltype(S::size(value))
 {
-    std::cerr << "GOT THE SIZE\n";
     std::size_t size = S::size(value);
     return printer.getSizeRaw(size);
 }
 
+class CriticalException: public std::runtime_error
+{
+    using runtime_error::runtime_error;
+};
 template<typename T>
 auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size_t
 {
-    throw std::runtime_error(
+    throw CriticalException(
                         ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "tryGetSizeFromSerializeType",
                                                                "BSON backward compatibility. See comments in function.")
                                                               );
