@@ -19,7 +19,8 @@
 
 #include "Serialize.h"
 #include "BsonUtil.h"
-#include "GitUtility/ieee754_types.h"
+#include "ThorsIOUtil/Utility.h"
+#include <GitUtility/ieee754_types.h>
 #include <istream>
 #include <string>
 #include <vector>
@@ -56,37 +57,39 @@ class BsonParser: public ParserInterface
         virtual ParserToken getNextToken()                      override;
         virtual std::string getKey()                            override;
 
-        virtual void    ignoreDataValue()                       override;
+        virtual void    ignoreDataValue()                       override    {}
 
-        virtual void    getValue(short int& value)              override;
-        virtual void    getValue(int& value)                    override;
-        virtual void    getValue(long int& value)               override;
-        virtual void    getValue(long long int& value)          override;
+        virtual void    getValue(short int& value)              override    {value = returnIntValue<MaxTemplate<4, sizeof(short int)>::value, short int>();}
+        virtual void    getValue(int& value)                    override    {value = returnIntValue<sizeof(int), int>();}
+        virtual void    getValue(long int& value)               override    {value = returnIntValue<sizeof(long int), long int>();}
+        virtual void    getValue(long long int& value)          override    {value = returnIntValue<sizeof(long long int), long long int>();}
 
-        virtual void    getValue(unsigned short int& value)     override;
-        virtual void    getValue(unsigned int& value)           override;
-        virtual void    getValue(unsigned long int& value)      override;
-        virtual void    getValue(unsigned long long int& value) override;
+        virtual void    getValue(unsigned short int& value)     override    {value = returnIntValue<MaxTemplate<4, sizeof(unsigned short int)>::value, unsigned short int>();}
+        virtual void    getValue(unsigned int& value)           override    {value = returnIntValue<sizeof(unsigned int), unsigned int>();}
+        virtual void    getValue(unsigned long int& value)      override    {value = returnIntValue<sizeof(unsigned long int), unsigned long int>();}
+        virtual void    getValue(unsigned long long int& value) override    {value = returnIntValue<sizeof(unsigned long long int), unsigned long long int>();}
 
-        virtual void    getValue(float& value)                  override;
-        virtual void    getValue(double& value)                 override;
-        virtual void    getValue(long double& value)            override;
+        virtual void    getValue(float& value)                  override    {value = returnFloatValue<8, float>();}
+        virtual void    getValue(double& value)                 override    {value = returnFloatValue<8, double>();}
+        virtual void    getValue(long double& value)            override    {value = returnFloatValue<8, long double>();}
 
-        virtual void    getValue(bool& value)                   override;
+        virtual void    getValue(bool& value)                   override    {if (currentValue != ValueType::Bool)      {badType();}value = valueBool;}
 
-        virtual void    getValue(std::string& value)            override;
+        virtual void    getValue(std::string& value)            override    {if (currentValue != ValueType::String)    {badType();}value = valueString;}
 
-        virtual bool    isValueNull()                           override;
+        virtual bool    isValueNull()                           override    {return (currentValue == ValueType::Null);}
 
         virtual std::string getRawValue()                       override;
+
     private:
+        bool isEndOfContainer();
 
         template<std::size_t size, typename Int>
         Int readSize(bool);
 
-        template<typename Int>
+        template<std::size_t Size, typename Int>
         Int returnIntValue();
-        template<typename Float>
+        template<std::size_t Size, typename Float>
         Float returnFloatValue();
 
         void readKey();
@@ -104,7 +107,11 @@ class BsonParser: public ParserInterface
         std::string readBinary(bool);
 
         [[noreturn]]
-        void badType();
+        void badType()                                      {throw std::runtime_error(
+                                                                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "badType"
+                                                                                                          "Trying to read a type that we can can't convert.")
+                                                                                                          );
+                                                            }
 };
     }
 }

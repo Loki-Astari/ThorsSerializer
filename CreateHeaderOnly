@@ -1,20 +1,48 @@
-#!/bin/bash -v
+#!/bin/bash
 
-for loop in src/Serialize/*.cpp; do
-    file=${loop##*/}
-    base=${file%%.cpp}
-    echo cp ${file} build/include/ThorSerialize/${base}.source
-    cp ${loop} build/include/ThorSerialize/${base}.source
+branch=$(git branch --show-current)
+if [[ ${branch} != "master" ]]; then
+    echo "Not master branch. Not creating header only version"
+    exit 0
+fi
+
+
+rm -rf /tmp/TS
+git clone --single-branch --branch header-only https://Loki-Astari:${TMP}@github.com/Loki-Astari/ThorsSerializer.git /tmp/TS
+wd=$(pwd)
+
+for locat in src/Serialize src/ThorsStorage/src/ThorsStorage src/GitUtility src/ThorsIOUtil; do
+
+    cd ${wd}
+
+    dst=$(cat ${locat}/Makefile | awk '/TARGET/ {sub(/\..*/, "", $3);print $3;}')
+    echo "Got: ${locat} => ${dst}"
+
+    rm -rf /tmp/TS/${dst}
+    mkdir /tmp/TS/${dst}
+    cp build/include/${dst}/*  /tmp/TS/${dst}/
+
+    for loop in $(ls ${locat}/*.cpp 2> /dev/null); do
+        file=${loop##*/}
+        base=${file%%.cpp}
+        echo cp ${file} /tmp/TS/${dst}/${base}.source
+        # cp ${loop} build/include/${dst}/${base}.source
+        # Rather than simply copy we remove all the code that is only used for unit testing.
+        awk 'BEGIN {PRINT=1;} /^#ifdef COVERAGE_TEST/ {if (PRINT==1){SAVEDEPTH=DEPTH;PRINT=0;}} /^#if/ {DEPTH+=1;} /^#endif/ {DEPTH-=1;if (PRINT == 0 && SAVEDEPTH==DEPTH){PRINT=1;}} {if (PRINT) {print;}}' ${loop} >  /tmp/TS/${dst}/${base}.source
+    done
+
+    cd /tmp/TS
+    git checkout ${dst}/*Config.h
+
+    git add ${dst}/*
 done
 
-git clone --single-branch --branch header-only https://Loki-Astari:${TMP}@github.com/Loki-Astari/ThorsSerializer.git /tmp/TS
+removed=$(git status | awk '/deleted/ {print $2}')
+if [[ ${removed} != "" ]]; then
+    git rm ${removed}
+fi
 
-rm /tmp/TS/ThorSerialize/*
-cp build/include/ThorSerialize/*  /tmp/TS/ThorSerialize/
-cd /tmp/TS
-git checkout ThorSerialize/SerializeConfig.h
 
-git add ThorSerialize/*
 git commit -m "Update the header only build to latest version"
 git push
 

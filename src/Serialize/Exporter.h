@@ -32,6 +32,14 @@ class Exporter
 
                 serializer.print(data.value);
             }
+            catch (ThorsAnvil::Serialize::CriticalException const&)
+            {
+                // This exception is thrown because you are using deprecated code
+                // that was not designed to be used with the bsonExporter
+                // This must be fixed. So we are forcing a re-throw becuase
+                // the generated binary object is probably bad.
+                throw;
+            }
             catch (...)
             {
                 stream.setstate(std::ios::failbit);

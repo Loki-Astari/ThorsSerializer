@@ -1,6 +1,7 @@
 #include "SerializeConfig.h"
 #ifdef HAVE_YAML
 #include "YamlParser.h"
+#include "ThorsIOUtil/Utility.h"
 
 using namespace ThorsAnvil::Serialize;
 
@@ -146,7 +147,7 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
     if (test())
     {
         error = true;
-        throw std::runtime_error(msg);
+        throw std::runtime_error(ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serializer::YamlParser", "generateParsingException", msg));
     }
 }
 
@@ -184,7 +185,10 @@ T YamlParser::scan()
     T   value = scanValue<T>(buffer, &end);
     if (buffer + length != end)
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser: Not an integer");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::YamlParser", "scan",
+                                                               "Not an integer")
+                                                              );
     }
     return value;
 }
@@ -220,7 +224,10 @@ void YamlParser::getValue(bool& value)
     }
     else
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::YamlParser::getValue: Not a bool");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::YamlParser", "getValue",
+                                                               "Not a bool")
+                                                              );
     }
 }
 

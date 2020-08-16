@@ -5,6 +5,7 @@
 #include "Serialize.h"
 #include <utility>
 #include <string>
+#include "ThorsIOUtil/Utility.h"
 #include <map>
 #include <unordered_map>
 #include <set>
@@ -117,7 +118,11 @@ class GetValueType<V, TraitType::Value>
         GetValueType(ParserInterface& parser, V& value)
         {
             if (parser.getToken() != ThorsAnvil::Serialize::ParserInterface::ParserToken::Value)
-            {   throw std::runtime_error("ThorsAnvil::Serializer::SerMap::GetValueType::GetValueType<Value>: Expecting a normal value after the key");
+            {
+                throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serializer::SerMap::GetValueType", "GetValueType<Value>",
+                                                               "Expecting a normal value after the key")
+                                                              );
             }
             parser.getValue(value);
         }

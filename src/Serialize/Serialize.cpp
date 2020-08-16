@@ -19,6 +19,7 @@ using ThorsAnvil::Serialize::ParserInterface;
 #include "test/ExceptionTest.h"
 #include "test/TwitterTest.h"
 #include "test/SmartPointerTest.h"
+#include "test/DeprecatedTest.h"
 
 
 template void ThorsAnvil::Serialize::Serializer::print<BinaryParserTest::Base>(BinaryParserTest::Base const&);
@@ -119,5 +120,7 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<std::shared_ptr<SmartPt
 template void ThorsAnvil::Serialize::Serializer::print<std::shared_ptr<SmartPtrTest::Object>>(std::shared_ptr<SmartPtrTest::Object> const&);
 
 template void ThorsAnvil::Serialize::DeSerializer::parse<IgnoreUneededDataTest::Thing>(IgnoreUneededDataTest::Thing&);
+
+template void ThorsAnvil::Serialize::Serializer::print<DepricatedTypeSpace::NormalObject>(DepricatedTypeSpace::NormalObject const&);
 #endif
 #endif

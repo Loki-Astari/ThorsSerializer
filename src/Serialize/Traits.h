@@ -6,21 +6,125 @@
  *  Two macros are provides to facilitate the building of Traits<T>
  *  specializations for user defined types.
  *
- *      ThorsAnvil_MakeTraitCustom(DataType)    // Will use operator << and operator >>
- *      ThorsAnvil_PointerAllocator(DataType, Action)
  *      ThorsAnvil_MakeTrait(DataType, ...)
  *      ThorsAnvil_ExpandTrait(ParentType, DataType, ...)
  *      ThorsAnvil_Template_MakeTrait(TemplateParameterCount, DataType, ...)
  *      ThorsAnvil_Template_ExpandTrait(TemplateParameterCount, ParentType, DataType, ...)
+ *
+ *      ThorsAnvil_PointerAllocator(DataType, Action)
  *      ThorsAnvil_MakeEnum(<EnumType>, <EnumValues>...)
  *
  *      ThorsAnvil_PolyMorphicSerializer(Type)
  *      ThorsAnvil_RegisterPolyMorphicType(Type)
  *
- * See README.md for examples.
+ *
+ * --------------------------------------------------------------------------
+ *
+ *      [[Depricated]]
+ *      Please don't use. Maintained for backward compatibility.
+ *      ThorsAnvil_MakeTraitCustom(DataType)    // Will use operator << and operator >>
+ *
+ * --------------------------------------------------------------------------
+ *
+ *      Most commonly used:
+ *      These are used for normal structures that you want to serialize.
+ *              ThorsAnvil_MakeTrait(Type, Member-1, Member-2 etc)
+ *
+ *              ThorsAnvil_ExpandTrait(Parent-Type, Type, Member-1, Member-2 etc)
+ *
+ *      If your types are template types we need to know the number of template parameters.
+ *      So you can use these alternatives for templated classes:
+ *
+ *              ThorsAnvil_Template_MakeTrait(Template-Param-Count, Type, Member-1, Member-2 etc)
+ *              ThorsAnvil_Template_ExpandTrait(Template-Param-Count, Parent-Type, Type, Member-1, Member-2 etc)
+ *
+ *
+ *      If you need special processing for pointers then you can use the following:
+ *      Note if your object simply used new/delete and can create a default object then you don't need
+ *      to use this. This is only required if you need some special creation/deletion processes.
+ *
+ *              ThorsAnvil_PointerAllocator(Type, AllocationType)
+ *
+ *              AllocationType::alloc()             // Called to default allocate an object. default new
+ *              AllocationType::release()           // Called to release object.             default delete
+ *
+ *      Enum values are treated like strings when serialized:
+ *
+ *              ThorsAnvil_MakeEnum(Enum-Type, Enum-1, Enum-2 etc)
+ *
+ *      If you want pointers to handle polymorphic pointers
+ *      Then we need some extra information:
+ *
+ *              Add the following to your class definition:
+ *                  ThorsAnvil_PolyMorphicSerializer(Type)
+ *
+ *              Then in a source file add the following line:
+ *                  ThorsAnvil_RegisterPolyMorphicType(Type)
+ *
+ * --------------------------------------------------------------------------
+ *
+ *      Examples:
+ *
+ *      Bank.h
+ *          namespace OnLineBank
+ *          {
+ *              enum TransType {Deposit, Withdraw, Correction};
+ *
+ *              template<typename T>
+ *              struct Flounder
+ *              {
+ *                  T   data;
+ *              };
+ *
+ *              srtuct Transaction
+ *              {
+ *                  long        timeStamp;
+ *                  int         amount;
+ *                  TransType   type;
+ *              };
+ *              class BankAccount
+ *              {
+ *                      friend ThorsSerialize::SerializeTraits<OnLineBank::BankAccount>;
+ *                      int             balance;
+ *                      std::string     details;
+ *                      bool            valid;
+ *                  public:
+ *                      virtual ~BankAccount() {}
+ *                      // Normal Methods
+ *              };
+ *              class CurrentAccount: public BankAccount
+ *              {
+ *                      friend ThorsSerialize::SerializeTraits<OnLineBank::CurrentAccount>;
+ *                      std::vector<Transaction>    actions;
+ *                      ThorsAnvil_PolyMorphicSerializer;
+ *                  public:
+ *              };
+ *              class DepositAccount: public BankAccount
+ *              {
+ *                      friend ThorsSerialize::SerializeTraits<OnLineBank::DepositAccount>;
+ *                      int withdrawlLimit;
+ *                      ThorsAnvil_PolyMorphicSerializer;
+ *                  public:
+ *              };
+ *          }
+ *
+ *          ThorsAnvil_MakeEnum(OnLineBank::TransType, Deposit, Withdraw, Correction);
+ *          ThorsAnvil_MakeTrait(OnLineBank::Transaction, timeStamp, amount, type);
+ *          ThorsAnvil_Template_MakeTrait(1, OnLineBank::Flounder, data);
+ *          ThorsAnvil_MakeTrait(OnLineBank::BankAccount, balance, details, valid);
+ *          ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::CurrentAccount, actions);
+ *          ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::DepositAccount, withdrawlLimit);
+ *
+ *      // Bank.cpp
+ *
+ *          ThorsAnvil_RegisterPolyMorphicType(OnLineBank::CurrentAccount);
+ *          ThorsAnvil_RegisterPolyMorphicType(OnLineBank::DepositAccount);
+ *
+ *
  */
 
 #include "ThorsSerializerUtil.h"
+#include "ThorsIOUtil/Utility.h"
 #include <string>
 #include <tuple>
 #include <map>
@@ -206,8 +310,8 @@ class Traits<DataType*>                                                 \
 {                                                                       \
     public:                                                             \
         static constexpr TraitType type = TraitType::Pointer;           \
-        static DataType* alloc()    {return ActionObj.alloc();}         \
-        static void release(T* p)   {ActionObj.release(p);}             \
+        static DataType* alloc()    {return ActionObj::alloc();}        \
+        static void release(T* p)   {ActionObj::release(p);}            \
 };                                                                      \
 }}
 #define ThorsAnvil_MakeTrait_Base(ParentType, TType, Count, DataType, ...)  \
@@ -316,12 +420,10 @@ template<>                                                              \
 class Traits<DataType>                                                  \
 {                                                                       \
     public:                                                             \
-    static constexpr TraitType type = TraitType::Serialize;             \
+    static constexpr TraitType type = TraitType::Custom_Depricated;     \
     static std::size_t getPrintSize(PrinterInterface& printer, DataType const& value, bool)\
     {                                                                   \
-        using DataTypeSerializer = typename DataType::ThorsSerializer;  \
-        std::size_t size = DataTypeSerializer::size(value);             \
-        return printer.getSizeRaw(size);                                \
+        return tryGetSizeFromSerializeType(printer, value, 0);          \
     }                                                                   \
 };                                                                      \
 }}                                                                      \
@@ -510,7 +612,10 @@ class PolyMorphicRegistry
             auto     find       = cont.find(name);
             if (find == cont.end())
             {
-                throw std::runtime_error("ThorsAnvil::Serialize::PolyMorphicRegistry::getNamedTypeConvertedTo: Non polymorphic type");
+                throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::PolyMorphicRegistry", "getNamedTypeConvertedTo",
+                                                               "Non polymorphic type")
+                                                              );
             }
             void*       data        = find->second();
             AllocType*  dataBase    = reinterpret_cast<AllocType*>(data);

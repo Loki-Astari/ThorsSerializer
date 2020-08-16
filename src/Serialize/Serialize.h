@@ -32,6 +32,7 @@
  */
 
 #include "Traits.h"
+#include "ThorsIOUtil/Utility.h"
 #include <iostream>
 #include <utility>
 
@@ -157,6 +158,8 @@ class Serializer
 
         template<typename T>
         void printObjectMembers(T const& object);
+
+        bool isRoot() const {return root;}
 };
 /* ------------ BaseTypeGetter Gets base type of pointer ------------------------- */
 template<typename P>
@@ -208,10 +211,10 @@ struct TraitsInfo<T, M, TraitType::Pointer>
     using SerializeMember       = SerializeMemberValue<T, M, TraitType::Pointer>;
 };
 template<typename T, typename M>
-struct TraitsInfo<T, M, TraitType::Serialize>
+struct TraitsInfo<T, M, TraitType::Custom_Depricated>
 {
-    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Serialize>;
-    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Serialize>;
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Custom_Depricated>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Custom_Depricated>;
 };
 
 /* ------------ ParserInterface ------------------------- */
@@ -233,7 +236,10 @@ inline void ParserInterface::pushBackToken(ParserToken token)
 {
     if (pushBack != ParserToken::Error)
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::ParserInterface::pushBackToken: Push only allows for single push back. More than one token has been pushed back between reads.");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "pushBackToken",
+                                                               "Push only allows for single push back. More than one token has been pushed back between reads.")
+                                                              );
     }
     pushBack    = token;
 }
@@ -252,7 +258,11 @@ inline DeSerializer::DeSerializer(ParserInterface& parser, bool root)
         //  Note: We also need to take care of arrays at the top level
         //  We will get that in the next version
         if (parser.getToken() != ParserToken::DocStart)
-        {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializer::DeSerializer: Invalid Doc Start");
+        {
+            throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DeSerializer", "DeSerializer"
+                                                               "Invalid Doc Start")
+                                                              );
         }
     }
 }
@@ -261,7 +271,11 @@ inline DeSerializer::~DeSerializer() noexcept(false)
     if (root)
     {
         if (parser.getToken() != ParserToken::DocEnd)
-        {   throw std::runtime_error("ThorsAnvil::Serialize::DeSerializer::~DeSerializer: Expected Doc End");
+        {
+            throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DeSerializer", "~DeSerializer",
+                                                               "Expected Doc End")
+                                                              );
         }
     }
 }

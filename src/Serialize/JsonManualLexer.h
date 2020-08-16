@@ -2,6 +2,7 @@
 #define THORS_ANVIL_SERIALIZER_JSON_MANUAL_LEXER_H
 
 #include "Serialize.h"
+#include "ThorsIOUtil/Utility.h"
 #include <istream>
 
 namespace ThorsAnvil
@@ -45,7 +46,10 @@ inline T JsonManualLexer::scan() const
     T value = scanValue<T>(&buffer[0], &end);
     if (buffer.size() == 0 || &buffer[0] + buffer.size() != end)
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonParser: Not an integer");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::JsonParser", "scan",
+                                                              "No data left to scan")
+                                                              );
     }
     return value;
 }

@@ -1,5 +1,6 @@
 #include "SerializeConfig.h"
 #include "JsonPrinter.h"
+#include "ThorsIOUtil/Utility.h"
 #include <iomanip>
 #include <algorithm>
 
@@ -135,7 +136,10 @@ void JsonPrinter::closeMap()
 {
     if (state.back().second != TraitType::Map)
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to closeMap(): Currently not in a map");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::JsonPrinter", "closeMap",
+                                                               "Invalid call to closeMap(): Currently not in a map")
+                                                              );
     }
     state.pop_back();
     output << PrefixMapClose(config.characteristics, state.size(), state.back()) << "}";
@@ -151,7 +155,10 @@ void JsonPrinter::closeArray()
 {
     if (state.back().second != TraitType::Array)
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to closeArray(): Currently not in an array");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::JsonPrinter", "closeArray",
+                                                                "Invalid call to closeArray(): Currently not in an array")
+                                                              );
     }
     state.pop_back();
     output << PrefixArrayClose(config.characteristics, state.size(), state.back()) << "]";
@@ -162,7 +169,10 @@ void JsonPrinter::addKey(std::string const& key)
 {
     if (state.back().second != TraitType::Map)
     {
-        throw std::runtime_error("ThorsAnvil::Serialize::JsonPrinter: Invalid call to addKey(): Currently not in a map");
+        throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::JsonPrinter", "addKey",
+                                                               "Invalid call to addKey(): Currently not in a map")
+                                                              );
     }
     output << PrefixKey(config.characteristics, state.size(), state.back()) << '"' << key << '"';
 }

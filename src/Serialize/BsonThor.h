@@ -16,6 +16,7 @@
 #include "Exporter.h"
 #include "Importer.h"
 #include "SerUtil.h"
+#include "ThorsIOUtil/Utility.h"
 
 namespace ThorsAnvil
 {
@@ -47,14 +48,18 @@ struct BsonBaseTypeGetter<T, TraitType::Array>
     static void validate(T const&){}
 };
 template<typename T>
-struct BsonBaseTypeGetter<T*, TraitType::Pointer>
+struct BsonBaseTypeGetter<T, TraitType::Pointer>
 {
-    static constexpr BsonContainer value = BsonBaseTypeGetter<T>::value;
-    static void validate(T* const& pointer)
+    using ElementType = typename std::pointer_traits<T>::element_type;
+    static constexpr BsonContainer value = BsonBaseTypeGetter<ElementType>::value;
+    static void validate(T const& pointer)
     {
         if (!pointer)
         {
-            throw std::runtime_error("Bson does not support serialization of null at the top level");
+            throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonBaseTypeGetter<T, Pointer>", "validate",
+                                                               "Bson does not support serialization of null at the top level")
+                                                              );
         }
     }
 };
