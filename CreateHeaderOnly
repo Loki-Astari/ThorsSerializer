@@ -1,11 +1,11 @@
 #!/bin/bash
 
-branch=$(git branch --show-current)
-if [[ ${branch} != "master" ]]; then
-    echo "Not master branch. Not creating header only version"
+if [[ $# == 0 ]]; then
+    echo "Safety check"
+    echo "This scripts forces a commit to git."
+    echo "To verify you understand this just pass an extra parameter."
     exit 0
 fi
-
 
 rm -rf /tmp/TS
 git clone --single-branch --branch header-only https://Loki-Astari:${TMP}@github.com/Loki-Astari/ThorsSerializer.git /tmp/TS
