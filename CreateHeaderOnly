@@ -1,9 +1,11 @@
 #!/bin/bash
 
-if [[ $# == 0 ]]; then
+if [[ $1 != "master" ]]; then
     echo "Safety check"
     echo "This scripts forces a commit to git."
-    echo "To verify you understand this just pass an extra parameter."
+    echo "This should only be done for master. Verify this by placing branch name as the parameter to the script"
+    echo
+    echo "Got: >$1<"
     exit 0
 fi
 
