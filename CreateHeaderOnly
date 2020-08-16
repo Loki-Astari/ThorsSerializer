@@ -5,6 +5,7 @@ if [[ $1 != "master" ]]; then
     echo "This scripts forces a commit to git."
     echo "This should only be done for master. Verify this by placing branch name as the parameter to the script"
     echo
+    echo
     echo "Got: >$1<"
     exit 0
 fi
