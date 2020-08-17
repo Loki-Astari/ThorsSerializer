@@ -24,15 +24,15 @@ class JsonManualLexer
         void        ignoreRawValue();
         std::string getRawString();
         std::string getString();
-        bool        getLastBool() const;
-        bool        isLastNull() const;
+        bool        getLastBool();
+        bool        isLastNull();
         template<typename T>
-        T scan() const;
+        T scan();
     private:
         void readTrue();
         void readFalse();
         void readNull();
-        bool readNumber(int next);
+        void readNumber();
 
         void checkFixed(char const* check, std::size_t size);
         char readDigits(char next);
@@ -40,8 +40,10 @@ class JsonManualLexer
 };
 
 template<typename T>
-inline T JsonManualLexer::scan() const
+inline T JsonManualLexer::scan()
 {
+    readNumber();
+
     char*   end;
     T value = scanValue<T>(&buffer[0], &end);
     if (buffer.size() == 0 || &buffer[0] + buffer.size() != end)

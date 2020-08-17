@@ -31,9 +31,9 @@ TEST(LexerTest, JsonValueTokens)
 
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_STRING,  lexer.yylex());
     lexer.getRawString();
-    EXPECT_EQ(ThorsAnvil::Serialize::JSON_INTEGER, lexer.yylex());
+    EXPECT_EQ(ThorsAnvil::Serialize::JSON_NUMBER,  lexer.yylex());
     lexer.getRawString();
-    EXPECT_EQ(ThorsAnvil::Serialize::JSON_FLOAT,   lexer.yylex());
+    EXPECT_EQ(ThorsAnvil::Serialize::JSON_NUMBER,  lexer.yylex());
     lexer.getRawString();
     EXPECT_EQ(ThorsAnvil::Serialize::JSON_TRUE,    lexer.yylex());
     lexer.getRawString();

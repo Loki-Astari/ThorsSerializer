@@ -405,6 +405,7 @@ class DeSerializationForBlock<TraitType::Pointer, T>
             ParserInterface::ParserToken    tokenType = parser.getToken();
             if (parser.isValueNull())
             {
+                parser.ignoreDataValue();
                 object = nullptr;
                 return;
             }

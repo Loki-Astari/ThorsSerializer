@@ -35,19 +35,19 @@ int JsonManualLexer::yylex()
         }
         case 't':
         {
-            readTrue();
+            str.unget();
             lastBool = true;
             return lastToken = ThorsAnvil::Serialize::JSON_TRUE;
         }
         case 'f':
         {
-            readFalse();
+            str.unget();
             lastBool = false;
             return lastToken = ThorsAnvil::Serialize::JSON_FALSE;
         }
         case 'n':
         {
-            readNull();
+            str.unget();
             lastNull = true;
             return lastToken = ThorsAnvil::Serialize::JSON_NULL;
         }
@@ -58,9 +58,8 @@ int JsonManualLexer::yylex()
         }
         default:
         {
-            return lastToken = readNumber(next)
-                ? ThorsAnvil::Serialize::JSON_INTEGER
-                : ThorsAnvil::Serialize::JSON_FLOAT;
+            str.unget();
+            return lastToken = ThorsAnvil::Serialize::JSON_NUMBER;
         }
     }
 }
@@ -86,19 +85,28 @@ void JsonManualLexer::readNull()
 HEADER_ONLY_INCLUDE
 void JsonManualLexer::ignoreRawValue()
 {
-    if (lastToken == ThorsAnvil::Serialize::JSON_STRING)
+    switch (lastToken)
     {
-        char last = str.get();  // Read the first Quote off the stream
-        int next = str.get();
-        while (next != EOF && !(next == '"' && last != '\\'))
+        case ThorsAnvil::Serialize::JSON_TRUE:      str.ignore(4);break;
+        case ThorsAnvil::Serialize::JSON_FALSE:     str.ignore(5);break;
+        case ThorsAnvil::Serialize::JSON_NULL:      str.ignore(4);break;
+        case ThorsAnvil::Serialize::JSON_NUMBER:    readNumber();break;
+        case ThorsAnvil::Serialize::JSON_STRING:
         {
-            last = next;
-            next = str.get();
+            char last = str.get();  // Read the first Quote off the stream
+            int next = str.get();
+            while (next != EOF && !(next == '"' && last != '\\'))
+            {
+                last = next;
+                next = str.get();
+            }
+            if (next == EOF)
+            {
+                error();
+            }
+            break;
         }
-        if (next == EOF)
-        {
-            error();
-        }
+        default:break;
     }
 }
 
@@ -113,12 +121,14 @@ std::string JsonManualLexer::getRawString()
         case ']':   return "]";
         case ',':   return ",";
         case ':':   return ":";
-        case ThorsAnvil::Serialize::JSON_TRUE:  return "true";
-        case ThorsAnvil::Serialize::JSON_FALSE: return "false";
-        case ThorsAnvil::Serialize::JSON_NULL:  return "null";
-        case ThorsAnvil::Serialize::JSON_INTEGER:
-        case ThorsAnvil::Serialize::JSON_FLOAT:
+        case ThorsAnvil::Serialize::JSON_TRUE:  str.ignore(4);return "true";
+        case ThorsAnvil::Serialize::JSON_FALSE: str.ignore(5);return "false";
+        case ThorsAnvil::Serialize::JSON_NULL:  str.ignore(4);return "null";
+        //case ThorsAnvil::Serialize::JSON_INTEGER:
+        //case ThorsAnvil::Serialize::JSON_FLOAT:
+        case ThorsAnvil::Serialize::JSON_NUMBER:
         {
+            readNumber();
             return buffer;
         }
         case ThorsAnvil::Serialize::JSON_STRING:
@@ -165,23 +175,26 @@ std::string JsonManualLexer::getString()
 }
 
 HEADER_ONLY_INCLUDE
-bool JsonManualLexer::getLastBool() const
+bool JsonManualLexer::getLastBool()
 {
-    if (lastToken == ThorsAnvil::Serialize::JSON_TRUE || lastToken == ThorsAnvil::Serialize::JSON_FALSE)
+    switch (lastToken)
     {
-        return lastBool;
-    }
-    else
-    {
-        throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::JsonParser", "getLastBool",
-                                                               "The last value was not a bool")
-                                                              );
+        case ThorsAnvil::Serialize::JSON_TRUE:
+            readTrue();
+            return lastBool;
+        case ThorsAnvil::Serialize::JSON_FALSE:
+            readFalse();
+            return lastBool;
+        default:
+            throw std::runtime_error(
+                            ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::JsonParser", "getLastBool",
+                                                                   "The last value was not a bool")
+                                                                  );
     }
 }
 
 HEADER_ONLY_INCLUDE
-bool JsonManualLexer::isLastNull() const
+bool JsonManualLexer::isLastNull()
 {
     return lastNull;
 }
@@ -201,11 +214,11 @@ char JsonManualLexer::readDigits(char next)
     return next;
 }
 HEADER_ONLY_INCLUDE
-bool JsonManualLexer::readNumber(int next)
+void JsonManualLexer::readNumber()
 {
-    bool isInteger = true;
-
     buffer.clear();
+
+    int next = str.get();
 
     if (next == '-' || next == '+')
     {
@@ -226,7 +239,6 @@ bool JsonManualLexer::readNumber(int next)
     }
     if (next == '.')
     {
-        isInteger   = false;
         buffer.push_back(next);
         next        = str.get();
         if (next == EOF)
@@ -255,16 +267,13 @@ bool JsonManualLexer::readNumber(int next)
     {
         str.unget();
     }
-
-    return isInteger;
 }
 
 HEADER_ONLY_INCLUDE
 void JsonManualLexer::checkFixed(char const* check, std::size_t size)
 {
     buffer.resize(size);
-    buffer[0] = check[0];
-    str.read(&buffer[1], size - 1);
+    str.read(&buffer[0], size);
     if (std::strncmp(&buffer[0], check, size) != 0)
     {
         error();
