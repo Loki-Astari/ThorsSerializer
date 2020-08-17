@@ -85,6 +85,7 @@ namespace OnLineBank
                 , valid(valid)
             {}
             virtual ~BankAccount() {}
+            int getAccountIdent() {return id.id;}
             ThorsAnvil_PolyMorphicSerializer(OnLineBank::BankAccount);
             // Normal Methods
     };
