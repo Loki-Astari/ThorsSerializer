@@ -81,6 +81,8 @@ class BsonParser: public ParserInterface
 
         virtual std::string getRawValue()                       override;
 
+    public:
+        char getValueType() const     {return nextType;}
     private:
         bool isEndOfContainer();
 

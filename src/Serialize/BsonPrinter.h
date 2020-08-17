@@ -75,8 +75,9 @@ class BsonPrinter: public PrinterInterface
         virtual std::size_t getSizeValue(std::string const& value)  override    {return 4 + value.size() + 1;}
         virtual std::size_t getSizeRaw(std::size_t size)            override    {return 4 + 1 + size;}
 
-    private:
+    public:
         void writeKey(char value, std::size_t size);
+    private:
         template<typename Int>
         void writeSize(Int size);
         template<std::size_t size, typename Int>

@@ -225,6 +225,8 @@ class ParserInterface
         virtual std::string getRawValue()                = 0;
 
         void    ignoreValue();
+
+        std::istream& stream() {return input;}
     private:
         void    ignoreTheValue();
         void    ignoreTheMap();
@@ -334,6 +336,8 @@ class PrinterInterface
         virtual std::size_t getSizeValue(bool)                      {return 0;}
         virtual std::size_t getSizeValue(std::string const&)        {return 0;}
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
+
+        std::ostream& stream() {return output;}
 };
 
 template<typename T, bool = HasParent<T>::value>
