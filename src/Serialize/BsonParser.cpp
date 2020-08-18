@@ -11,13 +11,10 @@
 using namespace ThorsAnvil::Serialize;
 using ParserToken = ParserInterface::ParserToken;
 
-static constexpr ValueType intReadType[]    = {ValueType::Int32, ValueType::Int64};
-static constexpr ValueType floatReadType[]  = {ValueType::Double64, ValueType::Double128};
-
 HEADER_ONLY_INCLUDE
 BsonParser::BsonParser(std::istream& stream, ParserConfig config)
     : ParserInterface(stream, config)
-    , currentValue(ValueType::Obj)
+    , currentValue(ValueType::Key)
 {
     currentContainer.emplace_back(static_cast<BsonContainer>(config.parserInfo));
     nextToken = ParserToken::DocStart;
@@ -27,7 +24,7 @@ HEADER_ONLY_INCLUDE
 ParserToken BsonParser::getNextToken()
 {
     ParserToken result = nextToken;
-    currentValue    = ValueType::Obj;
+    currentValue    = ValueType::Key;
     switch (nextToken)
     {
         case ParserToken::DocStart:
@@ -40,7 +37,7 @@ ParserToken BsonParser::getNextToken()
                 {
                     nextToken = ParserToken::Key;
                     currentContainer.emplace_back(BsonContainer::Value);
-                    std::int32_t    size = readSize<4, std::int32_t>(true);
+                    std::int32_t    size = readSize<4, std::int32_t>();
                     dataSize.emplace_back(size);
                     dataLeft.emplace_back(size);
                     dataLeft.back() -= 4;
@@ -51,13 +48,17 @@ ParserToken BsonParser::getNextToken()
         }
         case ParserToken::DocEnd:
         {
+            if (currentContainer.back() == BsonContainer::Value)
+            {
+                readEndOfContainer();
+            }
             nextToken = ParserToken::Error;
             break;
         }
         case ParserToken::MapStart:
         case ParserToken::ArrayStart:
         {
-            std::int32_t    size = readSize<4, std::int32_t>(true);
+            std::int32_t    size = readSize<4, std::int32_t>();
             dataSize.emplace_back(size);
             dataLeft.emplace_back(size);
             dataLeft.back() -= 4;
@@ -72,16 +73,7 @@ ParserToken BsonParser::getNextToken()
         case ParserToken::MapEnd:
         case ParserToken::ArrayEnd:
         {
-            char    mark;
-            input.read(&mark, 1);
-            dataLeft.back() -= 1;
-            if (mark != '\x00')
-            {
-                throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "getNextToken",
-                                                              "End of container marker should be '\x00' but is >", static_cast<int>(mark), "<")
-                                        );
-            }
+            readEndOfContainer();
             currentContainer.pop_back();
             dataLeft.pop_back();
             if (currentContainer.empty())
@@ -92,7 +84,7 @@ ParserToken BsonParser::getNextToken()
             }
             dataLeft.back() -= dataSize.back();
             dataSize.pop_back();
-            if (isEndOfContainer())
+            if (isEndOfContainer(0))
             {
                 // isEndOfContainer set the correct nextToken
                 break;
@@ -125,7 +117,7 @@ ParserToken BsonParser::getNextToken()
         }
         case ParserToken::Value:
         {
-            readValue(true);
+            readValue();
             break;
         }
         default:
@@ -154,27 +146,28 @@ ParserToken BsonParser::getNextToken()
 }
 
 HEADER_ONLY_INCLUDE
-void BsonParser::readValue(bool useValue)
+void BsonParser::readValue()
 {
+    std::size_t size;
     switch (nextType)
     {
-        case '\x01':    valueFloat64    = readFloat<8>(useValue);                   break;
-        case '\x02':    valueString     = readString(useValue);                     break;
-        case '\x05':    valueBinary     = readBinary(useValue);                     break;
-        case '\x08':    valueBool       = readBool(useValue);                       break;
-        case '\x0A':                      readNull(useValue);                       break;
-        case '\x10':    valueInt32      = readInt<4, std::int32_t>(useValue);       break;
-        case '\x12':    valueInt64      = readInt<8, std::int64_t>(useValue);       break;
+        case '\x01':    size = 8;               currentValue = ValueType::Double64;     break;
+        case '\x02':    size = peekSize() + 4;  currentValue = ValueType::String;       break;
+        case '\x05':    size = peekSize() + 5;  currentValue = ValueType::Binary;       break;
+        case '\x08':    size = 1;               currentValue = ValueType::Bool;         break;
+        case '\x0A':    size = 0;               currentValue = ValueType::Null;         break;
+        case '\x10':    size = 4;               currentValue = ValueType::Int32;        break;
+        case '\x12':    size = 8;               currentValue = ValueType::Int64;        break;
 #if 0
-        case '\x13':    valueFloat128   = readFloat<16>(useValue);                  break;
+        case '\x13':    size = 16;              currentValue = ValueType::Double128;    break;
 #endif
         default:
             throw std::runtime_error(
                         ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "readValue",
-                                                                "Bson: unknown type for a container field")
+                                                                "Bson: unknown type for a container field: >", static_cast<int>(nextType), "<")
                                     );
     }
-    if (isEndOfContainer())
+    if (isEndOfContainer(size))
     {
         // isEndOfContainer set the correct nextToken
         return;
@@ -183,9 +176,32 @@ void BsonParser::readValue(bool useValue)
 }
 
 HEADER_ONLY_INCLUDE
-bool BsonParser::isEndOfContainer()
+void BsonParser::ignoreDataValue()
 {
-    if (dataLeft.back() == 1)
+    std::size_t size;
+    switch(currentValue)
+    {
+        case ValueType::Key:        /* No Action */     break;
+        case ValueType::Double64:   input.ignore(8);    dataLeft.back() -= 8;   break;
+        case ValueType::Double128:  input.ignore(16);   dataLeft.back() -= 16;  break;
+        case ValueType::Int32:      input.ignore(4);    dataLeft.back() -= 4;   break;
+        case ValueType::Int64:      input.ignore(8);    dataLeft.back() -= 8;   break;
+        case ValueType::Bool:       input.ignore(1);    dataLeft.back() -= 1;   break;
+        case ValueType::Null:                                                   break;
+        case ValueType::String:     size = readSize<4, std::int32_t>();input.ignore(size);      dataLeft.back() -= (size + 4);  break;
+        case ValueType::Binary:     size = readSize<4, std::int32_t>();input.ignore(size + 1);  dataLeft.back() -= (size + 5);  break;
+        default:
+            throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "ignoreDataValue",
+                                                                "trying to ignore a non value")
+                                    );
+    }
+}
+
+HEADER_ONLY_INCLUDE
+bool BsonParser::isEndOfContainer(std::size_t excess)
+{
+    if (dataLeft.back() - excess  == 1)
     {
         switch (currentContainer.back())
         {
@@ -194,7 +210,6 @@ bool BsonParser::isEndOfContainer()
             case BsonContainer::Value:
             {
                 nextToken = ParserToken::DocEnd;
-                input.ignore();
                 break;
             }
         }
@@ -202,6 +217,21 @@ bool BsonParser::isEndOfContainer()
         return true;
     }
     return false;
+}
+
+HEADER_ONLY_INCLUDE
+void BsonParser::readEndOfContainer()
+{
+    char    mark;
+    input.read(&mark, 1);
+    dataLeft.back() -= 1;
+    if (mark != '\x00')
+    {
+        throw std::runtime_error(
+                ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "readEndOfContainer",
+                                                      "End of container marker should be '\\x00' but is >", static_cast<int>(mark), "<")
+                                );
+    }
 }
 
 HEADER_ONLY_INCLUDE
@@ -214,7 +244,7 @@ void BsonParser::readKey()
 
 HEADER_ONLY_INCLUDE
 template<std::size_t size, typename Int>
-Int BsonParser::readSize(bool)
+Int BsonParser::readSize()
 {
     Int docSize;
     input.read(reinterpret_cast<char*>(&docSize), sizeof(docSize));
@@ -223,18 +253,16 @@ Int BsonParser::readSize(bool)
 
 HEADER_ONLY_INCLUDE
 template<std::size_t size, typename Int>
-Int BsonParser::readInt(bool use)
+Int BsonParser::readInt()
 {
-    currentValue = intReadType[size/4 - 1];
     dataLeft.back() -= size;
-    return readSize<size, Int>(use);
+    return readSize<size, Int>();
 }
 
 HEADER_ONLY_INCLUDE
 template<std::size_t size>
-IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat(bool)
+IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat()
 {
-    currentValue = floatReadType[size/8 - 1];
     IEEE_754::_2008::Binary<size * 8> result;
     input.read(reinterpret_cast<char*>(&result), size);
     dataLeft.back() -= size;
@@ -242,9 +270,8 @@ IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat(bool)
 }
 
 HEADER_ONLY_INCLUDE
-bool BsonParser::readBool(bool)
+bool BsonParser::readBool()
 {
-    currentValue = ValueType::Bool;
     bool result;
     input.read(reinterpret_cast<char*>(&result) ,1);
     dataLeft.back() -= 1;
@@ -252,10 +279,21 @@ bool BsonParser::readBool(bool)
 }
 
 HEADER_ONLY_INCLUDE
-std::string BsonParser::readString(bool)
+std::size_t BsonParser::peekSize()
 {
-    currentValue = ValueType::String;
-    std::int32_t size = readSize<4, std::int32_t>(true);
+    std::int32_t size;
+
+    std::streampos pos = input.tellg();
+    input.read(reinterpret_cast<char*>(&size), 4);
+    input.seekg(pos);
+
+    return boost::endian::little_to_native(size);
+}
+
+HEADER_ONLY_INCLUDE
+std::string BsonParser::readString()
+{
+    std::int32_t size = readSize<4, std::int32_t>();
     dataLeft.back() -= 4;
     std::string     result(size, '\0');
     input.read(&result[0], size);
@@ -265,16 +303,14 @@ std::string BsonParser::readString(bool)
 }
 
 HEADER_ONLY_INCLUDE
-void BsonParser::readNull(bool)
-{
-    currentValue = ValueType::Null;
-}
+void BsonParser::readNull()
+{}
 
 HEADER_ONLY_INCLUDE
-std::string BsonParser::readBinary(bool)
+std::string BsonParser::readBinary()
 {
     currentValue = ValueType::Binary;
-    std::int32_t size = readSize<4, std::int32_t>(true);
+    std::int32_t size = readSize<4, std::int32_t>();
     dataLeft.back() -= 4;
     char subType;
     input.read(reinterpret_cast<char*>(&subType), 1);
@@ -293,22 +329,22 @@ std::string BsonParser::getKey()
 
 HEADER_ONLY_INCLUDE
 template<std::size_t Size, typename Int>
-Int BsonParser::returnIntValue()
+Int BsonParser::getIntValue()
 {
-    if (currentValue == ValueType::Int32)       {return valueInt32;}
-    if (currentValue == ValueType::Int64)       {return valueInt64;}
+    if (currentValue == ValueType::Int32)       {return readInt<4, std::int32_t>();}
+    if (currentValue == ValueType::Int64)       {return readInt<8, std::int64_t>();}
     badType();
 }
 
 HEADER_ONLY_INCLUDE
 template<std::size_t Size, typename Float>
-Float BsonParser::returnFloatValue()
+Float BsonParser::getFloatValue()
 {
-    if (currentValue == ValueType::Int32)       {return valueInt32;}
-    if (currentValue == ValueType::Int64)       {return valueInt64;}
-    if (currentValue == ValueType::Double64)    {return valueFloat64;}
+    if (currentValue == ValueType::Int32)       {return readInt<4, std::int32_t>();}
+    if (currentValue == ValueType::Int64)       {return readInt<8, std::int64_t>();}
+    if (currentValue == ValueType::Double64)    {return readFloat<8>();}
 #if 0
-    if (currentValue == ValueType::Double128)   {return valueFloat128;}
+    if (currentValue == ValueType::Double128)   {return readFloat<16>();}
 #endif
     badType();
 }
@@ -318,16 +354,22 @@ std::string BsonParser::getRawValue()
 {
     switch (currentValue)
     {
-        case ValueType::Int32:          return std::to_string(valueInt32);
-        case ValueType::Int64:          return std::to_string(valueInt64);
-        case ValueType::Double64:       return std::to_string(valueFloat64);
+        case ValueType::Int32:          return std::to_string(readInt<4, std::int32_t>());
+        case ValueType::Int64:          return std::to_string(readInt<8, std::int64_t>());
+        case ValueType::Double64:       return std::to_string(readFloat<8>());
 #if 0
-        case ValueType::Double128:      return std::to_string(valueFloat128);
+        case ValueType::Double128:      return std::to_string(readFloat<16>());
 #endif
-        case ValueType::Bool:           return valueBool ? "true" : "false";
-        case ValueType::String:         return std::string("\"") + valueString + "\"";
-        case ValueType::Null:           return "null";
-        case ValueType::Binary:         return valueBinary;
+        case ValueType::Bool:           return readBool() ? "true" : "false";
+        case ValueType::Null:           readNull(); return "null";
+        case ValueType::String:
+        {
+#pragma vera-pushoff
+            using namespace std::string_literals;
+#pragma vera-pop
+            return "\""s + readString() + "\"";
+        }
+        case ValueType::Binary:         return readBinary();
         default:
             throw std::runtime_error(
                         ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "getRawValue",
