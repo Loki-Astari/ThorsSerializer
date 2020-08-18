@@ -7,6 +7,7 @@
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 using TA::DeSerializer;
+using TA::FormatType;
 
 namespace CornerCaseTest
 {
@@ -29,6 +30,8 @@ class ParserMock: public ParserInterface
             , nextKey(0)
             , nextValue(0)
         {}
+        virtual FormatType formatType()                  override {return FormatType::Json;}
+
         virtual ParserToken     getNextToken()           override{return tokens[nextToken++];}
         virtual std::string     getKey()                 override{return keys[nextKey++];}
 

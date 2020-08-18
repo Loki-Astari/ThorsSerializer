@@ -28,6 +28,7 @@ class YamlPrinter: public PrinterInterface
     public:
         YamlPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
         ~YamlPrinter();
+        virtual FormatType formatType()                     override {return FormatType::Json;}
         virtual void openDoc()                              override;
         virtual void closeDoc()                             override;
         virtual void openMap(std::size_t size)              override;

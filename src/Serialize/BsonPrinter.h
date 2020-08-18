@@ -21,6 +21,7 @@ class BsonPrinter: public PrinterInterface
     std::vector<std::size_t>    arrayIndex;
     public:
         BsonPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
+        virtual FormatType formatType()                             override {return FormatType::Bson;}
         virtual void openDoc()                                      override;
         virtual void closeDoc()                                     override;
 
