@@ -15,28 +15,24 @@ TEST(BankAccountTest, JsonExportCustomField)
     src.addTransaction(1, 32, OnLineBank::Deposit);
     src.addTransaction(2, 12, OnLineBank::Withdraw);
 
-    std::stringstream outputStream;
-    if (outputStream << ThorsAnvil::Serialize::jsonExporter(src))
+    std::stringstream stream;
+    if (stream << ThorsAnvil::Serialize::jsonExporter(src))
     {
         serializeOK = true;
     }
 
-    std::string result = outputStream.str();
-
-    auto find = result.find(R"("id":234)");
-
-    std::stringstream inputStream(result);
-
     OnLineBank::CurrentAccount dst;
-    if (inputStream >>ThorsAnvil::Serialize::jsonImporter(dst))
+    if (stream >>ThorsAnvil::Serialize::jsonImporter(dst))
     {
         deserializeOK = true;
     }
 
-    auto account = dst.getAccountIdent();
-    EXPECT_EQ(account, 234);
     EXPECT_TRUE(serializeOK);
     EXPECT_TRUE(deserializeOK);
+
+    EXPECT_EQ(234, dst.getAccountIdent());
+    EXPECT_EQ(888 + 32 - 12, dst.getBalance());
+    EXPECT_TRUE(dst.isValid());
 }
 
 TEST(BankAccountTest, BsonExportCustomField)
@@ -49,25 +45,23 @@ TEST(BankAccountTest, BsonExportCustomField)
     src.addTransaction(1, 32, OnLineBank::Deposit);
     src.addTransaction(2, 12, OnLineBank::Withdraw);
 
-    std::stringstream outputStream;
-    if (outputStream << ThorsAnvil::Serialize::bsonExporter(src))
+    std::stringstream stream;
+    if (stream << ThorsAnvil::Serialize::bsonExporter(src))
     {
         serializeOK = true;
     }
 
-    std::string result = outputStream.str();
-
-    std::stringstream inputStream(result);
-
     OnLineBank::CurrentAccount dst;
-    if (inputStream >> ThorsAnvil::Serialize::bsonImporter(dst))
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(dst))
     {
         deserializeOK = true;
     }
 
-    auto account = dst.getAccountIdent();
-    EXPECT_EQ(account, 234);
     EXPECT_TRUE(serializeOK);
     EXPECT_TRUE(deserializeOK);
+
+    EXPECT_EQ(234, dst.getAccountIdent());
+    EXPECT_EQ(888 + 32 - 12, dst.getBalance());
+    EXPECT_TRUE(dst.isValid());
 }
 

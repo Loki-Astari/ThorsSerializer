@@ -9,6 +9,7 @@
 #include "YamlThor.h"
 #include "BsonThor.h"
 #include "SerUtil.h"
+#include "ThorsIOUtil/Utility.h"
 #include <vector>
 
 
@@ -21,49 +22,78 @@ struct DefaultCustomSerializer
 {
         virtual ~DefaultCustomSerializer() {}
 
-        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, T const& /*object*/)
-        {
-            std::cerr << "Default getPrintSizeBson\n";
-            throw CriticalException("Bad");
-        }
         virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& /*printer*/, T const& object)
         {
-            std::cerr << "Default writeJson\n";
-            throw CriticalException("Bad");
+            throw CriticalException(
+                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeJson",
+                                                           "Using an unimplemented translation:\n",
+                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
+                                                           "But have not implemented the writeJson() method on the SerializationClass")
+                                    );
         }
         virtual void readJson(ThorsAnvil::Serialize::JsonParser& /*parser*/, T& /*object*/)
         {
-            std::cerr << "Default readJson\n";
-            throw CriticalException("Bad");
+            throw CriticalException(
+                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readJson",
+                                                           "Using an unimplemented translation:\n",
+                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
+                                                           "But have not implemented the readJson() method on the SerializationClass")
+                                    );
         }
 
         virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& /*printer*/, T const& /*object*/)
         {
-            std::cerr << "Default writeYaml\n";
-            throw CriticalException("Bad");
+            throw CriticalException(
+                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeYaml",
+                                                           "Using an unimplemented translation:\n",
+                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
+                                                           "But have not implemented the writeYaml() method on the SerializationClass")
+                                    );
         }
         virtual  void readYaml(ThorsAnvil::Serialize::YamlParser& /*parser*/, T& /*object*/)
         {
-            std::cerr << "Default readYaml\n";
-            throw CriticalException("Bad");
+            throw CriticalException(
+                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readYaml",
+                                                           "Using an unimplemented translation:\n",
+                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
+                                                           "But have not implemented the readYaml() method on the SerializationClass")
+                                    );
         }
 
+        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, T const& /*object*/)
+        {
+            throw CriticalException(
+                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "getPrintSizeBson",
+                                                           "Using an unimplemented translation:\n",
+                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
+                                                           "But have not implemented the getPrintSizeBson() method on the SerializationClass")
+                                    );
+        }
+        virtual char getBsonByteMark() {return '\x00';} // You should also override this see Bson specifications
         virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, T const& /*object*/)
         {
-            std::cerr << "Default writeBson\n";
-            throw CriticalException("Bad");
+            throw CriticalException(
+                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeBson",
+                                                           "Using an unimplemented translation:\n",
+                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
+                                                           "But have not implemented the writeBson() method on the SerializationClass")
+                                    );
         }
-        virtual void readBson(ThorsAnvil::Serialize::BsonParser& /*parser*/, T& /*object*/)
+        virtual void readBson(ThorsAnvil::Serialize::BsonParser& /*parser*/, char byteMarker, T& /*object*/)
         {
-            std::cerr << "Default readBson\n";
-            throw CriticalException("Bad");
+            throw CriticalException(
+                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readBson",
+                                                           "Using an unimplemented translation:\n",
+                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
+                                                           "But have not implemented the readBson() method on the SerializationClass")
+                                    );
         }
 };
     }
 }
 namespace OnLineBank
 {
-    enum TransType {Deposit, Withdraw, Correction};
+    enum TransType {Error, Deposit, Withdraw, Correction};
     struct ID
     {
         long id;
@@ -72,46 +102,34 @@ namespace OnLineBank
     };
     struct SerializeID: public ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>
     {
-        // generic version we simply stream the integer value.
-        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& /*object*/) override
-        {
-            std::cerr << "ID  getPrint Size\n";
-            return 12;
-        }
         virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& printer, ID const& object)   override
         {
-            std::cerr << "ID writeJson\n";
-            std::cerr << printer.stream().good() << " " << printer.stream().bad() << " " << printer.stream().eof() << " " << printer.stream().fail() << "\n";
-            //printer.addPrefix() << object.id;
             printer.stream() << ": " << object.id << ",";
-            std::cerr << printer.stream().good() << " " << printer.stream().bad() << " " << printer.stream().eof() << " " << printer.stream().fail() << "\n";
         }
         virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object)            override
         {
-            std::cerr << "ID readJson\n";
-            std::cerr << parser.stream().good() << " " << parser.stream().bad() << " " << parser.stream().eof() << " " << parser.stream().fail() << "\n";
             parser.stream() >> object.id;
-            std::cerr << "SECOND: >" << object.id << "<\n";
-            std::cerr << parser.stream().good() << " " << parser.stream().bad() << " " << parser.stream().eof() << " " << parser.stream().fail() << "\n";
         }
 
         //virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& printer, ID const& object)   override 
         //virtual void readYaml(ThorsAnvil::Serialize::YamlParser& parser, ID& object)            override
 
+        // generic version we simply stream the integer value.
+        static constexpr std::size_t sizeOfID = 12;
+        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& /*object*/) override
+        {
+            return sizeOfID;
+        }
+        virtual char getBsonByteMark()   override   {return '\x07';}
         virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& object)   override
         {
-            std::cerr << "ID  writeBson Size\n";
-            printer.writeKey('\x07', 12);
             printer.stream().write(reinterpret_cast<char const*>(&object.id), sizeof(object.id));
-            printer.stream().write("            ", 12 - sizeof(object.id));
+            printer.stream().write("            ", sizeOfID - sizeof(object.id));
         }
-        virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, ID& object)             override
+        virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, char byteMarker, ID& object)             override
         {
-            std::cerr << "ID  readBSON Size\n";
             parser.stream().read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
-            parser.stream().ignore(12 - sizeof(object.id));
-            std::cerr << "ID: " << object.id << "\n";
-            parser.useStreamData(12);
+            parser.stream().ignore(sizeOfID - sizeof(object.id));
         }
     };
 
@@ -126,7 +144,9 @@ namespace OnLineBank
         long        timeStamp;
         int         amount;
         TransType   type;
-        Transaction() {}
+        Transaction()
+            : Transaction(0, 0, TransType::Error)
+        {}
         Transaction(long timeStamp, int amount, TransType type)
             : timeStamp(timeStamp)
             , amount(amount)
@@ -140,16 +160,22 @@ namespace OnLineBank
             int             balance;
             std::string     details;
             bool            valid;
+        protected:
+            void update(int amount) {balance += amount;}
         public:
-            BankAccount() {}
+            BankAccount()
+                : BankAccount(-1, -1, "Bad", false)
+            {}
             BankAccount(ID const& id, int balance, std::string const& details, bool valid)
                 : id(id)
                 , balance(balance)
                 , details(details)
                 , valid(valid)
             {}
-            virtual ~BankAccount() {}
-            int getAccountIdent() {return id.id;}
+            virtual ~BankAccount()  {}
+            int getAccountIdent()   {return id.id;}
+            int getBalance()        {return balance;}
+            bool isValid()          {return valid;}
             ThorsAnvil_PolyMorphicSerializer(OnLineBank::BankAccount);
             // Normal Methods
     };
@@ -164,6 +190,13 @@ namespace OnLineBank
             void addTransaction(long timeStamp, int amount, TransType type)
             {
                 actions.emplace_back(timeStamp, amount, type);
+                switch (type)
+                {
+                    case TransType::Withdraw:   update(-amount);break;
+                    case TransType::Deposit:    update(amount);break;
+                    case TransType::Correction: update(-getBalance() + amount);break;
+                    default: break;
+                }
             }
     };
     class DepositAccount: public BankAccount
@@ -177,7 +210,7 @@ namespace OnLineBank
     };
 }
 
-ThorsAnvil_MakeEnum(OnLineBank::TransType, Deposit, Withdraw, Correction);
+ThorsAnvil_MakeEnum(OnLineBank::TransType, Error, Deposit, Withdraw, Correction);
 ThorsAnvil_MakeTraitCustomSerialize(OnLineBank::ID, OnLineBank::SerializeID);
 ThorsAnvil_MakeTrait(OnLineBank::Transaction, timeStamp, amount, type);
 ThorsAnvil_Template_MakeTrait(1, OnLineBank::Flounder, data);

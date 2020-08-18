@@ -538,9 +538,14 @@ class SerializerForBlock<TraitType::Custom_Serialize, DataType>         \
             SerializingType info;                                       \
             switch (printer.formatType())                               \
             {                                                           \
-                case FormatType::Bson:  return info.writeBson(dynamic_cast<BsonPrinter&>(printer), object);\
                 case FormatType::Json:  return info.writeJson(dynamic_cast<JsonPrinter&>(printer), object);\
                 case FormatType::Yaml:  return info.writeYaml(dynamic_cast<YamlPrinter&>(printer), object);\
+                case FormatType::Bson:                                  \
+                {                                                       \
+                    BsonPrinter&    bsonPrinter = dynamic_cast<BsonPrinter&>(printer);\
+                    bsonPrinter.writeKey(info.getBsonByteMark(), info.getPrintSizeBson(bsonPrinter, object));\
+                    return info.writeBson(bsonPrinter, object);         \
+                }                                                       \
                 default:                                                \
                     throw CriticalException("Bad");                     \
             }                                                           \
@@ -570,9 +575,16 @@ class DeSerializationForBlock<TraitType::Custom_Serialize, DataType>    \
             SerializingType info;                                       \
             switch (parser.formatType())                                \
             {                                                           \
-                case FormatType::Bson:  return info.readBson(dynamic_cast<BsonParser&>(parser), object);\
                 case FormatType::Json:  return info.readJson(dynamic_cast<JsonParser&>(parser), object);\
                 case FormatType::Yaml:  return info.readYaml(dynamic_cast<YamlParser&>(parser), object);\
+                case FormatType::Bson:                                  \
+                {                                                       \
+                    BsonParser& bsonParser = dynamic_cast<BsonParser&>(parser);\
+                    std::streampos pos = parser.stream().tellg();       \
+                    info.readBson(bsonParser, bsonParser.getValueType(), object);\
+                    bsonParser.useStreamData(parser.stream().tellg() - pos);\
+                    break;                                              \
+                }                                                       \
                 default:                                                \
                     throw CriticalException("Bad");                     \
             }                                                           \
