@@ -6,48 +6,110 @@
 #include "Serialize.h"
 #include "Traits.h"
 #include "JsonThor.h"
+#include "YamlThor.h"
 #include "BsonThor.h"
 #include "SerUtil.h"
 #include <vector>
 
 
+namespace ThorsAnvil
+{
+    namespace Serialize
+    {
+template<typename T>
+struct DefaultCustomSerializer
+{
+        virtual ~DefaultCustomSerializer() {}
+
+        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, T const& /*object*/)
+        {
+            std::cerr << "Default getPrintSizeBson\n";
+            throw CriticalException("Bad");
+        }
+        virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& /*printer*/, T const& object)
+        {
+            std::cerr << "Default writeJson\n";
+            throw CriticalException("Bad");
+        }
+        virtual void readJson(ThorsAnvil::Serialize::JsonParser& /*parser*/, T& /*object*/)
+        {
+            std::cerr << "Default readJson\n";
+            throw CriticalException("Bad");
+        }
+
+        virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& /*printer*/, T const& /*object*/)
+        {
+            std::cerr << "Default writeYaml\n";
+            throw CriticalException("Bad");
+        }
+        virtual  void readYaml(ThorsAnvil::Serialize::YamlParser& /*parser*/, T& /*object*/)
+        {
+            std::cerr << "Default readYaml\n";
+            throw CriticalException("Bad");
+        }
+
+        virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, T const& /*object*/)
+        {
+            std::cerr << "Default writeBson\n";
+            throw CriticalException("Bad");
+        }
+        virtual void readBson(ThorsAnvil::Serialize::BsonParser& /*parser*/, T& /*object*/)
+        {
+            std::cerr << "Default readBson\n";
+            throw CriticalException("Bad");
+        }
+};
+    }
+}
 namespace OnLineBank
 {
     enum TransType {Deposit, Withdraw, Correction};
     struct ID
     {
         long id;
+        ID() : id(-1){}
+        ID(long id): id(id){}
     };
-    struct SerializeID
+    struct SerializeID: public ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>
     {
         // generic version we simply stream the integer value.
-        static std::size_t getPrintSize(ThorsAnvil::Serialize::PrinterInterface& /*printer*/, ID const& /*object*/)
+        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& /*object*/) override
         {
-            std::cerr << "getPrintSize: Custom\n";
-            return 0;
+            std::cerr << "ID  getPrint Size\n";
+            return 12;
         }
-        static void write(ThorsAnvil::Serialize::PrinterInterface& /*printer*/, ID const& /*object*/)
+        virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& printer, ID const& object)   override
         {
-            std::cerr << "Write: Custom\n";
+            std::cerr << "ID writeJson\n";
+            std::cerr << printer.stream().good() << " " << printer.stream().bad() << " " << printer.stream().eof() << " " << printer.stream().fail() << "\n";
+            //printer.addPrefix() << object.id;
+            printer.stream() << ": " << object.id;
+            std::cerr << printer.stream().good() << " " << printer.stream().bad() << " " << printer.stream().eof() << " " << printer.stream().fail() << "\n";
         }
-        static void read(ThorsAnvil::Serialize::ParserInterface& /*parser*/, ID& /*object*/)
+        virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object)            override
         {
-            std::cerr << "Read: Custom\n";
+            std::cerr << "ID readJson\n";
+            std::cerr << parser.stream().good() << " " << parser.stream().bad() << " " << parser.stream().eof() << " " << parser.stream().fail() << "\n";
+            parser.stream() >> object.id;
+            std::cerr << "SECOND: >" << object.id << "<\n";
+            std::cerr << parser.stream().good() << " " << parser.stream().bad() << " " << parser.stream().eof() << " " << parser.stream().fail() << "\n";
         }
 
-        // For Bson we need to encode it for Bson (Note: This is a simple example not necessarily a good one).
-        static std::size_t getPrintSize(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, ID const& /*object*/)
+        //virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& printer, ID const& object)   override 
+        //virtual void readYaml(ThorsAnvil::Serialize::YamlParser& parser, ID& object)            override
+
+        virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& object)   override
         {
-            std::cerr << "BSON getPrintSize: Bson\n";
-            return 0;
+            std::cerr << "ID  writeBson Size\n";
+            printer.writeKey('\x07', 12);
+            printer.stream().write(reinterpret_cast<char const*>(&object.id), sizeof(object.id));
+            printer.stream().write("            ", 12 - sizeof(object.id));
         }
-        static void writer(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, ID& /*object*/)
+        virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, ID& object)             override
         {
-            std::cerr << "BSON: Write: Bson\n";
-        }
-        static void read(ThorsAnvil::Serialize::BsonParser& /*parser*/, ID& /*object*/)
-        {
-            std::cerr << "BSON: Read: Bson\n";
+            std::cerr << "ID  readBSON Size\n";
+            parser.stream().read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
+            parser.stream().ignore(12 - sizeof(object.id));
         }
     };
 

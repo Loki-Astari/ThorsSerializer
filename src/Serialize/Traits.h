@@ -520,14 +520,81 @@ DO_ASSERT(DataType)
 #define ThorsAnvil_MakeTraitCustomSerialize(DataType, SerializeType)    \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<>                                                              \
+class SerializerForBlock<TraitType::Custom_Serialize, DataType>         \
+{                                                                       \
+    Serializer&         parent;                                         \
+    PrinterInterface&   printer;                                        \
+    DataType const&     object;                                         \
+    public:                                                             \
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,DataType const& object, bool /*poly*/ = false)\
+            : parent(parent)                                            \
+            , printer(printer)                                          \
+            , object(object)                                            \
+        {}                                                              \
+        ~SerializerForBlock()   {}                                      \
+        void printMembers()                                             \
+        {                                                               \
+            using SerializingType = SerializeType;                      \
+            SerializingType info;                                       \
+            switch (printer.formatType())                               \
+            {                                                           \
+                case FormatType::Bson:  return info.writeBson(dynamic_cast<BsonPrinter&>(printer), object);\
+                case FormatType::Json:  return info.writeJson(dynamic_cast<JsonPrinter&>(printer), object);\
+                case FormatType::Yaml:  return info.writeYaml(dynamic_cast<YamlPrinter&>(printer), object);\
+                default:                                                \
+                    throw CriticalException("Bad");                     \
+            }                                                           \
+        }                                                               \
+};                                                                      \
+template<>                                                              \
+class DeSerializationForBlock<TraitType::Custom_Serialize, DataType>    \
+{                                                                       \
+    DeSerializer&       parent;                                         \
+    ParserInterface&    parser;                                         \
+    public:                                                             \
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)\
+            : parent(parent)                                            \
+            , parser(parser)                                            \
+        {}                                                              \
+        void scanObject(DataType& object)                               \
+        {                                                               \
+            ParserInterface::ParserToken    tokenType = parser.getToken();\
+            if (tokenType != ParserInterface::ParserToken::Value)       \
+            {                                                           \
+                throw std::runtime_error(                               \
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DeSerializationForBlock<Value>", "DeSerializationForBlock",\
+                                                               "Invalid Object")\
+                                                              );        \
+            }                                                           \
+            using SerializingType = SerializeType;                      \
+            SerializingType info;                                       \
+            switch (parser.formatType())                                \
+            {                                                           \
+                case FormatType::Bson:  return info.readBson(dynamic_cast<BsonParser&>(parser), object);\
+                case FormatType::Json:  return info.readJson(dynamic_cast<JsonParser&>(parser), object);\
+                case FormatType::Yaml:  return info.readYaml(dynamic_cast<YamlParser&>(parser), object);\
+                default:                                                \
+                    throw CriticalException("Bad");                     \
+            }                                                           \
+        }                                                               \
+};                                                                      \
+template<>                                                              \
 class Traits<DataType>                                                  \
 {                                                                       \
     public:                                                             \
     static constexpr TraitType type = TraitType::Custom_Serialize;      \
     using SerializingType   = SerializeType;                            \
-    static std::size_t getPrintSize(PrinterInterface& printer, DataType const& value, bool)\
+    static std::size_t getPrintSize(PrinterInterface& printer, DataType const& object, bool)\
     {                                                                   \
-        return SerializingType::getPrintSize(printer, value);           \
+        SerializingType info;                                           \
+        switch (printer.formatType())                                   \
+        {                                                               \
+            case FormatType::Bson:  return info.getPrintSizeBson(dynamic_cast<BsonPrinter&>(printer), object);\
+            case FormatType::Json:  /* Fall Through */                  \
+            case FormatType::Yaml:  /* Fall Through */                  \
+            default:                                                    \
+                throw CriticalException("Bad");                         \
+        }                                                               \
     }                                                                   \
 };                                                                      \
 }}                                                                      \
