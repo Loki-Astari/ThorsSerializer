@@ -7,48 +7,67 @@
 
 TEST(BankAccountTest, JsonExportCustomField)
 {
+    bool    serializeOK     = false;
+    bool    deserializeOK   = false;
+
     OnLineBank::CurrentAccount  src(OnLineBank::ID{234}, 888, "This is an account", true);
 
     src.addTransaction(1, 32, OnLineBank::Deposit);
     src.addTransaction(2, 12, OnLineBank::Withdraw);
 
     std::stringstream outputStream;
-    outputStream << ThorsAnvil::Serialize::jsonExporter(src);
+    if (outputStream << ThorsAnvil::Serialize::jsonExporter(src))
+    {
+        serializeOK = true;
+    }
 
     std::string result = outputStream.str();
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return std::isspace(x);}), std::end(result));
 
     auto find = result.find(R"("id":234)");
-    EXPECT_NE(find, std::string::npos);
 
     std::stringstream inputStream(result);
 
     OnLineBank::CurrentAccount dst;
-    inputStream >>ThorsAnvil::Serialize::jsonImporter(dst);
+    if (inputStream >>ThorsAnvil::Serialize::jsonImporter(dst))
+    {
+        deserializeOK = true;
+    }
 
     auto account = dst.getAccountIdent();
     EXPECT_EQ(account, 234);
+    EXPECT_TRUE(serializeOK);
+    EXPECT_TRUE(deserializeOK);
 }
 
 TEST(BankAccountTest, BsonExportCustomField)
 {
+    bool    serializeOK     = false;
+    bool    deserializeOK   = false;
+
     OnLineBank::CurrentAccount  src(OnLineBank::ID{234}, 888, "This is an account", true);
 
     src.addTransaction(1, 32, OnLineBank::Deposit);
     src.addTransaction(2, 12, OnLineBank::Withdraw);
 
     std::stringstream outputStream;
-    outputStream << ThorsAnvil::Serialize::bsonExporter(src);
+    if (outputStream << ThorsAnvil::Serialize::bsonExporter(src))
+    {
+        serializeOK = true;
+    }
 
     std::string result = outputStream.str();
-    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return std::isspace(x);}), std::end(result));
 
     std::stringstream inputStream(result);
 
     OnLineBank::CurrentAccount dst;
-    inputStream >>ThorsAnvil::Serialize::bsonImporter(dst);
+    if (inputStream >> ThorsAnvil::Serialize::bsonImporter(dst))
+    {
+        deserializeOK = true;
+    }
 
     auto account = dst.getAccountIdent();
     EXPECT_EQ(account, 234);
+    EXPECT_TRUE(serializeOK);
+    EXPECT_TRUE(deserializeOK);
 }
 

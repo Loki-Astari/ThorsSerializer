@@ -47,23 +47,18 @@ std::size_t BsonPrinter::getSizeArray(std::size_t count)
       * So we must calculate the string length need to store all the index strings.
       */
     std::size_t indexTotalStringLen     = 0;
-    std::size_t sizeLeft                = count;
+    std::size_t accountedFor            = 0;
     std::size_t nextLevel               = 10;
     std::size_t numberOfDigitsThisLevel = 1;
-    std::size_t accountedFor            = 0;
 
-    while (sizeLeft > 0)
+    while (nextLevel <= count)
     {
-        if (count <= nextLevel)
-        {
-            indexTotalStringLen += (count - accountedFor) * numberOfDigitsThisLevel;
-            break;
-        }
-        indexTotalStringLen += (nextLevel - accountedFor) * numberOfDigitsThisLevel;
-        accountedFor            += nextLevel;
+        indexTotalStringLen     += (nextLevel - accountedFor) * numberOfDigitsThisLevel;
+        accountedFor             = nextLevel;
         numberOfDigitsThisLevel += 1;
         nextLevel               *= 10;
     }
+    indexTotalStringLen += (count - accountedFor) * numberOfDigitsThisLevel;
 
     return getSizeMap(count) + indexTotalStringLen;
 }

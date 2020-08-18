@@ -38,8 +38,8 @@ class BsonParser: public ParserInterface
     ParserToken                 nextToken;
     std::string                 nextKey;
     char                        nextType;
+    bool                        skipOverValue;
 
-    ValueType                       currentValue;
 
     public:
         BsonParser(std::istream& stream, ParserConfig config = ParserConfig{});
@@ -63,13 +63,15 @@ class BsonParser: public ParserInterface
         virtual void    getValue(double& value)                 override    {value = getFloatValue<8, double>();}
         virtual void    getValue(long double& value)            override    {value = getFloatValue<8, long double>();}
 
-        virtual void    getValue(bool& value)                   override    {if (currentValue != ValueType::Bool)      {badType();}value = readBool();}
+        virtual void    getValue(bool& value)                   override    {if (nextType != '\x08')    {badType();}value = readBool();}
 
-        virtual void    getValue(std::string& value)            override    {if (currentValue != ValueType::String)    {badType();}value = readString();}
+        virtual void    getValue(std::string& value)            override    {if (nextType != '\x02')    {badType();}value = readString();}
 
-        virtual bool    isValueNull()                           override    {return (currentValue == ValueType::Null);}
+        virtual bool    isValueNull()                           override    {return (nextType == '\x0A');}
 
         virtual std::string getRawValue()                       override;
+
+        void useStreamData(std::size_t amount) {dataLeft.back() -= amount;}
 
     public:
         char getValueType() const     {return nextType;}
@@ -88,7 +90,6 @@ class BsonParser: public ParserInterface
         Float getFloatValue();
 
         void readKey();
-        void readValue();
 
         template<std::size_t Size, typename Int>
         Int readInt();

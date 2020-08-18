@@ -83,7 +83,7 @@ namespace OnLineBank
             std::cerr << "ID writeJson\n";
             std::cerr << printer.stream().good() << " " << printer.stream().bad() << " " << printer.stream().eof() << " " << printer.stream().fail() << "\n";
             //printer.addPrefix() << object.id;
-            printer.stream() << ": " << object.id;
+            printer.stream() << ": " << object.id << ",";
             std::cerr << printer.stream().good() << " " << printer.stream().bad() << " " << printer.stream().eof() << " " << printer.stream().fail() << "\n";
         }
         virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object)            override
@@ -110,6 +110,8 @@ namespace OnLineBank
             std::cerr << "ID  readBSON Size\n";
             parser.stream().read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
             parser.stream().ignore(12 - sizeof(object.id));
+            std::cerr << "ID: " << object.id << "\n";
+            parser.useStreamData(12);
         }
     };
 
