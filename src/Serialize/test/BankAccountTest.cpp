@@ -5,6 +5,9 @@
 #include <sstream>
 #include <cctype>
 
+ThorsAnvil_RegisterPolyMorphicType(OnLineBank::CurrentAccount);
+ThorsAnvil_RegisterPolyMorphicType(OnLineBank::DepositAccount);
+
 TEST(BankAccountTest, JsonExportCustomField)
 {
     bool    serializeOK     = false;
