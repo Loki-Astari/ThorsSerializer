@@ -1,6 +1,8 @@
 #ifndef THORS_ANVIL_SERIALIZATION_CUSTOM_SERIALIZATION_H
 #define THORS_ANVIL_SERIALIZATION_CUSTOM_SERIALIZATION_H
 
+#include <cstdlib>
+
 namespace ThorsAnvil
 {
     namespace Serialize
