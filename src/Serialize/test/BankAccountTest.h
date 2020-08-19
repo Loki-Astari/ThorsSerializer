@@ -2,16 +2,18 @@
 #define BANK_ACCOUNT_TEST_H
 
 #include "SerializeConfig.h"
-#include "test/SerializeTest.h"
-#include "Serialize.h"
+
 #include "Traits.h"
+#include "Serialize.h"
+#include "SerUtil.h"
+
 #include "JsonThor.h"
 #include "YamlThor.h"
 #include "BsonThor.h"
-#include "SerUtil.h"
-#include "ThorsIOUtil/Utility.h"
+
+
+#include "test/SerializeTest.h"
 #include <vector>
-#include "CustomSerialization.h"
 
 
 namespace OnLineBank

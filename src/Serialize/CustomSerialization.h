@@ -6,6 +6,8 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+class PrinterInterface;
+class ParserInterface;
 class JsonPrinter;
 class JsonParser;
 class YamlPrinter;
@@ -17,6 +19,9 @@ template<typename T>
 struct DefaultCustomSerializer
 {
         virtual ~DefaultCustomSerializer() {}
+
+        void writeCustom(PrinterInterface& printer, T const& object);
+        void readCustom(ParserInterface& parser, T& object);
 
         virtual void writeJson(JsonPrinter& printer, T const& object);
         virtual void readJson(JsonParser& parser, T& object);

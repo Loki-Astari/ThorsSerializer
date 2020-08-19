@@ -32,6 +32,7 @@
  */
 
 #include "Traits.h"
+#include "CustomSerialization.h"
 #include "ThorsIOUtil/Utility.h"
 #include <iostream>
 #include <utility>

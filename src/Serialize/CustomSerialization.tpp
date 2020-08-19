@@ -1,21 +1,58 @@
 #ifndef THORS_ANVIL_SERIALIZATION_CUSTOM_SERIALIZATION_TPP
 #define THORS_ANVIL_SERIALIZATION_CUSTOM_SERIALIZATION_TPP
 
-//#include "SerializeConfig.h"
-//#include "Serialize.h"
-//#include "Traits.h"
 #include "JsonThor.h"
 #include "YamlThor.h"
 #include "BsonThor.h"
-//#include "SerUtil.h"
 #include "ThorsIOUtil/Utility.h"
-
 
 namespace ThorsAnvil
 {
     namespace Serialize
     {
 
+template<typename T>
+void DefaultCustomSerializer<T>::writeCustom(PrinterInterface& printer, T const& object)
+{
+    switch (printer.formatType())
+    {
+        case FormatType::Json:
+        {
+            JsonPrinter&    jsonPrinter = dynamic_cast<JsonPrinter&>(printer);
+            jsonPrinter.addPrefix();
+            return writeJson(jsonPrinter, object);
+        }
+        case FormatType::Yaml:  return writeYaml(dynamic_cast<YamlPrinter&>(printer), object);
+        case FormatType::Bson:
+        {
+            BsonPrinter&    bsonPrinter = dynamic_cast<BsonPrinter&>(printer);
+            bsonPrinter.writeKey(getBsonByteMark(), getPrintSizeBson(bsonPrinter, object));
+            return writeBson(bsonPrinter, object);
+        }
+        default:
+            throw CriticalException("Bad");
+    }
+}
+
+template<typename T>
+void DefaultCustomSerializer<T>::readCustom(ParserInterface& parser, T& object)
+{
+    switch (parser.formatType())
+    {
+        case FormatType::Json:  return readJson(dynamic_cast<JsonParser&>(parser), object);
+        case FormatType::Yaml:  return readYaml(dynamic_cast<YamlParser&>(parser), object);
+        case FormatType::Bson:
+        {
+            BsonParser& bsonParser = dynamic_cast<BsonParser&>(parser);
+            std::streampos pos = parser.stream().tellg();
+            readBson(bsonParser, bsonParser.getValueType(), object);
+            bsonParser.useStreamData(parser.stream().tellg() - pos);
+            break;
+        }
+        default:
+            throw CriticalException("Bad");
+    }
+}
 
 template<typename T>
 void DefaultCustomSerializer<T>::writeJson(JsonPrinter& /*printer*/, T const& /*object*/)

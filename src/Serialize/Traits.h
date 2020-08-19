@@ -536,24 +536,7 @@ class SerializerForBlock<TraitType::Custom_Serialize, DataType>         \
         {                                                               \
             using SerializingType = SerializeType;                      \
             SerializingType info;                                       \
-            switch (printer.formatType())                               \
-            {                                                           \
-                case FormatType::Json:                                  \
-                {                                                       \
-                    JsonPrinter&    jsonPrinter = dynamic_cast<JsonPrinter&>(printer);\
-                    jsonPrinter.addPrefix();                            \
-                    return info.writeJson(jsonPrinter, object);         \
-                }                                                       \
-                case FormatType::Yaml:  return info.writeYaml(dynamic_cast<YamlPrinter&>(printer), object);\
-                case FormatType::Bson:                                  \
-                {                                                       \
-                    BsonPrinter&    bsonPrinter = dynamic_cast<BsonPrinter&>(printer);\
-                    bsonPrinter.writeKey(info.getBsonByteMark(), info.getPrintSizeBson(bsonPrinter, object));\
-                    return info.writeBson(bsonPrinter, object);         \
-                }                                                       \
-                default:                                                \
-                    throw CriticalException("Bad");                     \
-            }                                                           \
+            info.writeCustom(printer, object);                          \
         }                                                               \
 };                                                                      \
 template<>                                                              \
@@ -578,21 +561,7 @@ class DeSerializationForBlock<TraitType::Custom_Serialize, DataType>    \
             }                                                           \
             using SerializingType = SerializeType;                      \
             SerializingType info;                                       \
-            switch (parser.formatType())                                \
-            {                                                           \
-                case FormatType::Json:  return info.readJson(dynamic_cast<JsonParser&>(parser), object);\
-                case FormatType::Yaml:  return info.readYaml(dynamic_cast<YamlParser&>(parser), object);\
-                case FormatType::Bson:                                  \
-                {                                                       \
-                    BsonParser& bsonParser = dynamic_cast<BsonParser&>(parser);\
-                    std::streampos pos = parser.stream().tellg();       \
-                    info.readBson(bsonParser, bsonParser.getValueType(), object);\
-                    bsonParser.useStreamData(parser.stream().tellg() - pos);\
-                    break;                                              \
-                }                                                       \
-                default:                                                \
-                    throw CriticalException("Bad");                     \
-            }                                                           \
+            info.readCustom(parser, object);                            \
         }                                                               \
 };                                                                      \
 template<>                                                              \
