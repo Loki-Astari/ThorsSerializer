@@ -12,7 +12,7 @@
  *      ThorsAnvil_Template_ExpandTrait(TemplateParameterCount, ParentType, DataType, ...)
  *
  *      ThorsAnvil_PointerAllocator(DataType, Action)
- *      ThorsAnvil_MakeEnum(<EnumType>, <EnumValues>...)
+ *      ThorsAnvil_MakeEnum(EnumType, EnumValues...)
  *
  *      ThorsAnvil_PolyMorphicSerializer(Type)
  *      ThorsAnvil_RegisterPolyMorphicType(Type)

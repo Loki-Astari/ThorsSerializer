@@ -11,7 +11,7 @@
 
     /* A class that you want to serialize. */
     class MyClass
-    {   
+    {
         int         data1;
         float       data2;
         std::string data3;
@@ -24,10 +24,10 @@
 
         // This is only required if the members are private.
         friend struct ThorsAnvil::Serialize::Traits<MyClass>;
-    };  
+    };
 
 
-    /*  
+    /*
      * Though there is no code involved, you do need to set up
      * this structure to tell the library what fields need to be serialized.
      * To do this use the macro:  ThorsAnvil_MakeTrait()
@@ -61,17 +61,17 @@ This allows us to import and export object of the above class really easily.
         std::cout << jsonExporter(vec) << "\n";
     }
 ````
-    
+
 This generates:
 
 ````bash
     > g++ -std=c++17 -o example2 example2.cpp -lThorSerialize17
     > ./example2
     Version 1
-     
-        { 
-            "data1": 56, 
-            "data2": 23.456, 
+
+        {
+            "data1": 56,
+            "data2": 23.456,
             "data3": "Hi there"
         }
 
@@ -81,25 +81,25 @@ This generates:
 
 
     Vector
-     [ 
-            { 
-                "data1": 56, 
-                "data2": 23.456, 
+     [
+            {
+                "data1": 56,
+                "data2": 23.456,
                 "data3": "Hi there"
-            }, 
-            { 
-                "data1": 56, 
-                "data2": 23.456, 
+            },
+            {
+                "data1": 56,
+                "data2": 23.456,
                 "data3": "Hi there"
-            }, 
-            { 
-                "data1": 56, 
-                "data2": 23.456, 
+            },
+            {
+                "data1": 56,
+                "data2": 23.456,
                 "data3": "Hi there"
-            }, 
-            { 
-                "data1": 56, 
-                "data2": 23.456, 
+            },
+            {
+                "data1": 56,
+                "data2": 23.456,
                 "data3": "Hi there"
             }]
 ````
