@@ -520,51 +520,6 @@ DO_ASSERT(DataType)
 #define ThorsAnvil_MakeTraitCustomSerialize(DataType, SerializeType)    \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<>                                                              \
-class SerializerForBlock<TraitType::Custom_Serialize, DataType>         \
-{                                                                       \
-    Serializer&         parent;                                         \
-    PrinterInterface&   printer;                                        \
-    DataType const&     object;                                         \
-    public:                                                             \
-        SerializerForBlock(Serializer& parent, PrinterInterface& printer,DataType const& object, bool /*poly*/ = false)\
-            : parent(parent)                                            \
-            , printer(printer)                                          \
-            , object(object)                                            \
-        {}                                                              \
-        ~SerializerForBlock()   {}                                      \
-        void printMembers()                                             \
-        {                                                               \
-            using SerializingType = SerializeType;                      \
-            SerializingType info;                                       \
-            info.writeCustom(printer, object);                          \
-        }                                                               \
-};                                                                      \
-template<>                                                              \
-class DeSerializationForBlock<TraitType::Custom_Serialize, DataType>    \
-{                                                                       \
-    DeSerializer&       parent;                                         \
-    ParserInterface&    parser;                                         \
-    public:                                                             \
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)\
-            : parent(parent)                                            \
-            , parser(parser)                                            \
-        {}                                                              \
-        void scanObject(DataType& object)                               \
-        {                                                               \
-            ParserInterface::ParserToken    tokenType = parser.getToken();\
-            if (tokenType != ParserInterface::ParserToken::Value)       \
-            {                                                           \
-                throw std::runtime_error(                               \
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DeSerializationForBlock<Value>", "DeSerializationForBlock",\
-                                                               "Invalid Object")\
-                                                              );        \
-            }                                                           \
-            using SerializingType = SerializeType;                      \
-            SerializingType info;                                       \
-            info.readCustom(parser, object);                            \
-        }                                                               \
-};                                                                      \
-template<>                                                              \
 class Traits<DataType>                                                  \
 {                                                                       \
     public:                                                             \

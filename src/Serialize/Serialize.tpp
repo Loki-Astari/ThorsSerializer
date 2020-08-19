@@ -279,6 +279,32 @@ DeSerializationForBlock<TraitType::Custom_Depricated, T>
             valueStream >> object;
         }
 };
+template<typename T>
+class DeSerializationForBlock<TraitType::Custom_Serialize, T>
+{
+    DeSerializer&       parent;
+    ParserInterface&    parser;
+    public:
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
+        {}
+        void scanObject(T& object)
+        {
+            ParserInterface::ParserToken    tokenType = parser.getToken();
+            if (tokenType != ParserInterface::ParserToken::Value)
+            {
+                throw std::runtime_error(
+                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DeSerializationForBlock<Value>", "DeSerializationForBlock",
+                                                               "Invalid Object")
+                                                              );
+            }
+            using SerializingType = typename Traits<T>::SerializingType;
+            SerializingType info;
+            info.readCustom(parser, object);
+        }
+};
+
 
 /* ------------ tryParsePolyMorphicObject Serializer ------------------------- */
 template<typename T>
@@ -669,6 +695,26 @@ SerializerForBlock<TraitType::Custom_Depricated, T>
                 Traits<T>::getPrintSize(printer, object, false);
             }
             printer.addRawValue(buffer.str());
+        }
+};
+template<typename T>
+class SerializerForBlock<TraitType::Custom_Serialize, T>
+{
+    Serializer&         parent;
+    PrinterInterface&   printer;
+    T const&            object;
+    public:
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object, bool /*poly*/ = false)
+            : parent(parent)
+            , printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()   {}
+        void printMembers()
+        {
+            using SerializingType = typename Traits<T>::SerializingType;
+            SerializingType info;
+            info.writeCustom(printer, object);
         }
 };
 
