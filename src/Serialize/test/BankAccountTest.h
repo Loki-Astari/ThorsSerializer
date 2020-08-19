@@ -39,7 +39,7 @@ namespace OnLineBank
 
         // generic version we simply stream the integer value.
         static constexpr std::size_t sizeOfID = 12;
-        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& /*object*/) override
+        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, ID const& /*object*/) override
         {
             return sizeOfID;
         }
@@ -49,7 +49,7 @@ namespace OnLineBank
             printer.stream().write(reinterpret_cast<char const*>(&object.id), sizeof(object.id));
             printer.stream().write("            ", sizeOfID - sizeof(object.id));
         }
-        virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, char byteMarker, ID& object)             override
+        virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, char /*byteMarker*/, ID& object)             override
         {
             parser.stream().read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
             parser.stream().ignore(sizeOfID - sizeof(object.id));
