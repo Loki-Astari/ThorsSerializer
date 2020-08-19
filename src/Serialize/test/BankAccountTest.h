@@ -11,86 +11,9 @@
 #include "SerUtil.h"
 #include "ThorsIOUtil/Utility.h"
 #include <vector>
+#include "CustomSerialization.h"
 
 
-namespace ThorsAnvil
-{
-    namespace Serialize
-    {
-template<typename T>
-struct DefaultCustomSerializer
-{
-        virtual ~DefaultCustomSerializer() {}
-
-        virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& /*printer*/, T const& object)
-        {
-            throw CriticalException(
-                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeJson",
-                                                           "Using an unimplemented translation:\n",
-                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
-                                                           "But have not implemented the writeJson() method on the SerializationClass")
-                                    );
-        }
-        virtual void readJson(ThorsAnvil::Serialize::JsonParser& /*parser*/, T& /*object*/)
-        {
-            throw CriticalException(
-                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readJson",
-                                                           "Using an unimplemented translation:\n",
-                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
-                                                           "But have not implemented the readJson() method on the SerializationClass")
-                                    );
-        }
-
-        virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& /*printer*/, T const& /*object*/)
-        {
-            throw CriticalException(
-                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeYaml",
-                                                           "Using an unimplemented translation:\n",
-                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
-                                                           "But have not implemented the writeYaml() method on the SerializationClass")
-                                    );
-        }
-        virtual  void readYaml(ThorsAnvil::Serialize::YamlParser& /*parser*/, T& /*object*/)
-        {
-            throw CriticalException(
-                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readYaml",
-                                                           "Using an unimplemented translation:\n",
-                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
-                                                           "But have not implemented the readYaml() method on the SerializationClass")
-                                    );
-        }
-
-        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, T const& /*object*/)
-        {
-            throw CriticalException(
-                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "getPrintSizeBson",
-                                                           "Using an unimplemented translation:\n",
-                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
-                                                           "But have not implemented the getPrintSizeBson() method on the SerializationClass")
-                                    );
-        }
-        virtual char getBsonByteMark() {return '\x00';} // You should also override this see Bson specifications
-        virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, T const& /*object*/)
-        {
-            throw CriticalException(
-                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeBson",
-                                                           "Using an unimplemented translation:\n",
-                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
-                                                           "But have not implemented the writeBson() method on the SerializationClass")
-                                    );
-        }
-        virtual void readBson(ThorsAnvil::Serialize::BsonParser& /*parser*/, char byteMarker, T& /*object*/)
-        {
-            throw CriticalException(
-                    ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readBson",
-                                                           "Using an unimplemented translation:\n",
-                                                           "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
-                                                           "But have not implemented the readBson() method on the SerializationClass")
-                                    );
-        }
-};
-    }
-}
 namespace OnLineBank
 {
     enum TransType {Error, Deposit, Withdraw, Correction};
