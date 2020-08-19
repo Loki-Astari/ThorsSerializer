@@ -50,6 +50,8 @@ class JsonPrinter: public PrinterInterface
         virtual void addRawValue(std::string const& value)  override;
 
         virtual void addNull()                              override;
+
+        void addPrefix();
 };
 
     }

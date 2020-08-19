@@ -538,7 +538,12 @@ class SerializerForBlock<TraitType::Custom_Serialize, DataType>         \
             SerializingType info;                                       \
             switch (printer.formatType())                               \
             {                                                           \
-                case FormatType::Json:  return info.writeJson(dynamic_cast<JsonPrinter&>(printer), object);\
+                case FormatType::Json:                                  \
+                {                                                       \
+                    JsonPrinter&    jsonPrinter = dynamic_cast<JsonPrinter&>(printer);\
+                    jsonPrinter.addPrefix();                            \
+                    return info.writeJson(jsonPrinter, object);         \
+                }                                                       \
                 case FormatType::Yaml:  return info.writeYaml(dynamic_cast<YamlPrinter&>(printer), object);\
                 case FormatType::Bson:                                  \
                 {                                                       \

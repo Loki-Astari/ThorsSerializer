@@ -104,7 +104,7 @@ namespace OnLineBank
     {
         virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& printer, ID const& object)   override
         {
-            printer.stream() << ": " << object.id << ",";
+            printer.stream() << object.id;
         }
         virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object)            override
         {

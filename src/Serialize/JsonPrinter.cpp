@@ -177,6 +177,12 @@ void JsonPrinter::addKey(std::string const& key)
     output << PrefixKey(config.characteristics, state.size(), state.back()) << '"' << key << '"';
 }
 
+HEADER_ONLY_INCLUDE
+void JsonPrinter::addPrefix()
+{
+    output << PrefixValue(config.characteristics, state.size(), state.back());
+}
+
 template<typename T>
 struct FormatDouble
 {
