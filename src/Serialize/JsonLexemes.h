@@ -12,11 +12,10 @@ namespace ThorsAnvil
 enum YYTokenType
     {
         JSON_STRING     = 258,
-        JSON_INTEGER    = 259,
-        JSON_FLOAT      = 260,
         JSON_TRUE       = 261,
         JSON_FALSE      = 262,
-        JSON_NULL       = 263
+        JSON_NULL       = 263,
+        JSON_NUMBER     = 264
     };
     }
 }

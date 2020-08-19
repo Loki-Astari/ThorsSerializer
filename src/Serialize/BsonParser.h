@@ -38,73 +38,69 @@ class BsonParser: public ParserInterface
     ParserToken                 nextToken;
     std::string                 nextKey;
     char                        nextType;
+    bool                        skipOverValue;
 
-    ValueType                       currentValue;
-    // All these should be in a union or something like that.
-    std::int32_t                    valueInt32;
-    std::int64_t                    valueInt64;
-    IEEE_754::_2008::Binary<64>     valueFloat64;
-#if 0
-    ieee128 not supported consistently
-    IEEE_754::_2008::Binary<128>    valueFloat128;
-#endif
-    bool                            valueBool;
-    std::string                     valueString;
-    std::string                     valueBinary;
 
     public:
         BsonParser(std::istream& stream, ParserConfig config = ParserConfig{});
+        virtual FormatType formatType()                         override {return FormatType::Bson;}
         virtual ParserToken getNextToken()                      override;
         virtual std::string getKey()                            override;
 
-        virtual void    ignoreDataValue()                       override    {}
+        virtual void    ignoreDataValue()                       override;
 
-        virtual void    getValue(short int& value)              override    {value = returnIntValue<MaxTemplate<4, sizeof(short int)>::value, short int>();}
-        virtual void    getValue(int& value)                    override    {value = returnIntValue<sizeof(int), int>();}
-        virtual void    getValue(long int& value)               override    {value = returnIntValue<sizeof(long int), long int>();}
-        virtual void    getValue(long long int& value)          override    {value = returnIntValue<sizeof(long long int), long long int>();}
+        virtual void    getValue(short int& value)              override    {value = getIntValue<MaxTemplate<4, sizeof(short int)>::value, short int>();}
+        virtual void    getValue(int& value)                    override    {value = getIntValue<sizeof(int), int>();}
+        virtual void    getValue(long int& value)               override    {value = getIntValue<sizeof(long int), long int>();}
+        virtual void    getValue(long long int& value)          override    {value = getIntValue<sizeof(long long int), long long int>();}
 
-        virtual void    getValue(unsigned short int& value)     override    {value = returnIntValue<MaxTemplate<4, sizeof(unsigned short int)>::value, unsigned short int>();}
-        virtual void    getValue(unsigned int& value)           override    {value = returnIntValue<sizeof(unsigned int), unsigned int>();}
-        virtual void    getValue(unsigned long int& value)      override    {value = returnIntValue<sizeof(unsigned long int), unsigned long int>();}
-        virtual void    getValue(unsigned long long int& value) override    {value = returnIntValue<sizeof(unsigned long long int), unsigned long long int>();}
+        virtual void    getValue(unsigned short int& value)     override    {value = getIntValue<MaxTemplate<4, sizeof(unsigned short int)>::value, unsigned short int>();}
+        virtual void    getValue(unsigned int& value)           override    {value = getIntValue<sizeof(unsigned int), unsigned int>();}
+        virtual void    getValue(unsigned long int& value)      override    {value = getIntValue<sizeof(unsigned long int), unsigned long int>();}
+        virtual void    getValue(unsigned long long int& value) override    {value = getIntValue<sizeof(unsigned long long int), unsigned long long int>();}
 
-        virtual void    getValue(float& value)                  override    {value = returnFloatValue<8, float>();}
-        virtual void    getValue(double& value)                 override    {value = returnFloatValue<8, double>();}
-        virtual void    getValue(long double& value)            override    {value = returnFloatValue<8, long double>();}
+        virtual void    getValue(float& value)                  override    {value = getFloatValue<8, float>();}
+        virtual void    getValue(double& value)                 override    {value = getFloatValue<8, double>();}
+        virtual void    getValue(long double& value)            override    {value = getFloatValue<8, long double>();}
 
-        virtual void    getValue(bool& value)                   override    {if (currentValue != ValueType::Bool)      {badType();}value = valueBool;}
+        virtual void    getValue(bool& value)                   override    {if (nextType != '\x08')    {badType();}value = readBool();}
 
-        virtual void    getValue(std::string& value)            override    {if (currentValue != ValueType::String)    {badType();}value = valueString;}
+        virtual void    getValue(std::string& value)            override    {if (nextType != '\x02')    {badType();}value = readString();}
 
-        virtual bool    isValueNull()                           override    {return (currentValue == ValueType::Null);}
+        virtual bool    isValueNull()                           override    {return (nextType == '\x0A');}
 
         virtual std::string getRawValue()                       override;
 
+        void useStreamData(std::size_t amount) {dataLeft.back() -= amount;}
+
+    public:
+        char getValueType() const     {return nextType;}
     private:
-        bool isEndOfContainer();
+        bool isEndOfContainer(std::size_t unread);
+        std::size_t peekSize();
+
+        void readEndOfContainer();
 
         template<std::size_t size, typename Int>
-        Int readSize(bool);
+        Int readSize();
 
         template<std::size_t Size, typename Int>
-        Int returnIntValue();
+        Int getIntValue();
         template<std::size_t Size, typename Float>
-        Float returnFloatValue();
+        Float getFloatValue();
 
         void readKey();
-        void readValue(bool useValue);
 
         template<std::size_t Size, typename Int>
-        Int readInt(bool);
+        Int readInt();
 
         template<std::size_t Size>
-        IEEE_754::_2008::Binary<Size * 8> readFloat(bool);
+        IEEE_754::_2008::Binary<Size * 8> readFloat();
 
-        bool readBool(bool);
-        std::string readString(bool);
-        void readNull(bool);
-        std::string readBinary(bool);
+        bool readBool();
+        std::string readString();
+        void readNull();
+        std::string readBinary();
 
         [[noreturn]]
         void badType()                                      {throw std::runtime_error(

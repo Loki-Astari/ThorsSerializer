@@ -52,6 +52,7 @@ class YamlParser: public ParserInterface
         YamlParser(std::istream& input, ParserConfig config = ParserConfig{});
         virtual ~YamlParser();
 
+        virtual FormatType formatType()                         override {return FormatType::Yaml;}
         virtual ParserToken     getNextToken()                  override;
         virtual std::string     getKey()                        override    {return getString();}
 

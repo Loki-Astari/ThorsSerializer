@@ -16,8 +16,11 @@ TEST(ParserInterfaceTest, JsonNormalNoPushBack)
     EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
 }
@@ -30,11 +33,14 @@ TEST(ParserInterfaceTest, JsonPushBackValue)
     EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
 
     parser.pushBackToken(ParserInterface::ParserToken::Value);
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
 
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
@@ -48,7 +54,9 @@ TEST(ParserInterfaceTest, JsonPushBackTwoValue)
     EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
 
     parser.pushBackToken(ParserInterface::ParserToken::Value);
@@ -65,11 +73,14 @@ TEST(ParserInterfaceTest, JsonPushBackTwoValueWithReads)
     EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
 
     parser.pushBackToken(ParserInterface::ParserToken::Value);
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
 
     parser.pushBackToken(ParserInterface::ParserToken::Value);
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
@@ -97,8 +108,11 @@ TEST(ParserInterfaceTest, BsonNormalNoPushBack)
     EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
 }
@@ -122,11 +136,14 @@ TEST(ParserInterfaceTest, BsonPushBackValue)
     EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
 
     parser.pushBackToken(ParserInterface::ParserToken::Value);
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
 
     EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
@@ -151,7 +168,9 @@ TEST(ParserInterfaceTest, BsonPushBackTwoValue)
     EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
 
     parser.pushBackToken(ParserInterface::ParserToken::Value);
@@ -179,11 +198,14 @@ TEST(ParserInterfaceTest, BsonPushBackTwoValueWithReads)
     EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
 
     parser.pushBackToken(ParserInterface::ParserToken::Value);
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.ignoreDataValue();
 
     parser.pushBackToken(ParserInterface::ParserToken::Value);
     EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());

@@ -109,6 +109,7 @@ extern std::string const defaultPolymorphicMarker;
  * Defines the generic type that all serialization types can expand on
  */
 enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Custom_Depricated, Custom_Serialize};
+enum class FormatType{Json, Yaml, Bson};
 
 template<typename T>
 class Traits;
@@ -195,6 +196,7 @@ class ParserInterface
             , config(config)
         {}
         virtual ~ParserInterface() {}
+        virtual FormatType formatType()                 = 0;
                 ParserToken     getToken();
                 void            pushBackToken(ParserToken token);
         virtual ParserToken     getNextToken()          = 0;
@@ -225,6 +227,8 @@ class ParserInterface
         virtual std::string getRawValue()                = 0;
 
         void    ignoreValue();
+
+        std::istream& stream() {return input;}
     private:
         void    ignoreTheValue();
         void    ignoreTheMap();
@@ -282,6 +286,7 @@ class PrinterInterface
             , config(config)
         {}
         virtual ~PrinterInterface() {}
+        virtual FormatType formatType()                 = 0;
         virtual void openDoc()                          = 0;
         virtual void closeDoc()                         = 0;
         virtual void openMap(std::size_t size)          = 0;
@@ -334,6 +339,8 @@ class PrinterInterface
         virtual std::size_t getSizeValue(bool)                      {return 0;}
         virtual std::size_t getSizeValue(std::string const&)        {return 0;}
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
+
+        std::ostream& stream() {return output;}
 };
 
 template<typename T, bool = HasParent<T>::value>
