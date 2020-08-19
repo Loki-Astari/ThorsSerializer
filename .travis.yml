@@ -18,7 +18,7 @@ script:
     - "./configure --with-boost=/tmp/extra --disable-binary"
     - export PATH=${PATH}:$(pwd)/build/bin;make
 after_success:
-    - "./CreateHeaderOnly" ${TRAVIS_BRANCH}
+    - "./CreateHeaderOnly"  master
     - bash <(curl -s https://codecov.io/bash)
 branches:
     only:
