@@ -145,7 +145,7 @@ class RegExInterface
 #endif
 
 template<typename T, char type, std::size_t size>
-class FixedSizeStreamableObjectSerializer: DefaultCustomSerializer<T>
+class FixedSizeStreamableObjectSerializer: public DefaultCustomSerializer<T>
 {
     // Assumes T implements the DuckInterface "NormalSerializationInterface" (see above)
     // Note: You should pay special attention to the size (number of bytes these object should write).
@@ -162,7 +162,7 @@ template<typename T> class DataTimeSerializer:  public FixedSizeStreamableObject
 template<typename T> class TimeStampSerializer: public FixedSizeStreamableObjectSerializer<T, '\x11', 8>{};
 
 template<typename T, char encodeType = '\x08'>
-class BinarySerializer: DefaultCustomSerializer<T>
+class BinarySerializer: public DefaultCustomSerializer<T>
 {
     // Assumes T implements the DuckInterface "DataInterface" (see above)
     public:
@@ -187,7 +187,7 @@ class BinarySerializer: DefaultCustomSerializer<T>
 };
 
 template<typename T>
-class JavascriptSerializer: DefaultCustomSerializer<T>
+class JavascriptSerializer: public DefaultCustomSerializer<T>
 {
     // Assumes T implements the DuckInterface "DataInterface" (see above)
     public:
@@ -210,7 +210,7 @@ class JavascriptSerializer: DefaultCustomSerializer<T>
 };
 
 template<typename T>
-class RegExSerializer: DefaultCustomSerializer<T>
+class RegExSerializer: public DefaultCustomSerializer<T>
 {
     // Assumes T implements the DuckInterface "RegExInterface" (see above)
         virtual char getBsonByteMark() override                                                         {return '\x0B';}
@@ -232,6 +232,7 @@ class RegExSerializer: DefaultCustomSerializer<T>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
+#include <arpa/inet.h>
 class StreamFormatterNoChange
 {
     mutable std::ios*               stream;
@@ -267,6 +268,25 @@ class StreamFormatterNoChange
         }
 };
 
+#if 0
+std::uint64_t htonll(std::uint64_t value)
+{
+#if __BIG_ENDIAN__
+    return value;
+#else
+    return (static_cast<std::uint64_t>(htonl(value & 0xFFFFFFFF)) << 32)) | (static_cast<std::uint64_t>(htonl((value >> 32) & 0xFFFFFFFF));
+#endif
+}
+std::int64_t ntohll(std::int64_t value)
+{
+#if __BIG_ENDIAN__
+    return value;
+#else
+    return (static_cast<std::uint64_t>(ntohl(value & 0xFFFFFFFF)) << 32)) | (static_cast<std::uint64_t>(ntohl((value >> 32) & 0xFFFFFFFF));
+#endif
+}
+#endif
+
 class ObjectID
 {
     // 4 byte timestamp
@@ -287,13 +307,20 @@ class ObjectID
             , random(random)
             , counter(counter)
         {}
+        bool operator==(ObjectID const& rhs) const
+        {
+            return std::tie(timestamp, random, counter) == std::tie(rhs.timestamp, rhs.random, rhs.counter);
+        }
         friend std::ostream& operator<<(std::ostream& stream, ObjectID const& data)
         {
             if (stream.flags() & std::ios_base::uppercase)
             {
-                stream.write(reinterpret_cast<char const*>(&data.timestamp), 4);
-                stream.write(reinterpret_cast<char const*>(&data.random), 5);
-                stream.write(reinterpret_cast<char const*>(&data.counter), 3);
+                std::int64_t netRandom    = htonll(data.random);
+                std::int32_t netTimestamp = htonl(data.timestamp);
+                std::int32_t netCounter   = htonl(data.counter);
+                stream.write(reinterpret_cast<char const*>(&netTimestamp), 4);
+                stream.write(reinterpret_cast<char const*>(&netRandom) + 3, 5);
+                stream.write(reinterpret_cast<char const*>(&netCounter) + 1, 3);
             }
             else
             {
@@ -309,9 +336,15 @@ class ObjectID
         {
             if (stream.flags() & std::ios_base::uppercase)
             {
-                stream.read(reinterpret_cast<char*>(&data.timestamp), 4);
-                stream.read(reinterpret_cast<char*>(&data.random), 5);
-                stream.read(reinterpret_cast<char*>(&data.counter), 3);
+                std::int64_t netRandom    = 0;
+                std::int32_t netTimestamp = 0;
+                std::int32_t netCounter   = 0;
+                stream.read(reinterpret_cast<char*>(&netTimestamp), 4);
+                stream.read(reinterpret_cast<char*>(&netRandom) + 3, 5);
+                stream.read(reinterpret_cast<char*>(&netCounter) + 1, 3);
+                data.random    = ntohll(netRandom);
+                data.timestamp = ntohl(netTimestamp);
+                data.counter   = ntohl(netCounter);
             }
             else
             {

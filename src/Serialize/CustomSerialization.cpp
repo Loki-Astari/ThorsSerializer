@@ -7,6 +7,7 @@
 
 #include "CustomSerialization.tpp"
 #include "test/BankAccountTest.h"
+#include "test/BsonUtilitySerializationTest.h"
 
 template void ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>::readJson(ThorsAnvil::Serialize::JsonParser&, OnLineBank::ID&);
 template void ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>::writeJson(ThorsAnvil::Serialize::JsonPrinter&, OnLineBank::ID const&);
@@ -17,6 +18,10 @@ template void ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>::wr
 template std::size_t ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>::getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter&, OnLineBank::ID const&);
 template void ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>::readBson(ThorsAnvil::Serialize::BsonParser&, char, OnLineBank::ID&);
 template void ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>::writeBson(ThorsAnvil::Serialize::BsonPrinter&, OnLineBank::ID const&);
+
+
+template void ThorsAnvil::Serialize::Serializer::print<MarvinObject>(MarvinObject const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<MarvinObject>(MarvinObject&);
 
 #endif
 #endif
