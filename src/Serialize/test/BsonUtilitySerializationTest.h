@@ -1,14 +1,34 @@
 #include "Traits.h"
-#include "BsonThor.h"
+#include "MongoUtility.h"
 
-struct MarvinObject
+struct MongoObjectID
 {
     ThorsAnvil::Serialize::ObjectID id;
-    friend class ThorsAnvil::Serialize::Traits<MarvinObject>;
+    friend class ThorsAnvil::Serialize::Traits<MongoObjectID>;
     public:
-        MarvinObject(std::int32_t timestamp, std::int64_t random, std::int32_t counter)
+        MongoObjectID(std::int32_t timestamp, std::int64_t random, std::int32_t counter)
             : id(timestamp, random, counter)
         {}
 };
+struct MongoUTCDateTime
+{
+    ThorsAnvil::Serialize::UTCDateTime dt;
+    friend class ThorsAnvil::Serialize::Traits<MongoUTCDateTime>;
+    public:
+        MongoUTCDateTime(std::int64_t timestamp)
+            : dt(timestamp)
+        {}
+};
+struct MongoBsonTimeStamp
+{
+    ThorsAnvil::Serialize::BsonTimeStamp ts;
+    friend class ThorsAnvil::Serialize::Traits<MongoBsonTimeStamp>;
+    public:
+        MongoBsonTimeStamp(std::int32_t timestamp, int inc)
+            : ts(timestamp, inc)
+        {}
+};
 
-ThorsAnvil_MakeTrait(MarvinObject, id);
+ThorsAnvil_MakeTrait(MongoObjectID,        id);
+ThorsAnvil_MakeTrait(MongoUTCDateTime,     dt);
+ThorsAnvil_MakeTrait(MongoBsonTimeStamp,   ts);

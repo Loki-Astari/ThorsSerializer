@@ -7,7 +7,9 @@
 
 #include "Serialize.h"
 #include "BsonUtil.h"
+#include <boost/endian/conversion.hpp>
 #include <vector>
+#include <iostream>
 
 namespace ThorsAnvil
 {
@@ -78,9 +80,22 @@ class BsonPrinter: public PrinterInterface
 
     public:
         void writeKey(char value, std::size_t size);
-        template<typename Int>
-        void writeSize(Int size);
+        template<std::size_t size, typename Int> void writeLE(Int value)
+        {
+            Int docValue = boost::endian::native_to_little(value);
+            output.write(reinterpret_cast<char*>(&docValue), size);
+        }
+
+        template<std::size_t size, typename Int> void writeBE(Int value)
+        {
+            Int docValue = boost::endian::native_to_big(value);
+            output.write(reinterpret_cast<char*>(&docValue) + (sizeof(docValue) - size), size);
+        }
+
+
     private:
+        template<std::size_t size, typename Int>
+        void writeSize(Int value);
         template<std::size_t size, typename Int>
         void writeInt(Int value);
         template<std::size_t size, typename Float>

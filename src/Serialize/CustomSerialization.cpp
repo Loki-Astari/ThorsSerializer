@@ -20,8 +20,12 @@ template void ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>::re
 template void ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>::writeBson(ThorsAnvil::Serialize::BsonPrinter&, OnLineBank::ID const&);
 
 
-template void ThorsAnvil::Serialize::Serializer::print<MarvinObject>(MarvinObject const&);
-template void ThorsAnvil::Serialize::DeSerializer::parse<MarvinObject>(MarvinObject&);
+template void ThorsAnvil::Serialize::Serializer::print<MongoObjectID>(MongoObjectID const&);
+template void ThorsAnvil::Serialize::Serializer::print<MongoUTCDateTime>(MongoUTCDateTime const&);
+template void ThorsAnvil::Serialize::Serializer::print<MongoBsonTimeStamp>(MongoBsonTimeStamp const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<MongoObjectID>(MongoObjectID&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<MongoUTCDateTime>(MongoUTCDateTime&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<MongoBsonTimeStamp>(MongoBsonTimeStamp&);
 
 #endif
 #endif
