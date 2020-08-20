@@ -78,9 +78,9 @@ class BsonPrinter: public PrinterInterface
 
     public:
         void writeKey(char value, std::size_t size);
-    private:
         template<typename Int>
         void writeSize(Int size);
+    private:
         template<std::size_t size, typename Int>
         void writeInt(Int value);
         template<std::size_t size, typename Float>

@@ -88,6 +88,7 @@
  * --------------------------------------------------------------------------
  */
 #if 0
+#pragma vera-pushoff
  *      Examples:
  *
  *      Bank.h
@@ -237,6 +238,7 @@
  *          ThorsAnvil_RegisterPolyMorphicType(OnLineBank::DepositAccount);
  *
  *
+#pragma vera-pop
 #endif
 
 #include "ThorsSerializerUtil.h"

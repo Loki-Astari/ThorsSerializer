@@ -75,14 +75,14 @@ class BsonParser: public ParserInterface
 
     public:
         char getValueType() const     {return nextType;}
+        template<std::size_t size, typename Int>
+        Int readSize();
+
     private:
         bool isEndOfContainer(std::size_t unread);
         std::size_t peekSize();
 
         void readEndOfContainer();
-
-        template<std::size_t size, typename Int>
-        Int readSize();
 
         template<std::size_t Size, typename Int>
         Int getIntValue();
