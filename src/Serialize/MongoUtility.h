@@ -122,7 +122,7 @@ class BinarySerializer: public DefaultCustomSerializer<T>
     // Assumes T implements the DuckInterface "DataInterface" (see above)
     public:
         virtual char getBsonByteMark() const override                                                       {return '\x05';}
-        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& object) const override      {return object.getSize();}
+        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& object) const override      {return 4 + 1 + object.getSize();}
         virtual void writeBson(BsonPrinter& printer, T const& object) const override
         {
             std::int32_t    size    = object.getSize();

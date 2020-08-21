@@ -100,15 +100,90 @@ TEST(BsonUtilitySerializationTest, BsonTimeStampRoundTrip)
 TEST(BsonUtilitySerializationTest, BsonBinarySerializer)
 {
     MongoBsonBinary  data("This is a binary test");
+    std::stringstream stream;
+
+    stream << ThorsAnvil::Serialize::bsonExporter(data);
+
+    static const char expectedRaw[]
+                = "\x27\x00\x00\x00"
+                  "\x05" "binary\x00"
+                            "\x15\x00\x00\x00" "\x08"
+                            "This is a binary test"
+                  "\x00";
+
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(expected, stream.str());
+}
+
+TEST(BsonUtilitySerializationTest, BsonBinarySerializerRoundTrip)
+{
+    MongoBsonBinary  data("This is a binary test");
+    std::stringstream stream;
+
+    stream << ThorsAnvil::Serialize::bsonExporter(data);
+    MongoBsonBinary  result("XXXXX");
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
+
+    EXPECT_EQ(data, result);
 }
 
 TEST(BsonUtilitySerializationTest, BsonJavascriptSerializer)
 {
     MongoBsonJsavScript data("function myrand() {return 4;}");
+    std::stringstream stream;
+
+    stream << ThorsAnvil::Serialize::bsonExporter(data);
+
+    static const char expectedRaw[]
+                = "\x33\x00\x00\x00"
+                  "\x0D" "javascript\x00"
+                            "\x1E\x00\x00\x00" "function myrand() {return 4;}\x00"
+                  "\x00";
+
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(expected, stream.str());
+}
+
+TEST(BsonUtilitySerializationTest, BsonJavascriptSerializerRoundtrip)
+{
+    MongoBsonJsavScript data("function myrand() {return 4;}");
+    std::stringstream stream;
+
+    stream << ThorsAnvil::Serialize::bsonExporter(data);
+    MongoBsonJsavScript result("XXXX");
+
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
+
+    EXPECT_EQ(data, result);
 }
 
 TEST(BsonUtilitySerializationTest, BsonRegExSerializer)
 {
-    MongoBsonRegExp    data("^[ \t]*", "g");
+    MongoBsonRegExp    data("^[ \\t]*", "g");
+    std::stringstream stream;
+
+    stream << ThorsAnvil::Serialize::bsonExporter(data);
+
+    static const char expectedRaw[]
+                = "\x16\x00\x00\x00"
+                  "\x0B" "regex\x00"
+                            "^[ \\t]*\x00"
+                            "g\x00"
+                  "\x00";
+
+    std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
+    EXPECT_EQ(expected, stream.str());
+}
+TEST(BsonUtilitySerializationTest, BsonRegExSerializerRoundtrip)
+{
+    MongoBsonRegExp    data("^[ \\t]*", "g");
+    std::stringstream stream;
+
+    stream << ThorsAnvil::Serialize::bsonExporter(data);
+    MongoBsonRegExp     result("X", "Y");
+
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
+
+    EXPECT_EQ(data, result);
 }
 

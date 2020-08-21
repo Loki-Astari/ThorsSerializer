@@ -40,6 +40,8 @@ class MongoBsonBinaryObj
         MongoBsonBinaryObj(std::string const& data)
             : buffer(data)
         {}
+        bool operator==(MongoBsonBinaryObj const& rhs) const {return buffer == rhs.buffer;}
+
         std::size_t getSize() const             {return buffer.size();}
         void        resize(std::size_t size)    {buffer.resize(size);}
         char const* getBuffer() const           {return &buffer[0];}
@@ -54,6 +56,7 @@ struct MongoBsonJsavScriptObj
         MongoBsonJsavScriptObj(std::string const& value)
             : buffer(std::begin(value), std::end(value))
         {}
+        bool operator==(MongoBsonJsavScriptObj const& rhs) const {return buffer == rhs.buffer;}
         std::size_t getSize() const             {return buffer.size();}
         void        resize(std::size_t size)    {buffer.resize(size);}
         char const* getBuffer() const           {return &buffer[0];}
@@ -70,6 +73,7 @@ struct MongoBsonRegExObj
             : pat(p)
             , opt(o)
         {}
+        bool operator==(MongoBsonRegExObj const& rhs) const {return std::tie(pat, opt) == std::tie(rhs.pat, rhs.opt);}
         std::string const& pattern() const      {return pat;}
         std::string const& options() const      {return opt;}
         std::string&       pattern()            {return pat;}
@@ -84,6 +88,7 @@ class MongoBsonBinary
         MongoBsonBinary(std::string const& value)
             : binary(value)
         {}
+        bool operator==(MongoBsonBinary const& rhs) const {return binary == rhs.binary;}
 };
 class MongoBsonJsavScript
 {
@@ -93,6 +98,7 @@ class MongoBsonJsavScript
         MongoBsonJsavScript(std::string const& value)
             : javascript(value)
         {}
+        bool operator==(MongoBsonJsavScript const& rhs) const {return javascript == rhs.javascript;}
 };
 class MongoBsonRegExp
 {
@@ -102,6 +108,7 @@ class MongoBsonRegExp
         MongoBsonRegExp(std::string const& p, std::string const& o)
             : regex(p, o)
         {}
+        bool operator==(MongoBsonRegExp const& rhs) const {return regex == rhs.regex;}
 };
 
 

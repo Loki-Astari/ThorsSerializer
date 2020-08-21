@@ -27,5 +27,13 @@ template void ThorsAnvil::Serialize::DeSerializer::parse<MongoObjectID>(MongoObj
 template void ThorsAnvil::Serialize::DeSerializer::parse<MongoUTCDateTime>(MongoUTCDateTime&);
 template void ThorsAnvil::Serialize::DeSerializer::parse<MongoBsonTimeStamp>(MongoBsonTimeStamp&);
 
+
+template void ThorsAnvil::Serialize::Serializer::print<MongoBsonBinary>(MongoBsonBinary const&);
+template void ThorsAnvil::Serialize::Serializer::print<MongoBsonJsavScript>(MongoBsonJsavScript const&);
+template void ThorsAnvil::Serialize::Serializer::print<MongoBsonRegExp>(MongoBsonRegExp const&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<MongoBsonBinary>(MongoBsonBinary&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<MongoBsonJsavScript>(MongoBsonJsavScript&);
+template void ThorsAnvil::Serialize::DeSerializer::parse<MongoBsonRegExp>(MongoBsonRegExp&);
+
 #endif
 #endif
