@@ -797,8 +797,8 @@ enable_option_checking
 with_boost
 with_boost_libdir
 with_boost_python
-enable_vera
 with_hostbuild
+enable_vera
 with_yamlroot
 enable_yaml
 enable_shared
@@ -4800,6 +4800,28 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     git submodule update --init --recursive
 
 
+
+# Check whether --with-hostbuild was given.
+if test "${with_hostbuild+set}" = set; then :
+  withval=$with_hostbuild;
+fi
+
+
+    if test "x${with_hostbuild}" == "x"; then :
+
+            ln -s .build build
+
+else
+
+            ln -s ${with_hostbuild} build
+
+
+fi
+
+
+    if test "x${with_hostbuild}" == "x"; then :
+
+
     # Check whether --enable-vera was given.
 if test "${enable_vera+set}" = set; then :
   enableval=$enable_vera;
@@ -4896,25 +4918,6 @@ fi
     THOR_TARGETLIBS=${THOR_TARGETLIBS}
 
 
-
-
-
-# Check whether --with-hostbuild was given.
-if test "${with_hostbuild+set}" = set; then :
-  withval=$with_hostbuild;
-fi
-
-
-    if test "${with_hostbuild}" != ""; then :
-
-            rm -rf build;
-            ln -s ${with_hostbuild} build
-
-
-fi
-
-
-    if test "${with_hostbuild}" == ""; then :
 
             pushd build/third
             ./setup "$CXX" || as_fn_error 1 "Failed to set up the test utilities" "$LINENO" 5
