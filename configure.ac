@@ -5,10 +5,10 @@ AC_PREREQ([2.65])
 
 # Set up the build system
 if [[ ! -e build/Notes ]]; then
+    ln -s .build build
     git submodule init
     git submodule update
 fi
-THOR_USE_HOST_BUILD
 AC_CONFIG_MACRO_DIR([build/autotools/m4])
 AC_CONFIG_AUX_DIR([build/autotools/build])
 AX_THOR_FUNC_BUILD
