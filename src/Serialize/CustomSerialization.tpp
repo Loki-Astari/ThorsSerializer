@@ -12,7 +12,7 @@ namespace ThorsAnvil
     {
 
 template<typename T>
-void DefaultCustomSerializer<T>::writeCustom(PrinterInterface& printer, T const& object)
+void DefaultCustomSerializer<T>::writeCustom(PrinterInterface& printer, T const& object) const
 {
     switch (printer.formatType())
     {
@@ -35,7 +35,7 @@ void DefaultCustomSerializer<T>::writeCustom(PrinterInterface& printer, T const&
 }
 
 template<typename T>
-void DefaultCustomSerializer<T>::readCustom(ParserInterface& parser, T& object)
+void DefaultCustomSerializer<T>::readCustom(ParserInterface& parser, T& object) const
 {
     switch (parser.formatType())
     {
@@ -55,7 +55,7 @@ void DefaultCustomSerializer<T>::readCustom(ParserInterface& parser, T& object)
 }
 
 template<typename T>
-void DefaultCustomSerializer<T>::writeJson(JsonPrinter& /*printer*/, T const& /*object*/)
+void DefaultCustomSerializer<T>::writeJson(JsonPrinter& /*printer*/, T const& /*object*/) const
 {
     throw CriticalException(
             ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeJson",
@@ -66,7 +66,7 @@ void DefaultCustomSerializer<T>::writeJson(JsonPrinter& /*printer*/, T const& /*
 }
 
 template<typename T>
-void DefaultCustomSerializer<T>::readJson(JsonParser& /*parser*/, T& /*object*/)
+void DefaultCustomSerializer<T>::readJson(JsonParser& /*parser*/, T& /*object*/) const
 {
     throw CriticalException(
             ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readJson",
@@ -77,7 +77,7 @@ void DefaultCustomSerializer<T>::readJson(JsonParser& /*parser*/, T& /*object*/)
 }
 
 template<typename T>
-void DefaultCustomSerializer<T>::writeYaml(YamlPrinter& /*printer*/, T const& /*object*/)
+void DefaultCustomSerializer<T>::writeYaml(YamlPrinter& /*printer*/, T const& /*object*/) const
 {
     throw CriticalException(
             ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeYaml",
@@ -88,7 +88,7 @@ void DefaultCustomSerializer<T>::writeYaml(YamlPrinter& /*printer*/, T const& /*
 }
 
 template<typename T>
-void DefaultCustomSerializer<T>::readYaml(YamlParser& /*parser*/, T& /*object*/)
+void DefaultCustomSerializer<T>::readYaml(YamlParser& /*parser*/, T& /*object*/) const
 {
     throw CriticalException(
             ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readYaml",
@@ -99,7 +99,7 @@ void DefaultCustomSerializer<T>::readYaml(YamlParser& /*parser*/, T& /*object*/)
 }
 
 template<typename T>
-std::size_t DefaultCustomSerializer<T>::getPrintSizeBson(BsonPrinter& /*printer*/, T const& /*object*/)
+std::size_t DefaultCustomSerializer<T>::getPrintSizeBson(BsonPrinter& /*printer*/, T const& /*object*/) const
 {
     throw CriticalException(
             ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "getPrintSizeBson",
@@ -110,7 +110,7 @@ std::size_t DefaultCustomSerializer<T>::getPrintSizeBson(BsonPrinter& /*printer*
 }
 
 template<typename T>
-void DefaultCustomSerializer<T>::writeBson(BsonPrinter& /*printer*/, T const& /*object*/)
+void DefaultCustomSerializer<T>::writeBson(BsonPrinter& /*printer*/, T const& /*object*/) const
 {
     throw CriticalException(
             ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "writeBson",
@@ -121,7 +121,7 @@ void DefaultCustomSerializer<T>::writeBson(BsonPrinter& /*printer*/, T const& /*
 }
 
 template<typename T>
-void DefaultCustomSerializer<T>::readBson(BsonParser& /*parser*/, char /*byteMarker*/, T& /*object*/)
+void DefaultCustomSerializer<T>::readBson(BsonParser& /*parser*/, char /*byteMarker*/, T& /*object*/) const
 {
     throw CriticalException(
             ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DefaultCustomSerializer", "readBson",

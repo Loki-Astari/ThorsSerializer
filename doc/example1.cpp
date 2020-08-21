@@ -8,7 +8,7 @@ struct Shirt
     int     red;
     int     green;
     int     blue;
-};    
+};
 class TeamMember
 {
     std::string     name;

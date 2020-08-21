@@ -22,17 +22,17 @@ struct DefaultCustomSerializer
 {
         virtual ~DefaultCustomSerializer() {}
 
-        void writeCustom(PrinterInterface& printer, T const& object);
-        void readCustom(ParserInterface& parser, T& object);
+        void writeCustom(PrinterInterface& printer, T const& object)            const;
+        void readCustom(ParserInterface& parser, T& object)                     const;
 
-        virtual void writeJson(JsonPrinter& printer, T const& object);
-        virtual void readJson(JsonParser& parser, T& object);
-        virtual void writeYaml(YamlPrinter& printer, T const& object);
-        virtual void readYaml(YamlParser& parser, T& object);
-        virtual std::size_t getPrintSizeBson(BsonPrinter& printer, T const& object);
-        virtual char getBsonByteMark() {return '\x00';} // You should also override this see Bson specifications
-        virtual void writeBson(BsonPrinter& printer, T const& object);
-        virtual void readBson(BsonParser& parser, char byteMarker, T& object);
+        virtual void writeJson(JsonPrinter& printer, T const& object)           const;
+        virtual void readJson(JsonParser& parser, T& object)                    const;
+        virtual void writeYaml(YamlPrinter& printer, T const& object)           const;
+        virtual void readYaml(YamlParser& parser, T& object)                    const;
+        virtual std::size_t getPrintSizeBson(BsonPrinter& printer, T const& object) const;
+        virtual char getBsonByteMark()                                          const{return '\x00';} // You should also override this see Bson specifications
+        virtual void writeBson(BsonPrinter& printer, T const& object)           const;
+        virtual void readBson(BsonParser& parser, char byteMarker, T& object)   const;
 };
     }
 }

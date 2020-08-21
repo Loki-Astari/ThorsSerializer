@@ -6,7 +6,6 @@
 #include <map>
 #include <cstdlib>
 #include <cstring>
-#include <boost/endian/conversion.hpp>
 
 using namespace ThorsAnvil::Serialize;
 using ParserToken = ParserInterface::ParserToken;
@@ -229,9 +228,7 @@ HEADER_ONLY_INCLUDE
 template<std::size_t size, typename Int>
 Int BsonParser::readSize()
 {
-    Int docSize;
-    input.read(reinterpret_cast<char*>(&docSize), sizeof(docSize));
-    return boost::endian::little_to_native(docSize);
+    return readLE<size, Int>();
 }
 
 HEADER_ONLY_INCLUDE
@@ -239,7 +236,7 @@ template<std::size_t size, typename Int>
 Int BsonParser::readInt()
 {
     dataLeft.back() -= size;
-    return readSize<size, Int>();
+    return readLE<size, Int>();
 }
 
 HEADER_ONLY_INCLUDE

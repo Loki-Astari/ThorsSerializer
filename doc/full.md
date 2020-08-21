@@ -5,12 +5,12 @@
 ## Objective:
 
     The objective is to make serialization/de-serialization of C++ object to/from
-    JSON/YAML/Binary trivial.
+    JSON/YAML/BSON trivial.
 
     This means:
-        1) does not build a JSON/YAML object. Reads data directly into C++ object.
+        1) does not build a JSON/YAML/BSON object. Reads data directly into C++ object.
         2) In normal usage there should be NO need to write any code.
-        3) User should not need to understand JSON/YAML or validate its input.
+        3) User should not need to understand JSON/YAML/BSON or validate its input.
         4) Should work seamlessly with streams.
         5) Standard containers should automatically work
 
@@ -25,22 +25,36 @@
 
 * Include the header file: `ThorSerialize/Traits.h`
 * Use one of these macros to declare your type as serializable
- * `ThorsAnvil_MakeTrait(<Type>, <members>...)`
- * `ThorsAnvil_ExpandTrait(<Parent-Type>, <Type>, <members>...)`
- * `ThorsAnvil_Template_MakeTrait(<TemplateParamCount>, <Type>, <members>...)`
- * `ThorsAnvil_Template_ExpandTrait(<TemplateParamCount>, <Parent-Type>, <Type>, <members>...)`
- * `ThorsAnvil_MakeEnum(<EnumType>, <EnumMembers>...)`
+ *      ThorsAnvil_MakeTrait(DataType, members...)
+ *      ThorsAnvil_ExpandTrait(ParentType, DataType, members...)
+ *      ThorsAnvil_Template_MakeTrait(TemplateParameterCount, DataType, members...)
+ *      ThorsAnvil_Template_ExpandTrait(TemplateParameterCount, ParentType, DataType, members...)
+ *
+ *      ThorsAnvil_PointerAllocator(DataType, Action)
+ *      ThorsAnvil_MakeEnum(EnumType, EnumValues...)
+ *
+ *      ThorsAnvil_PolyMorphicSerializer(Type)
+ *      ThorsAnvil_RegisterPolyMorphicType(Type)
+ *
+ *      ThorsAnvil_MakeTraitCustomSerialize(Type, SerializableType)
 
 ````bash
-    Type:               The name of a class (includeing namespace) of the type
+    DataType:           The name of a class (includeing namespace) of the type
                         you want to be able to serialize at some point.
-    Parent-Type:        The name of a class that has previously been declared
+    ParentType:         The name of a class that has previously been declared
                         using `ThorsAnvil_MakeTrait` or `ThorsAnvil_ExpandTrait`
                         and the parent of `Type`
     TemplateParamCount: If `Type` is a template type the number of parameters it needs
                         so that it is fully generalized.
     members:            A list of member (names) of the class `Type` that need
                         to be serialized.
+    EnumValues:         A list of the enum values for the associated enum type.
+    Action:             A type that supports to static methods
+                            static DataType* alloc()             // Called to default allocate an object. default new
+                            static void release(DataType*)       // Called to release object.             default delete
+    SerializableType:   A type used to serialize non standard (or complex types).
+                        This is specialized for each format type.
+                        See the documentation in Traits.h for details.
 ````
 
 The two macros above build a template specialization of the class `ThorsAnvil::Serialize::Traits<Type>` specific to your class. As a consequence these macros should not be placed inside any namespace blocks.
@@ -141,9 +155,9 @@ The export parameter `characteristics` has slightly different meaning for printi
      Stream:      YAML_FLOW_MAPPING_STYLE
      Config:      YAML_BLOCK_MAPPING_STYLE
 ````
-### Binary
+### Bson
 
-The description above is for Json Serialization/Deserialization. But the exact same description can be used for Binary versions. Simply replace Json with Binary and replace json with binary.
+The description above is for Json Serialization/Deserialization. But the exact same description can be used for Bson versions. Simply replace Json with Bson and replace json with binary.
 
 The export parameter `characteristics` has no affect on binary.
 
@@ -465,9 +479,13 @@ brew install thors-serializer
 
 #### What is installed:
 * `/usr/local/include/ThorSerialize/*`
-* `/usr/local/include/ThorBinaryRep/*`
+* `/usr/local/include/ThorsIOUtil/*`
+* `/usr/local/include/ThorsStorage/*`
+* `/usr/local/include/GitUtility/*`
 * `/usr/local/lib/libThorSerialize17.so`
 * `/usr/local/lib/libThorSerialize17D.so`
+* `/usr/local/lib/libThorsStorage17.so`
+* `/usr/local/lib/libThorsStorage17D.so`
 * `/usr/local/lib/libyaml.so`
 * `/usr/local/share/man/man3/*`
 
@@ -516,9 +534,14 @@ By default installation will be in `/usr/local/include` and `/usr/local/lib`. Yo
 
 #### What is installed:
 * `/usr/local/include/ThorSerialize/*`
-* `/usr/local/include/ThorBinaryRep/*`
+* `/usr/local/include/ThorsIOUtil/*`
+* `/usr/local/include/ThorsStorage/*`
+* `/usr/local/include/GitUtility/*`
 * `/usr/local/lib/libThorSerialize17.so`
 * `/usr/local/lib/libThorSerialize17D.so`
+* `/usr/local/lib/libThorsStorage17.so`
+* `/usr/local/lib/libThorsStorage17D.so`
+* `/usr/local/lib/libyaml.so`
 * `/usr/local/share/man/man3/*`
 
 Note:

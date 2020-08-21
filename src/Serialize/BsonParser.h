@@ -21,6 +21,7 @@
 #include "BsonUtil.h"
 #include "ThorsIOUtil/Utility.h"
 #include <GitUtility/ieee754_types.h>
+#include <boost/endian/conversion.hpp>
 #include <istream>
 #include <string>
 #include <vector>
@@ -75,14 +76,28 @@ class BsonParser: public ParserInterface
 
     public:
         char getValueType() const     {return nextType;}
+        template<std::size_t size, typename Int> Int readLE()
+        {
+            Int docSize;
+            input.read(reinterpret_cast<char*>(&docSize), size);
+            return boost::endian::little_to_native(docSize);
+        }
+
+        template<std::size_t size, typename Int> Int readBE()
+        {
+            Int docSize = 0;
+            input.read(reinterpret_cast<char*>(&docSize) + (sizeof(docSize) - size), size);
+            return boost::endian::big_to_native(docSize);
+        }
+
+
     private:
+        template<std::size_t size, typename Int>
+        Int readSize();
         bool isEndOfContainer(std::size_t unread);
         std::size_t peekSize();
 
         void readEndOfContainer();
-
-        template<std::size_t size, typename Int>
-        Int readSize();
 
         template<std::size_t Size, typename Int>
         Int getIntValue();

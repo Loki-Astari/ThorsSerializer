@@ -4,12 +4,12 @@
 
 ### Objective:
     The objective is to make serialization/de-serialization of C++ object to/from
-    JSON/YAML/Binary trivial.
+    JSON/YAML/Bson trivial.
 
     This means:
-        1) does not build a JSON/YAML object. Reads data directly into C++ object.
+        1) does not build a JSON/YAML/BSON object. Reads data directly into C++ object.
         2) In normal usage there should be NO need to write any code.
-        3) User should not need to understand JSON/YAML or validate its input.
+        3) User should not need to understand JSON/YAML/BSON or validate its input.
         4) Should work seamlessly with streams.
         5) Standard containers should automatically work
 

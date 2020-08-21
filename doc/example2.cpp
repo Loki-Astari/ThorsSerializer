@@ -5,7 +5,7 @@
 
 /* A class that you want to serialize. */
 class MyClass
-{   
+{
     int         data1;
     float       data2;
     std::string data3;
@@ -18,10 +18,10 @@ class MyClass
 
     // This is only required if the members are private.
     friend struct ThorsAnvil::Serialize::Traits<MyClass>;
-};  
+};
 
 
-/*  
+/*
  * Though there is no code involved, you do need to set up
  * this structure to tell the library what fields need to be serialized.
  * To do this use the macro:  ThorsAnvil_MakeTrait()

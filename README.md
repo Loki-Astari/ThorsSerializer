@@ -1,5 +1,12 @@
 # ThorsSerializer
 
+## Support for
+
+* [Json](https://www.json.org/json-en.html)
+* [Yaml](https://yaml.org/)
+* [Bson](http://bsonspec.org/) **NEW**
+
+
 [![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
 [![codecov.io](http://codecov.io/github/Loki-Astari/ThorsSerializer/coverage.svg?branch=master)](http://codecov.io/github/Loki-Astari/ThorsSerializer?branch=master)   
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=81920)](http://codereview.stackexchange.com/q/81920/507)
@@ -14,7 +21,7 @@ For details see: [JsonBenchmark](https://github.com/Loki-Astari/JsonBenchmark)
 
 ![ThorStream](img/stream.jpg)
 
-Yet another JSON/YAML/Binary serialization library for C++.
+Yet another JSON/YAML/BSON serialization library for C++.
 
 Unlike other libraries this one does not require you to build DOM of you object before serialization. Using a declarative C++ style you define what C++ classes (and members) you want to serialize "ThorSerializer" will generate the appropriate code automagically.
 

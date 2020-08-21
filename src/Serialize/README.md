@@ -1,14 +1,20 @@
 
 # ThorSerialize
 
+## Support for
+
+* [Json](https://www.json.org/json-en.html)
+* [Yaml](https://yaml.org/)
+* [Bson](http://bsonspec.org/) **NEW**
+
 This is a framework for serializing C++ objects to/from stream in some "standard formats" efficiently.
-Standard Formats: Currently supported are Json/Yaml/Binary(Experimental)
+Standard Formats: Currently supported are Json/Yaml/Bson.
 
 It is designed so that no intermediate format it used; data is read directly from the object and placed on the stream, conversely data is read directly from the stream into C++ objects. Note because C++ container con only hold fully formed objects, data is read into temporary object then inserted (moved if possible otherwise copied) into the container.
 
 User defined classes require no additional code to be serialized, only a simple declaration that defines what member need to be serialized. The appropriate declarations for the standard containers has already been provided.
 
-**Note the constructor is not called.**  
+**Note the constructor is not called.**
 The serialization class reads/writes built-in data by default and reads/writes these values directly into the members of the object. To read/write non built-in types you must define a serialization for that class. (Note: it is possible to get this library to call the constructors and methods (this is how the standard containers are accessed). But I have not documented this procedure yet as I want to get some good use cases together so I can define a consistent interface for its usage).
 
 ## Usage
@@ -24,6 +30,7 @@ A simple example of usage would be (link against libThorSerialize14.dynlib)
 ```C++
     #include "ThorSerialize/SerUtil.h"
     #include "ThorSerialize/JsonThor.h"
+    #include "ThorSerialize/BsonThor.h"
     #include <vector>
 
     namespace TS = ThorsAnvil::Serialize;
@@ -32,6 +39,9 @@ A simple example of usage would be (link against libThorSerialize14.dynlib)
     {
         std::vector<int>    data { 1, 2, 3, 4, 5, 6, 7, 8 };
         std::cout << TS::jsonExporter(data) << "\n";
+
+        std::ofstream       file("data.bson");
+        file << bsonExporter(data);
     }
 
     // Output
@@ -45,7 +55,7 @@ The macros `ThorsAnvil_MakeTrait` is provided to simplify this for most standard
 A simple example of a traits class definition for a user defined type.
 ```C++
     #include "ThorSerialize/Traits.h"
-    
+
     namespace TS = ThorsAnvil::Serialize;
 
     class MyClass
@@ -113,7 +123,7 @@ A user defined class that inherits from a serialize-able class can also be exten
     #include "MyClass.h"
     #include "ThorSerialize/Traits.h"
 
-    
+
     namespace TS = ThorsAnvil::Serialize;
 
     class MySubClass: public MyClass
@@ -140,7 +150,7 @@ The only real difference is exchanging the `ThorsAnvil_MakeTrait` for `ThorsAnvi
 
 ## Serialization Formats
 
-Currently the framework exposes three specific format types (Json/Yaml/Binary). But it has been designed to be easily extended to support other formats that may be useful. The basis for other formats is defined via the ParserInterface and PrinterInterface classes.
+Currently the framework exposes three specific format types (Json/Yaml/Bson). But it has been designed to be easily extended to support other formats that may be useful. The basis for other formats is defined via the ParserInterface and PrinterInterface classes.
 
 
 A framework for implementing parsers onto.
@@ -185,29 +195,14 @@ Other Files to make Serialization automatic:
 
     UnicodeIterator.h   Iterator for replacing escape characters with their actual encodings for use inside the application.
                         Should be used by the <XXX>Parser class on strings that can contain escape characters.
-    
+
 
 Usage:
 
     #include "Serialize.h"
-    #include "JsonPrinter.h"
-    #include "JsonParser.h"
-
-    DeSerializer<DstType>       parser(jsonParser);
-
-    parser.parse(object1);
-    parser.parse(object2);
-
-    Serializer<SrcType>         printer(yamlPrinter);
-
-    printer.print(object1);
-    printer.print(object2);
-
-For simplicity we have stream adapters.
-
-    #include "Serialize.h"
     #include "JsonThor.h"
     #include "YamlThor.h"
+    #include "BsonThor.h"
 
     namespace TS = ThorsAnvil::Serialize;
 
@@ -216,6 +211,9 @@ For simplicity we have stream adapters.
 
     std::cout << TS::yamlExporter(object1);
     std::cin  >> TS::yamlImporter(object1);
+
+    std::cout << TS::bsonExporter(object1);
+    std::cin  >> TS::bsonImporter(object1);
 
 All standard types have a serialization defined for them. To add one for your class.
 

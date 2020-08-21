@@ -4,7 +4,6 @@
 #include "GitUtility/ieee754_types.h"
 #include <iomanip>
 #include <algorithm>
-#include <boost/endian/conversion.hpp>
 
 using namespace ThorsAnvil::Serialize;
 
@@ -102,7 +101,7 @@ void BsonPrinter::writeKey(char value, std::size_t size)
         //
         // <4 byte Doc Size> <1 byte Type info> <2 byte Index "0"> <value> <1 byte doc term>
         std::int32_t totalSize = 4 + 1 + 2 + size + 1;
-        writeSize(totalSize);
+        writeSize<4, std::int32_t>(totalSize);
         output.write(&value, 1);
         output.write("0", 2);
         // The value will now write itself.
@@ -110,11 +109,11 @@ void BsonPrinter::writeKey(char value, std::size_t size)
     }
 }
 
-template<typename Int>
-void BsonPrinter::writeSize(Int size)
+HEADER_ONLY_INCLUDE
+template<std::size_t size, typename Int>
+void BsonPrinter::writeSize(Int value)
 {
-    Int docSize = boost::endian::native_to_little(size);
-    output.write(reinterpret_cast<char*>(&docSize), sizeof(docSize));
+    writeLE<size>(value);
 }
 
 HEADER_ONLY_INCLUDE void BsonPrinter::openDoc()
@@ -134,7 +133,7 @@ HEADER_ONLY_INCLUDE
 void BsonPrinter::openMap(std::size_t size)
 {
     writeKey('\x03', -1);
-    writeSize<std::int32_t>(size);
+    writeSize<4, std::int32_t>(size);
     currentContainer.emplace_back(BsonContainer::Map);
 }
 
@@ -156,7 +155,7 @@ HEADER_ONLY_INCLUDE
 void BsonPrinter::openArray(std::size_t size)
 {
     writeKey('\x04', -1);
-    writeSize<std::int32_t>(size);
+    writeSize<4, std::int32_t>(size);
     currentContainer.emplace_back(BsonContainer::Array);
     arrayIndex.emplace_back(0);
 }
@@ -184,7 +183,7 @@ void BsonPrinter::writeInt(Int value)
 
     IntType             output = value;
     writeKey(intKey[Size/4 - 1], Size);
-    writeSize<IntType>(output);
+    writeLE<Size, IntType>(output);
 }
 
 HEADER_ONLY_INCLUDE
@@ -208,7 +207,7 @@ HEADER_ONLY_INCLUDE
 void BsonPrinter::writeString(std::string const& value)
 {
     writeKey('\x02', 4 + value.size() + 1);
-    writeSize<std::int32_t>(value.size() + 1);
+    writeSize<4, std::int32_t>(value.size() + 1);
     output << EscapeString(value);
     output.write("", 1);
 }
@@ -223,7 +222,7 @@ HEADER_ONLY_INCLUDE
 void BsonPrinter::writeBinary(std::string const& value)
 {
     writeKey('\x05', 4 + 1 + value.size());    // binary
-    writeSize<std::int32_t>(value.size());
+    writeSize<4, std::int32_t>(value.size());
     output.write("\x80", 1);
     output.write(value.c_str(), value.size());
 }
