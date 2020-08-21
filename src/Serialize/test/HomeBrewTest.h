@@ -1,5 +1,5 @@
-#include "ThorSerialize/JsonThor.h"
-#include "ThorSerialize/SerUtil.h"
+#include "JsonThor.h"
+#include "SerUtil.h"
 
 struct HomeBrewBlock
 {
