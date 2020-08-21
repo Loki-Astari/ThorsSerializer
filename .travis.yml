@@ -1,5 +1,5 @@
 git:
-    submodules: false
+    submodules: true
 language: cpp
 before_install:
     - ./build/travis/presetup ${TRAVIS_OS_NAME}
