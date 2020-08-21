@@ -34,7 +34,7 @@ TEST(BsonUtilitySerializationTest, ObjectIDRoundTrip)
     MongoObjectID  result(8, 9, 10);
     stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
-    EXPECT_EQ(object.id, result.id);
+    EXPECT_EQ(object, result);
 }
 TEST(BsonUtilitySerializationTest, UTCDateTimeSerialize)
 {
@@ -64,7 +64,7 @@ TEST(BsonUtilitySerializationTest, UTCDateTimeRoundTrip)
     MongoUTCDateTime    result(8);
     stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
-    EXPECT_EQ(object.dt, result.dt);
+    EXPECT_EQ(object, result);
 }
 TEST(BsonUtilitySerializationTest, BsonTimeStampSerialize)
 {
@@ -94,6 +94,21 @@ TEST(BsonUtilitySerializationTest, BsonTimeStampRoundTrip)
     MongoBsonTimeStamp    result(8,9);
     stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
-    EXPECT_EQ(object.ts, result.ts);
+    EXPECT_EQ(object, result);
+}
+
+TEST(BsonUtilitySerializationTest, BsonBinarySerializer)
+{
+    MongoBsonBinary  data("This is a binary test");
+}
+
+TEST(BsonUtilitySerializationTest, BsonJavascriptSerializer)
+{
+    MongoBsonJsavScript data("function myrand() {return 4;}");
+}
+
+TEST(BsonUtilitySerializationTest, BsonRegExSerializer)
+{
+    MongoBsonRegExp    data("^[ \t]*", "g");
 }
 

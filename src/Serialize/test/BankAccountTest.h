@@ -27,11 +27,11 @@ namespace OnLineBank
     };
     struct SerializeID: public ThorsAnvil::Serialize::DefaultCustomSerializer<OnLineBank::ID>
     {
-        virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& printer, ID const& object)   override
+        virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& printer, ID const& object) const override
         {
             printer.stream() << object.id;
         }
-        virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object)            override
+        virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object) const override
         {
             parser.stream() >> object.id;
         }
@@ -41,17 +41,17 @@ namespace OnLineBank
 
         // generic version we simply stream the integer value.
         static constexpr std::size_t sizeOfID = 12;
-        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, ID const& /*object*/) override
+        virtual  std::size_t getPrintSizeBson(ThorsAnvil::Serialize::BsonPrinter& /*printer*/, ID const& /*object*/) const override
         {
             return sizeOfID;
         }
-        virtual char getBsonByteMark()   override   {return '\x07';}
-        virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& object)   override
+        virtual char getBsonByteMark() const override   {return '\x07';}
+        virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& object) const override
         {
             printer.stream().write(reinterpret_cast<char const*>(&object.id), sizeof(object.id));
             printer.stream().write("            ", sizeOfID - sizeof(object.id));
         }
-        virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, char /*byteMarker*/, ID& object)             override
+        virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, char /*byteMarker*/, ID& object) const override
         {
             parser.stream().read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
             parser.stream().ignore(sizeOfID - sizeof(object.id));

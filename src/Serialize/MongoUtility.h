@@ -87,15 +87,15 @@ class NormalSerializationInterface
 class DataInterface
 {
     public:
-        std::size_t getSize()                   = 0;
+        std::size_t getSize() const             = 0;
         void        resize(std::size_t size)    = 0;
         char*       getBuffer()                 = 0;
 };
 class RegExInterface
 {
     public:
-        std::string& pattern()                  = 0;
-        std::string& options()                  = 0;
+        std::string const& pattern() const      = 0;
+        std::string const& options() const      = 0;
 };
 #endif
 
@@ -105,10 +105,10 @@ class FixedSizeStreamableObjectSerializer: public DefaultCustomSerializer<T>
     // Assumes T implements the DuckInterface "NormalSerializationInterface" (see above)
     // Note: You should pay special attention to the size (number of bytes these object should write).
     public:
-        virtual char getBsonByteMark() override                                                         {return type;}
-        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& /*object*/) override    {return size;}
-        virtual void writeBson(BsonPrinter& printer, T const& object) override                          {printer << object;}
-        virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) override              {parser  >> object;}
+        virtual char getBsonByteMark() const override                                                       {return type;}
+        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& /*object*/) const override  {return size;}
+        virtual void writeBson(BsonPrinter& printer, T const& object) const override                        {printer << object;}
+        virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) const override            {parser  >> object;}
 };
 
 // Specializations of FixedSizeStreamableObjectSerializer
@@ -121,9 +121,9 @@ class BinarySerializer: public DefaultCustomSerializer<T>
 {
     // Assumes T implements the DuckInterface "DataInterface" (see above)
     public:
-        virtual char getBsonByteMark() override                                                         {return '\x05';}
-        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& object) override        {return object.getSize();}
-        virtual void writeBson(BsonPrinter& printer, T const& object) override
+        virtual char getBsonByteMark() const override                                                       {return '\x05';}
+        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& object) const override      {return object.getSize();}
+        virtual void writeBson(BsonPrinter& printer, T const& object) const override
         {
             std::int32_t    size    = object.getSize();
             char            type    = encodeType;
@@ -131,7 +131,7 @@ class BinarySerializer: public DefaultCustomSerializer<T>
             printer.stream().write(&type, 1);
             printer.stream().write(object.getBuffer(), object.getSize());
         }
-        virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) override
+        virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) const override
         {
             std::int32_t    size    = parser.readLE<4, std::int32_t>();
             char            type;
@@ -146,16 +146,16 @@ class JavascriptSerializer: public DefaultCustomSerializer<T>
 {
     // Assumes T implements the DuckInterface "DataInterface" (see above)
     public:
-        virtual char getBsonByteMark() override                                                         {return '\x0D';}
-        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& object) override        {return 4 + object.size() + 1;}
-        virtual void writeBson(BsonPrinter& printer, T const& object) override
+        virtual char getBsonByteMark() const override                                                   {return '\x0D';}
+        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& object) const override  {return 4 + object.getSize() + 1;}
+        virtual void writeBson(BsonPrinter& printer, T const& object) const override
         {
-            std::int32_t    size = object.size();
+            std::int32_t    size = object.getSize();
             printer.writeLE<4, std::int32_t>(size + 1);
             printer.stream().write(object.getBuffer(), size);
             printer.stream().write("", 1);
         }
-        virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) override
+        virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) const override
         {
             std::int32_t    size = parser.readLE<4, std::int32_t>();
             object.resize(size);
@@ -168,16 +168,17 @@ template<typename T>
 class RegExSerializer: public DefaultCustomSerializer<T>
 {
     // Assumes T implements the DuckInterface "RegExInterface" (see above)
-        virtual char getBsonByteMark() override                                                         {return '\x0B';}
-        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& object) override        {return object.pattern().size() + 1 + object.options().size() + 1;}
-        virtual void writeBson(BsonPrinter& printer, T const& object) override
+    public:
+        virtual char getBsonByteMark() const override                                                   {return '\x0B';}
+        virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& object) const override  {return object.pattern().size() + 1 + object.options().size() + 1;}
+        virtual void writeBson(BsonPrinter& printer, T const& object) const override
         {
             printer.stream().write(object.pattern().data(), object.pattern().size());
             printer.stream().write("", 1);
             printer.stream().write(object.options().data(), object.options().size());
             printer.stream().write("", 1);
         }
-        virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) override
+        virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) const override
         {
             std::getline(parser.stream(), object.pattern(), '\0');
             std::getline(parser.stream(), object.options(), '\0');
