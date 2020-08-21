@@ -719,9 +719,9 @@ yaml_ROOT_LIB
 yaml_ROOT_DIR
 SERIALIZATION_EXTERN_LIBS
 COV
+TestVera
 THOR_TARGETLIBS
 VERATOOL
-TestVera
 BOOST_PYTHON_LIB
 PYTHON_EXTRA_LDFLAGS
 PYTHON_EXTRA_LIBS
@@ -797,8 +797,8 @@ enable_option_checking
 with_boost
 with_boost_libdir
 with_boost_python
-with_hostbuild
 enable_vera
+with_hostbuild
 with_yamlroot
 enable_yaml
 enable_shared
@@ -4801,6 +4801,47 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
     git submodule update --init --recursive
 
+    # Check whether --enable-vera was given.
+if test "${enable_vera+set}" = set; then :
+  enableval=$enable_vera;
+fi
+
+
+    VERATOOL="";
+    subconfigvera=""
+    if test "x$enable_vera" == "xno"; then :
+
+            VERATOOL='off';
+            subconfigvera="--disable-vera";
+
+else
+
+            VERATOOL='vera++';
+
+
+fi
+    VERATOOL=${VERATOOL}
+
+
+    THOR_TARGETLIBS=""
+    if test "x$enable_shared" == "xyes"; then :
+  THOR_TARGETLIBS+=" slib"
+
+fi
+    if test "x$enable_static" == "xyes"; then :
+  THOR_TARGETLIBS+=" a"
+
+fi
+    if test "x$THOR_TARGETLIBS" == "x"; then :
+  THOR_TARGETLIBS="slib"
+
+fi
+
+    THOR_TARGETLIBS=${THOR_TARGETLIBS}
+
+
+
+
 
 # Check whether --with-hostbuild was given.
 if test "${with_hostbuild+set}" = set; then :
@@ -4820,22 +4861,8 @@ fi
     if test "x${with_hostbuild}" == "x"; then :
 
 
-    # Check whether --enable-vera was given.
-if test "${enable_vera+set}" = set; then :
-  enableval=$enable_vera;
-fi
+    if test "x$enable_vera" != "xno"; then :
 
-
-    VERATOOL="";
-    subconfigvera=""
-    if test "x$enable_vera" == "xno"; then :
-
-            VERATOOL='off';
-            subconfigvera="--disable-vera";
-
-else
-
-            VERATOOL='vera++';
             ./build/third/vera-install
             for ac_prog in vera++
 do
@@ -4896,26 +4923,6 @@ fi
 
 
 fi
-    VERATOOL=${VERATOOL}
-
-
-    THOR_TARGETLIBS=""
-    if test "x$enable_shared" == "xyes"; then :
-  THOR_TARGETLIBS+=" slib"
-
-fi
-    if test "x$enable_static" == "xyes"; then :
-  THOR_TARGETLIBS+=" a"
-
-fi
-    if test "x$THOR_TARGETLIBS" == "x"; then :
-  THOR_TARGETLIBS="slib"
-
-fi
-
-    THOR_TARGETLIBS=${THOR_TARGETLIBS}
-
-
 
             pushd build/third
             ./setup "$CXX" || as_fn_error 1 "Failed to set up the test utilities" "$LINENO" 5
