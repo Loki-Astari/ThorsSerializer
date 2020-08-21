@@ -2,14 +2,14 @@ git:
     submodules: false
 language: cpp
 before_install:
-    - build/travis/presetup ${TRAVIS_OS_NAME}
+    - ./build/travis/presetup ${TRAVIS_OS_NAME}
 install:
-    - build/travis/setup ${TRAVIS_OS_NAME}
+    - ./build/travis/setup ${TRAVIS_OS_NAME}
 script:
     - "./configure --with-boost=/tmp/extra --disable-binary"
     - export PATH=${PATH}:$(pwd)/build/bin;make
 after_success:
-    - "./CreateHeaderOnly  master"
+    - ./CreateHeaderOnly  master
     - bash <(curl -s https://codecov.io/bash)
 branches:
     only:
