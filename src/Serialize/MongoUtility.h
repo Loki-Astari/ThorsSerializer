@@ -10,11 +10,14 @@
 
 #include "BsonThor.h"
 #include "JsonThor.h"
+#include <chrono>
 
 namespace ThorsAnvil
 {
     namespace Serialize
     {
+        namespace MongoUtility
+        {
 
 /*
  * BSON Elements
@@ -181,65 +184,6 @@ class RegExSerializer: public DefaultCustomSerializer<T>
         }
 };
 
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <tuple>
-#include <arpa/inet.h>
-class StreamFormatterNoChange
-{
-    mutable std::ios*               stream;
-    mutable std::ios_base::fmtflags flags;
-    mutable std::streamsize         precision;
-    public:
-        StreamFormatterNoChange()
-            : stream(nullptr)
-        {}
-        ~StreamFormatterNoChange()
-        {
-            if (stream)
-            {
-                stream->flags(flags);
-                stream->precision(precision);
-            }
-        }
-        void saveStream(std::ios& s) const
-        {
-            stream    = &s;
-            flags     = s.flags();
-            precision = s.precision();
-        }
-        friend std::ostream& operator<<(std::ostream& stream, StreamFormatterNoChange const& formatter)
-        {
-            formatter.saveStream(stream);
-            return stream;
-        }
-        friend std::istream& operator>>(std::istream& stream, StreamFormatterNoChange const& formatter)
-        {
-            formatter.saveStream(stream);
-            return stream;
-        }
-};
-
-#if 0
-std::uint64_t htonll(std::uint64_t value)
-{
-#if __BIG_ENDIAN__
-    return value;
-#else
-    return (static_cast<std::uint64_t>(htonl(value & 0xFFFFFFFF)) << 32)) | (static_cast<std::uint64_t>(htonl((value >> 32) & 0xFFFFFFFF));
-#endif
-}
-std::int64_t ntohll(std::int64_t value)
-{
-#if __BIG_ENDIAN__
-    return value;
-#else
-    return (static_cast<std::uint64_t>(ntohl(value & 0xFFFFFFFF)) << 32)) | (static_cast<std::uint64_t>(ntohl((value >> 32) & 0xFFFFFFFF));
-#endif
-}
-#endif
-
 class ObjectID
 {
     // 4 byte timestamp
@@ -255,94 +199,26 @@ class ObjectID
         {
             return (classCounter++) % 0xFFF;
         }
-        ObjectID(std::int32_t timestamp = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), std::int64_t random = std::rand(), std::int32_t counter = ObjectID::getNextCounter())
-            : timestamp(timestamp)
-            , random(random)
-            , counter(counter)
-        {}
+        ObjectID(std::int32_t timestamp = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), std::int64_t random = std::rand(), std::int32_t counter = ObjectID::getNextCounter());
         bool operator==(ObjectID const& rhs) const {return std::tie(timestamp, random, counter) == std::tie(rhs.timestamp, rhs.random, rhs.counter);}
         bool operator<(ObjectID const& rhs)  const {return std::tie(timestamp, random, counter) <  std::tie(rhs.timestamp, rhs.random, rhs.counter);}
-        friend BsonPrinter& operator<<(BsonPrinter& printer, ObjectID const& data)
-        {
-        /*
-            std::int64_t netRandom    = htonll(data.random);
-            std::int32_t netTimestamp = htonl(data.timestamp);
-            std::int32_t netCounter   = htonl(data.counter);
-            stream.write(reinterpret_cast<char const*>(&netTimestamp), 4);
-            stream.write(reinterpret_cast<char const*>(&netRandom) + 3, 5);
-            stream.write(reinterpret_cast<char const*>(&netCounter) + 1, 3);
-        */
-            printer.writeBE<4>(data.timestamp);
-            printer.writeBE<5>(data.random);
-            printer.writeBE<3>(data.counter);
-            return printer;
-        }
-        friend JsonPrinter& operator<<(JsonPrinter& printer, ObjectID const& data)
-        {
-            printer.stream() << StreamFormatterNoChange{}
-                             << "\""
-                             << std::hex << std::setfill('0')
-                             << std::setw( 8) << data.timestamp << "-"
-                             << std::setw(10) << data.random    << "-"
-                             << std::setw( 6) << data.counter
-                             << "\"";
-            return printer;
-        }
-        friend BsonParser& operator>>(BsonParser& parser, ObjectID& data)
-        {
-        /*
-            std::int64_t netRandom    = 0;
-            std::int32_t netTimestamp = 0;
-            std::int32_t netCounter   = 0;
-            stream.read(reinterpret_cast<char*>(&netTimestamp), 4);
-            stream.read(reinterpret_cast<char*>(&netRandom) + 3, 5);
-            stream.read(reinterpret_cast<char*>(&netCounter) + 1, 3);
-            data.random    = ntohll(netRandom);
-            data.timestamp = ntohl(netTimestamp);
-            data.counter   = ntohl(netCounter);
-        */
-            data.timestamp = parser.readBE<4, std::int32_t>();
-            data.random    = parser.readBE<5, std::int64_t>();
-            data.counter   = parser.readBE<3, std::int32_t>();
-            return parser;
-        }
-        friend JsonParser& operator>>(JsonParser& parser, ObjectID& data)
-        {
-            char x1, x2, x3, x4;
-            parser.stream() >> StreamFormatterNoChange{} >> std::hex >> x1 >> data.timestamp >> x2 >> data.random >> x3 >> data.counter >> x4;
-            return parser;
-        }
+        friend BsonPrinter& operator<<(BsonPrinter& printer, ObjectID const& data);
+        friend JsonPrinter& operator<<(JsonPrinter& printer, ObjectID const& data);
+        friend BsonParser& operator>>(BsonParser& parser, ObjectID& data);
+        friend JsonParser& operator>>(JsonParser& parser, ObjectID& data);
 };
 class UTCDateTime
 {
     // Time in ms since the epoch
     std::int64_t    datetime;
     public:
-        UTCDateTime(std::int64_t datetime = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
-            : datetime(datetime)
-        {}
+        UTCDateTime(std::int64_t datetime = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
         bool operator==(UTCDateTime const& rhs) const {return datetime == rhs.datetime;}
         bool operator<(UTCDateTime const& rhs)  const {return datetime < rhs.datetime;}
-        friend BsonPrinter& operator<<(BsonPrinter& printer, UTCDateTime const& data)
-        {
-            printer.writeBE<8, std::int64_t>(data.datetime);
-            return printer;
-        }
-        friend JsonPrinter& operator<<(JsonPrinter& printer, UTCDateTime const& data)
-        {
-            printer.stream() << StreamFormatterNoChange{} << std::hex << std::setw(16) << std::setfill('0') << data.datetime;
-            return printer;
-        }
-        friend BsonParser& operator>>(BsonParser& parser, UTCDateTime& data)
-        {
-            data.datetime = parser.readBE<8, std::int64_t>();
-            return parser;
-        }
-        friend JsonParser& operator>>(JsonParser& parser, UTCDateTime& data)
-        {
-            parser.stream() >> StreamFormatterNoChange{} >> std::hex >> data.datetime;
-            return parser;
-        }
+        friend BsonPrinter& operator<<(BsonPrinter& printer, UTCDateTime const& data);
+        friend JsonPrinter& operator<<(JsonPrinter& printer, UTCDateTime const& data);
+        friend BsonParser& operator>>(BsonParser& parser, UTCDateTime& data);
+        friend JsonParser& operator>>(JsonParser& parser, UTCDateTime& data);
 };
 
 class BsonTimeStamp
@@ -352,50 +228,21 @@ class BsonTimeStamp
     std::int32_t    increment;
     std::int32_t    timestamp;
     public:
-        BsonTimeStamp(std::time_t timestamp = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), int inc = 0)
-            : increment(inc)
-            , timestamp(timestamp)
-        {}
+        BsonTimeStamp(std::time_t timestamp = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), int inc = 0);
         bool operator==(BsonTimeStamp const& rhs) const {return std::tie(increment, timestamp) == std::tie(rhs.increment, rhs.timestamp);}
         bool operator<(BsonTimeStamp const& rhs)  const {return std::tie(increment, timestamp) < std::tie(rhs.increment, rhs.timestamp);}
-        UTCDateTime asDateTime()
-        {
-            return UTCDateTime(timestamp * 1000);
-        }
-        friend BsonPrinter& operator<<(BsonPrinter& printer, BsonTimeStamp const& data)
-        {
-            printer.writeBE<4, std::int32_t>(data.increment);
-            printer.writeBE<4, std::int32_t>(data.timestamp);
-            return printer;
-        }
-        friend JsonPrinter& operator<<(JsonPrinter& printer, BsonTimeStamp const& data)
-        {
-            printer.stream() << StreamFormatterNoChange{}
-                             << "\""
-                             << std::hex << std::setw(8) << std::setfill('0')
-                             << data.timestamp << "-"
-                             << data.increment
-                             << "\"";
-            return printer;
-        }
-        friend BsonParser& operator>>(BsonParser& parser, BsonTimeStamp& data)
-        {
-            data.increment = parser.readBE<4, std::int32_t>();
-            data.timestamp = parser.readBE<4, std::int32_t>();
-            return parser;
-        }
-        friend JsonParser& operator>>(JsonParser& parser, BsonTimeStamp& data)
-        {
-            char x1, x2, x3;
-            parser.stream() >> StreamFormatterNoChange{} >> std::hex >> x1 >> data.timestamp >> x2 >> data.increment >> x3;
-            return parser;
-        }
+        UTCDateTime asDateTime();
+        friend BsonPrinter& operator<<(BsonPrinter& printer, BsonTimeStamp const& data);
+        friend JsonPrinter& operator<<(JsonPrinter& printer, BsonTimeStamp const& data);
+        friend BsonParser& operator>>(BsonParser& parser, BsonTimeStamp& data);
+        friend JsonParser& operator>>(JsonParser& parser, BsonTimeStamp& data);
 };
+        }
     }
 }
 
-ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::ObjectID,       ObjectIDSerializer<ObjectID>);
-ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::UTCDateTime,    DataTimeSerializer<UTCDateTime>);
-ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::BsonTimeStamp,  TimeStampSerializer<BsonTimeStamp>);
+ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::MongoUtility::ObjectID,       ThorsAnvil::Serialize::MongoUtility::ObjectIDSerializer<ThorsAnvil::Serialize::MongoUtility::ObjectID>);
+ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::MongoUtility::UTCDateTime,    ThorsAnvil::Serialize::MongoUtility::DataTimeSerializer<ThorsAnvil::Serialize::MongoUtility::UTCDateTime>);
+ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::MongoUtility::BsonTimeStamp,  ThorsAnvil::Serialize::MongoUtility::TimeStampSerializer<ThorsAnvil::Serialize::MongoUtility::BsonTimeStamp>);
 
 #endif

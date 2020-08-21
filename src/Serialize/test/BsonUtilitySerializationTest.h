@@ -3,7 +3,7 @@
 
 struct MongoObjectID
 {
-    ThorsAnvil::Serialize::ObjectID id;
+    ThorsAnvil::Serialize::MongoUtility::ObjectID id;
     friend class ThorsAnvil::Serialize::Traits<MongoObjectID>;
     public:
         MongoObjectID(std::int32_t timestamp, std::int64_t random, std::int32_t counter)
@@ -12,7 +12,7 @@ struct MongoObjectID
 };
 struct MongoUTCDateTime
 {
-    ThorsAnvil::Serialize::UTCDateTime dt;
+    ThorsAnvil::Serialize::MongoUtility::UTCDateTime dt;
     friend class ThorsAnvil::Serialize::Traits<MongoUTCDateTime>;
     public:
         MongoUTCDateTime(std::int64_t timestamp)
@@ -21,7 +21,7 @@ struct MongoUTCDateTime
 };
 struct MongoBsonTimeStamp
 {
-    ThorsAnvil::Serialize::BsonTimeStamp ts;
+    ThorsAnvil::Serialize::MongoUtility::BsonTimeStamp ts;
     friend class ThorsAnvil::Serialize::Traits<MongoBsonTimeStamp>;
     public:
         MongoBsonTimeStamp(std::int32_t timestamp, int inc)

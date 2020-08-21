@@ -1,5 +1,6 @@
 
 THORSANVIL_ROOT				?= $(realpath ../../)
+COVERAGE_REQUIRED			= 70
 
 TARGET						= ThorSerialize.lib
 # There is no executable code in this header. Just an enum declaration.
