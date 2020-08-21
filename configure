@@ -2326,10 +2326,10 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # Set up the build system
 if [ ! -e build/Notes ]; then
-    ln -s .build build
     git submodule init
     git submodule update
 fi
+ln -s .build build | echo "Build Already Setup"
 
 ac_aux_dir=
 for ac_dir in build/autotools/build "$srcdir"/build/autotools/build; do
