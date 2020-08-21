@@ -200,7 +200,7 @@ class ObjectID
         {
             return (classCounter++) % 0xFFF;
         }
-        ObjectID(std::int32_t timestamp = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), std::int64_t random = std::rand(), std::int32_t counter = ObjectID::getNextCounter());
+        ObjectID(std::int32_t timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), std::int64_t random = std::rand(), std::int32_t counter = ObjectID::getNextCounter());
         bool operator==(ObjectID const& rhs) const {return std::tie(timestamp, random, counter) == std::tie(rhs.timestamp, rhs.random, rhs.counter);}
         bool operator<(ObjectID const& rhs)  const {return std::tie(timestamp, random, counter) <  std::tie(rhs.timestamp, rhs.random, rhs.counter);}
         friend BsonPrinter& operator<<(BsonPrinter& printer, ObjectID const& data);
@@ -213,7 +213,7 @@ class UTCDateTime
     // Time in ms since the epoch
     std::int64_t    datetime;
     public:
-        UTCDateTime(std::int64_t datetime = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
+        UTCDateTime(std::int64_t datetime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
         bool operator==(UTCDateTime const& rhs) const {return datetime == rhs.datetime;}
         bool operator<(UTCDateTime const& rhs)  const {return datetime < rhs.datetime;}
         friend BsonPrinter& operator<<(BsonPrinter& printer, UTCDateTime const& data);
@@ -229,7 +229,7 @@ class BsonTimeStamp
     std::int32_t    increment;
     std::int32_t    timestamp;
     public:
-        BsonTimeStamp(std::time_t timestamp = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), int inc = 0);
+        BsonTimeStamp(std::time_t timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), int inc = 0);
         bool operator==(BsonTimeStamp const& rhs) const {return std::tie(increment, timestamp) == std::tie(rhs.increment, rhs.timestamp);}
         bool operator<(BsonTimeStamp const& rhs)  const {return std::tie(increment, timestamp) < std::tie(rhs.increment, rhs.timestamp);}
         UTCDateTime asDateTime();
