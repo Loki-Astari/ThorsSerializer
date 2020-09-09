@@ -194,5 +194,42 @@ TEST(SerializeEnumTest, BsonDeSerEnumInContainer)
     EXPECT_EQ(SerializeTest::Green, holder.value);
 }
 
+TEST(SerializeEnumTest, EnumFlagEmpty)
+{
+    SerializeTest::Flag     value = SerializeTest::Flag::empty;
+    std::stringstream str;
+    str << value;
+    EXPECT_EQ("empty", str.str());
+}
+TEST(SerializeEnumTest, EnumFlagOne)
+{
+    SerializeTest::Flag     value = SerializeTest::Flag::One;
+    std::stringstream str;
+    str << value;
+    EXPECT_EQ("One", str.str());
+}
+TEST(SerializeEnumTest, EnumFlagTwo)
+{
+    SerializeTest::Flag     value = SerializeTest::Flag::Two;
+    std::stringstream str;
+    str << value;
+    EXPECT_EQ("Two", str.str());
+}
+TEST(SerializeEnumTest, EnumFlagThree)
+{
+    SerializeTest::Flag     value = SerializeTest::Flag::Three;
+    std::stringstream str;
+    str << value;
+    EXPECT_EQ("Three", str.str());
+}
+TEST(SerializeEnumTest, EnumFlagOneThree)
+{
+    SerializeTest::Flag     value = SerializeTest::Flag::One | SerializeTest::Flag::Three;
+    std::stringstream str;
+    str << value;
+    EXPECT_EQ("One | Three", str.str());
+}
+
+
 
 

@@ -23,6 +23,14 @@ TEST(BsonUtilitySerializationTest, ObjectIDSerialize)
 
     EXPECT_EQ(expected, result);
 }
+TEST(BsonUtilitySerializationTest, ObjectIDGetSize)
+{
+    std::stringstream stream;
+    MongoObjectID  object(0x12345678,0x9ABCDEF053LL,0x1A2B3C);
+
+    std::size_t size = ThorsAnvil::Serialize::bsonGetPrintSize(object);
+    EXPECT_EQ(0x15, size);
+}
 
 TEST(BsonUtilitySerializationTest, ObjectIDRoundTrip)
 {

@@ -14,6 +14,7 @@ struct EumHolder
 {
     RGB value;
 };
+enum Flag { empty = 0, One = 1, Two = 2, Three = 4};
 
 // Added after an issue with enum's with 8 or 9 items
 enum class OctalValues { OCT1, OCT2, OCT3, OCT4, OCT5, OCT6, OCT7, OCT8 };
@@ -115,6 +116,7 @@ ThorsAnvil_MakeTrait(SerializeTest::SerializeTestMembers, member1, member2);
 ThorsAnvil_MakeTrait(SerializeTest::CornerCaseClass, value);
 ThorsAnvil_ExpandTrait(SerializeTest::SerializeTestExtra, SerializeTest::SerializeExactNoMembers);
 ThorsAnvil_ExpandTrait(SerializeTest::SerializeTestExtra, SerializeTest::SerializeExactNoMembersPoly);
+ThorsAnvil_MakeEnumFlag(SerializeTest::Flag, One, Two, Three);
 
 
 #endif

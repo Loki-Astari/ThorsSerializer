@@ -630,6 +630,45 @@ class Traits<EnumName>                                                  \
 }}                                                                      \
 DO_ASSERT(EnumName)
 
+// This type is not useful for JSON or other serialization
+// But it can be useful to dump an enum that is a flag based enum.
+// Its interface is not advertised above deliberately
+#define ThorsAnvil_MakeEnumFlag(EnumName, ...)                          \
+inline EnumName operator&(EnumName lhs, EnumName rhs){return static_cast<EnumName>(static_cast<unsigned int>(lhs) & static_cast<unsigned int>(rhs));}\
+inline EnumName operator|(EnumName lhs, EnumName rhs){return static_cast<EnumName>(static_cast<unsigned int>(lhs) | static_cast<unsigned int>(rhs));}\
+inline EnumName operator^(EnumName lhs, EnumName rhs){return static_cast<EnumName>(static_cast<unsigned int>(lhs) ^ static_cast<unsigned int>(rhs));}\
+inline std::ostream& operator<<(std::ostream& stream, EnumName const& value)    \
+{                                                                               \
+    if (value == EnumName::empty)                                               \
+    {                                                                           \
+        stream << "empty";                                                      \
+    }                                                                           \
+    else                                                                        \
+    {                                                                           \
+        using std::string_literals::operator""s;                                \
+        static const std::map<EnumName, std::string> values =                   \
+        {                                                                       \
+            REP_N(THOR_NAMEACTION, 0, EnumName, __VA_ARGS__, 1)                 \
+        };                                                                      \
+        bool                first = true;                                       \
+        for (int loop = 0; loop < 32; ++loop)                                   \
+        {                                                                       \
+            EnumName flag = static_cast<EnumName>(1 << loop);                   \
+            if ((value & flag) != EnumName::empty)                              \
+            {                                                                   \
+                if (!first)                                                     \
+                {                                                               \
+                    stream << " | ";                                            \
+                }                                                               \
+                first = false;                                                  \
+                stream << values.find(flag)->second;                            \
+            }                                                                   \
+        }                                                                       \
+    }                                                                           \
+    return stream;                                                              \
+}                                                                               \
+static_assert(true)
+
 /*
  * Defined the virtual function needed by tryPrintPolyMorphicObject()
  */
