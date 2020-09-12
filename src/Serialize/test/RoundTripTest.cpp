@@ -102,9 +102,8 @@ TEST(RoundTripTest, JsonValue)
     stream >> TA::jsonImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }
-#ifdef HAVE_YAML
 TEST(RoundTripTest, YamlMap)
-{   
+{
     using ThorsAnvil::Serialize::PrinterInterface;
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
@@ -196,10 +195,6 @@ TEST(RoundTripTest, YamlValue)
     stream >> TA::yamlImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }
-
-#endif
-
-
 
 TEST(RoundTripTest, BsonMap)
 {

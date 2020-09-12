@@ -2,7 +2,6 @@
 #define THORS_ANVIL_SERIALIZE_YAML_PRINTER_H
 
 #include <functional>
-#ifdef  HAVE_YAML
 
 #include "Serialize.h"
 #include <yaml.h>
@@ -68,5 +67,4 @@ class YamlPrinter: public PrinterInterface
 #include "YamlPrinter.source"
 #endif
 
-#endif
 #endif

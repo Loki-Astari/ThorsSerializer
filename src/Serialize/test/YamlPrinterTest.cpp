@@ -1,5 +1,4 @@
 #include "SerializeConfig.h"
-#ifdef  HAVE_YAML
 #include "gtest/gtest.h"
 #include "YamlPrinter.h"
 #include <algorithm>
@@ -236,4 +235,3 @@ TEST(YamlPrinterTest, PuttingKeyInArray)
         printer.addKey("This old house");
     );
 }
-#endif

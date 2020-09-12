@@ -1,5 +1,4 @@
 #include "SerializeConfig.h"
-#ifdef HAVE_YAML
 #include "YamlParser.h"
 #include "ThorsIOUtil/Utility.h"
 
@@ -252,5 +251,3 @@ std::string YamlParser::getRawValue()
 {
     return getString();
 }
-
-#endif

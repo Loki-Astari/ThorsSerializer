@@ -1,5 +1,4 @@
 #include "SerializeConfig.h"
-#ifdef HAVE_YAML
 #include "YamlPrinter.h"
 #include "ThorsIOUtil/Utility.h"
 #include <sstream>
@@ -196,5 +195,3 @@ void YamlPrinter::addKey(std::string const& key)
     }
     emit(key);
 }
-
-#endif

@@ -800,7 +800,6 @@ with_boost_python
 enable_vera
 with_hostbuild
 with_yamlroot
-enable_yaml
 enable_shared
 enable_static
 with_pic
@@ -1446,8 +1445,6 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-vera          Disable vera. Disable Static analysis of source.
-
-  --disable-yaml          Disable yaml serialization
 
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -5246,13 +5243,7 @@ if test "${with_yamlroot+set}" = set; then :
   withval=$with_yamlroot;
 fi
 
-    # Check whether --enable-yaml was given.
-if test "${enable_yaml+set}" = set; then :
-  enableval=$enable_yaml;
-fi
-
-    if test "x$enable_yaml" != "xno"; then :
-  if test "${with_yamlroot}" == ""; then
+        if test "${with_yamlroot}" == ""; then
             with_yamlroot="/usr/local"
         fi
         ORIG_LDFLAGS="${LDFLAGS}"
@@ -5325,8 +5316,6 @@ fi
 
 
         LDFLAGS="${ORIG_LDFLAGS}"
-
-fi
 
 
     THOR_TARGETLIBS=""

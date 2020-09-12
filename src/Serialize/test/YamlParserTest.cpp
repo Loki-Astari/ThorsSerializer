@@ -1,5 +1,4 @@
 #include "SerializeConfig.h"
-#ifdef  HAVE_YAML
 #include "gtest/gtest.h"
 #include "YamlParser.h"
 
@@ -629,6 +628,4 @@ TEST(YamlParserTest, getRawValue)
     value = parser.getRawValue();
     EXPECT_EQ(std::string("The Best"), value);
 }
-
-#endif
 
