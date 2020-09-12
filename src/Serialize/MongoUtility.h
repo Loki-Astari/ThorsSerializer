@@ -109,6 +109,9 @@ class FixedSizeStreamableObjectSerializer: public DefaultCustomSerializer<T>
         virtual std::size_t getPrintSizeBson(BsonPrinter& /*printer*/, T const& /*object*/) const override  {return size;}
         virtual void writeBson(BsonPrinter& printer, T const& object) const override                        {printer << object;}
         virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) const override            {parser  >> object;}
+
+        virtual void writeJson(JsonPrinter& printer, T const& object) const override                        {printer << object;}
+        virtual void readJson(JsonParser& parser, T& object) const override                                 {parser >> object;}
 };
 
 // Specializations of FixedSizeStreamableObjectSerializer

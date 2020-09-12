@@ -30,9 +30,17 @@ namespace ThorsAnvil
 {
     namespace Serialize
     {
+        class BsonParser;
+        namespace MongoUtility
+        {
+            class UTCDateTime;
+            BsonParser& operator>>(BsonParser& parser, MongoUtility::UTCDateTime& data);
+        }
 
 class BsonParser: public ParserInterface
 {
+    friend BsonParser& MongoUtility::operator>>(BsonParser& parser, MongoUtility::UTCDateTime& data);
+
     std::vector<BsonContainer>  currentContainer;
     std::vector<std::size_t>    dataLeft;
     std::vector<std::size_t>    dataSize;

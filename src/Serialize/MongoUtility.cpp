@@ -57,7 +57,7 @@ namespace ThorsAnvil::Serialize::MongoUtility
 {
     BsonPrinter& operator<<(BsonPrinter& printer, UTCDateTime const& data)
     {
-        printer.writeBE<8, std::int64_t>(data.datetime);
+        printer.writeLE<8, std::int64_t>(data.datetime);
         return printer;
     }
     JsonPrinter& operator<<(JsonPrinter& printer, UTCDateTime const& data)
@@ -67,7 +67,7 @@ namespace ThorsAnvil::Serialize::MongoUtility
     }
     BsonParser& operator>>(BsonParser& parser, UTCDateTime& data)
     {
-        data.datetime = parser.readBE<8, std::int64_t>();
+        data.datetime = parser.readLE<8, std::int64_t>();
         return parser;
     }
     JsonParser& operator>>(JsonParser& parser, UTCDateTime& data)

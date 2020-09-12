@@ -15,9 +15,17 @@ namespace ThorsAnvil
 {
     namespace Serialize
     {
+        class BsonPrinter;
+        namespace MongoUtility
+        {
+            class UTCDateTime;
+            BsonPrinter& operator<<(BsonPrinter& printer, MongoUtility::UTCDateTime const& data);
+        }
 
 class BsonPrinter: public PrinterInterface
 {
+    friend BsonPrinter& MongoUtility::operator<<(BsonPrinter& printer, MongoUtility::UTCDateTime const& data);
+
     std::string currentKey;
     std::vector<BsonContainer>  currentContainer;
     std::vector<std::size_t>    arrayIndex;

@@ -55,7 +55,7 @@ TEST(BsonUtilitySerializationTest, UTCDateTimeSerialize)
 
     static const char expectedRaw[]
                 = "\x11\x00\x00\x00"
-                  "\x09" "dt\x00" "\x12\x34\x56\x78" "\x9A\xBC\xDE\xF0"
+                  "\x09" "dt\x00" "\xf0\xde\xbc\x9a" "\x78\x56\x34\x12" // "\x12\x34\x56\x78" "\x9A\xBC\xDE\xF0"
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
