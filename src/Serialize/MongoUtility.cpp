@@ -9,6 +9,8 @@
 using namespace ThorsAnvil::Serialize;
 using namespace ThorsAnvil::Serialize::MongoUtility;
 
+int ObjectID::classCounter = 32769;
+
 ObjectID::ObjectID(std::int32_t timestamp, std::int64_t random, std::int32_t counter)
     : timestamp(timestamp)
     , random(random)
