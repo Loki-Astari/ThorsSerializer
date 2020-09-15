@@ -32,7 +32,7 @@
  */
 
 #include "Traits.h"
-#include "CustomSerialization.h"
+//#include "CustomSerialization.h"
 #include "ThorsIOUtil/Utility.h"
 #include <iostream>
 #include <utility>
@@ -309,12 +309,6 @@ inline Serializer::~Serializer()
     }
 }
 
-#if defined(HEADER_ONLY) && HEADER_ONLY == 1
-#include "Serialize.source"
-#endif
-
-#ifndef COVERAGE_TEST
 #include "Serialize.tpp"
-#endif
 
 #endif

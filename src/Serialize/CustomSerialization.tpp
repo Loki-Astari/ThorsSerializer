@@ -1,10 +1,12 @@
 #ifndef THORS_ANVIL_SERIALIZATION_CUSTOM_SERIALIZATION_TPP
 #define THORS_ANVIL_SERIALIZATION_CUSTOM_SERIALIZATION_TPP
 
-#include "JsonThor.h"
-#include "YamlThor.h"
-#include "BsonThor.h"
-#include "ThorsIOUtil/Utility.h"
+#include "JsonPrinter.h"
+#include "YamlPrinter.h"
+#include "BsonPrinter.h"
+#include "JsonParser.h"
+#include "YamlParser.h"
+#include "BsonParser.h"
 
 namespace ThorsAnvil
 {

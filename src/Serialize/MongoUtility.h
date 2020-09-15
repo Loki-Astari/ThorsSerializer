@@ -6,6 +6,7 @@
 #include "Exporter.h"
 #include "Importer.h"
 #include "SerUtil.h"
+#include "CustomSerialization.h"
 #include "ThorsIOUtil/Utility.h"
 
 #include "BsonThor.h"

@@ -11,6 +11,7 @@
 #include "YamlThor.h"
 #include "BsonThor.h"
 
+#include "CustomSerialization.h"
 
 #include "test/SerializeTest.h"
 #include <vector>
