@@ -3,7 +3,7 @@
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
 #include "ThorsIOUtil/Utility.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 #include <map>
 #include <cstdlib>
 #include <cstring>
@@ -138,12 +138,9 @@ ParserToken JsonParser::getNextToken()
     }
     // If we hit anything else there was a serious problem in the
     // parser itself.
-    std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                            "ThorsAnvil::Serialize::JsonParser",
-                            "getNextToken"
-                            "Reached an Unnamed State");
-    VLOG_F(2, "%s", message.c_str());
-    throw std::runtime_error(message);
+    ThorsLogAndThrow("ThorsAnvil::Serialize::JsonParser",
+                     "getNextToken",
+                     "Reached an Unnamed State");
 }
 
 HEADER_ONLY_INCLUDE

@@ -17,7 +17,7 @@
 #include "Importer.h"
 #include "SerUtil.h"
 #include "ThorsIOUtil/Utility.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 
 namespace ThorsAnvil
 {
@@ -57,11 +57,9 @@ struct BsonBaseTypeGetter<T, TraitType::Pointer>
     {
         if (!pointer)
         {
-            std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                    "ThorsAnvil::Serialize::BsonBaseTypeGetter<T, Pointer>", "validate",
-                                    "Bson does not support serialization of null at the top level");
-            VLOG_F(2, "%s", message.c_str());
-            throw std::runtime_error(message);
+            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonBaseTypeGetter<T, Pointer>",
+                             "validate",
+                             "Bson does not support serialization of null at the top level");
         }
     }
 };

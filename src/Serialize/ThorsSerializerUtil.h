@@ -2,7 +2,7 @@
 #define THORS_ANVIL_SERIALIZER_THORSSERIALIZERUTIL_H
 
 #include "ThorsIOUtil/Utility.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 #include <type_traits>
 #include <string>
 #include <iostream>
@@ -543,19 +543,12 @@ auto tryGetSizeFromSerializeType(PrinterInterface& printer, T const& value, int)
     return printer.getSizeRaw(size);
 }
 
-class CriticalException: public std::runtime_error
-{
-    using runtime_error::runtime_error;
-};
 template<typename T>
 auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size_t
 {
-    std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                            "ThorsAnvil::Serialize",
-                            "tryGetSizeFromSerializeType",
-                            "BSON backward compatibility. See comments in function.");
-    VLOG_F(2, "%s", message.c_str());
-    throw CriticalException(message);
+    ThorsLogAndThrowCritical("ThorsAnvil::Serialize",
+                             "tryGetSizeFromSerializeType",
+                             "BSON backward compatibility. See comments in function.");
     // This function is needed for backward compatibility to make things compile without
     // requiring user code to be changed.
     //

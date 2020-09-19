@@ -243,7 +243,7 @@
 
 #include "ThorsSerializerUtil.h"
 #include "ThorsIOUtil/Utility.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 #include <string>
 #include <tuple>
 #include <map>
@@ -566,12 +566,9 @@ class Traits<DataType>                                                  \
             case FormatType::Yaml:  /* Fall Through */                  \
             default:                                                    \
             {                                                           \
-                std::string message = ThorsAnvil::Utility::buildBugReport(   \
-                                        "ThorsAnivl::Seriaizlize::Traits<DataType>",   \
-                                        "getPrintSize",                 \
-                                        "Should not get here");         \
-                VLOG_F(2, "%s", message.c_str());                       \
-                throw CriticalException(message);                       \
+                ThorsLogAndThrowCritical("ThorsAnivl::Seriaizlize::Traits<DataType>",   \
+                                         "getPrintSize",                \
+                                         "Should not get here");        \
             }                                                           \
         }                                                               \
     }                                                                   \
@@ -627,12 +624,9 @@ class Traits<EnumName>                                                  \
                     return value.first;                                 \
                 }                                                       \
             }                                                           \
-            std::string message = ThorsAnvil::Utility::buildBugReport(  \
-                                    "ThorsAnvil::Serialize::Traits<EnumName>",  \
-                                    "getValue",                         \
-                                    "Invalid Enum Value");              \
-            VLOG_F(2, "%s", message.c_str());                           \
-            throw std::runtime_error(message);                           \
+            ThorsLogAndThrow("ThorsAnvil::Serialize::Traits<EnumName>", \
+                             "getValue",                                \
+                             "Invalid Enum Value");                     \
         }                                                               \
         static std::size_t getPrintSize(PrinterInterface& printer, EnumName const& value, bool)\
         {                                                               \
@@ -806,12 +800,9 @@ class PolyMorphicRegistry
             auto     find       = cont.find(name);
             if (find == cont.end())
             {
-                std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                        "ThorsAnvil::Serialize::PolyMorphicRegistry",
-                                        "getNamedTypeConvertedTo",
-                                        "Non polymorphic type");
-                VLOG_F(2, "%s", message.c_str());
-                throw std::runtime_error(message);
+                ThorsLogAndThrow("ThorsAnvil::Serialize::PolyMorphicRegistry",
+                                 "getNamedTypeConvertedTo",
+                                 "Non polymorphic type");
             }
             void*       data        = find->second();
             AllocType*  dataBase    = reinterpret_cast<AllocType*>(data);

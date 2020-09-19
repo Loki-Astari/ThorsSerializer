@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 #include <iostream>
 #include <string>
 

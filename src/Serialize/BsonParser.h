@@ -20,7 +20,7 @@
 #include "Serialize.h"
 #include "BsonUtil.h"
 #include "ThorsIOUtil/Utility.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 #include <GitUtility/ieee754_types.h>
 #include <boost/endian/conversion.hpp>
 #include <istream>
@@ -129,12 +129,9 @@ class BsonParser: public ParserInterface
         [[noreturn]]
         void badType()
         {
-            std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                        "ThorsAnvil::Serialize::BsonParser",
-                                        "badType"
-                                        "Trying to read a type that we can can't convert.");
-            VLOG_F(2, "%s", message.c_str());
-            throw std::runtime_error(message);
+            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                             "badType",
+                             "Trying to read a type that we can can't convert.");
         }
 };
     }

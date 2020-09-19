@@ -1,7 +1,7 @@
 #include "SerializeConfig.h"
 #include "YamlParser.h"
 #include "ThorsIOUtil/Utility.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 
 using namespace ThorsAnvil::Serialize;
 
@@ -147,12 +147,9 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
     if (test())
     {
         error = true;
-        std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                    "ThorsAnvil::Serializer::YamlParser",
-                                    "generateParsingException",
-                                    msg);
-        VLOG_F(2, "%s", message.c_str());
-        throw std::runtime_error(message);
+        ThorsLogAndThrow("ThorsAnvil::Serializer::YamlParser",
+                         "generateParsingException",
+                         msg);
     }
 }
 
@@ -190,12 +187,9 @@ T YamlParser::scan()
     T   value = scanValue<T>(buffer, &end);
     if (buffer + length != end)
     {
-        std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                "ThorsAnvil::Serialize::YamlParser",
-                                "scan",
-                                "Not an integer");
-        VLOG_F(2, "%s", message.c_str());
-        throw std::runtime_error(message);
+        ThorsLogAndThrow("ThorsAnvil::Serialize::YamlParser",
+                         "scan",
+                         "Not an integer");
     }
     return value;
 }
@@ -231,12 +225,9 @@ void YamlParser::getValue(bool& value)
     }
     else
     {
-        std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                "ThorsAnvil::Serialize::YamlParser",
-                                "getValue",
-                                "Not a bool");
-        VLOG_F(2, "%s", message.c_str());
-        throw std::runtime_error(message);
+        ThorsLogAndThrow("ThorsAnvil::Serialize::YamlParser",
+                         "getValue",
+                         "Not a bool");
     }
 }
 

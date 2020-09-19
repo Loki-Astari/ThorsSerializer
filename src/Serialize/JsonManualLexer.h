@@ -3,7 +3,7 @@
 
 #include "Serialize.h"
 #include "ThorsIOUtil/Utility.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 #include <istream>
 
 namespace ThorsAnvil
@@ -49,12 +49,9 @@ inline T JsonManualLexer::scan()
     T value = scanValue<T>(&buffer[0], &end);
     if (buffer.size() == 0 || &buffer[0] + buffer.size() != end)
     {
-        std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                "ThorsAnvil::Serialize::JsonParser",
-                                "scan",
-                                "No data left to scan");
-        VLOG_F(2, "%s", message.c_str());
-        throw std::runtime_error(message);
+        ThorsLogAndThrow("ThorsAnvil::Serialize::JsonParser",
+                         "scan",
+                         "No data left to scan");
     }
     return value;
 }

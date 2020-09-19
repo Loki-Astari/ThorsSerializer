@@ -47,6 +47,9 @@ popd
 pushd third/ThorsStorage
 ./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
 popd
+pushd third/ThorsLogging
+./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
+popd
 
 
 AC_DEFINE([HEADER_ONLY], [0], [Enable to use header only libraries])

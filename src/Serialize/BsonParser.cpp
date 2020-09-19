@@ -3,7 +3,7 @@
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
 #include "ThorsIOUtil/Utility.h"
-#include "Logging/loguru.hpp"
+#include "ThorsLogging/ThorsLogging.h"
 #include <map>
 #include <cstdlib>
 #include <cstring>
@@ -135,15 +135,12 @@ ParserToken BsonParser::getNextToken()
         }
         default:
         {
-            std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                    "ThorsAnvil::Serialize::BsonParser",
-                                    "getNextToken",
-                                    "Invalid state reached in switch");
-            VLOG_F(2, "%s", message.c_str());
-            throw std::runtime_error(message);
+            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                             "getNextToken",
+                             "Invalid state reached in switch");
         }
     }
-    VLOG_F(5, "%s", getTokenTypeAsString(result));
+    VLOG_S(5) << getTokenTypeAsString(result);
     return result;
 }
 
@@ -184,12 +181,9 @@ void BsonParser::ignoreDataValue()
         case '\x05':    {std::size_t size = readSize<4, std::int32_t>();input.ignore(size + 1);  dataLeft.back() -= (size + 5);  break;}
         default:
         {
-            std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                    "ThorsAnvil::Serialize::BsonParser",
-                                    "ignoreDataValue",
-                                    "trying to ignore a non value");
-            VLOG_F(2, "%s", message.c_str());
-            throw std::runtime_error(message);
+            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                             "ignoreDataValue",
+                             "trying to ignore a non value");
         }
     }
 }
@@ -197,7 +191,7 @@ void BsonParser::ignoreDataValue()
 HEADER_ONLY_INCLUDE
 bool BsonParser::isEndOfContainer(std::size_t excess)
 {
-    VLOG_F(5, "%s%s%lu%s%lu", "isEndOfContainer: ", "dataLeft.back(): ", dataLeft.back(), " Excess: ", excess);
+    VLOG_S(5) << "isEndOfContainer: dataLeft.back(): " << dataLeft.back() << " Excess: " <<  excess;
     if (dataLeft.back() - excess  == 1)
     {
         switch (currentContainer.back())
@@ -221,22 +215,16 @@ void BsonParser::readEndOfContainer()
         dataLeft.back() -= 1;
         if (mark != '\x00')
         {
-            std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                    "ThorsAnvil::Serialize::BsonParser",
-                                    "readEndOfContainer",
-                                    "End of container marker should be '\\x00' but is >", static_cast<int>(mark), "<");
-            VLOG_F(2, "%s", message.c_str());
-            throw std::runtime_error(message);
+            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                             "readEndOfContainer",
+                             "End of container marker should be '\\x00' but is >", static_cast<int>(mark), "<");
         }
     }
     else
     {
-        std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                "ThorsAnvil::Serialize::BsonParser",
-                                "readEndOfContainer",
-                                "End of container marker should be '\\x00' but we failed to read any data from the stream");
-        VLOG_F(2, "%s", message.c_str());
-        throw std::runtime_error(message);
+        ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                         "readEndOfContainer",
+                         "End of container marker should be '\\x00' but we failed to read any data from the stream");
     }
 }
 
@@ -248,12 +236,9 @@ void BsonParser::readKey()
         dataLeft.back() -= (1 + nextKey.size() + 1);
         return;
     }
-    std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                            "ThorsAnvil::Serialize::BsonParser",
-                            "readKey",
-                            "Failed to read Key");
-    VLOG_F(2, "%s", message.c_str());
-    throw std::runtime_error(message);
+    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                     "readKey",
+                     "Failed to read Key");
 }
 
 HEADER_ONLY_INCLUDE
@@ -281,12 +266,9 @@ IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat()
         dataLeft.back() -= size;
         return result;
     }
-    std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                            "ThorsAnvil::Serialize::BsonParser",
-                            "readFloat",
-                            "Failed to read Float Value. Size: ", size);
-    VLOG_F(2, "%s", message.c_str());
-    throw std::runtime_error(message);
+    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                     "readFloat",
+                     "Failed to read Float Value. Size: ", size);
 }
 
 HEADER_ONLY_INCLUDE
@@ -298,12 +280,9 @@ bool BsonParser::readBool()
         dataLeft.back() -= 1;
         return result;
     }
-    std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                            "ThorsAnvil::Serialize::BsonParser",
-                            "readBool",
-                            "Failed to read Bool");
-    VLOG_F(2, "%s", message.c_str());
-    throw std::runtime_error(message);
+    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                     "readBool",
+                     "Failed to read Bool");
 }
 
 HEADER_ONLY_INCLUDE
@@ -317,12 +296,9 @@ std::size_t BsonParser::peekSize()
         input.seekg(pos);
         return boost::endian::little_to_native(size);
     }
-    std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                            "ThorsAnvil::Serialize::BsonParser",
-                            "peekSize",
-                            "Failed to peek at the size of the next object");
-    VLOG_F(2, "%s", message.c_str());
-    throw std::runtime_error(message);
+    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                     "peekSize",
+                     "Failed to peek at the size of the next object");
 }
 
 HEADER_ONLY_INCLUDE
@@ -337,12 +313,9 @@ std::string BsonParser::readString()
         result.resize(size - 1);
         return result;
     }
-    std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                            "ThorsAnvil::Serialize::BsonParser",
-                            "readString",
-                            "Failed to read String");
-    VLOG_F(2, "%s", message.c_str());
-    throw std::runtime_error(message);
+    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                     "readString",
+                     "Failed to read String");
 }
 
 HEADER_ONLY_INCLUDE
@@ -366,12 +339,9 @@ std::string BsonParser::readBinary()
             return result;
         }
     }
-    std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                            "ThorsAnvil::Serialize::BsonParser",
-                            "readKBinary",
-                            "Failed to read Binary Data");
-    VLOG_F(2, "%s", message.c_str());
-    throw std::runtime_error(message);
+    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                     "readKBinary",
+                     "Failed to read Binary Data");
 }
 
 HEADER_ONLY_INCLUDE
@@ -425,12 +395,9 @@ std::string BsonParser::getRawValue()
         case '\x05':         return readBinary();
         default:
         {
-            std::string message = ThorsAnvil::Utility::buildErrorMessage(
-                                    "ThorsAnvil::Serialize::BsonParser",
-                                    "getRawValue",
-                                    "Could not convert the data into raw output for some reason");
-            VLOG_F(2, "%s", message.c_str());
-            throw std::runtime_error(message);
+            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                             "getRawValue",
+                             "Could not convert the data into raw output for some reason");
         }
     }
 }
