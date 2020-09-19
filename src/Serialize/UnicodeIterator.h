@@ -19,6 +19,7 @@
  */
 
 #include "ThorsIOUtil/Utility.h"
+#include "Logging/loguru.hpp"
 #include <iterator>
 #include <vector>
 
@@ -41,10 +42,12 @@ inline long convertHexToDec(char x)
     {
         return 10 + (x - 'a');
     }
-    throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "convertHexToDec",
-                                                               "Invalid Hex Digit in unicode string")
-                                                              );
+    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                            "ThorsAnvil::Serialize",
+                            "convertHexToDec",
+                            "Invalid Hex Digit in unicode string");
+    VLOG_F(2, "%s", message.c_str());
+    throw std::runtime_error(message);
 }
 
 template<typename C>
@@ -69,10 +72,12 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, st
             {
                 if (x != '\\')
                 {
-                    throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "UnicodeIterator",
-                                                               "Push->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx")
-                                                              );
+                    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                                "ThorsAnvil::Serialize",
+                                                "UnicodeIterator",
+                                                "Push->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");
+                    VLOG_F(2, "%s", message.c_str());
+                    throw std::runtime_error(message);
                 }
                 --unicodeCount;
             }
@@ -80,10 +85,12 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, st
             {
                 if (x != 'u')
                 {
-                    throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "UnicodeIterator",
-                                                               "Push->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx")
-                                                              );
+                    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                                "ThorsAnvil::Serialize",
+                                                "UnicodeIterator",
+                                                "Push->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");
+                    VLOG_F(2, "%s", message.c_str());
+                    throw std::runtime_error(message);
                 }
                 --unicodeCount;
             }
@@ -125,10 +132,12 @@ struct UnicodePushBackIterator: std::iterator<std::output_iterator_tag, char, st
                         // Surrogate pair
                         if ((unicodeValue & 0xFC00FC00) != 0xD800DC00)
                         {
-                            throw std::runtime_error(
-                                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "UnicodeIterator",
-                                                                               "Push->Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx")
-                                                                              );
+                            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                                        "ThorsAnvil::Serialize",
+                                                        "UnicodeIterator",
+                                                        "Push->Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx");
+                            VLOG_F(2, "%s", message.c_str());
+                            throw std::runtime_error(message);
                         }
 
                         // Decode surrogate pair
@@ -191,10 +200,12 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
             ++iter;
             if (next != '"')
             {
-                throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::UnicodeWrapperIterator", "UnicodeWrapperIterator",
-                                                               "String does not start with a \" character")
-                                                              );
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                        "ThorsAnvil::Serialize::UnicodeWrapperIterator",
+                                        "UnicodeWrapperIterator",
+                                        "String does not start with a \" character");
+                VLOG_F(2, "%s", message.c_str());
+                throw std::runtime_error(message);
             }
             next = *iter;
             ++iter;
@@ -242,10 +253,12 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
         unsigned char result = next;
         if (result < 0x20)
         {
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::UnicodeWrapperIterator", "checkBuffer",
-                                                               "input character can not be smaller than 0x20")
-                                                              );
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::UnicodeWrapperIterator",
+                                    "checkBuffer",
+                                    "input character can not be smaller than 0x20");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
         }
         if (result != '\\')
         {
@@ -270,10 +283,12 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
             }
             default:
             {
-                throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::UnicodeWrapperIterator", "checkBuffer"
-                                                               "Escaped character must be one of [\"\\/bfnrtvu]")
-                                                              );
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                        "ThorsAnvil::Serialize::UnicodeWrapperIterator",
+                                        "checkBuffer"
+                                        "Escaped character must be one of [\"\\/bfnrtvu]");
+                VLOG_F(2, "%s", message.c_str());
+                throw std::runtime_error(message);
             }
         }
     }
@@ -314,19 +329,23 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
         ++iter;
         if (nextChar != '\\')
         {
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "UnicodeIterator",
-                                                               "Iter->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx")
-                                                              );
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize",
+                                    "UnicodeIterator",
+                                    "Iter->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
         }
         nextChar  = *iter;
         ++iter;
         if (nextChar != 'u')
         {
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "UnicodeIterator",
-                                                               "Iter->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx")
-                                                              );
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize",
+                                    "UnicodeIterator",
+                                    "Iter->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
         }
 
         unicodeValue = (unicodeValue << 16) + getUnicodeHex();
@@ -334,10 +353,12 @@ struct UnicodeWrapperIterator: std::iterator<std::input_iterator_tag, char, std:
         // Surrogate pair
         if ((unicodeValue & 0xFC00FC00) != 0xD800DC00)
         {
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "UnicodeIterator",
-                                                               "Iter->Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx")
-                                                              );
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize",
+                                    "UnicodeIterator",
+                                    "Iter->Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
         }
 
         // Decode surrogate pair

@@ -32,11 +32,39 @@ class Importer
 
                 deSerializer.parse(data.value);
             }
-            catch (...)
+            catch (std::exception const& e)
             {
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                            "ThorsAnvil::Serialize::Exporter",
+                                            "operator>>",
+                                            "Caught Exception: ", e.what());
+                VLOG_F(2, "%s", message.c_str());
                 stream.setstate(std::ios::failbit);
                 if (!data.config.catchExceptions)
                 {
+                    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                            "ThorsAnvil::Serialize::Exporter",
+                                            "operator<<",
+                                            "Rethrowing Exception");
+                    VLOG_F(2, "%s", message.c_str());
+                    throw;
+                }
+            }
+            catch (...)
+            {
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                            "ThorsAnvil::Serialize::Exporter",
+                                            "operator<<",
+                                            "Caught Exception: UNKNOWN");
+                VLOG_F(2, "%s", message.c_str());
+                stream.setstate(std::ios::failbit);
+                if (!data.config.catchExceptions)
+                {
+                    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                            "ThorsAnvil::Serialize::Exporter",
+                                            "operator<<",
+                                            "Rethrowing Exception: UNKNOWN");
+                    VLOG_F(2, "%s", message.c_str());
                     throw;
                 }
             }

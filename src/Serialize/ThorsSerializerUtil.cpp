@@ -1,6 +1,7 @@
 #include "SerializeConfig.h"
 #include "ThorsSerializerUtil.h"
 #include "ThorsIOUtil/Utility.h"
+#include "Logging/loguru.hpp"
 #include <string>
 
 #pragma vera-pushoff
@@ -16,10 +17,12 @@ void ParserInterface::ignoreValue()
 {
     if (config.parseStrictness != ParseType::Weak)
     {
-        throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreValue",
-                                                               "In Strict parser mode not allowed to ignore values.")
-                                                              );
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                "ThorsAnvil::Serialize::ParserInterface",
+                                "ignoreValue",
+                                "In Strict parser mode not allowed to ignore values.");
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
 
     ignoreTheValue();
@@ -33,10 +36,12 @@ void ParserInterface::ignoreTheMap()
         ignoreDataValue();
         if (token != ParserToken::Key)
         {
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheMap",
-                                                               "Invalid token found. (Expecting Key)")
-                                                              );
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::ParserInterface",
+                                    "ignoreTheMap",
+                                    "Invalid token found. (Expecting Key)");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
         }
         ignoreTheValue();
     }
@@ -51,28 +56,44 @@ void ParserInterface::ignoreTheArray()
         switch (token)
         {
             case ParserToken::Error:
-                throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheArray",
-                                                               "Invalid token found: Error")
-                                                              );
+            {
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                        "ThorsAnvil::Serialize::ParserInterface",
+                                        "ignoreTheArray",
+                                        "Invalid token found: Error");
+                VLOG_F(2, "%s", message.c_str());
+                throw std::runtime_error(message);
+            }
             case ParserToken::Key:
-                throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheArray",
-                                                               "Invalid token found: Key")
-                                                              );
+            {
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                        "ThorsAnvil::Serialize::ParserInterface",
+                                        "ignoreTheArray",
+                                        "Invalid token found: Key");
+                VLOG_F(2, "%s", message.c_str());
+                throw std::runtime_error(message);
+            }
             case ParserToken::MapEnd:
-                throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheArray",
-                                                               "Invalid token found: MapEnd")
-                                                              );
+            {
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                        "ThorsAnvil::Serialize::ParserInterface",
+                                        "ignoreTheArray",
+                                        "Invalid token found: MapEnd");
+                VLOG_F(2, "%s", message.c_str());
+                throw std::runtime_error(message);
+            }
             case ParserToken::Value:     ignoreDataValue(); break;
             case ParserToken::MapStart:  ignoreTheMap();    break;
             case ParserToken::ArrayStart:ignoreTheArray();  break;
             default:
-                throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheArray",
-                                                               "Invalid token found: Unknown")
-                                                              );
+            {
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                        "ThorsAnvil::Serialize::ParserInterface",
+                                        "ignoreTheArray",
+                                        "Invalid token found: Unknown");
+                VLOG_F(2, "%s", message.c_str());
+                throw std::runtime_error(message);
+            }
         }
         token = getNextToken();
     }
@@ -85,32 +106,52 @@ void ParserInterface::ignoreTheValue()
     switch (token)
     {
         case ParserToken::Error:
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheValue",
-                                                               "Invalid token found: Error")
-                                                              );
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::ParserInterface",
+                                    "ignoreTheValue",
+                                    "Invalid token found: Error");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
         case ParserToken::Key:
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheValue",
-                                                               "Invalid token found: Key")
-                                                              );
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::ParserInterface",
+                                    "ignoreTheValue",
+                                    "Invalid token found: Key");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
         case ParserToken::MapEnd:
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheValue",
-                                                               "Invalid token found: MapEnd")
-                                                              );
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::ParserInterface",
+                                    "ignoreTheValue",
+                                    "Invalid token found: MapEnd");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
         case ParserToken::ArrayEnd:
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheValue",
-                                                               "Invalid token found: ArrayEnd")
-                                                              );
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::ParserInterface",
+                                    "ignoreTheValue",
+                                    "Invalid token found: ArrayEnd");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
         case ParserToken::Value:     ignoreDataValue(); break;
         case ParserToken::MapStart:  ignoreTheMap();    break;
         case ParserToken::ArrayStart:ignoreTheArray();  break;
         default:
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "ignoreTheValue",
-                                                               "Invalid token found: Unknown")
-                                                              );
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::ParserInterface",
+                                    "ignoreTheValue",
+                                    "Invalid token found: Unknown");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
     }
 }

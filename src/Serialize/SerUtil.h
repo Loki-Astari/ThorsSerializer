@@ -6,6 +6,7 @@
 #include <utility>
 #include <string>
 #include "ThorsIOUtil/Utility.h"
+#include "Logging/loguru.hpp"
 #include <map>
 #include <unordered_map>
 #include <set>
@@ -119,10 +120,12 @@ class GetValueType<V, TraitType::Value>
         {
             if (parser.getToken() != ThorsAnvil::Serialize::ParserInterface::ParserToken::Value)
             {
-                throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serializer::SerMap::GetValueType", "GetValueType<Value>",
-                                                               "Expecting a normal value after the key")
-                                                              );
+                std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                        "ThorsAnvil::Serializer::SerMap::GetValueType",
+                                        "GetValueType<Value>",
+                                        "Expecting a normal value after the key");
+                VLOG_F(2, "%s", message.c_str());
+                throw std::runtime_error(message);
             }
             parser.getValue(value);
         }

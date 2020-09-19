@@ -1,6 +1,7 @@
 #include "SerializeConfig.h"
 #include "YamlParser.h"
 #include "ThorsIOUtil/Utility.h"
+#include "Logging/loguru.hpp"
 
 using namespace ThorsAnvil::Serialize;
 
@@ -146,7 +147,12 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
     if (test())
     {
         error = true;
-        throw std::runtime_error(ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serializer::YamlParser", "generateParsingException", msg));
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serializer::YamlParser",
+                                    "generateParsingException",
+                                    msg);
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
 }
 
@@ -184,10 +190,12 @@ T YamlParser::scan()
     T   value = scanValue<T>(buffer, &end);
     if (buffer + length != end)
     {
-        throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::YamlParser", "scan",
-                                                               "Not an integer")
-                                                              );
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                "ThorsAnvil::Serialize::YamlParser",
+                                "scan",
+                                "Not an integer");
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
     return value;
 }
@@ -223,10 +231,12 @@ void YamlParser::getValue(bool& value)
     }
     else
     {
-        throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::YamlParser", "getValue",
-                                                               "Not a bool")
-                                                              );
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                "ThorsAnvil::Serialize::YamlParser",
+                                "getValue",
+                                "Not a bool");
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
 }
 

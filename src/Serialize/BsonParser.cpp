@@ -3,12 +3,16 @@
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
 #include "ThorsIOUtil/Utility.h"
+#include "Logging/loguru.hpp"
 #include <map>
 #include <cstdlib>
 #include <cstring>
 
 using namespace ThorsAnvil::Serialize;
 using ParserToken = ParserInterface::ParserToken;
+
+
+char const* getTokenTypeAsString(ParserToken result);
 
 HEADER_ONLY_INCLUDE
 BsonParser::BsonParser(std::istream& stream, ParserConfig config)
@@ -57,7 +61,7 @@ ParserToken BsonParser::getNextToken()
         }
         case ParserToken::DocEnd:
         {
-            if (currentContainer.back() == BsonContainer::Value)
+            if (currentContainer.size() > 0 && currentContainer.back() == BsonContainer::Value)
             {
                 readEndOfContainer();
             }
@@ -118,7 +122,7 @@ ParserToken BsonParser::getNextToken()
             }
             if (currentContainerType == BsonContainer::Array || currentContainerType == BsonContainer::Value)
             {
-                return getNextToken();;
+                return getNextToken();
             }
             break;
             // Array and Value fall through to read the value we
@@ -130,28 +134,35 @@ ParserToken BsonParser::getNextToken()
             break;
         }
         default:
-
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "getNextToken",
-                                                               "Invalid state reached in switch")
-                                    );
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::BsonParser",
+                                    "getNextToken",
+                                    "Invalid state reached in switch");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
     }
-#if 0
+    VLOG_F(5, "%s", getTokenTypeAsString(result));
+    return result;
+}
+
+char const* getTokenTypeAsString(ParserToken result)
+{
     switch (result)
     {
-        case ParserToken::Error: std::cerr << "Error";
-        case ParserToken::DocStart:  std::cerr << "DocStart";    break;
-        case ParserToken::DocEnd:    std::cerr << "DocEnd";      break;
-        case ParserToken::MapStart:  std::cerr << "MapStart";    break;
-        case ParserToken::MapEnd:    std::cerr << "MapEnd";      break;
-        case ParserToken::ArrayStart:std::cerr << "ArrayStart";  break;
-        case ParserToken::ArrayEnd:  std::cerr << "ArrayEnd";    break;
-        case ParserToken::Key:       std::cerr << "Key";         break;
-        case ParserToken::Value:     std::cerr << "Value";       break;
+        case ParserToken::Error:     return "Error";
+        case ParserToken::DocStart:  return "DocStart";
+        case ParserToken::DocEnd:    return "DocEnd";
+        case ParserToken::MapStart:  return "MapStart";
+        case ParserToken::MapEnd:    return "MapEnd";
+        case ParserToken::ArrayStart:return "ArrayStart";
+        case ParserToken::ArrayEnd:  return "ArrayEnd";
+        case ParserToken::Key:       return "Key";
+        case ParserToken::Value:     return "Value";
+        default:
+            return "Unknown TYPE: SHOULD NOT HAPPEN";
     }
-    std::cerr << "\n";
-#endif
-    return result;
 }
 
 HEADER_ONLY_INCLUDE
@@ -161,7 +172,6 @@ void BsonParser::ignoreDataValue()
     {
         return;
     }
-    std::size_t size;
     switch (nextType)
     {
         case '\x01':    input.ignore(8);    dataLeft.back() -= 8;   break;
@@ -170,30 +180,31 @@ void BsonParser::ignoreDataValue()
         case '\x12':    input.ignore(8);    dataLeft.back() -= 8;   break;
         case '\x08':    input.ignore(1);    dataLeft.back() -= 1;   break;
         case '\x0A':                                                break;
-        case '\x02':    size = readSize<4, std::int32_t>();input.ignore(size);      dataLeft.back() -= (size + 4);  break;
-        case '\x05':    size = readSize<4, std::int32_t>();input.ignore(size + 1);  dataLeft.back() -= (size + 5);  break;
+        case '\x02':    {std::size_t size = readSize<4, std::int32_t>();input.ignore(size);      dataLeft.back() -= (size + 4);  break;}
+        case '\x05':    {std::size_t size = readSize<4, std::int32_t>();input.ignore(size + 1);  dataLeft.back() -= (size + 5);  break;}
         default:
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "ignoreDataValue",
-                                                                "trying to ignore a non value")
-                                    );
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::BsonParser",
+                                    "ignoreDataValue",
+                                    "trying to ignore a non value");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
     }
 }
 
 HEADER_ONLY_INCLUDE
 bool BsonParser::isEndOfContainer(std::size_t excess)
 {
+    VLOG_F(5, "%s%s%lu%s%lu", "isEndOfContainer: ", "dataLeft.back(): ", dataLeft.back(), " Excess: ", excess);
     if (dataLeft.back() - excess  == 1)
     {
         switch (currentContainer.back())
         {
             case BsonContainer::Map:    nextToken = ParserToken::MapEnd;    break;
             case BsonContainer::Array:  nextToken = ParserToken::ArrayEnd;  break;
-            case BsonContainer::Value:
-            {
-                nextToken = ParserToken::DocEnd;
-                break;
-            }
+            case BsonContainer::Value:  nextToken = ParserToken::DocEnd;    break;
         }
 
         return true;
@@ -204,24 +215,45 @@ bool BsonParser::isEndOfContainer(std::size_t excess)
 HEADER_ONLY_INCLUDE
 void BsonParser::readEndOfContainer()
 {
-    char    mark;
-    input.read(&mark, 1);
-    dataLeft.back() -= 1;
-    if (mark != '\x00')
+    char    mark = '\xFF';
+    if (input.read(&mark, 1))
     {
-        throw std::runtime_error(
-                ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "readEndOfContainer",
-                                                      "End of container marker should be '\\x00' but is >", static_cast<int>(mark), "<")
-                                );
+        dataLeft.back() -= 1;
+        if (mark != '\x00')
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::BsonParser",
+                                    "readEndOfContainer",
+                                    "End of container marker should be '\\x00' but is >", static_cast<int>(mark), "<");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
+    }
+    else
+    {
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                "ThorsAnvil::Serialize::BsonParser",
+                                "readEndOfContainer",
+                                "End of container marker should be '\\x00' but we failed to read any data from the stream");
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
 }
 
 HEADER_ONLY_INCLUDE
 void BsonParser::readKey()
 {
-    input.read(&nextType, 1);
-    std::getline(input, nextKey, '\0');
-    dataLeft.back() -= (1 + nextKey.size() + 1);
+    if (input.read(&nextType, 1) && std::getline(input, nextKey, '\0'))
+    {
+        dataLeft.back() -= (1 + nextKey.size() + 1);
+        return;
+    }
+    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                            "ThorsAnvil::Serialize::BsonParser",
+                            "readKey",
+                            "Failed to read Key");
+    VLOG_F(2, "%s", message.c_str());
+    throw std::runtime_error(message);
 }
 
 HEADER_ONLY_INCLUDE
@@ -244,18 +276,34 @@ template<std::size_t size>
 IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat()
 {
     IEEE_754::_2008::Binary<size * 8> result;
-    input.read(reinterpret_cast<char*>(&result), size);
-    dataLeft.back() -= size;
-    return result;
+    if (input.read(reinterpret_cast<char*>(&result), size))
+    {
+        dataLeft.back() -= size;
+        return result;
+    }
+    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                            "ThorsAnvil::Serialize::BsonParser",
+                            "readFloat",
+                            "Failed to read Float Value. Size: ", size);
+    VLOG_F(2, "%s", message.c_str());
+    throw std::runtime_error(message);
 }
 
 HEADER_ONLY_INCLUDE
 bool BsonParser::readBool()
 {
     bool result;
-    input.read(reinterpret_cast<char*>(&result) ,1);
-    dataLeft.back() -= 1;
-    return result;
+    if (input.read(reinterpret_cast<char*>(&result) ,1))
+    {
+        dataLeft.back() -= 1;
+        return result;
+    }
+    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                            "ThorsAnvil::Serialize::BsonParser",
+                            "readBool",
+                            "Failed to read Bool");
+    VLOG_F(2, "%s", message.c_str());
+    throw std::runtime_error(message);
 }
 
 HEADER_ONLY_INCLUDE
@@ -264,10 +312,17 @@ std::size_t BsonParser::peekSize()
     std::int32_t size;
 
     std::streampos pos = input.tellg();
-    input.read(reinterpret_cast<char*>(&size), 4);
-    input.seekg(pos);
-
-    return boost::endian::little_to_native(size);
+    if (input.read(reinterpret_cast<char*>(&size), 4))
+    {
+        input.seekg(pos);
+        return boost::endian::little_to_native(size);
+    }
+    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                            "ThorsAnvil::Serialize::BsonParser",
+                            "peekSize",
+                            "Failed to peek at the size of the next object");
+    VLOG_F(2, "%s", message.c_str());
+    throw std::runtime_error(message);
 }
 
 HEADER_ONLY_INCLUDE
@@ -276,10 +331,18 @@ std::string BsonParser::readString()
     std::int32_t size = readSize<4, std::int32_t>();
     dataLeft.back() -= 4;
     std::string     result(size, '\0');
-    input.read(&result[0], size);
-    dataLeft.back() -= size;
-    result.resize(size - 1);
-    return result;
+    if (input.read(&result[0], size))
+    {
+        dataLeft.back() -= size;
+        result.resize(size - 1);
+        return result;
+    }
+    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                            "ThorsAnvil::Serialize::BsonParser",
+                            "readString",
+                            "Failed to read String");
+    VLOG_F(2, "%s", message.c_str());
+    throw std::runtime_error(message);
 }
 
 HEADER_ONLY_INCLUDE
@@ -289,15 +352,26 @@ void BsonParser::readNull()
 HEADER_ONLY_INCLUDE
 std::string BsonParser::readBinary()
 {
-    std::int32_t size = readSize<4, std::int32_t>();
+    char            subType     = '\xFF';
+    std::int32_t    size        = readSize<4, std::int32_t>();
     dataLeft.back() -= 4;
-    char subType;
-    input.read(reinterpret_cast<char*>(&subType), 1);
-    dataLeft.back() -= 1;
-    std::string result(size, '\0');
-    input.read(&result[0], size);
-    dataLeft.back() -= size;
-    return result;
+
+    if (input.read(reinterpret_cast<char*>(&subType), 1))
+    {
+        dataLeft.back() -= 1;
+        std::string result(size, '\0');
+        if (input.read(&result[0], size))
+        {
+            dataLeft.back() -= size;
+            return result;
+        }
+    }
+    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                            "ThorsAnvil::Serialize::BsonParser",
+                            "readKBinary",
+                            "Failed to read Binary Data");
+    VLOG_F(2, "%s", message.c_str());
+    throw std::runtime_error(message);
 }
 
 HEADER_ONLY_INCLUDE
@@ -350,9 +424,13 @@ std::string BsonParser::getRawValue()
         }
         case '\x05':         return readBinary();
         default:
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonParser", "getRawValue",
-                                    "Could not convert the data into raw output for some reason")
-                                    );
+        {
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::BsonParser",
+                                    "getRawValue",
+                                    "Could not convert the data into raw output for some reason");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
+        }
     }
 }

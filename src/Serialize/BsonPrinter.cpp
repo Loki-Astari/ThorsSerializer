@@ -1,6 +1,7 @@
 #include "SerializeConfig.h"
 #include "BsonPrinter.h"
 #include "ThorsIOUtil/Utility.h"
+#include "Logging/loguru.hpp"
 #include "GitUtility/ieee754_types.h"
 #include <iomanip>
 #include <algorithm>
@@ -68,10 +69,12 @@ void BsonPrinter::addKey(std::string const& key)
 {
     if (currentContainer.back() != BsonContainer::Map)
     {
-        throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonPrinter", "addKey",
-                                                                "Adding a Key to a non map object")
-                                                              );
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                "ThorsAnvil::Serialize::BsonPrinter",
+                                "addKey",
+                                "Adding a Key to a non map object");
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
     currentKey = key;
 }
@@ -142,10 +145,12 @@ void BsonPrinter::closeMap()
 {
     if (currentContainer.back() != BsonContainer::Map)
     {
-        throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonPrinter", "closeMap",
-                                                             "Closing an unopened Map")
-                                                              );
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                "ThorsAnvil::Serialize::BsonPrinter",
+                                "closeMap",
+                                "Closing an unopened Map");
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
     output.write("",1);
     currentContainer.pop_back();
@@ -165,10 +170,12 @@ void BsonPrinter::closeArray()
 {
     if (currentContainer.back() != BsonContainer::Array)
     {
-        throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::BsonPrinter", "closeArray",
-                                                               "Closing an unopened Array")
-                                                              );
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                "ThorsAnvil::Serialize::BsonPrinter",
+                                "closeArray",
+                                "Closing an unopened Array");
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
     output.write("",1);
     currentContainer.pop_back();

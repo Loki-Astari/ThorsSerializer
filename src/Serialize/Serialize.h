@@ -32,8 +32,8 @@
  */
 
 #include "Traits.h"
-//#include "CustomSerialization.h"
 #include "ThorsIOUtil/Utility.h"
+#include "Logging/loguru.hpp"
 #include <iostream>
 #include <utility>
 
@@ -243,10 +243,12 @@ inline void ParserInterface::pushBackToken(ParserToken token)
 {
     if (pushBack != ParserToken::Error)
     {
-        throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::ParserInterface", "pushBackToken",
-                                                               "Push only allows for single push back. More than one token has been pushed back between reads.")
-                                                              );
+        std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                "ThorsAnvil::Serialize::ParserInterface",
+                                "pushBackToken",
+                                "Push only allows for single push back. More than one token has been pushed back between reads.");
+        VLOG_F(2, "%s", message.c_str());
+        throw std::runtime_error(message);
     }
     pushBack    = token;
 }
@@ -266,10 +268,12 @@ inline DeSerializer::DeSerializer(ParserInterface& parser, bool root)
         //  We will get that in the next version
         if (parser.getToken() != ParserToken::DocStart)
         {
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DeSerializer", "DeSerializer"
-                                                               "Invalid Doc Start")
-                                                              );
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::DeSerializer",
+                                    "DeSerializer"
+                                    "Invalid Doc Start");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
         }
     }
 }
@@ -279,10 +283,12 @@ inline DeSerializer::~DeSerializer() noexcept(false)
     {
         if (parser.getToken() != ParserToken::DocEnd)
         {
-            throw std::runtime_error(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize::DeSerializer", "~DeSerializer",
-                                                               "Expected Doc End")
-                                                              );
+            std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                                    "ThorsAnvil::Serialize::DeSerializer",
+                                    "~DeSerializer",
+                                    "Expected Doc End");
+            VLOG_F(2, "%s", message.c_str());
+            throw std::runtime_error(message);
         }
     }
 }

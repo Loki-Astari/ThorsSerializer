@@ -2,6 +2,7 @@
 #define THORS_ANVIL_SERIALIZER_THORSSERIALIZERUTIL_H
 
 #include "ThorsIOUtil/Utility.h"
+#include "Logging/loguru.hpp"
 #include <type_traits>
 #include <string>
 #include <iostream>
@@ -549,10 +550,12 @@ class CriticalException: public std::runtime_error
 template<typename T>
 auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size_t
 {
-    throw CriticalException(
-                        ThorsAnvil::Utility::buildErrorMessage("ThorsAnvil::Serialize", "tryGetSizeFromSerializeType",
-                                                               "BSON backward compatibility. See comments in function.")
-                                                              );
+    std::string message = ThorsAnvil::Utility::buildErrorMessage(
+                            "ThorsAnvil::Serialize",
+                            "tryGetSizeFromSerializeType",
+                            "BSON backward compatibility. See comments in function.");
+    VLOG_F(2, "%s", message.c_str());
+    throw CriticalException(message);
     // This function is needed for backward compatibility to make things compile without
     // requiring user code to be changed.
     //
