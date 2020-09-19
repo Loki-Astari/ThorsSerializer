@@ -5,6 +5,7 @@ COVERAGE_REQUIRED			= 70
 TARGET						= ThorSerialize.lib
 LINK_LIBS					= Logging
 UNITTEST_LINK_LIBS			= Logging
+UNITTEST_LDLIBS				= -ldl
 # There is no executable code in this header. Just an enum declaration.
 TEST_IGNORE					+= JsonLexemes.h
 
