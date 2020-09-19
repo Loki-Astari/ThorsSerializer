@@ -10,6 +10,6 @@
 [submodule "third/ThorsStorage"]
 	path = third/ThorsStorage
 	url = https://github.com/Loki-Astari/ThorsStorage.git
-[submodule "third/loguru"]
-	path = third/loguru
-	url = https://github.com/Loki-Astari/loguru.git
+[submodule "third/ThorsLogging"]
+	path = third/ThorsLogging
+	url = https://github.com/Loki-Astari/ThorsLogging.git
