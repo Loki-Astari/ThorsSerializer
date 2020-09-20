@@ -592,9 +592,18 @@ inline void DeSerializer::parse(T& object)
         DeSerializationForBlock<Traits<T>::type, T>     block(*this, parser);
         block.scanObject(object);
     }
+    catch (std::exception const& e)
+    {
+        root = false;
+        ThorsCatchMessage("ThorsAnvil::Serialize::DeSerializer", "parse", e.what());
+        ThorsRethrowMessage("ThorsAnvil::Serialize::DeSerializer", "parse", e.what());
+        throw;
+    }
     catch (...)
     {
         root = false;
+        ThorsCatchMessage("ThorsAnvil::Serialize::DeSerializer", "parse", "UNKNOWN");
+        ThorsRethrowMessage("ThorsAnvil::Serialize::DeSerializer", "parse", "UNKNOWN");
         throw;
     }
 }

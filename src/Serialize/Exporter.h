@@ -33,8 +33,10 @@ class Exporter
 
                 serializer.print(data.value);
             }
-            catch (ThorsAnvil::Logging::CriticalException const&)
+            catch (ThorsAnvil::Logging::CriticalException const& e)
             {
+                ThorsCatchMessage("ThorsAnvil::Serialize::Exporter", "operator<<", e.what());
+                ThorsRethrowMessage("ThorsAnvil::Serialize::Exporter", "operator<<", e.what());
                 // This exception is thrown because you are using deprecated code
                 // that was not designed to be used with the bsonExporter
                 // This must be fixed. So we are forcing a re-throw becuase
@@ -43,36 +45,21 @@ class Exporter
             }
             catch (std::exception const& e)
             {
-                VLOG_S(2) << ThorsAnvil::Utility::buildErrorMessage(
-                                            "ThorsAnvil::Serialize::Exporter",
-                                            "operator<<",
-                                            "Caught Exception: ", e.what());
+                ThorsCatchMessage("ThorsAnvil::Serialize::Exporter", "operator<<", e.what());
                 stream.setstate(std::ios::failbit);
                 if (!data.config.catchExceptions)
                 {
-                    VLOG_S(2) << ThorsAnvil::Utility::buildErrorMessage(
-                                            "ThorsAnvil::Serialize::Exporter",
-                                            "operator<<",
-                                            "Rethrowing Exception");
-                    std::cerr << "Exporter Rethrow std::exception\n";
+                    ThorsRethrowMessage("ThorsAnvil::Serialize::Exporter", "operator<<", e.what());
                     throw;
                 }
             }
             catch (...)
             {
-                 std::cerr << "Exporter catch unknown\n";
-                VLOG_S(2) << ThorsAnvil::Utility::buildErrorMessage(
-                                            "ThorsAnvil::Serialize::Exporter",
-                                            "operator<<",
-                                            "Caught Exception: UNKNOWN");
+                ThorsCatchMessage("ThorsAnvil::Serialize::Exporter", "operator<<", "UNKNOWN");
                 stream.setstate(std::ios::failbit);
                 if (!data.config.catchExceptions)
                 {
-                    VLOG_S(2) << ThorsAnvil::Utility::buildErrorMessage(
-                                            "ThorsAnvil::Serialize::Exporter",
-                                            "operator<<",
-                                            "Rethrowing Exception: UNKNOWN");
-                    std::cerr << "Exporter rethrow unknown\n";
+                    ThorsRethrowMessage("ThorsAnvil::Serialize::Exporter", "operator>>", "UNKNOWN");
                     throw;
                 }
             }

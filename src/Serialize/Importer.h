@@ -32,35 +32,33 @@ class Importer
 
                 deSerializer.parse(data.value);
             }
+            catch (ThorsAnvil::Logging::CriticalException const& e)
+            {
+                ThorsCatchMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
+                ThorsRethrowMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
+                // This exception is thrown because you are using deprecated code
+                // that was not designed to be used with the bsonExporter
+                // This must be fixed. So we are forcing a re-throw becuase
+                // the generated binary object is probably bad.
+                throw;
+            }
             catch (std::exception const& e)
             {
-                VLOG_S(2) << ThorsAnvil::Utility::buildErrorMessage(
-                                            "ThorsAnvil::Serialize::Exporter",
-                                            "operator>>",
-                                            "Caught Exception: ", e.what());
+                ThorsCatchMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
                 stream.setstate(std::ios::failbit);
                 if (!data.config.catchExceptions)
                 {
-                    VLOG_S(2) << ThorsAnvil::Utility::buildErrorMessage(
-                                            "ThorsAnvil::Serialize::Exporter",
-                                            "operator<<",
-                                            "Rethrowing Exception");
+                    ThorsRethrowMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
                     throw;
                 }
             }
             catch (...)
             {
-                VLOG_S(2) << ThorsAnvil::Utility::buildErrorMessage(
-                                            "ThorsAnvil::Serialize::Exporter",
-                                            "operator<<",
-                                            "Caught Exception: UNKNOWN");
+                ThorsCatchMessage("ThorsAnvil::Serialize::Importer", "operator>>", "UNKNOWN");
                 stream.setstate(std::ios::failbit);
                 if (!data.config.catchExceptions)
                 {
-                    VLOG_S(2) << ThorsAnvil::Utility::buildErrorMessage(
-                                            "ThorsAnvil::Serialize::Exporter",
-                                            "operator<<",
-                                            "Rethrowing Exception: UNKNOWN");
+                    ThorsRethrowMessage("ThorsAnvil::Serialize::Importer", "operator>>", "UNKNOWN");
                     throw;
                 }
             }
