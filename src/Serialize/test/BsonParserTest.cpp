@@ -1772,7 +1772,7 @@ TEST(BsonParserTest, getDataFromBool_e)
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
                   "\x08" "0\x00" "\x01"
-                  "\x08" "1\x00" "\x02"
+                  "\x08" "1\x00" "\x00"
                   "\x00";
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
     std::stringstream   stream(input);
@@ -1803,7 +1803,7 @@ TEST(BsonParserTest, getRawValue)
     static const char inputRaw[]
                 = "\x2F\x00\x00\x00"
                   "\x08" "0\x00" "\x01"
-                  "\x08" "1\x00" "\x02"
+                  "\x08" "1\x00" "\x00"
                   "\x10" "2\x00" "\x00\x00\x00\x00"
                   "\x01" "3\x00" "\xCD\xCC\xCC\xCC\xCC\xCC\x2E\x40"
                   "\x02" "4\x00" "\x09\x00\x00\x00" "The Best\x00"
