@@ -356,7 +356,7 @@ Int BsonParser::getIntValue()
 {
     if (nextType == '\x10')     {return readInt<4, std::int32_t>();}
     if (nextType == '\x12')     {return readInt<8, std::int64_t>();}
-    badType();
+    badType("Int(32 or 64)", nextType);
 }
 
 HEADER_ONLY_INCLUDE
@@ -369,7 +369,7 @@ Float BsonParser::getFloatValue()
 #if 0
     if (nextType == '\x13')     {return readFloat<16>();}
 #endif
-    badType();
+    badType("Float", nextType);
 }
 
 HEADER_ONLY_INCLUDE
