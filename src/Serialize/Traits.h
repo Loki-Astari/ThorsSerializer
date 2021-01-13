@@ -644,6 +644,9 @@ DO_ASSERT(EnumName)
 inline EnumName operator&(EnumName lhs, EnumName rhs){return static_cast<EnumName>(static_cast<unsigned int>(lhs) & static_cast<unsigned int>(rhs));}\
 inline EnumName operator|(EnumName lhs, EnumName rhs){return static_cast<EnumName>(static_cast<unsigned int>(lhs) | static_cast<unsigned int>(rhs));}\
 inline EnumName operator^(EnumName lhs, EnumName rhs){return static_cast<EnumName>(static_cast<unsigned int>(lhs) ^ static_cast<unsigned int>(rhs));}\
+inline EnumName operator&=(EnumName& lhs, EnumName rhs){lhs = lhs & rhs; return lhs;}\
+inline EnumName operator|=(EnumName& lhs, EnumName rhs){lhs = lhs | rhs; return lhs;}\
+inline EnumName operator^=(EnumName& lhs, EnumName rhs){lhs = lhs ^ rhs; return lhs;}\
 inline std::ostream& operator<<(std::ostream& stream, EnumName const& value)    \
 {                                                                               \
     if (value == EnumName::empty)                                               \
