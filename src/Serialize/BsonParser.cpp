@@ -171,19 +171,20 @@ void BsonParser::ignoreDataValue()
     }
     switch (nextType)
     {
-        case '\x01':    input.ignore(8);    dataLeft.back() -= 8;   break;
-        case '\x13':    input.ignore(16);   dataLeft.back() -= 16;  break;
-        case '\x10':    input.ignore(4);    dataLeft.back() -= 4;   break;
-        case '\x12':    input.ignore(8);    dataLeft.back() -= 8;   break;
-        case '\x08':    input.ignore(1);    dataLeft.back() -= 1;   break;
-        case '\x0A':                                                break;
-        case '\x02':    {std::size_t size = readSize<4, std::int32_t>();input.ignore(size);      dataLeft.back() -= (size + 4);  break;}
-        case '\x05':    {std::size_t size = readSize<4, std::int32_t>();input.ignore(size + 1);  dataLeft.back() -= (size + 5);  break;}
+        case '\x01':    input.ignore(8);    dataLeft.back() -= 8;   VLOG_S(5) << "Double-64";   break;
+        case '\x13':    input.ignore(16);   dataLeft.back() -= 16;  VLOG_S(5) << "Double-128";  break;
+        case '\x10':    input.ignore(4);    dataLeft.back() -= 4;   VLOG_S(5) << "Int-32";      break;
+        case '\x12':    input.ignore(8);    dataLeft.back() -= 8;   VLOG_S(5) << "Int-64";      break;
+        case '\x07':    input.ignore(12);   dataLeft.back() -= 12;  VLOG_S(5) << "Obj-ID";      break;
+        case '\x08':    input.ignore(1);    dataLeft.back() -= 1;   VLOG_S(5) << "Bool";        break;
+        case '\x0A':                                                VLOG_S(5) << "NULL";        break;
+        case '\x02':    {std::size_t size = readSize<4, std::int32_t>();input.ignore(size);      dataLeft.back() -= (size + 4);  VLOG_S(5) << "String";break;}
+        case '\x05':    {std::size_t size = readSize<4, std::int32_t>();input.ignore(size + 1);  dataLeft.back() -= (size + 5);  VLOG_S(5) << "Binary";break;}
         default:
         {
             ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
                              "ignoreDataValue",
-                             "trying to ignore a non value");
+                             "trying to ignore a non value. Type: ", static_cast<unsigned int>(static_cast<unsigned char>(nextType)));
         }
     }
 }
@@ -233,6 +234,7 @@ void BsonParser::readKey()
 {
     if (input.read(&nextType, 1) && std::getline(input, nextKey, '\0'))
     {
+        VLOG_S(5) << "Key: " << nextKey;
         dataLeft.back() -= (1 + nextKey.size() + 1);
         return;
     }
@@ -354,8 +356,8 @@ HEADER_ONLY_INCLUDE
 template<std::size_t Size, typename Int>
 Int BsonParser::getIntValue()
 {
-    if (nextType == '\x10')     {return readInt<4, std::int32_t>();}
-    if (nextType == '\x12')     {return readInt<8, std::int64_t>();}
+    if (nextType == '\x10')     {VLOG_S(5) << "Int-32"; return readInt<4, std::int32_t>();}
+    if (nextType == '\x12')     {VLOG_S(5) << "Int-64"; return readInt<8, std::int64_t>();}
     badType("Int(32 or 64)", nextType);
 }
 
@@ -363,9 +365,9 @@ HEADER_ONLY_INCLUDE
 template<std::size_t Size, typename Float>
 Float BsonParser::getFloatValue()
 {
-    if (nextType == '\x10')     {return readInt<4, std::int32_t>();}
-    if (nextType == '\x12')     {return readInt<8, std::int64_t>();}
-    if (nextType == '\x01')     {return readFloat<8>();}
+    if (nextType == '\x10')     {VLOG_S(5) << "Double-32";return readInt<4, std::int32_t>();}
+    if (nextType == '\x12')     {VLOG_S(5) << "Double-64";return readInt<8, std::int64_t>();}
+    if (nextType == '\x01')     {VLOG_S(5) << "Double-128";return readFloat<8>();}
 #if 0
     if (nextType == '\x13')     {return readFloat<16>();}
 #endif
@@ -377,22 +379,23 @@ std::string BsonParser::getRawValue()
 {
     switch (nextType)
     {
-        case '\x10':            return std::to_string(readInt<4, std::int32_t>());
-        case '\x12':            return std::to_string(readInt<8, std::int64_t>());
-        case '\x01':            return std::to_string(readFloat<8>());
+        case '\x10':            VLOG_S(5) << "Double-32";return std::to_string(readInt<4, std::int32_t>());
+        case '\x12':            VLOG_S(5) << "Double-64";return std::to_string(readInt<8, std::int64_t>());
+        case '\x01':            VLOG_S(5) << "Double-128";return std::to_string(readFloat<8>());
 #if 0
-        case '\x13':            return std::to_string(readFloat<16>());
+        case '\x13':            VLOG_S(5) << "Int-64";return std::to_string(readFloat<16>());
 #endif
-        case '\x08':            return readBool() ? "true" : "false";
-        case '\x0A':            readNull(); return "null";
+        case '\x08':            VLOG_S(5) << "Bool";return readBool() ? "true" : "false";
+        case '\x0A':            VLOG_S(5) << "Null";readNull(); return "null";
         case '\x02':
         {
 #pragma vera-pushoff
             using namespace std::string_literals;
 #pragma vera-pop
+            VLOG_S(5) << "String";
             return "\""s + readString() + "\"";
         }
-        case '\x05':         return readBinary();
+        case '\x05':         VLOG_S(5) << "Binary";return readBinary();
         default:
         {
             ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
