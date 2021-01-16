@@ -19,6 +19,8 @@
  *
  *      ThorsAnvil_MakeTraitCustomSerialize(Type, SerializableType)
  *
+ *      ThorsAnvil_MakeTraitName_Override(DataType, { <From>, <To>}... )
+ *      ThorsAnvil_Template_MakeTraitNameOverride(Count, DataType, { <From>, <To>}... )
  *
  * --------------------------------------------------------------------------
  *
@@ -84,6 +86,22 @@
  *
  *      The code will link with the most appropriate version:
  *
+ * Sometimes you can not use the key names you want (they are reserved words or contain
+ * symbols that are not valid in identifiers in C++). So we provide a way to override
+ * the member names supplied in the ThorsAnvil_MakeTrait() so they will be mapped to
+ * the appropriate key value in the JSON/BSON/YAML file.
+ *
+ *      ThorsAnvil_MakeTraitName_Override(DataType, { <From>, <To>}... )
+ *      ThorsAnvil_Template_MakeTraitNameOverride(Count, DataType, { <From>, <To>}... )
+ *
+ * Normally you would use ThorsAnvil_MakeTraitName_Override but if "DataType" is a template
+ * type then you will need to use the ThorsAnvil_Template_MakeTraitNameOverride and specify
+ * the number of template parameters in "Count".
+ *
+ *          DataType:               The type we are overrideing
+ *              { <From>, <To>}:    A set of mappings.
+ *                                      From: The C++ identifier.
+ *                                      To:   The Key used in the JSON/BSON/YAML file.
  *
  * --------------------------------------------------------------------------
  */
@@ -433,6 +451,49 @@ class Traits<DataType*>                                                 \
         static void release(T* p)   {ActionObj::release(p);}            \
 };                                                                      \
 }}
+
+#define ThorsAnvil_MakeTraitName_Override(...)                          \
+    ThorsAnvil_MakeTraitName_Override_Base(00,     __VA_ARGS__, {"", ""})
+#define ThorsAnvil_Template_MakeTraitNameOverride(Count, ...)           \
+    ThorsAnvil_MakeTraitName_Override_Base(Count, __VA_ARGS__, {"", ""})
+
+
+#define ThorsAnvil_MakeTraitName_Override_Base(Count, DataType, ...)    \
+namespace ThorsAnvil { namespace Serialize {                            \
+template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
+class TraitsMemberOverride<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
+{                                                                       \
+    public:                                                             \
+        static char const* nameOverride(char const* name)               \
+        {                                                               \
+            static auto hashCString = [](char const* str)               \
+            {                                                           \
+                std::hash<std::string_view>  viewHash;                  \
+                return viewHash(std::string_view(str));                 \
+            };                                                          \
+            static auto cmpCString = [](char const* lhs, char const* rhs)\
+            {                                                           \
+                return std::strcmp(lhs, rhs) == 0;                      \
+            };                                                          \
+            using OverrideMap = std::unordered_map<char const*, char const*, decltype(hashCString), decltype(cmpCString)>;   \
+            static OverrideMap overrideMap =                            \
+            {                                                           \
+                {__VA_ARGS__},                                          \
+                101 /* Prime */,                                        \
+                hashCString,                                            \
+                cmpCString                                              \
+            };                                                          \
+            auto find = overrideMap.find(name);                         \
+            if (find == overrideMap.end()) {                            \
+                return name;                                            \
+            }                                                           \
+            return find->second;                                        \
+        }                                                               \
+};                                                                      \
+}}                                                                      \
+static_assert(true, "")
+
+
 #define ThorsAnvil_MakeTrait_Base(ParentType, TType, Count, DataType, ...)  \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
@@ -738,6 +799,12 @@ class Traits
         // So I use a static member function with a static variable
         // which can be defined in-line within the traits class and
         // does not need a separate declaration in a compilation unit.
+};
+template<typename T>
+class TraitsMemberOverride
+{
+    public:
+        static char const* nameOverride(char const* name) {return name;}
 };
 
 
