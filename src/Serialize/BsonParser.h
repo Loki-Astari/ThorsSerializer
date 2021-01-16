@@ -127,7 +127,7 @@ class BsonParser: public ParserInterface
         std::string readBinary();
 
         [[noreturn]]
-        void badType(std::string const& expected, char got)
+        void badType(std::string const& expected, unsigned char got)
         {
             std::string gotName;
             switch (got)
