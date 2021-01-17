@@ -540,7 +540,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
             Members const& members = getMembers();                      \
             std::size_t result = 0;                                     \
             auto partSize = {std::size_t(0), addSizeOneMember(printer, object, std::get<Seq>(members).second)...};\
-            auto nameSize = {std::size_t(0), std::strlen(std::get<Seq>(members).first)...};\
+            auto nameSize = {std::size_t(0), std::strlen(TraitsMemberOverride<MyType>::nameOverride(std::get<Seq>(members).first))...};\
             for (auto val: partSize)                                     \
             {                                                           \
                 result += val;                                          \
