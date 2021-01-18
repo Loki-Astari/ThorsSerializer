@@ -92,7 +92,7 @@ TEST(Issue50Test, JsonCarPointer)
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Car","speed":16,"make":"Turbo"}})");
+    EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Car","make":"Turbo","speed":16}})");
 }
 
 TEST(Issue50Test, JsonBikePointer)
@@ -106,7 +106,7 @@ TEST(Issue50Test, JsonBikePointer)
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Bike","speed":18,"stroke":7}})");
+    EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Bike","stroke":7,"speed":18}})");
 }
 
 TEST(Issue50Test, JsonReadNull)
@@ -218,8 +218,8 @@ TEST(Issue50Test, BsonCarPointer)
                       "\x03" "transport\x00"
                             "\x3c\x00\x00\x00"
                             "\x02" "$type\x00"  "\x11\x00\x00\x00"  "Issue50Test::Car\x00"
-                            "\x10" "speed\x00"  "\x10\x00\x00\x00"
                             "\x02" "make\x00"   "\x06\x00\x00\x00"  "Turbo\x00"
+                            "\x10" "speed\x00"  "\x10\x00\x00\x00"
                             "\x00"
                       "\x00"s);
     //EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Car","speed":16,"make":"Turbo"}})");
@@ -240,8 +240,8 @@ TEST(Issue50Test, BsonBikePointer)
                       "\x03" "transport\x00"
                             "\x39\x00\x00\x00"
                             "\x02" "$type\x00"  "\x12\x00\x00\x00"  "Issue50Test::Bike\x00"
-                            "\x10" "speed\x00"  "\x12\x00\x00\x00"
                             "\x10" "stroke\x00" "\x07\x00\x00\x00"
+                            "\x10" "speed\x00"  "\x12\x00\x00\x00"
                             "\x00"
                       "\x00"s);
     //EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Bike","speed":18,"stroke":7}})");

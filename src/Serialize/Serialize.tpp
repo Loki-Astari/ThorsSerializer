@@ -833,30 +833,36 @@ class SerializerForBlock<TraitType::Array, T>
 template<typename T, typename M>
 SerializeMemberContainer<T, M>::SerializeMemberContainer(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    printer.addKey(ThorsAnvil::Serialize::TraitsMemberOverride<T>::nameOverride(memberInfo.first));
+    if (ThorsAnvil::Serialize::TraitsMemberFilter<T>::filter(object, memberInfo.first))
+    {
+        printer.addKey(ThorsAnvil::Serialize::TraitsMemberOverride<T>::nameOverride(memberInfo.first));
 
-    Serializer      serialzier(printer, false);
-    serialzier.print(object.*(memberInfo.second));
+        Serializer      serialzier(printer, false);
+        serialzier.print(object.*(memberInfo.second));
+    }
 }
 
 template<typename T, typename M, TraitType Type>
 SerializeMemberValue<T, M, Type>::SerializeMemberValue(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    init(parent, printer, memberInfo.first, object.*(memberInfo.second));
+    init(parent, printer, memberInfo.first, object, object.*(memberInfo.second));
 }
 
 template<typename T, typename M, TraitType Type>
-SerializeMemberValue<T, M, Type>::SerializeMemberValue(Serializer& parent, PrinterInterface& printer, T const&, std::pair<char const*, M*> const& memberInfo)
+SerializeMemberValue<T, M, Type>::SerializeMemberValue(Serializer& parent, PrinterInterface& printer, T const& object, std::pair<char const*, M*> const& memberInfo)
 {
-    init(parent, printer, memberInfo.first, *(memberInfo.second));
+    init(parent, printer, memberInfo.first, object, *(memberInfo.second));
 }
 
 template<typename T, typename M, TraitType Type>
-void SerializeMemberValue<T, M, Type>::init(Serializer& parent, PrinterInterface& printer, char const* member, M const& object)
+void SerializeMemberValue<T, M, Type>::init(Serializer& parent, PrinterInterface& printer, char const* member, T const& object, M const& value)
 {
-    printer.addKey(ThorsAnvil::Serialize::TraitsMemberOverride<T>::nameOverride(member));
-    SerializerForBlock<Type, M>  serializer(parent, printer, object);
-    serializer.printMembers();
+    if (ThorsAnvil::Serialize::TraitsMemberFilter<T>::filter(object, member))
+    {
+        printer.addKey(ThorsAnvil::Serialize::TraitsMemberOverride<T>::nameOverride(member));
+        SerializerForBlock<Type, M>  serializer(parent, printer, value);
+        serializer.printMembers();
+    }
 }
 
 template<typename T, typename M, TraitType Type = Traits<typename std::remove_cv<M>::type>::type>
@@ -929,12 +935,12 @@ struct IndexType<TraitType::Parent>
 template<typename T>
 inline void Serializer::printObjectMembers(T const& object)
 {
-    using IndexInfoType = typename IndexType<Traits<T>::type>::IndexInfoType;
+    printMembers(object, Traits<T>::getMembers());
 
+    using IndexInfoType = typename IndexType<Traits<T>::type>::IndexInfoType;
     ApplyActionToParent<Traits<T>::type, T, IndexInfoType>     parentPrinter;
 
     parentPrinter.printParentMembers(*this, object);
-    printMembers(object, Traits<T>::getMembers());
 }
 
     }

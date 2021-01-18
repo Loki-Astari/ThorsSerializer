@@ -11,9 +11,9 @@
 
 
 std::string const testData1 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done"})";
-std::string const testData2 = R"({"theInteger":456,"aNonRealValue":89.101,"test":false,"normalString":"Akinkthatisnotstraight","data1":1,"data2":2})";
+std::string const testData2 = R"({"data1":1,"data2":2,"theInteger":456,"aNonRealValue":89.101,"test":false,"normalString":"Akinkthatisnotstraight"})";
 std::string const testData3 = R"({"member1":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide"})"
-                              R"(,"member2":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide","data1":67,"data2":11}})";
+                              R"(,"member2":{"data1":67,"data2":11,"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide"}})";
 // testData4 is identical to testData1 but with several ignored fields added.
 std::string const testData4 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","ShouldIgnore":true, "ignoreMap": {"Plop":true}, "ignoreArray":[true, false, [1,2,34], {"key":"value"}]})";
 std::string const testData5 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","anotherValue":14})";
@@ -323,12 +323,12 @@ std::string const testData1Bson = "\x4a\x00\x00\x00"
                                   "\x00"s;
 //R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done"})";
 std::string const testData2Bson = "\x72\x00\x00\x00"
+                                  "\x10" "data1\x00"            "\x01\x00\x00\x00"
+                                  "\x10" "data2\x00"            "\x02\x00\x00\x00"
                                   "\x10" "theInteger\x00"       "\xC8\x01\x00\x00"
                                   "\x01" "aNonRealValue\x00"    "\x58\x39\xb4\xc8\x76\x46\x56\x40"
                                   "\x08" "test\x00"             "\x00"
                                   "\x02" "normalString\x00"     "\x17\x00\x00\x00" "Akinkthatisnotstraight\x00"
-                                  "\x10" "data1\x00"            "\x01\x00\x00\x00"
-                                  "\x10" "data2\x00"            "\x02\x00\x00\x00"
                                   "\x00"s;
 //R"({"theInteger":456,"aNonRealValue":89.101,"test":false,"normalString":"Akinkthatisnotstraight","data1":1,"data2":2})";
 std::string const testData3Bson = "\xE9\x00\x00\x00"
@@ -341,12 +341,12 @@ std::string const testData3Bson = "\xE9\x00\x00\x00"
                                       "\x00"
                                   "\x03" "member2\x00"
                                       "\x74\x00\x00\x00"
+                                      "\x10" "data1\x00"            "\x43\x00\x00\x00"
+                                      "\x10" "data2\x00"            "\x0B\x00\x00\x00"
                                       "\x10" "theInteger\x00"       "\x47\x94\x03\x00"
                                       "\x01" "aNonRealValue\x00"    "\xcd\xcc\xcc\xcc\xcc\xdc\x5e\x40"
                                       "\x08" "test\x00"             "\x01"
                                       "\x02" "normalString\x00"     "\x19\x00\x00\x00" "NotASquareAndOnlyOneSide\x00"
-                                      "\x10" "data1\x00"            "\x43\x00\x00\x00"
-                                      "\x10" "data2\x00"            "\x0B\x00\x00\x00"
                                       "\x00"
                                   "\x00"s;
 //R"({"member1":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide"})"

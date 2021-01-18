@@ -84,7 +84,7 @@ TEST(PolymorphicTest, JsonCarPointer)
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","make":"Turbo","speed":16}})");
 }
 
 TEST(PolymorphicTest, JsonBikePointer)
@@ -96,7 +96,7 @@ TEST(PolymorphicTest, JsonBikePointer)
     std::string result = data.str();
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
 }
 
 TEST(PolymorphicTest, JsonReadNull)
@@ -202,8 +202,8 @@ TEST(PolymorphicTest, BsonCarPointer)
                       "\x03" "transport\x00"
                             "\x41\x00\x00\x00"
                             "\x02" "__type\x00" "\x15\x00\x00\x00" "PolymorphicTest::Car\x00"
-                            "\x10" "speed\x00"  "\x10\x00\x00\x00"
                             "\x02" "make\x00"   "\x06\x00\x00\x00" "Turbo\x00"
+                            "\x10" "speed\x00"  "\x10\x00\x00\x00"
                             "\x00"
                       "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
@@ -225,8 +225,8 @@ TEST(PolymorphicTest, BsonBikePointer)
                       "\x03" "transport\x00"
                             "\x3E\x00\x00\x00"
                             "\x02" "__type\x00" "\x16\x00\x00\x00" "PolymorphicTest::Bike\x00"
-                            "\x10" "speed\x00"  "\x12\x00\x00\x00"
                             "\x10" "stroke\x00" "\x07\x00\x00\x00"
+                            "\x10" "speed\x00"  "\x12\x00\x00\x00"
                             "\x00"
                       "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);

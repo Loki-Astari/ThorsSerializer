@@ -22,6 +22,9 @@
  *      ThorsAnvil_MakeTraitName_Override(DataType, { <From>, <To>}... )
  *      ThorsAnvil_Template_MakeTraitNameOverride(Count, DataType, { <From>, <To>}... )
  *
+ *      ThorsAnvil_MakeTraitName_Filter(DataType, filter)
+ *      ThorsAnvil_Template_MakeTraitName_Filter(Count, DataType, filter)
+ *
  * --------------------------------------------------------------------------
  *
  *      [[Depricated]]
@@ -494,6 +497,28 @@ class TraitsMemberOverride<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACT
 static_assert(true, "")
 
 
+#define ThorsAnvil_MakeTraitName_Filter(DataType, member)               \
+    ThorsAnvil_MakeTraitName_Filter_Base(00,    DataType, member)
+#define ThorsAnvil_Template_MakeTraitName_Filter(Count, DataType, member)\
+    ThorsAnvil_MakeTraitName_Filter_Base(Count, DataType, member)
+
+
+#define ThorsAnvil_MakeTraitName_Filter_Base(Count, DataType, member)   \
+namespace ThorsAnvil { namespace Serialize {                            \
+template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
+class TraitsMemberFilter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
+{                                                                       \
+    public:                                                             \
+        static bool filter(DataType const& object, char const* name)    \
+        {                                                               \
+            auto find = object.member.find(name);                       \
+            return find == object.member.end() ? true : find->second;   \
+        }                                                               \
+};                                                                      \
+}}                                                                      \
+static_assert(true, "")
+
+
 #define ThorsAnvil_MakeTrait_Base(ParentType, TType, Count, DataType, ...)  \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
@@ -807,6 +832,12 @@ class TraitsMemberOverride
         static char const* nameOverride(char const* name) {return name;}
 };
 
+template<typename T>
+class TraitsMemberFilter
+{
+    public:
+        static constexpr bool filter(T const& /*object*/, char const* /*name*/)   {return true;}
+};
 
 /*
  * For object that are serialized as Json Array

@@ -43,7 +43,7 @@ TEST(RoundTripTest, JsonParent)
 
     stream << TA::jsonExporter(deri, PrinterInterface::OutputType::Stream);
 
-    std::string expected(R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
+    std::string expected(R"({"der":56789,"flt":234.875,"ace":10,"val":1024})");
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -136,7 +136,7 @@ TEST(RoundTripTest, YamlParent)
 
     stream << TA::yamlExporter(deri, PrinterInterface::OutputType::Stream);
 
-    std::string expected("--- {ace: 10, val: 1024, der: 56789, flt: 234.875}\n...\n");
+    std::string expected("--- {der: 56789, flt: 234.875, ace: 10, val: 1024}\n...\n");
 
     EXPECT_EQ(expected.size(), stream.str().size());
     for(int loop =0;loop < expected.size(); ++loop)
@@ -240,10 +240,10 @@ TEST(RoundTripTest, BsonParent)
     //std::string expected(R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
     static const char expectedRaw[]
                 = "\x2D\x00\x00\x00"        // Length
-                  "\x10" "ace\x00"  "\x0A\x00\x00\x00"
-                  "\x10" "val\x00"  "\x00\x04\x00\x00"
                   "\x10" "der\x00"  "\xD5\xDD\x00\x00"
                   "\x01" "flt\x00"  "\x00\x00\x00\x00\x00\x5C\x6D\x40"
+                  "\x10" "ace\x00"  "\x0A\x00\x00\x00"
+                  "\x10" "val\x00"  "\x00\x04\x00\x00"
                   "\x00";                   // Null Terminator
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
