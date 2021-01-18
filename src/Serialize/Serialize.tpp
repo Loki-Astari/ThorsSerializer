@@ -501,7 +501,7 @@ class DeSerializationForBlock<TraitType::Array, T>
 template<typename T, typename M>
 DeSerializeMemberContainer<T, M>::DeSerializeMemberContainer(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    if (key.compare(ThorsAnvil::Serialize::TraitsMemberOverride<T>::nameOverride(memberInfo.first)) == 0)
+    if (key.compare(ThorsAnvil::Serialize::Override<T>::nameOverride(memberInfo.first)) == 0)
     {
         used = true;
         DeSerializer    deSerializer(parser, false);
@@ -524,7 +524,7 @@ DeSerializeMemberValue<T, M, Type>::DeSerializeMemberValue(DeSerializer& parent,
 template<typename T, typename M, TraitType Type>
 void DeSerializeMemberValue<T, M, Type>::init(DeSerializer& parent, ParserInterface& parser, std::string const& key, char const* name, M& object)
 {
-    if (key.compare(ThorsAnvil::Serialize::TraitsMemberOverride<T>::nameOverride(name)) == 0)
+    if (key.compare(ThorsAnvil::Serialize::Override<T>::nameOverride(name)) == 0)
     {
         used = true;
         DeSerializationForBlock<Type, M>    deserializer(parent, parser);
@@ -833,9 +833,9 @@ class SerializerForBlock<TraitType::Array, T>
 template<typename T, typename M>
 SerializeMemberContainer<T, M>::SerializeMemberContainer(Serializer&, PrinterInterface& printer, T const& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    if (ThorsAnvil::Serialize::TraitsMemberFilter<T>::filter(object, memberInfo.first))
+    if (ThorsAnvil::Serialize::Filter<T>::filter(object, memberInfo.first))
     {
-        printer.addKey(ThorsAnvil::Serialize::TraitsMemberOverride<T>::nameOverride(memberInfo.first));
+        printer.addKey(ThorsAnvil::Serialize::Override<T>::nameOverride(memberInfo.first));
 
         Serializer      serialzier(printer, false);
         serialzier.print(object.*(memberInfo.second));
@@ -857,9 +857,9 @@ SerializeMemberValue<T, M, Type>::SerializeMemberValue(Serializer& parent, Print
 template<typename T, typename M, TraitType Type>
 void SerializeMemberValue<T, M, Type>::init(Serializer& parent, PrinterInterface& printer, char const* member, T const& object, M const& value)
 {
-    if (ThorsAnvil::Serialize::TraitsMemberFilter<T>::filter(object, member))
+    if (ThorsAnvil::Serialize::Filter<T>::filter(object, member))
     {
-        printer.addKey(ThorsAnvil::Serialize::TraitsMemberOverride<T>::nameOverride(member));
+        printer.addKey(ThorsAnvil::Serialize::Override<T>::nameOverride(member));
         SerializerForBlock<Type, M>  serializer(parent, printer, value);
         serializer.printMembers();
     }

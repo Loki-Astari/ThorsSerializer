@@ -24,8 +24,8 @@ struct OverrideTemplate
     std::string     deleteKey;
 };
 
-ThorsAnvil_MakeTraitName_Override(OverrideTest, {"percentKey", "%"}, {"deleteKey", "delete"});
-ThorsAnvil_Template_MakeTraitNameOverride(1, OverrideTemplate, {"percentKey", "%"}, {"deleteKey", "delete"});
+ThorsAnvil_MakeOverride(OverrideTest, {"percentKey", "%"}, {"deleteKey", "delete"});
+ThorsAnvil_Template_MakeOverride(1, OverrideTemplate, {"percentKey", "%"}, {"deleteKey", "delete"});
 ThorsAnvil_MakeTrait(OverrideTest, percentKey, deleteKey);
 ThorsAnvil_Template_MakeTrait(1, OverrideTemplate, percentKey, deleteKey);
 

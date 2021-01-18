@@ -19,11 +19,11 @@
  *
  *      ThorsAnvil_MakeTraitCustomSerialize(Type, SerializableType)
  *
- *      ThorsAnvil_MakeTraitName_Override(DataType, { <From>, <To>}... )
- *      ThorsAnvil_Template_MakeTraitNameOverride(Count, DataType, { <From>, <To>}... )
+ *      ThorsAnvil_MakeOverride(DataType, { <From>, <To>}... )
+ *      ThorsAnvil_Template_MakeOverride(Count, DataType, { <From>, <To>}... )
  *
- *      ThorsAnvil_MakeTraitName_Filter(DataType, filter)
- *      ThorsAnvil_Template_MakeTraitName_Filter(Count, DataType, filter)
+ *      ThorsAnvil_MakeFilter(DataType, filter)
+ *      ThorsAnvil_Template_MakeFilter(Count, DataType, filter)
  *
  * --------------------------------------------------------------------------
  *
@@ -94,11 +94,11 @@
  * the member names supplied in the ThorsAnvil_MakeTrait() so they will be mapped to
  * the appropriate key value in the JSON/BSON/YAML file.
  *
- *      ThorsAnvil_MakeTraitName_Override(DataType, { <From>, <To>}... )
- *      ThorsAnvil_Template_MakeTraitNameOverride(Count, DataType, { <From>, <To>}... )
+ *      ThorsAnvil_MakeOverride(DataType, { <From>, <To>}... )
+ *      ThorsAnvil_Template_MakeOverride(Count, DataType, { <From>, <To>}... )
  *
- * Normally you would use ThorsAnvil_MakeTraitName_Override but if "DataType" is a template
- * type then you will need to use the ThorsAnvil_Template_MakeTraitNameOverride and specify
+ * Normally you would use ThorsAnvil_MakeOverride but if "DataType" is a template
+ * type then you will need to use the ThorsAnvil_Template_MakeOverride and specify
  * the number of template parameters in "Count".
  *
  *          DataType:               The type we are overrideing
@@ -275,6 +275,7 @@
 #include <stdexcept>
 #include <cstddef>
 #include <cstring>
+#include <numeric>
 
 /*
  * Macros for counting the number of arguments
@@ -455,16 +456,16 @@ class Traits<DataType*>                                                 \
 };                                                                      \
 }}
 
-#define ThorsAnvil_MakeTraitName_Override(...)                          \
-    ThorsAnvil_MakeTraitName_Override_Base(00,     __VA_ARGS__, {"", ""})
-#define ThorsAnvil_Template_MakeTraitNameOverride(Count, ...)           \
-    ThorsAnvil_MakeTraitName_Override_Base(Count, __VA_ARGS__, {"", ""})
+#define ThorsAnvil_MakeOverride(...)                                    \
+    ThorsAnvil_MakeOverride_Base(00,     __VA_ARGS__, {"", ""})
+#define ThorsAnvil_Template_MakeOverride(Count, ...)                    \
+    ThorsAnvil_MakeOverride_Base(Count, __VA_ARGS__, {"", ""})
 
 
-#define ThorsAnvil_MakeTraitName_Override_Base(Count, DataType, ...)    \
+#define ThorsAnvil_MakeOverride_Base(Count, DataType, ...)              \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
-class TraitsMemberOverride<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
+class Override<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
 {                                                                       \
     public:                                                             \
         static char const* nameOverride(char const* name)               \
@@ -497,19 +498,19 @@ class TraitsMemberOverride<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACT
 static_assert(true, "")
 
 
-#define ThorsAnvil_MakeTraitName_Filter(DataType, member)               \
-    ThorsAnvil_MakeTraitName_Filter_Base(00,    DataType, member)
-#define ThorsAnvil_Template_MakeTraitName_Filter(Count, DataType, member)\
-    ThorsAnvil_MakeTraitName_Filter_Base(Count, DataType, member)
+#define ThorsAnvil_MakeFilter(DataType, member)                         \
+    ThorsAnvil_MakeFilter_Base(00,    DataType, member)
+#define ThorsAnvil_Template_MakeFilter(Count, DataType, member)         \
+    ThorsAnvil_MakeFilter_Base(Count, DataType, member)
 
 
-#define ThorsAnvil_MakeTraitName_Filter_Base(Count, DataType, member)   \
+#define ThorsAnvil_MakeFilter_Base(Count, DataType, member)             \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
-class TraitsMemberFilter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
+class Filter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
 {                                                                       \
     public:                                                             \
-        static bool filter(DataType const& object, char const* name)    \
+        static bool filter(DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) const& object, char const* name)    \
         {                                                               \
             auto find = object.member.find(name);                       \
             return find == object.member.end() ? true : find->second;   \
@@ -559,28 +560,30 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
             return Traits<MemberType>::getPrintSize(printer, object.*memPtr, false);\
         }                                                               \
                                                                         \
+        template<typename M>                                            \
+        static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, M item) \
+        {                                                               \
+            if (!Filter<MyType>::filter(object, item.first)) {          \
+                return std::make_pair(0UL,0UL);                         \
+            }                                                           \
+            auto partSize   = addSizeOneMember(printer, object, item.second);           \
+            auto nameSize   = std::strlen(Override<MyType>::nameOverride(item.first));  \
+            return std::make_pair(partSize + nameSize, 1);              \
+        }                                                               \
         template<std::size_t... Seq>                                    \
-        static std::size_t addSizeEachMember(PrinterInterface& printer, MyType const& object, std::index_sequence<Seq...> const&) \
+        static std::pair<std::size_t, std::size_t> addSizeEachMember(PrinterInterface& printer, MyType const& object, std::index_sequence<Seq...> const&) \
         {                                                               \
             Members const& members = getMembers();                      \
-            std::size_t result = 0;                                     \
-            auto partSize = {std::size_t(0), addSizeOneMember(printer, object, std::get<Seq>(members).second)...};\
-            auto nameSize = {std::size_t(0), std::strlen(TraitsMemberOverride<MyType>::nameOverride(std::get<Seq>(members).first))...};\
-            for (auto val: partSize)                                     \
-            {                                                           \
-                result += val;                                          \
-            }                                                           \
-            for (auto val: nameSize)                                     \
-            {                                                           \
-                result += val;                                          \
-            }                                                           \
-            return result;                                              \
+            auto sizeData = {std::make_pair(0UL, 0UL), addSizeEachMemberItem(printer, object, std::get<Seq>(members))...};              \
+            return std::accumulate(std::begin(sizeData), std::end(sizeData), std::make_pair(0UL, 0UL),                                  \
+                                   [](auto lhs, auto rhs){return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);});     \
         }                                                               \
                                                                         \
         static std::size_t getPrintSizeTotal(PrinterInterface& printer, MyType const& object, std::size_t& count, std::size_t& memberSize)\
         {                                                               \
-            count       += std::tuple_size_v<Members>;                  \
-            memberSize  += addSizeEachMember(printer, object, std::make_index_sequence<std::tuple_size_v<Members>>());\
+            auto r = addSizeEachMember(printer, object, std::make_index_sequence<std::tuple_size_v<Members>>());\
+            memberSize  += r.first;                                     \
+            count       += r.second;                                    \
                                                                         \
             CalcSizeHelper<MyType>  calcHelper;                         \
             return calcHelper.getPrintSize(printer, object, count, memberSize);\
@@ -826,14 +829,14 @@ class Traits
         // does not need a separate declaration in a compilation unit.
 };
 template<typename T>
-class TraitsMemberOverride
+class Override
 {
     public:
         static char const* nameOverride(char const* name) {return name;}
 };
 
 template<typename T>
-class TraitsMemberFilter
+class Filter
 {
     public:
         static constexpr bool filter(T const& /*object*/, char const* /*name*/)   {return true;}
