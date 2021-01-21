@@ -424,7 +424,7 @@
 
 #define THOR_TYPENAMEPARAMACTION(Ex, Id)        typename T ## Id
 #define THOR_TYPENAMEVALUEACTION(Ex, Id)        T ## Id
-#define THOR_TYPE_INT_VALUE(Ex, Id)             int
+#define THOR_TYPE_INT_VALUE(Ex, Id)             ThorsAnvil::Serialize::Fake ## Id
 #define THOR_CHECK_ASSERT(Ex, Id)
 #define LAST_THOR_TYPENAMEPARAMACTION(Ex, Id)
 #define LAST_THOR_TYPENAMEVALUEACTION(Ex, Id)
@@ -956,6 +956,62 @@ struct ThorsAnvil_InitPolyMorphicType<T, false>
 {
     ThorsAnvil_InitPolyMorphicType(char const*){}
 };
+
+struct Fake1{};
+struct Fake2{};
+struct Fake3{};
+struct Fake4{};
+struct Fake5{};
+struct Fake6{};
+struct Fake7{};
+struct Fake8{};
+struct Fake9{};
+struct Fake10{};
+struct Fake11{};
+struct Fake12{};
+struct Fake13{};
+struct Fake14{};
+struct Fake15{};
+struct Fake16{};
+struct Fake17{};
+struct Fake18{};
+struct Fake19{};
+struct Fake20{};
+struct Fake21{};
+struct Fake22{};
+struct Fake23{};
+struct Fake24{};
+struct Fake25{};
+struct Fake26{};
+struct Fake27{};
+struct Fake28{};
+struct Fake29{};
+struct Fake30{};
+struct Fake31{};
+struct Fake32{};
+struct Fake33{};
+struct Fake34{};
+struct Fake35{};
+struct Fake36{};
+struct Fake37{};
+struct Fake38{};
+struct Fake39{};
+struct Fake40{};
+struct Fake41{};
+struct Fake42{};
+struct Fake43{};
+struct Fake44{};
+struct Fake45{};
+struct Fake46{};
+struct Fake47{};
+struct Fake48{};
+struct Fake49{};
+struct Fake50{};
+struct Fake51{};
+struct Fake52{};
+struct Fake53{};
+struct Fake54{};
+struct Fake55{};
 
 
     }
