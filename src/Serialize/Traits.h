@@ -424,9 +424,11 @@
 
 #define THOR_TYPENAMEPARAMACTION(Ex, Id)        typename T ## Id
 #define THOR_TYPENAMEVALUEACTION(Ex, Id)        T ## Id
+#define THOR_TYPE_INT_VALUE(Ex, Id)             int
 #define THOR_CHECK_ASSERT(Ex, Id)
 #define LAST_THOR_TYPENAMEPARAMACTION(Ex, Id)
 #define LAST_THOR_TYPENAMEVALUEACTION(Ex, Id)
+#define LAST_THOR_TYPE_INT_VALUE(Ex, Id)
 #define LAST_THOR_CHECK_ASSERT(Ex, Id)          DO_ASSERT(Ex)
 
 
@@ -438,9 +440,10 @@
  * Defines a trait for a user defined type.
  * Lists the members of the type that can be serialized.
  */
-#define DO_ASSERT(DataType)                                             \
+#define DO_ASSERT(DataType)             DO_ASSERT_WITH_TEMPLATE(DataType, 00)
+#define DO_ASSERT_WITH_TEMPLATE(DataType, Count)                        \
 static_assert(                                                          \
-    ::ThorsAnvil::Serialize::Traits<DataType>::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
+    ::ThorsAnvil::Serialize::Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPE_INT_VALUE, Count) >::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
 )
 
@@ -595,7 +598,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
         }                                                               \
 };                                                                      \
 }}                                                                      \
-ALT_REP_OF_N(THOR_CHECK_ASSERT, DataType, , , Count)
+DO_ASSERT_WITH_TEMPLATE(DataType, Count)
 
 #define ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, ...)      \
     ThorsAnvil_RegisterPolyMorphicType(DataType)
@@ -614,11 +617,11 @@ namespace                                                               \
                                                             using Root   = typename GetRootType<ParentType>::Root;
 
 #define ThorsAnvil_Template_MakeTrait(Count, ...)                       \
-    ThorsAnvil_MakeTrait_Base( , Map, Count, __VA_ARGS__, 1)            \
+    ThorsAnvil_MakeTrait_Base( , Map, Count, __VA_ARGS__, 1);           \
     static_assert(true, "")
 
 #define ThorsAnvil_MakeTrait(...)                                       \
-    ThorsAnvil_MakeTrait_Base( , Map, 00, __VA_ARGS__, 1);               \
+    ThorsAnvil_MakeTrait_Base( , Map, 00, __VA_ARGS__, 1);              \
     ThorsAnvil_RegisterPolyMorphicType_Internal(__VA_ARGS__, 1)         \
     static_assert(true, "")
 
@@ -666,7 +669,7 @@ class Traits<DataType>                                                  \
 DO_ASSERT(DataType)
 
 #define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(Count, ParentType, __VA_ARGS__, 1), Parent, Count, __VA_ARGS__, 1) \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(Count, ParentType, __VA_ARGS__, 1), Parent, Count, __VA_ARGS__, 1); \
     static_assert(true, "")
 
 #define ThorsAnvil_ExpandTrait(ParentType, ...)                     ThorsAnvil_ExpandTrait_Base(ParentType, __VA_ARGS__, 1)
@@ -704,7 +707,7 @@ class Traits<EnumName>                                                  \
         {                                                               \
             return NUM_ARGS(__VA_ARGS__, 1);                            \
         }                                                               \
-        static EnumName getValue(std::string const& val, std::string const& msg) \
+        static EnumName getValue(std::string const& val, std::string const&) \
         {                                                               \
             std::map<EnumName, std::string> const& values = getValues();\
             for (auto const& value: values)                             \
