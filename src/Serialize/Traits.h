@@ -577,7 +577,10 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
         static std::pair<std::size_t, std::size_t> addSizeEachMember(PrinterInterface& printer, MyType const& object, std::index_sequence<Seq...> const&) \
         {                                                               \
             Members const& members = getMembers();                      \
-            auto sizeData = {std::make_pair(0UL, 0UL), addSizeEachMemberItem(printer, object, std::get<Seq>(members))...};              \
+            std::initializer_list<std::pair<std::size_t, std::size_t>>  sizeData = {    \
+                std::make_pair(std::size_t{0}, std::size_t{0}),                         \
+                addSizeEachMemberItem(printer, object, std::get<Seq>(members))...       \
+            };                                                          \
             return std::accumulate(std::begin(sizeData), std::end(sizeData), std::make_pair(0UL, 0UL),                                  \
                                    [](auto lhs, auto rhs){return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);});     \
         }                                                               \
