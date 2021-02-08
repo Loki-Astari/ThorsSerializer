@@ -109,7 +109,7 @@ extern std::string const defaultPolymorphicMarker;
 /*
  * Defines the generic type that all serialization types can expand on
  */
-enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Custom_Depricated, Custom_Serialize};
+enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Reference, Custom_Depricated, Custom_Serialize};
 enum class FormatType{Json, Yaml, Bson};
 
 template<typename T>

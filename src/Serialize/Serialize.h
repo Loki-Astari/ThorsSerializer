@@ -206,6 +206,12 @@ struct TraitsInfo<T, M, TraitType::Enum>
     using SerializeMember       = SerializeMemberValue<T, M, TraitType::Enum>;
 };
 template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Reference>
+{
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Reference>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Reference>;
+};
+template<typename T, typename M>
 struct TraitsInfo<T, M, TraitType::Pointer>
 {
     using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Pointer>;

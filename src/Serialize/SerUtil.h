@@ -19,6 +19,7 @@
 #include <initializer_list>
 #include <memory>
 #include <cstring>
+#include <functional>
 
 /*
  * Container Types:
@@ -57,6 +58,7 @@
  * Traits<std::initializer_list<T>>
  *
  * Traits<std::unique_ptr<T>>
+ * Traits<std::reference_wrapper<T>>
  */
 
 namespace ThorsAnvil
@@ -923,6 +925,17 @@ class Traits<std::shared_ptr<T>>
         }
 };
 
+template<typename T>
+class Traits<std::reference_wrapper<T>>
+{
+    public:
+        using RefType = T;
+        static constexpr TraitType type = TraitType::Reference;
+        static std::size_t getPrintSize(PrinterInterface& printer, std::reference_wrapper<T> const& object, bool p)
+        {
+            return Traits<T>::getPrintSize(printer, object, p);
+        }
+};
 
     }
 }

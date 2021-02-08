@@ -49,6 +49,12 @@ struct BsonBaseTypeGetter<T, TraitType::Array>
     static void validate(T const&){}
 };
 template<typename T>
+struct BsonBaseTypeGetter<T, TraitType::Reference>
+{
+    static constexpr BsonContainer value = BsonContainer::Array;
+    static void validate(T const&){}
+};
+template<typename T>
 struct BsonBaseTypeGetter<T, TraitType::Pointer>
 {
     using ElementType = typename std::pointer_traits<T>::element_type;

@@ -417,6 +417,23 @@ class DeSerializationForBlock<TraitType::Pointer, T>
             tryParsePolyMorphicObject(parent, parser, object, 0);
         }
 };
+template<typename T>
+class DeSerializationForBlock<TraitType::Reference, T>
+{
+    DeSerializer&       parent;
+    ParserInterface&    parser;
+    public:
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
+        {}
+        void scanObject(T& object)
+        {
+            using RefType = typename Traits<T>::RefType;
+            DeSerializationForBlock<Traits<RefType>::type, RefType>    deserializer(parent, parser);
+            deserializer.scanObject(object.get());
+        }
+};
 /*
  * Specialization for Enum.
  * This is only used at the top level.
@@ -777,6 +794,26 @@ class SerializerForBlock<TraitType::Pointer, T>
                 // Use SFINAE to call one of two versions of the function.
                 tryPrintPolyMorphicObject(parent, printer, object, 0);
             }
+        }
+};
+template<typename T>
+class SerializerForBlock<TraitType::Reference, T>
+{
+    Serializer&         parent;
+    PrinterInterface&   printer;
+    T const&            object;
+    public:
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object, bool /*poly*/ = false)
+            : parent(parent)
+            , printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()   {}
+        void printMembers()
+        {
+            using RefType = typename Traits<T>::RefType;
+            SerializerForBlock<Traits<RefType>::type, RefType>        serializer(parent, printer, object.get());
+            serializer.printMembers();
         }
 };
 
