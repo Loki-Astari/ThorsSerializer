@@ -5237,19 +5237,21 @@ fi
 
 
 
+    yaml_ROOT_DIR=""
+    yaml_ROOT_LIB=""
 
 # Check whether --with-yamlroot was given.
 if test "${with_yamlroot+set}" = set; then :
   withval=$with_yamlroot;
 fi
 
-        if test "${with_yamlroot}" == ""; then
-            with_yamlroot="/usr/local"
-        fi
-        ORIG_LDFLAGS="${LDFLAGS}"
-        LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
+    if test "${with_yamlroot}" == ""; then
+        with_yamlroot="/usr/local"
+    fi
+    ORIG_LDFLAGS="${LDFLAGS}"
+    LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
 $as_echo_n "checking for yaml_parser_initialize in -lyaml... " >&6; }
 if ${ac_cv_lib_yaml_yaml_parser_initialize+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -5290,10 +5292,8 @@ if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes; then :
 
 $as_echo "#define HAVE_YAML 1" >>confdefs.h
 
-                yaml_ROOT_DIR=$with_yamlroot
-
-                yaml_ROOT_LIB=yaml
-
+            yaml_ROOT_DIR="${with_yamlroot}"
+            yaml_ROOT_LIB="yaml"
 
 else
   as_fn_error 1 "
@@ -5310,12 +5310,16 @@ If you do not want to use yaml serialization then it
 can be disabled with:
     --disable-yaml
 
-                " "$LINENO" 5
+            " "$LINENO" 5
 
 fi
 
 
-        LDFLAGS="${ORIG_LDFLAGS}"
+    LDFLAGS="${ORIG_LDFLAGS}"
+    yaml_ROOT_DIR=${yaml_ROOT_DIR}
+
+    yaml_ROOT_LIB=${yaml_ROOT_LIB}
+
 
 
     THOR_TARGETLIBS=""
