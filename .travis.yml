@@ -6,7 +6,7 @@ before_install:
 install:
     - ./.build/travis/setup ${TRAVIS_OS_NAME}
 script:
-    - "./configure --with-boost=/tmp/extra --disable-binary"
+    - "./configure --with-boost=/tmp/extra --disable-binary  --enable-verapython2"
     - export PATH=${PATH}:$(pwd)/build/bin;make
 after_success:
     - ./CreateHeaderOnly  master
