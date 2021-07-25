@@ -833,6 +833,7 @@ enable_option_checking
 with_boost
 with_boost_libdir
 with_boost_python
+enable_verapython2
 enable_vera
 with_hostbuild
 with_yamlroot
@@ -1488,6 +1489,8 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-verapython2    Set up building for the travis environment
+
   --disable-vera          Disable vera. Disable Static analysis of source.
 
   --enable-shared[=PKGS]  build shared libraries [default=yes]
@@ -2940,7 +2943,21 @@ ln -s .build build | echo "Build Already Setup"
 
 
 
-    export PYTHON_VERSION=3.9
+    if test "x$enable_verapython2" == "xyes"
+then :
+
+            # Do nothing
+            # The default action on most systems is to use python 2
+            # This is used by third/vera-install
+            export PYTHON_MIN_VERSION=2.0
+
+else $as_nop
+
+            export PYTHON_VERSION=3.9
+            export PYTHON_MIN_VERSION=3.9
+
+
+fi
 
 
 
@@ -5856,8 +5873,23 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-
+    subconfigure=""
     git submodule update --init --recursive
+
+    # Check whether --enable-verapython2 was given.
+if test ${enable_verapython2+y}
+then :
+  enableval=$enable_verapython2;
+fi
+
+    if test "x$enable_verapython2" == "xyes"
+then :
+
+            subconfigure="${subconfigure} --enable-verapython2"
+
+
+fi
+
 
     # Check whether --enable-vera was given.
 if test ${enable_vera+y}
@@ -5867,12 +5899,11 @@ fi
 
 
     VERATOOL="";
-    subconfigvera=""
     if test "x$enable_vera" == "xno"
 then :
 
             VERATOOL='off';
-            subconfigvera="--disable-vera";
+            subconfigure="${subconfigure} --disable-vera";
 
 else $as_nop
 
@@ -5916,11 +5947,34 @@ fi
     if test "x${with_hostbuild}" != "x"
 then :
 
+            echo "Using Existing Host Build Tools: ${with_hostbuild}"
             rm build
             ln -s ${with_hostbuild} build
+            ls -la build
 
 
 fi
+
+
+    export cwd=$(pwd)
+
+    pushd third
+    if [ $? == 0 ]; then
+        for third in $(ls); do
+            pushd ${third}
+            if [ -e ./configure ]; then
+                echo "${third}:  ./configure ${subconfigure} --prefix=${prefix} --with-hostbuild=${cwd}/build"
+                ./configure ${subconfigure} --prefix=${prefix} --with-hostbuild=${cwd}/build
+                if [ $? != 0 ]; then
+                    "Failed to configure: ${third}"
+                    exit 1
+                fi
+            fi
+            echo "================ DONE ================="
+            popd
+        done
+        popd
+    fi
 
 
     if test "x${with_hostbuild}" == "x"
@@ -18527,18 +18581,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 # Only expand once:
 
-
-
-export cwd=`pwd`
-pushd third/ThorsIOUtil
-./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
-popd
-pushd third/ThorsStorage
-./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
-popd
-pushd third/ThorsLogging
-./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
-popd
 
 
 

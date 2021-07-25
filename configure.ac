@@ -40,18 +40,6 @@ int main() {
 
 LT_INIT
 
-export cwd=`pwd`
-pushd third/ThorsIOUtil
-./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
-popd
-pushd third/ThorsStorage
-./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
-popd
-pushd third/ThorsLogging
-./configure --prefix=${prefix} --with-hostbuild=${cwd}/build ${subconfigvera}
-popd
-
-
 AC_DEFINE([HEADER_ONLY], [0], [Enable to use header only libraries])
 AC_DEFINE([HEADER_ONLY_INCLUDE], [], [For header only convery to inline])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
