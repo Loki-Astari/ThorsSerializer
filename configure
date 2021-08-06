@@ -4022,6 +4022,11 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
+    if test "$PYTHON_VERSION" != "IGNORE"
+then :
+
+
 	#
 	# Allow the use of a (user set) custom python version
 	#
@@ -4372,6 +4377,9 @@ See \`config.log' for more details" "$LINENO" 5; }
 	#
 	# all done!
 	#
+
+
+fi
 
 
 
@@ -5905,6 +5913,7 @@ then :
 
             VERATOOL='off';
             subconfigure="${subconfigure} --disable-vera";
+            PYTHON_VERSION=IGNORE
 
 else $as_nop
 
