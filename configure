@@ -4457,7 +4457,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-    for ac_prog in unzip
+    for ac_prog in bzip2
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -4506,7 +4506,7 @@ done
 test -n "$UNZIP" || UNZIP=":"
 
     if test "$UNZIP" = :; then
-        as_fn_error $? "The build tools needs unzip. Please install it." "$LINENO" 5
+        as_fn_error $? "The build tools needs bzip2. Please install it." "$LINENO" 5
     fi
     if test "x${enable_vera}" != "xno"
 then :
