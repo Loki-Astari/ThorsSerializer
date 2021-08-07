@@ -162,6 +162,54 @@ class BsonParser: public ParserInterface
                              "Expected: ", expected, " Got: ", gotName, " : ", got);
         }
 };
+
+template<std::size_t size, typename Int>
+inline Int BsonParser::readSize()
+{
+    return readLE<size, Int>();
+}
+
+template<std::size_t size, typename Int>
+inline Int BsonParser::readInt()
+{
+    dataLeft.back() -= size;
+    return readLE<size, Int>();
+}
+
+template<std::size_t size>
+inline IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat()
+{
+    IEEE_754::_2008::Binary<size * 8> result;
+    if (input.read(reinterpret_cast<char*>(&result), size))
+    {
+        dataLeft.back() -= size;
+        return result;
+    }
+    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
+                     "readFloat",
+                     "Failed to read Float Value. Size: ", size);
+}
+
+template<std::size_t Size, typename Int>
+inline Int BsonParser::getIntValue()
+{
+    if (nextType == '\x10')     {VLOG_S(5) << "Int-32"; return readInt<4, std::int32_t>();}
+    if (nextType == '\x12')     {VLOG_S(5) << "Int-64"; return readInt<8, std::int64_t>();}
+    badType("Int(32 or 64)", nextType);
+}
+
+template<std::size_t Size, typename Float>
+inline Float BsonParser::getFloatValue()
+{
+    if (nextType == '\x10')     {VLOG_S(5) << "Double-32";return readInt<4, std::int32_t>();}
+    if (nextType == '\x12')     {VLOG_S(5) << "Double-64";return readInt<8, std::int64_t>();}
+    if (nextType == '\x01')     {VLOG_S(5) << "Double-128";return readFloat<8>();}
+#if 0
+    if (nextType == '\x13')     {return readFloat<16>();}
+#endif
+    badType("Float", nextType);
+}
+
     }
 }
 

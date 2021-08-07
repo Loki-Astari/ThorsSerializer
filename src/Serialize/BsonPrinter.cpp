@@ -2,16 +2,13 @@
 #include "BsonPrinter.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
-#include "GitUtility/ieee754_types.h"
 #include <iomanip>
 #include <algorithm>
 
 using namespace ThorsAnvil::Serialize;
 
-using IntTypes = std::tuple<std::int32_t, std::int64_t>;
-
-char  intKey[]      = {'\x10', '\x12'};
-char  floatKey[]    = {'\x01', '\x13'};
+char  ThorsAnvil::Serialize::intKey[]      = {'\x10', '\x12'};
+char  ThorsAnvil::Serialize::floatKey[]    = {'\x01', '\x13'};
 
 HEADER_ONLY_INCLUDE
 BsonPrinter::BsonPrinter(std::ostream& output, PrinterConfig config)
@@ -109,13 +106,6 @@ void BsonPrinter::writeKey(char value, std::size_t size)
     }
 }
 
-HEADER_ONLY_INCLUDE
-template<std::size_t size, typename Int>
-void BsonPrinter::writeSize(Int value)
-{
-    writeLE<size>(value);
-}
-
 HEADER_ONLY_INCLUDE void BsonPrinter::openDoc()
 {}
 
@@ -171,26 +161,6 @@ void BsonPrinter::closeArray()
     output.write("",1);
     currentContainer.pop_back();
     arrayIndex.pop_back();
-}
-
-HEADER_ONLY_INCLUDE
-template<std::size_t Size, typename Int>
-void BsonPrinter::writeInt(Int value)
-{
-    using IntType = typename std::tuple_element<Size/4 - 1, IntTypes>::type;
-
-    IntType             output = value;
-    writeKey(intKey[Size/4 - 1], Size);
-    writeLE<Size, IntType>(output);
-}
-
-HEADER_ONLY_INCLUDE
-template<std::size_t Size, typename Float>
-void BsonPrinter::writeFloat(Float value)
-{
-    IEEE_754::_2008::Binary<Size * 8>   outputValue = value;
-    writeKey(floatKey[Size/8 - 1], Size);
-    output.write(reinterpret_cast<char*>(&outputValue), Size);
 }
 
 HEADER_ONLY_INCLUDE

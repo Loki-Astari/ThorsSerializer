@@ -7,6 +7,7 @@
 
 #include "Serialize.h"
 #include "BsonUtil.h"
+#include "GitUtility/ieee754_types.h"
 #include <boost/endian/conversion.hpp>
 #include <vector>
 #include <iostream>
@@ -21,6 +22,10 @@ namespace ThorsAnvil
             class UTCDateTime;
             BsonPrinter& operator<<(BsonPrinter& printer, MongoUtility::UTCDateTime const& data);
         }
+
+using IntTypes = std::tuple<std::int32_t, std::int64_t>;
+extern char  intKey[];
+extern char  floatKey[];
 
 class BsonPrinter: public PrinterInterface
 {
@@ -114,6 +119,30 @@ class BsonPrinter: public PrinterInterface
         void writeBinary(std::string const& value);
 
 };
+
+template<std::size_t size, typename Int>
+inline void BsonPrinter::writeSize(Int value)
+{
+    writeLE<size>(value);
+}
+
+template<std::size_t Size, typename Int>
+inline void BsonPrinter::writeInt(Int value)
+{
+    using IntType = typename std::tuple_element<Size/4 - 1, IntTypes>::type;
+
+    IntType             output = value;
+    writeKey(intKey[Size/4 - 1], Size);
+    writeLE<Size, IntType>(output);
+}
+
+template<std::size_t Size, typename Float>
+inline void BsonPrinter::writeFloat(Float value)
+{
+    IEEE_754::_2008::Binary<Size * 8>   outputValue = value;
+    writeKey(floatKey[Size/8 - 1], Size);
+    output.write(reinterpret_cast<char*>(&outputValue), Size);
+}
 
     }
 }

@@ -244,36 +244,6 @@ void BsonParser::readKey()
 }
 
 HEADER_ONLY_INCLUDE
-template<std::size_t size, typename Int>
-Int BsonParser::readSize()
-{
-    return readLE<size, Int>();
-}
-
-HEADER_ONLY_INCLUDE
-template<std::size_t size, typename Int>
-Int BsonParser::readInt()
-{
-    dataLeft.back() -= size;
-    return readLE<size, Int>();
-}
-
-HEADER_ONLY_INCLUDE
-template<std::size_t size>
-IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat()
-{
-    IEEE_754::_2008::Binary<size * 8> result;
-    if (input.read(reinterpret_cast<char*>(&result), size))
-    {
-        dataLeft.back() -= size;
-        return result;
-    }
-    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                     "readFloat",
-                     "Failed to read Float Value. Size: ", size);
-}
-
-HEADER_ONLY_INCLUDE
 bool BsonParser::readBool()
 {
     bool result;
@@ -350,28 +320,6 @@ HEADER_ONLY_INCLUDE
 std::string BsonParser::getKey()
 {
     return nextKey;
-}
-
-HEADER_ONLY_INCLUDE
-template<std::size_t Size, typename Int>
-Int BsonParser::getIntValue()
-{
-    if (nextType == '\x10')     {VLOG_S(5) << "Int-32"; return readInt<4, std::int32_t>();}
-    if (nextType == '\x12')     {VLOG_S(5) << "Int-64"; return readInt<8, std::int64_t>();}
-    badType("Int(32 or 64)", nextType);
-}
-
-HEADER_ONLY_INCLUDE
-template<std::size_t Size, typename Float>
-Float BsonParser::getFloatValue()
-{
-    if (nextType == '\x10')     {VLOG_S(5) << "Double-32";return readInt<4, std::int32_t>();}
-    if (nextType == '\x12')     {VLOG_S(5) << "Double-64";return readInt<8, std::int64_t>();}
-    if (nextType == '\x01')     {VLOG_S(5) << "Double-128";return readFloat<8>();}
-#if 0
-    if (nextType == '\x13')     {return readFloat<16>();}
-#endif
-    badType("Float", nextType);
 }
 
 HEADER_ONLY_INCLUDE
