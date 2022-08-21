@@ -6,7 +6,7 @@ before_install:
 install:
     - ./.build/travis/setup ${TRAVIS_OS_NAME}
 script:
-    - "./configure --with-boost=/tmp/extra --disable-binary"
+    - "./configure --with-boost=/tmp/extra
     - make
 after_success:
     - ./CreateHeaderOnly  master
