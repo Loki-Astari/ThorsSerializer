@@ -40,6 +40,8 @@ int main() {
 
 LT_INIT
 
+AX_THOR_CHECK_THIRD_PARTY_LIBS
+
 AC_DEFINE([HEADER_ONLY], [0], [Enable to use header only libraries])
 AC_DEFINE([HEADER_ONLY_INCLUDE], [], [For header only convery to inline])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])

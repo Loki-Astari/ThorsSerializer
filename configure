@@ -17283,6 +17283,28 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
+    export cwd=$(pwd)
+
+    pushd third
+    if [ $? == 0 ]; then
+        for third in $(ls); do
+            pushd ${third}
+            if [ -e ./configure ]; then
+                echo "${third}:  ./configure ${subconfigure} --prefix=${prefix} --with-hostbuild=${cwd}/build"
+                ./configure ${subconfigure} --prefix=${prefix} --with-hostbuild=${cwd}/build
+                if [ $? != 0 ]; then
+                    "Failed to configure: ${third}"
+                    exit 1
+                fi
+            fi
+            echo "================ DONE ================="
+            popd
+        done
+        popd
+    fi
+
+
+
 printf "%s\n" "#define HEADER_ONLY 0" >>confdefs.h
 
 
