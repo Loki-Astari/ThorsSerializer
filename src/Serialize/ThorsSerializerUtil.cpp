@@ -4,9 +4,7 @@
 #include "ThorsLogging/ThorsLogging.h"
 #include <string>
 
-#pragma vera-pushoff
-using namespace std::string_literals;
-#pragma vera-pop
+using std::string_literals::operator""s;
 
 using namespace ThorsAnvil::Serialize;
 

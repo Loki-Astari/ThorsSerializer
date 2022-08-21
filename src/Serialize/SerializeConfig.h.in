@@ -1,25 +1,10 @@
 /* src/Serialize/SerializeConfig.h.in.  Generated from configure.ac by autoheader.  */
 
-/* define if the Boost library is available */
-#undef HAVE_BOOST
-
-/* define if the Boost::Python library is available */
-#undef HAVE_BOOST_PYTHON
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define to 1 if you have the `tcl' library (-ltcl). */
-#undef HAVE_LIBTCL
-
-/* Define to 1 if you have the `tk' library (-ltk). */
-#undef HAVE_LIBTK
-
-/* If available, contains the Python version number currently in use. */
-#undef HAVE_PYTHON
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

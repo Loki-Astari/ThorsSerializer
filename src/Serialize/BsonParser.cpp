@@ -337,9 +337,7 @@ std::string BsonParser::getRawValue()
         case '\x0A':            VLOG_S(5) << "Null";readNull(); return "null";
         case '\x02':
         {
-#pragma vera-pushoff
-            using namespace std::string_literals;
-#pragma vera-pop
+            using std::string_literals::operator""s;
             VLOG_S(5) << "String";
             return "\""s + readString() + "\"";
         }

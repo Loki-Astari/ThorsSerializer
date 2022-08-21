@@ -19,6 +19,7 @@ LDLIBS_EXTERN_BUILD			+= $(yaml_ROOT_LIB)
 %/JsonLexer.lex.o:			FILE_WARNING_FLAGS	+= -Wno-sign-compare -Wno-register
 %/JsonLexer1.lex.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-register
 %/DeprecatedTest.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-declarations
+VERA_PROFILE_Traits.h		= thor_Traits.h
 
 include $(THORSANVIL_ROOT)/build/tools/Makefile
 
