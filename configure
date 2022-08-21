@@ -676,9 +676,6 @@ AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
 AM_V
-CSCOPE
-ETAGS
-CTAGS
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
 CXXDEPMODE
@@ -830,6 +827,7 @@ with_hostbuild
 with_boost
 with_boost_libdir
 with_yamlroot
+enable_yaml
 enable_shared
 enable_static
 with_pic
@@ -1482,6 +1480,8 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-vera          Disable vera. Disable Static analysis of source.
+
+  --disable-yaml          Disable linking with YAML
 
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -5411,6 +5411,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
     yaml_ROOT_DIR=""
     yaml_ROOT_LIB=""
+    ORIG_LDFLAGS="${LDFLAGS}"
 
 # Check whether --with-yamlroot was given.
 if test ${with_yamlroot+y}
@@ -5418,13 +5419,23 @@ then :
   withval=$with_yamlroot;
 fi
 
-    if test "${with_yamlroot}" == ""; then
-        with_yamlroot="/usr/local"
-    fi
-    ORIG_LDFLAGS="${LDFLAGS}"
-    LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
+    # Check whether --enable-yaml was given.
+if test ${enable_yaml+y}
+then :
+  enableval=$enable_yaml;
+fi
 
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
+    if USING_YAML=0
+        test "x$enable_yaml" != "xno"
+then :
+
+            USING_YAML=1
+            if test "${with_yamlroot}" == ""; then
+                with_yamlroot="/usr/local"
+            fi
+            LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
+
+            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
 printf %s "checking for yaml_parser_initialize in -lyaml... " >&6; }
 if test ${ac_cv_lib_yaml_yaml_parser_initialize+y}
 then :
@@ -5465,8 +5476,8 @@ then :
 
 printf "%s\n" "#define HAVE_YAML 1" >>confdefs.h
 
-            yaml_ROOT_DIR="${with_yamlroot}"
-            yaml_ROOT_LIB="yaml"
+                    yaml_ROOT_DIR="${with_yamlroot}"
+                    yaml_ROOT_LIB="yaml"
 
 else $as_nop
   as_fn_error 1 "
@@ -5483,10 +5494,13 @@ If you do not want to use yaml serialization then it
 can be disabled with:
     --disable-yaml
 
-            " "$LINENO" 5
+                " "$LINENO" 5
 
 fi
 
+
+
+fi
 
     LDFLAGS="${ORIG_LDFLAGS}"
     yaml_ROOT_DIR=${yaml_ROOT_DIR}
@@ -18497,20 +18511,6 @@ CXXDEPMODE=depmode=$am_cv_CXX_dependencies_compiler_type
 else
   am__fastdepCXX_TRUE='#'
   am__fastdepCXX_FALSE=
-fi
-
-
-# Variables for tags utilities; see am/tags.am
-if test -z "$CTAGS"; then
-  CTAGS=ctags
-fi
-
-if test -z "$ETAGS"; then
-  ETAGS=etags
-fi
-
-if test -z "$CSCOPE"; then
-  CSCOPE=cscope
 fi
 
 

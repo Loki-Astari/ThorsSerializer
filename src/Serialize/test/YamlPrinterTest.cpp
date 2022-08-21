@@ -3,6 +3,7 @@
 #include "YamlPrinter.h"
 #include <algorithm>
 
+#ifdef HAVE_YAML
 TEST(YamlPrinterTest, NullValue)
 {
     std::stringstream                   stream;
@@ -235,3 +236,4 @@ TEST(YamlPrinterTest, PuttingKeyInArray)
         printer.addKey("This old house");
     );
 }
+#endif

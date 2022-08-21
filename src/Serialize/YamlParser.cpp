@@ -29,23 +29,30 @@ YamlParser::YamlParser(std::istream& input, ParserConfig config)
     , first(true)
     , error(false)
 {
+#ifdef HAVE_YAML
     yaml_parser_initialize(&parser);
     yaml_parser_set_input(&parser, thorsanvilYamlStreamReader, this);
+#else
+    throw std::runtime_error("ThorSerializer not built with YAML support");
+#endif
 }
 
 HEADER_ONLY_INCLUDE
 YamlParser::~YamlParser()
 {
+#ifdef HAVE_YAML
     if (!first)
     {
         yaml_event_delete(&event);
     }
     yaml_parser_delete(&parser);
+#endif
 }
 
 HEADER_ONLY_INCLUDE
 ParserInterface::ParserToken YamlParser::getNextToken()
 {
+#ifdef HAVE_YAML
     // enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
     if (first)
     {
@@ -131,6 +138,7 @@ ParserInterface::ParserToken YamlParser::getNextToken()
         // If nothing fits then fall out of the switch.
         // The default action is to return an error.
     }
+#endif
     return ParserToken::Error;
 }
 
@@ -156,6 +164,7 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
 HEADER_ONLY_INCLUDE
 std::string YamlParser::getString()
 {
+#ifdef HAVE_YAML
 //int   plain_implicit
 //int   quoted_implicit
 //yaml_scalar_style_t   style
@@ -175,11 +184,15 @@ std::string YamlParser::getString()
 
 
     return std::string(buffer, buffer + length);
+#else
+    return "";
+#endif
 }
 
 template<typename T>
 T YamlParser::scan()
 {
+#ifdef HAVE_YAML
     char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
     std::size_t length  = event.data.scalar.length;
     char*       end;
@@ -192,6 +205,9 @@ T YamlParser::scan()
                          "Not an integer");
     }
     return value;
+#else
+    return T{};
+#endif
 }
 
 
@@ -212,6 +228,7 @@ HEADER_ONLY_INCLUDE void YamlParser::getValue(long double& value)           {val
 HEADER_ONLY_INCLUDE
 void YamlParser::getValue(bool& value)
 {
+#ifdef HAVE_YAML
     char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
     std::size_t length  = event.data.scalar.length;
 
@@ -229,6 +246,9 @@ void YamlParser::getValue(bool& value)
                          "getValue",
                          "Not a bool");
     }
+#else
+    value = false;
+#endif
 }
 
 HEADER_ONLY_INCLUDE
@@ -240,11 +260,15 @@ void YamlParser::getValue(std::string& value)
 HEADER_ONLY_INCLUDE
 bool YamlParser::isValueNull()
 {
+#ifdef HAVE_YAML
     char const* buffer  = reinterpret_cast<char const*>(event.data.scalar.value);
     std::size_t length  = event.data.scalar.length;
 
     return (length == 4 && strncmp(buffer, "null", 4) == 0)
        ||  (length == 1 && strncmp(buffer, "~", 1) == 0);
+#else
+    return true;
+#endif
 }
 
 HEADER_ONLY_INCLUDE
