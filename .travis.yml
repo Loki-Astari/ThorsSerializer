@@ -6,8 +6,8 @@ before_install:
 install:
     - ./.build/travis/setup ${TRAVIS_OS_NAME}
 script:
-    - "./configure --with-boost=/tmp/extra"
-    - make
+    - ./configure
+    - BOOST_CPPFLAGS="-I/tmp/extra/include" make
 after_success:
     - ./CreateHeaderOnly  master
     - bash <(curl -s https://codecov.io/bash)
