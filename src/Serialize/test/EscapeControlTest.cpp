@@ -188,8 +188,10 @@ TEST(EscapeControlTest, BsonOutputContainsTab)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
-    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
+
+    std::string outputString(output.str());
+    std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
@@ -205,8 +207,10 @@ TEST(EscapeControlTest, BsonOutputContainsBS)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
-    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
+
+    std::string outputString(output.str());
+    std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
@@ -222,8 +226,10 @@ TEST(EscapeControlTest, BsonOutputContainsNL)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
-    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
+
+    std::string outputString(output.str());
+    std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
@@ -239,8 +245,10 @@ TEST(EscapeControlTest, BsonOutputContainsFF)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
-    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
+
+    std::string outputString(output.str());
+    std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
@@ -256,8 +264,10 @@ TEST(EscapeControlTest, BsonOutputContainsCR)
     if (output << ThorsAnvil::Serialize::bsonExporter(value, PrinterInterface::OutputType::Default)) {
         exportDone = true;
     }
-    std::string_view outputView((&*output.str().begin()) + 11 , std::size(value));
     EXPECT_EQ(exportDone, true);
+
+    std::string outputString(output.str());
+    std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
     ASSERT_NE(find, std::string::npos);
