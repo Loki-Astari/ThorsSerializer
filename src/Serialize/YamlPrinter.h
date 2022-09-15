@@ -4,11 +4,7 @@
 #include <functional>
 
 #include "Serialize.h"
-#ifdef HAVE_YAML
 #include <yaml.h>
-#else
-using yaml_event_t = int;
-#endif
 #include <vector>
 #include <memory>
 
@@ -19,9 +15,7 @@ namespace ThorsAnvil
 
 class YamlPrinter: public PrinterInterface
 {
-#ifdef HAVE_YAML
     yaml_emitter_t    emitter;
-#endif
     bool              error;
     std::vector<std::pair<int, TraitType>> state;
 

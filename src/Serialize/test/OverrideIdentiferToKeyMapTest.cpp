@@ -55,7 +55,7 @@ TEST(OverrideIdentiferToKeyMapTest, JsonImportCheckNormalOverrideWorks)
     EXPECT_EQ(567, object.percentKey);
     EXPECT_EQ("A valid string", object.deleteKey);
 }
-#ifdef HAVE_YAML
+
 TEST(OverrideIdentiferToKeyMapTest, YamlExportCheckNormalOverrideWorks)
 {
     OverrideTest    object{34, "The Stuff to Delete"};
@@ -87,7 +87,7 @@ delete: 'A valid string'
     EXPECT_EQ(567, object.percentKey);
     EXPECT_EQ("A valid string", object.deleteKey);
 }
-#endif
+
 TEST(OverrideIdentiferToKeyMapTest, BsonExportCheckNormalOverrideWorks)
 {
     OverrideTest    object{34, "The Stuff to Delete"};
@@ -146,7 +146,7 @@ TEST(OverrideIdentiferToKeyMapTest, JsonImportCheckTemplateOverrideWorks)
     EXPECT_EQ(567.0, object.percentKey);
     EXPECT_EQ("A valid string", object.deleteKey);
 }
-#ifdef HAVE_YAML
+
 TEST(OverrideIdentiferToKeyMapTest, YamlExportCheckTemplateOverrideWorks)
 {
     OverrideTemplate<double>    object{12.23, "The Stuff to Delete"};
@@ -178,7 +178,7 @@ delete: 'A valid string'
     EXPECT_EQ(567.0, object.percentKey);
     EXPECT_EQ("A valid string", object.deleteKey);
 }
-#endif
+
 TEST(OverrideIdentiferToKeyMapTest, BsonExportCheckTemplateOverrideWorks)
 {
     OverrideTemplate<double>    object{12.23, "The Stuff to Delete"};

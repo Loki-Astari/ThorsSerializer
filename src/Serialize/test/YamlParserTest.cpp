@@ -7,7 +7,6 @@
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 
-#ifdef HAVE_YAML
 TEST(YamlParserTest, isNullNullString)
 {
     std::stringstream   stream("null");
@@ -629,5 +628,4 @@ TEST(YamlParserTest, getRawValue)
     value = parser.getRawValue();
     EXPECT_EQ(std::string("The Best"), value);
 }
-#endif
 

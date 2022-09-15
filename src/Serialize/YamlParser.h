@@ -19,11 +19,7 @@
 
 
 #include "Serialize.h"
-#ifdef HAVE_YAML
 #include <yaml.h>
-#else
-using yaml_event_t = int;
-#endif
 #include <istream>
 #include <vector>
 #include <functional>
@@ -37,10 +33,8 @@ class YamlParser: public ParserInterface
 {
     enum class State {Open, Map, Array};
     std::vector<std::pair<State, int>>  state;
-#ifdef HAVE_YAML
     yaml_parser_t       parser;
     yaml_event_t        event;
-#endif
     bool                first;
     bool                error;
 

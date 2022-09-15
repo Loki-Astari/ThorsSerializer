@@ -77,7 +77,7 @@ TEST(FilterMemberTests, JsonFilterOutAllMember)
     EXPECT_EQ(std::string::npos, findM2);
 }
 
-#ifdef HAVE_YAML
+
 TEST(FilterMemberTests, YamlFilterOutZeroMember)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", true}, {"m2", true}}};
@@ -134,7 +134,7 @@ TEST(FilterMemberTests, YamlFilterOutAllMember)
     auto findM2 = streamData.find("m2");
     EXPECT_EQ(std::string::npos, findM2);
 }
-#endif
+
 
 TEST(FilterMemberTests, BsonFilterOutZeroMember)
 {

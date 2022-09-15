@@ -33,9 +33,6 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* When on Yaml Serialization code will be compiled */
-#undef HAVE_YAML
-
 /* Enable to use header only libraries */
 #undef HEADER_ONLY
 

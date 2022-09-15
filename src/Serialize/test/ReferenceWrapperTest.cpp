@@ -52,7 +52,7 @@ TEST(ReferenceWrapperTest, JsonComplexWrapperRead)
     EXPECT_EQ(13, value.value);
     EXPECT_EQ("A string", value.data);
 }
-#ifdef HAVE_YAML
+
 TEST(ReferenceWrapperTest, YamlnSimpleWrapperRead)
 {
     bool                        import = false;
@@ -82,7 +82,7 @@ TEST(ReferenceWrapperTest, YamlnComplexWrapperRead)
     EXPECT_EQ(13, value.value);
     EXPECT_EQ("A string", value.data);
 }
-#endif
+
 TEST(ReferenceWrapperTest, BsonSimpleWrapperRead)
 {
     using namespace std::string_literals;
@@ -153,7 +153,7 @@ TEST(ReferenceWrapperTest, JsonComplexWrapperWrite)
     EXPECT_TRUE(import);
     EXPECT_EQ(stream.str(), R"({"data":{"value":13,"data":"A string"}})");
 }
-#ifdef HAVE_YAML
+
 TEST(ReferenceWrapperTest, YamlnSimpleWrapperWrite)
 {
     bool                        import = false;
@@ -182,7 +182,7 @@ TEST(ReferenceWrapperTest, YamlnComplexWrapperWrite)
     EXPECT_TRUE(import);
     EXPECT_EQ(stream.str(), "---\ndata:\n  value: 13\n  data: A string\n...\n");
 }
-#endif
+
 TEST(ReferenceWrapperTest, BsonSimpleWrapperWrite)
 {
     bool                        import = false;

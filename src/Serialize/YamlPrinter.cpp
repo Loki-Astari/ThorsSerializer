@@ -38,14 +38,10 @@ HEADER_ONLY_INCLUDE
 void YamlPrinter::checkYamlResultCode(std::function<int(yaml_event_t&)> init, char const* method, char const* msg)
 {
     yaml_event_t    event;
-#ifdef HAVE_YAML
     int             code1   = init(event);
     checkYamlResultCode(code1, method, msg);
     int             code2   = yaml_emitter_emit(&emitter, &event);
     checkYamlResultCode(code2, method, "yaml_emitter_emit");
-#else
-    (void)init(event);(void)method;(void)msg;
-#endif
 }
 
 HEADER_ONLY_INCLUDE
@@ -53,7 +49,6 @@ YamlPrinter::YamlPrinter(std::ostream& output, PrinterConfig config)
     : PrinterInterface(output, config)
     , error(false)
 {
-#ifdef HAVE_YAML
     checkYamlResultCode(yaml_emitter_initialize(&emitter), "YamlPrinter", "yaml_emitter_initialize");
     yaml_emitter_set_output(&emitter, thorsanvilYamlStreamWritter, this);
     checkYamlResultCode(
@@ -61,14 +56,10 @@ YamlPrinter::YamlPrinter(std::ostream& output, PrinterConfig config)
             "YamlPrinter",
             "yaml_stream_start_event_initialize");
     state.emplace_back(0, TraitType::Value);
-#else
-    throw std::runtime_error("ThorSerializer not built with YAML support");
-#endif
 }
 HEADER_ONLY_INCLUDE
 YamlPrinter::~YamlPrinter()
 {
-#ifdef HAVE_YAML
     if (!error)
     {
         checkYamlResultCode(
@@ -78,35 +69,29 @@ YamlPrinter::~YamlPrinter()
     }
     checkYamlResultCode(yaml_emitter_flush(&emitter), "~YamlPrinter", "yaml_emitter_flush");
     yaml_emitter_delete(&emitter);
-#endif
 }
 
 HEADER_ONLY_INCLUDE
 void YamlPrinter::openDoc()
 {
-#ifdef HAVE_YAML
     checkYamlResultCode(
             [&](yaml_event_t& event){return yaml_document_start_event_initialize(&event, NULL, NULL, NULL, 0);},
             "openDoc",
             "yaml_document_start_event_initialize");
-#endif
 }
 HEADER_ONLY_INCLUDE
 void YamlPrinter::closeDoc()
 {
-#ifdef HAVE_YAML
     checkYamlResultCode(
             [&](yaml_event_t& event){return yaml_document_end_event_initialize(&event, 0);},
             "closeDoc",
             "yaml_document_end_event_initialize");
     checkYamlResultCode(yaml_emitter_flush(&emitter), "closeDoc", "yaml_emitter_flush");
-#endif
 }
 
 HEADER_ONLY_INCLUDE
 void YamlPrinter::openMap(std::size_t)
 {
-#ifdef HAVE_YAML
     yaml_mapping_style_t    style;
     switch (this->config.characteristics)
     {
@@ -119,23 +104,19 @@ void YamlPrinter::openMap(std::size_t)
             "openMap",
             "yaml_mapping_start_event_initialize");
     state.emplace_back(0, TraitType::Map);
-#endif
 }
 HEADER_ONLY_INCLUDE
 void YamlPrinter::closeMap()
 {
-#ifdef HAVE_YAML
     checkYamlResultCode(
             [&](yaml_event_t& event){return yaml_mapping_end_event_initialize(&event);},
             "closeMap",
             "yaml_mapping_end_event_initialize");
     state.pop_back();
-#endif
 }
 HEADER_ONLY_INCLUDE
 void YamlPrinter::openArray(std::size_t)
 {
-#ifdef HAVE_YAML
     yaml_sequence_style_t    style;
     switch (this->config.characteristics)
     {
@@ -148,24 +129,20 @@ void YamlPrinter::openArray(std::size_t)
             "openArray",
             "yaml_sequence_start_event_initialize");
     state.emplace_back(0, TraitType::Array);
-#endif
 }
 HEADER_ONLY_INCLUDE
 void YamlPrinter::closeArray()
 {
-#ifdef HAVE_YAML
     checkYamlResultCode(
             [&](yaml_event_t& event){return yaml_sequence_end_event_initialize(&event);},
             "closeArray",
             "yaml_sequence_end_event_initialize");
     state.pop_back();
-#endif
 }
 
 template<typename T>
 void YamlPrinter::emit(T const& data)
 {
-#ifdef HAVE_YAML
     std::stringstream buffer;
     buffer << data;
 
@@ -185,14 +162,10 @@ void YamlPrinter::emit(T const& data)
         "emit",
         "yaml_scalar_event_initialize");
     ++state.back().first;
-#else
-    (void)data;
-#endif
 }
 HEADER_ONLY_INCLUDE
 void YamlPrinter::emitNull()
 {
-#ifdef HAVE_YAML
     static yaml_char_t nullObject[] = "null";
     checkYamlResultCode(
         [&](yaml_event_t& event)
@@ -210,7 +183,6 @@ void YamlPrinter::emitNull()
         "emit",
         "yaml_scalar_event_initialize");
     ++state.back().first;
-#endif
 }
 
 HEADER_ONLY_INCLUDE

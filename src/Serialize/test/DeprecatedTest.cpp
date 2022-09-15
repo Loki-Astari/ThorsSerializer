@@ -18,7 +18,7 @@ TEST(DeprecatedTest, Json)
     IgnoreUneededDataTest::Thing objver;
     data >> TA::jsonImport(objver);
 }
-#ifdef HAVE_YAML
+
 TEST(DeprecatedTest, Yaml)
 {
     IgnoreUneededDataTest::Thing obj;
@@ -29,7 +29,6 @@ TEST(DeprecatedTest, Yaml)
     IgnoreUneededDataTest::Thing objver;
     data >> TA::yamlImport(objver);
 }
-#endif
 
 TEST(DeprecatedTest, JsonMakeTraitCustom)
 {
