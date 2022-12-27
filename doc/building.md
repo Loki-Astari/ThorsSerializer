@@ -26,42 +26,27 @@ The basic script for installing everything is:
 ````bash
     > git clone https://github.com/Loki-Astari/ThorsSerializer.git
     > cd ThorsSerializer
-    > ./configure --disable-binary
+    > ./configure
     > make
     > sudo make install
 ````
 
-But installing everything requires a cuople of extra libraries and some development tools. You may not need all these tools (try and use brew if you don't).
-
-### Development
-
-If you want to submit "pull requests" you are going to need vera++. Vera++ is a style checkecker and is automatically run as part of the build processes. The build will fail if you don't adhere to the style requirements of the porject (you must adhere to the style guide for a pull request to be accepted).
-
-If you are simply building for yourself you may not care about the style guide. In this case you can switch it off by adding `--disable-vera` to the `configure` command above.
-
-If you do want to use `vera++` there are several requirements:
-
-* boost 
-* boost-python
-* cmake
-* tcl/tk
-
-I install all the above with:
-````bash
-    brew install boost --with-python
-    brew install boost-python
-    brew install cmake
-    brew install tcl-tk
-    # Have to create unversioned boost_python libs.
-    for a in /usr/local/lib/libboost_python[0-9][0-9]* ; do sudo ln -s ${a} ${a/[0-9][0-9]/}; done
-````
+But installing everything requires a couple of extra libraries and some development tools. You may not need all these tools (try and use brew if you don't).
 
 ### Description
 By default installation will be in `/usr/local/include` and `/usr/local/lib`. You can override this with the normal auto-tools defaults. Use `./configure --help` to get details.
 
+Note: On M1 Macs this is now `/opt/homebrew/include` and `/opt/homebrew/lib`.
+
 Note:
 libThorSerialize17.so is build using `-O3` and thus is fully optimized and debug symbols have been stripped.  
 libThorSerialize17D.so is build using `-g` and is useful for debugging purposes.
+libThorsLogging17.so
+libThorsLogging17D.so
+libThorsStorage17.so
+libThorsStorage17D.so
+
+Note: On mac it uses .dylib rather than .so.
 
 
 ### What is Downloaded

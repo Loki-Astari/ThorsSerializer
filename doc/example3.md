@@ -6,6 +6,14 @@
 The library handles polymorphic types via pointers. The only addition the developer needs to do is add the macro `ThorsAnvil_PolyMorphicSerializer()` into the class (as part of the public) 
 
 ````c++
+    #include "ThorSerialize/Serialize.h"
+    #include "ThorSerialize/Serialize.tpp"
+    #include "ThorSerialize/Traits.h"
+    #include "ThorSerialize/JsonThor.h"
+    #include <string>
+    #include <sstream>
+    #include <iostream>
+
     struct Vehicle
     {
         Vehicle(){}
@@ -40,27 +48,27 @@ The library handles polymorphic types via pointers. The only addition the develo
 
 As per normal the class's must also be declared as serializable.
 ````c++
-ThorsAnvil_MakeTrait(Vehicle, speed);
-ThorsAnvil_ExpandTrait(Vehicle, Car, make);
-ThorsAnvil_ExpandTrait(Vehicle, Bike, stroke);
+    ThorsAnvil_MakeTrait(Vehicle, speed);
+    ThorsAnvil_ExpandTrait(Vehicle, Car, make);
+    ThorsAnvil_ExpandTrait(Vehicle, Bike, stroke);
 ````
 
 The use cases for serialization/de-serialization are the same:
 ````c++
-int main()
-{
-    Vehicle*    init = new Bike(15, 2);
+    int main()
+    {
+        Vehicle*    init = new Bike(15, 2);
 
-    std::stringstream   stream;
-    stream << ThorsAnvil::Serialize::jsonExporter(init);
-    std::cout << ThorsAnvil::Serialize::jsonExporter(init) << "\n\n";
+        std::stringstream   stream;
+        stream << ThorsAnvil::Serialize::jsonExporter(init);
+        std::cout << ThorsAnvil::Serialize::jsonExporter(init) << "\n\n";
 
-    Vehicle*    result = nullptr;
-    std::cout << ThorsAnvil::Serialize::jsonExporter(result) << "\n\n";
-    stream >> ThorsAnvil::Serialize::jsonImporter(result);
+        Vehicle*    result = nullptr;
+        std::cout << ThorsAnvil::Serialize::jsonExporter(result) << "\n\n";
+        stream >> ThorsAnvil::Serialize::jsonImporter(result);
 
-    std::cout << ThorsAnvil::Serialize::jsonExporter(result) << "\n\n";
-}
+        std::cout << ThorsAnvil::Serialize::jsonExporter(result) << "\n\n";
+    }
 ````
 
 The one difference from normal serialization is that it adds an extra member to the output class. The key `"__type"` is serialized as the first member of an object. When reading (De-SErializing) a stream the key `"__type"` must be the first member of the object (Otherwise you will get an exception). Notice a `nullptr` is serialized as `null` in JSON.
