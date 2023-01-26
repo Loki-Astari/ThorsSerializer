@@ -75,6 +75,7 @@ The one difference from normal serialization is that it adds an extra member to 
 
 ````bash
     > g++ -std=c++17 -o example3 example3.cpp -lThorSerialize17
+    > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./example3
     {
         "__type": "Bike",

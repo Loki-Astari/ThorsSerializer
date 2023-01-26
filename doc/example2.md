@@ -66,6 +66,7 @@ This generates:
 
 ````bash
     > g++ -std=c++17 -o example2 example2.cpp -lThorSerialize17
+    > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./example2
     Version 1
 

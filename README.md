@@ -26,6 +26,7 @@ Yet another JSON/YAML/BSON serialization library for C++.
 Unlike other libraries this one does not require you to build DOM of you object before serialization. Using a declarative C++ style you define what C++ classes (and members) you want to serialize "ThorSerializer" will generate the appropriate code automagically.
 
 * [Objective](doc/objective.md)
+* [Trivial Example](doc/example0.md)
 * [Simple Example](doc/example1.md)
 * [Bigger Example](doc/example2.md)
 * [PolyMorphic Example](doc/example3.md)

@@ -57,7 +57,7 @@
 ### Build and run
 ````bash
     > g++ -std=c++17 expample1.cpp -lThorSerialize17 -lThorsLogging17
-    > # Note on mac you may need to add -L/opt/homebrew/lib/ on Mac's with M1 chip.
+    > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./a.out
         { 
             "name": "mark", 
