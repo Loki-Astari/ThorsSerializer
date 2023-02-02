@@ -2934,9 +2934,15 @@ ln -s .build build | echo "Build Already Setup"
 
     DefaultLinkDir="/usr/local"
     host=$(uname -p)
-    if test ${host} == "arm"
+    if test "${host}" == "arm"
 then :
-  DefaultLinkDir="/opt/homebrew"
+
+        DefaultLinkDir="/opt/homebrew"
+        if test "${prefix}" == "NONE"
+then :
+  prefix=${DefaultLinkDir}
+fi
+
 fi
     DefaultLinkDir=${DefaultLinkDir}
 
