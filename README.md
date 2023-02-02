@@ -28,6 +28,7 @@ Unlike other libraries this one does not require you to build DOM of you object 
 * [Objective](doc/objective.md)
 * [Trivial Example](doc/example0.md)
 * [Simple Example](doc/example1.md)
+* [Enum Example](doc/exampleE.md)
 * [Bigger Example](doc/example2.md)
 * [PolyMorphic Example](doc/example3.md)
 * [Installing](doc/building.md)

@@ -217,6 +217,31 @@ Strict parsing does not allow extra parameters in the Json input. Exact parsing 
         T object;
         stream >> TS::jsonImporter(object, PT::Exact);    // 
 ````
+## Example-0 [See doc/example0.cpp](example0.cpp)
+````c++
+    #include <iostream>
+    #include <vector>
+    #include "ThorSerialize/JsonThor.h"
+
+    int main()
+    {
+        std::vector<int>    data;
+        using ThorsAnvil::Serialize::jsonImporter;
+        using ThorsAnvil::Serialize::jsonExporter;
+
+        std::cin >> jsonImporter(data);
+        std::cout << jsonExporter(data) << "\n";
+    }
+````
+
+### Build and run
+````bash
+    > g++ -std=c++17 example0.cpp -lThorSerialize17 -lThorsLogging17
+    > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
+    > echo "[1,2,3,4,5]" | ./a.out
+        [ 1, 2, 3, 4, 5]
+    > 
+````
 ## Example-1 [See doc/example1.cpp](example1.cpp)
 
 ````c++
@@ -277,6 +302,44 @@ Strict parsing does not allow extra parameters in the Json input. Exact parsing 
                 "blue": 0
             }
         }
+````
+## Example-E [See doc/exampleE.cpp](exampleE.cpp)
+````c++
+    #include <iostream>
+    #include <vector>
+    #include "ThorSerialize/JsonThor.h"
+
+    enum class EnumType : int {
+        A, B, C
+    };
+
+    struct MyStruct {
+        EnumType    e;
+        std::string s;
+    };
+
+    ThorsAnvil_MakeEnum(EnumType, A, B, C);
+    ThorsAnvil_MakeTrait(MyStruct, e, s);
+
+    int main()
+    {
+        using ThorsAnvil::Serialize::jsonImporter;
+        using ThorsAnvil::Serialize::jsonExporter;
+
+        MyStruct    val {EnumType::A, "This string"};
+        std::cout << jsonExporter(val) << "\n";
+    }
+````
+
+### Build and run
+````bash
+    > g++ -std=c++17 example0.cpp -lThorSerialize17 -lThorsLogging17
+    > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
+    > ./a.out
+    {
+        "e": "A",
+        "s": "This string"
+    }
 ````
 ## Example-2: [see doc/example2.cpp](example2.cpp)
 
