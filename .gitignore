@@ -8,7 +8,7 @@ debug/
 release/
 profile/
 report/
-dependency/
+makedependency/
 vera/
 makefile_tmp
 Makefile.extra
