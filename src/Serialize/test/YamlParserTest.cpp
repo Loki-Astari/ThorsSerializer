@@ -327,55 +327,55 @@ TEST(YamlParserTest, getDataFromString)
     );
     EXPECT_EQ("Test", value1);
 
-    short             value2a;
+    short             value2a = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2a)
     );
-    int             value2b;
+    int             value2b = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2b)
     );
-    long             value2c;
+    long             value2c = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2c)
     );
-    long long             value2d;
+    long long             value2d = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2d)
     );
 
 
-    unsigned short             value2e;
+    unsigned short             value2e = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2e)
     );
-    unsigned int             value2f;
+    unsigned int             value2f = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2f)
     );
-    unsigned long             value2g;
+    unsigned long             value2g = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2g)
     );
-    unsigned long long             value2h;
+    unsigned long long             value2h = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2h)
     );
 
-    float          value3a;
+    float          value3a = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3a)
     );
-    double          value3b;
+    double          value3b = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3b)
     );
-    long double          value3c;
+    long double          value3c = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3c)
     );
 
-    bool            value4;
+    bool            value4 = true;
     ASSERT_ANY_THROW(
         parser.getValue(value4)
     );
@@ -395,64 +395,64 @@ TEST(YamlParserTest, getDataFromInt)
     );
     EXPECT_EQ("56", value1);
 
-    short             value2a;
+    short             value2a = 0;
     ASSERT_NO_THROW(
         parser.getValue(value2a)
     );
     EXPECT_EQ(56, value2a);
-    int             value2b;
+    int             value2b = 0;
     ASSERT_NO_THROW(
         parser.getValue(value2b)
     );
     EXPECT_EQ(56, value2b);
-    long             value2c;
+    long             value2c = 0;
     ASSERT_NO_THROW(
         parser.getValue(value2c)
     );
     EXPECT_EQ(56, value2c);
-    long long             value2d;
+    long long             value2d = 0;
     ASSERT_NO_THROW(
         parser.getValue(value2d)
     );
     EXPECT_EQ(56, value2d);
-    short             value2e;
+    short             value2e = 0;
     ASSERT_NO_THROW(
         parser.getValue(value2e)
     );
     EXPECT_EQ(56, value2e);
-    int             value2f;
+    int             value2f = 0;
     ASSERT_NO_THROW(
         parser.getValue(value2f)
     );
     EXPECT_EQ(56, value2f);
-    long             value2g;
+    long             value2g = 0;
     ASSERT_NO_THROW(
         parser.getValue(value2g)
     );
     EXPECT_EQ(56, value2g);
-    long long             value2h;
+    long long             value2h = 0;
     ASSERT_NO_THROW(
         parser.getValue(value2h)
     );
     EXPECT_EQ(56, value2h);
 
-    float          value3a;
+    float          value3a = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3a)
     );
     EXPECT_EQ(56, value3a);
-    double          value3b;
+    double          value3b = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3b)
     );
     EXPECT_EQ(56, value3b);
-    long double          value3c;
+    long double          value3c = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3c)
     );
     EXPECT_EQ(56, value3c);
 
-    bool            value4;
+    bool            value4 = true;
     ASSERT_ANY_THROW(
         parser.getValue(value4)
     );
@@ -472,56 +472,56 @@ TEST(YamlParserTest, getDataFromFloat)
     );
     EXPECT_EQ("123.56", value1);
 
-    short             value2a;
+    short             value2a = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2a)
     );
-    int             value2b;
+    int             value2b = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2b)
     );
-    long             value2c;
+    long             value2c = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2c)
     );
-    long long             value2d;
+    long long             value2d = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2d)
     );
-    unsigned short             value2e;
+    unsigned short             value2e = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2e)
     );
-    unsigned int             value2f;
+    unsigned int             value2f = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2f)
     );
-    unsigned long             value2g;
+    unsigned long             value2g = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2g)
     );
-    unsigned long long             value2h;
+    unsigned long long             value2h = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2h)
     );
 
-    float          value3a;
+    float          value3a = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3a)
     );
     EXPECT_EQ(12356, static_cast<int>(value3a * 100 + .5));
-    double          value3b;
+    double          value3b = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3b)
     );
     EXPECT_EQ(12356, static_cast<int>(value3b * 100 + .5));
-    long double          value3c;
+    long double          value3c = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3c)
     );
     EXPECT_EQ(12356, static_cast<int>(value3c * 100 + .5));
 
-    bool            value4;
+    bool            value4 = true;
     ASSERT_ANY_THROW(
         parser.getValue(value4)
     );
@@ -541,48 +541,48 @@ TEST(YamlParserTest, getDataFromBool)
     );
     EXPECT_EQ("true", value1);
 
-    short             value2a;
+    short             value2a = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2a)
     );
-    int             value2b;
+    int             value2b = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2b)
     );
-    long             value2c;
+    long             value2c  = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2c)
     );
-    long long             value2d;
+    long long             value2d = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2d)
     );
-    unsigned short             value2e;
+    unsigned short             value2e = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2e)
     );
-    unsigned int             value2f;
+    unsigned int             value2f = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2f)
     );
-    unsigned long             value2g;
+    unsigned long             value2g = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2g)
     );
-    unsigned long long             value2h;
+    unsigned long long             value2h = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2h)
     );
 
-    float          value3a;
+    float          value3a = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3a)
     );
-    double          value3b;
+    double          value3b = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3b)
     );
-    long double          value3c;
+    long double          value3c = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3c)
     );

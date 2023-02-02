@@ -24,7 +24,7 @@ ThorsAnvil_MakeTrait(Issue72::FilterTestType, m1, m2);
 
 TEST(Issue72Test, JsonConnection)
 {
-    Issue72::FilterTestType  testData{"data1", "data2"};
+    Issue72::FilterTestType  testData{"data1", "data2", {}};
     std::stringstream stream;
 
     stream << ThorsAnvil::Serialize::jsonExporter(testData);

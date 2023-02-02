@@ -65,6 +65,7 @@ bool initLogging()
 {
     std::cerr << "Logging Init\n";
     ::testing::Environment* const foo_env = ::testing::AddGlobalTestEnvironment(new LoggingEnvironment);
+    ((void)foo_env);
     return true;
 }
 

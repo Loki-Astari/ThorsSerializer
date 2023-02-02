@@ -855,7 +855,7 @@ TEST(JsonParserTest, getDataFromFloat_a)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    float          value3a;
+    float          value3a = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3a)
     );
@@ -871,7 +871,7 @@ TEST(JsonParserTest, getDataFromFloat_b)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    double          value3b;
+    double          value3b = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3b)
     );
@@ -887,7 +887,7 @@ TEST(JsonParserTest, getDataFromFloat_c)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    long double          value3c;
+    long double          value3c = 0.0;
     ASSERT_NO_THROW(
         parser.getValue(value3c)
     );
@@ -904,7 +904,7 @@ TEST(JsonParserTest, getDataFromFloat_d)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    bool            value4;
+    bool            value4 = true;
     ASSERT_ANY_THROW(
         parser.getValue(value4)
     );
@@ -948,7 +948,7 @@ TEST(JsonParserTest, getDataFromBool_3)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    short             value2a;
+    short             value2a = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2a)
     );
@@ -963,7 +963,7 @@ TEST(JsonParserTest, getDataFromBool_4)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    int             value2b;
+    int             value2b = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2b)
     );
@@ -978,7 +978,7 @@ TEST(JsonParserTest, getDataFromBool_5)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    long             value2c;
+    long             value2c = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2c)
     );
@@ -993,7 +993,7 @@ TEST(JsonParserTest, getDataFromBool_6)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    long long             value2d;
+    long long             value2d = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2d)
     );
@@ -1008,7 +1008,7 @@ TEST(JsonParserTest, getDataFromBool_7)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    unsigned short             value2e;
+    unsigned short             value2e = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2e)
     );
@@ -1023,7 +1023,7 @@ TEST(JsonParserTest, getDataFromBool_8)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    unsigned int             value2f;
+    unsigned int             value2f  = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2f)
     );
@@ -1038,7 +1038,7 @@ TEST(JsonParserTest, getDataFromBool_9)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    unsigned long             value2g;
+    unsigned long             value2g = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2g)
     );
@@ -1053,7 +1053,7 @@ TEST(JsonParserTest, getDataFromBool_a)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    unsigned long long             value2h;
+    unsigned long long             value2h = 0;
     ASSERT_ANY_THROW(
         parser.getValue(value2h)
     );
@@ -1068,7 +1068,7 @@ TEST(JsonParserTest, getDataFromBool_b)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    float          value3a;
+    float          value3a = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3a)
     );
@@ -1083,7 +1083,7 @@ TEST(JsonParserTest, getDataFromBool_c)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    double          value3b;
+    double          value3b = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3b)
     );
@@ -1098,7 +1098,7 @@ TEST(JsonParserTest, getDataFromBool_d)
     EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
     EXPECT_EQ(ParserInterface::ParserToken::Value,      parser.getToken());
 
-    long double          value3c;
+    long double          value3c = 0.0;
     ASSERT_ANY_THROW(
         parser.getValue(value3c)
     );

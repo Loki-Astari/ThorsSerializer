@@ -17,6 +17,7 @@ namespace Issue50Test
 struct Vehicle
 {
     Vehicle(){}
+    virtual ~Vehicle() {}
     Vehicle(int speed)
         : speed(speed)
     {}

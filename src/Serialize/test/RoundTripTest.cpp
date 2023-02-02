@@ -20,7 +20,7 @@ TEST(RoundTripTest, JsonMap)
     std::string expected(R"({"ace":10,"val":1024})");
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -46,7 +46,7 @@ TEST(RoundTripTest, JsonParent)
     std::string expected(R"({"der":56789,"flt":234.875,"ace":10,"val":1024})");
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -69,7 +69,7 @@ TEST(RoundTripTest, JsonArray)
     std::string expected(R"([10,1024,9,367,12,34])");
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -93,7 +93,7 @@ TEST(RoundTripTest, JsonValue)
 
     std::string expected("68456231");
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -114,7 +114,7 @@ TEST(RoundTripTest, YamlMap)
     std::string expected("--- {ace: 10, val: 1024}\n...\n");
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -140,7 +140,7 @@ TEST(RoundTripTest, YamlParent)
     std::string expected("--- {der: 56789, flt: 234.875, ace: 10, val: 1024}\n...\n");
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -163,7 +163,7 @@ TEST(RoundTripTest, YamlArray)
     std::string expected("--- [10, 1024, 9, 367, 12, 34]\n...\n");
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -187,7 +187,7 @@ TEST(RoundTripTest, YamlValue)
 
     std::string expected("--- 68456231\n...\n");
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -215,7 +215,7 @@ TEST(RoundTripTest, BsonMap)
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -249,7 +249,7 @@ TEST(RoundTripTest, BsonParent)
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -283,7 +283,7 @@ TEST(RoundTripTest, BsonArray)
 
 
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
@@ -312,7 +312,7 @@ TEST(RoundTripTest, BsonValue)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected.size(), stream.str().size());
-    for(int loop =0;loop < expected.size(); ++loop)
+    for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
         EXPECT_EQ(expected[loop], stream.str()[loop]);
     }
