@@ -19,6 +19,7 @@ int main()
     using ThorsAnvil::Serialize::jsonImporter;
     using ThorsAnvil::Serialize::jsonExporter;
 
-    MyStruct    val {EnumType::A, "This string"};
+    MyStruct    val;
+    std::cin >> jsonImporter(val);
     std::cout << jsonExporter(val) << "\n";
 }
