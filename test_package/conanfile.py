@@ -1,23 +1,17 @@
-from conans import ConanFile, AutoToolsBuildEnvironment
-from conans import tools
+import os
+from conans import ConanFile, AutoToolsBuildEnvironment, tools
 
 class ThorsSerializerTestConan(ConanFile):
-    name = "ThorsSerializerTest"
-    version = "1.0"
     settings = "os", "compiler", "build_type", "arch"
     requires = "ThorsSerializer/2.2.18@user/testing"
 
     def build(self):
-        self.run("pwd")
-        self.run("ls")
-        with tools.chdir("test_package"):
+        with tools.chdir(self.source_folder):
             self.run("pwd")
             self.run("ls")
             atools = AutoToolsBuildEnvironment(self)
-            atools.make()
+            atools.make(target = "ThorsSerializerTest")
 
-    def package(self):
-        self.copy("ThorsSerializerTest17", dst="bin",     src="../build/bin")
+    def test(self):
+        self.run(["%s%sThorsSerializerTest" % (self.source_folder, os.sep)], run_environment=True)
 
-    def package_info(self):
-        self.copy("*", src="bin",     dst="bin")

@@ -1,3 +1,2 @@
-
-all:
-	$(CXX) -o ThorsSerializerTest ThorsSerializerTest.cpp -lThorSerialize17 -lThorsLogging17
+CXXFLAGS	+= -std=c++17
+LDFLAGS		+= $(LIBS)
