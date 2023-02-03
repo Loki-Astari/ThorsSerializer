@@ -14,15 +14,16 @@ TEST_IGNORE					+= JsonLexemes.h
 #▸  ▸   Is set up in the config for any external libraries that we need.
 #
 
+CXXFLAGS					+= -Werror -Wmissing-braces -Wdeprecated-declarations -Wmissing-field-initializers -Wunused-variable -Winconsistent-missing-override -Wdelete-non-abstract-non-virtual-dtor -Wall -Wextra -Wstrict-aliasing -pedantic -Werror -Wunreachable-code -Wno-long-long -Wdeprecated -Wdeprecated-declarations
 FILE_WARNING_FLAGS			+= $(NO_DEPRECATED_REGISTER_TEST) -Wno-unknown-pragmas $(LITERAL_WARNING)
 LDLIBS_EXTERN_BUILD			+= $(yaml_ROOT_LIB)
 %/JsonLexer.lex.o:			FILE_WARNING_FLAGS	+= -Wno-sign-compare -Wno-register
 %/JsonLexer1.lex.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-register
 %/DeprecatedTest.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-declarations
+%/PolyMorphicSerializerUniquePointerTest.o:		FILE_WARNING_FLAGS	+= -Wno-inconsistent-missing-override
 VERA_PROFILE_Traits.h		= thor_Traits.h
 
 include $(THORSANVIL_ROOT)/build/tools/Makefile
-
 
 
 

@@ -32,7 +32,7 @@ TEST(DeprecatedTest, Yaml)
 
 TEST(DeprecatedTest, JsonMakeTraitCustom)
 {
-    DepricatedTypeSpace::NormalObject    data{"BillyTheKid", 12};
+    DepricatedTypeSpace::NormalObject    data{"BillyTheKid", {12}};
 
     std::stringstream stream;
     stream << ThorsAnvil::Serialize::jsonExporter(data);
@@ -45,7 +45,7 @@ TEST(DeprecatedTest, JsonMakeTraitCustom)
 
 TEST(DeprecatedTest, BsonMakeTraitCustom)
 {
-    DepricatedTypeSpace::NormalObject    data{"ShouldThrowAsCustomIsNotSupportedByBSON", 88};
+    DepricatedTypeSpace::NormalObject    data{"ShouldThrowAsCustomIsNotSupportedByBSON", {88}};
 
     std::stringstream stream;
     EXPECT_ANY_THROW(

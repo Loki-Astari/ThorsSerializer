@@ -161,7 +161,6 @@ TEST(SmartPointerTest, JsonSerializeUniquePtrNull)
 
 TEST(SmartPointerTest, JsonSerializeUniquePtrObject)
 {
-    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
     using ThorsAnvil::Serialize::PrinterInterface;
 
     std::stringstream           stream;
@@ -196,7 +195,6 @@ TEST(SmartPointerTest, JsonSerializeSharedPtrNull)
 TEST(SmartPointerTest, JsonSerializeSharedPtrObject)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
@@ -262,7 +260,6 @@ TEST(SmartPointerTest, BsonCreateNormalPtrObject)
 TEST(SmartPointerTest, BsonCreateUniquePtrNull)
 {
     using ThorsAnvil::Serialize::ParserInterface;
-    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
     //std::stringstream           stream(R"(null)");
     std::string                 input = "\x0B\x00\x00\x00"
@@ -308,7 +305,6 @@ TEST(SmartPointerTest, BsonCreateUniquePtrObject)
 TEST(SmartPointerTest, BsonCreateSharedPtrNull)
 {
     using ThorsAnvil::Serialize::ParserInterface;
-    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
     //std::stringstream           stream(R"(null)");
     std::string                 input = "\x0B\x00\x00\x00"
@@ -393,7 +389,6 @@ TEST(SmartPointerTest, BsonSerializeNormalPtrObject)
 TEST(SmartPointerTest, BsonSerializeUniquePtrNull)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream;
     WrapperUni                  wrap;
@@ -412,7 +407,6 @@ TEST(SmartPointerTest, BsonSerializeUniquePtrNull)
 
 TEST(SmartPointerTest, BsonSerializeUniquePtrObject)
 {
-    using UniObject = std::unique_ptr<SmartPtrTest::Object>;
     using ThorsAnvil::Serialize::PrinterInterface;
 
     std::stringstream           stream;
@@ -434,7 +428,6 @@ TEST(SmartPointerTest, BsonSerializeUniquePtrObject)
 TEST(SmartPointerTest, BsonSerializeSharedPtrNull)
 {
     using  ThorsAnvil::Serialize::PrinterInterface;
-    using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream;
     WrapperShared               wrap{nullptr};
@@ -454,7 +447,6 @@ TEST(SmartPointerTest, BsonSerializeSharedPtrNull)
 TEST(SmartPointerTest, BsonSerializeSharedPtrObject)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});

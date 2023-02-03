@@ -18,6 +18,7 @@ struct Vehicle
     Vehicle(int speed)
         : speed(speed)
     {}
+    virtual ~Vehicle(){}
     int     speed;
     ThorsAnvil_PolyMorphicSerializer(PolymorphicTest::Vehicle);
 };
