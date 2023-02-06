@@ -216,6 +216,7 @@ HEADER_ONLY_INCLUDE void JsonPrinter::addValue(long double value)           {out
 HEADER_ONLY_INCLUDE void JsonPrinter::addValue(bool value)                  {output << PrefixValue(config.characteristics, state.size(), state.back()) << std::boolalpha << value;}
 
 HEADER_ONLY_INCLUDE void JsonPrinter::addValue(std::string const& value)    {output << PrefixValue(config.characteristics, state.size(), state.back()) << '"' << EscapeString(value) << '"';}
+HEADER_ONLY_INCLUDE void JsonPrinter::addValue(std::string_view const&value){output << PrefixValue(config.characteristics, state.size(), state.back()) << '"' << EscapeString(value) << '"';}
 HEADER_ONLY_INCLUDE void JsonPrinter::addRawValue(std::string const& value) {output << PrefixValue(config.characteristics, state.size(), state.back()) << value;}
 
 HEADER_ONLY_INCLUDE void JsonPrinter::addNull()                             {output << PrefixValue(config.characteristics, state.size(), state.back()) << "null";}

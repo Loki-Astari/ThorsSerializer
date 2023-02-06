@@ -66,6 +66,7 @@ class BsonPrinter: public PrinterInterface
         virtual void addValue(bool value)                           override    {writeBool(value);}
 
         virtual void addValue(std::string const& value)             override    {writeString(value);}
+        virtual void addValue(std::string_view const& value)        override    {writeString(std::string(value));}
 
         virtual void addRawValue(std::string const& value)          override    {writeBinary(value);}
 
@@ -89,6 +90,7 @@ class BsonPrinter: public PrinterInterface
         virtual std::size_t getSizeValue(long double)               override    {return 8;}
         virtual std::size_t getSizeValue(bool)                      override    {return 1;}
         virtual std::size_t getSizeValue(std::string const& value)  override    {return 4 + value.size() + 1;}
+        virtual std::size_t getSizeValue(std::string_view const& v) override    {return 4 + std::size(v) + 1;}
         virtual std::size_t getSizeRaw(std::size_t size)            override    {return 4 + 1 + size;}
 
     public:

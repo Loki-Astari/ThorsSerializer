@@ -689,6 +689,39 @@ DO_ASSERT(DataType)
     ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)            \
     static_assert(true, "")
 
+#if 1
+#define ThorsAnvil_MakeEnum(EnumName, ...)
+#include "magic_enum.hpp"
+
+
+namespace ThorsAnvil { namespace Serialize {
+template<typename EnumName>
+class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
+{
+    public:
+        static constexpr    TraitType       type = TraitType::Enum;
+        static std::size_t getSize()
+        {
+            return magic_enum::enum_count<EnumName>();
+        }
+        static EnumName getValue(std::string const& val, std::string const&)
+        {
+            auto enumDecode = magic_enum::enum_cast<EnumName>(val);
+            if (enumDecode.has_value()) {
+                return enumDecode.value();
+            }
+            ThorsLogAndThrow("ThorsAnvil::Serialize::Traits<EnumName>",
+                             "getValue",
+                             "Invalid Enum Value");
+        }
+        static std::size_t getPrintSize(PrinterInterface& printer, EnumName const& value, bool)
+        {
+            auto enumName = magic_enum::enum_name(value);
+            return printer.getSizeValue(enumName);
+        }
+};
+}}
+#else
 #include <map>
 #include <string>
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
@@ -732,6 +765,7 @@ class Traits<EnumName>                                                  \
 };                                                                      \
 }}                                                                      \
 DO_ASSERT(EnumName)
+#endif
 
 // This type is not useful for JSON or other serialization
 // But it can be useful to dump an enum that is a flag based enum.
@@ -811,7 +845,7 @@ namespace ThorsAnvil
  * The traits type.
  * Specialized for each type we want to serialize
  */
-template<typename T>
+template<typename T, typename SFINE>
 class Traits
 {
     public:
