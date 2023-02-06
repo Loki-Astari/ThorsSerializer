@@ -691,10 +691,13 @@ DO_ASSERT(DataType)
 
 #if 1
 #define ThorsAnvil_MakeEnum(EnumName, ...)
-#include "magic_enum.hpp"
+#include <magic_enum.hpp>
 
 
-namespace ThorsAnvil { namespace Serialize {
+namespace ThorsAnvil
+{
+    namespace Serialize
+    {
 template<typename EnumName>
 class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
 {
@@ -707,7 +710,8 @@ class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
         static EnumName getValue(std::string const& val, std::string const&)
         {
             auto enumDecode = magic_enum::enum_cast<EnumName>(val);
-            if (enumDecode.has_value()) {
+            if (enumDecode.has_value())
+            {
                 return enumDecode.value();
             }
             ThorsLogAndThrow("ThorsAnvil::Serialize::Traits<EnumName>",
@@ -720,7 +724,8 @@ class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
             return printer.getSizeValue(enumName);
         }
 };
-}}
+    }
+}
 #else
 #include <map>
 #include <string>
