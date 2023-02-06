@@ -832,8 +832,7 @@ class SerializerForBlock<TraitType::Enum, T>
         ~SerializerForBlock()   {}
         void printMembers()
         {
-            //printer.addValue(Traits<T>::getValues().find(object)->second);
-            printer.addValue(magic_enum::enum_name(object));
+            Traits<T>::serializeForBlock(printer, object);
         }
 };
 

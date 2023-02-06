@@ -18,7 +18,6 @@ namespace Issue49
 {
     enum class FloatFormat {scientific = 1,fixed = 2,hex = 4,general = fixed | scientific};
 }
-ThorsAnvil_MakeEnum(Issue49::FloatFormat, scientific, fixed, hex, general);
 
 TEST(Issue49Test, JsonStreamScientific)
 {

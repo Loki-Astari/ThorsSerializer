@@ -689,11 +689,7 @@ DO_ASSERT(DataType)
     ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)            \
     static_assert(true, "")
 
-#if 1
-#define ThorsAnvil_MakeEnum(EnumName, ...)
 #include <magic_enum.hpp>
-
-
 namespace ThorsAnvil
 {
     namespace Serialize
@@ -723,10 +719,14 @@ class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
             auto enumName = magic_enum::enum_name(value);
             return printer.getSizeValue(enumName);
         }
+        static void serializeForBlock(PrinterInterface& printer, EnumName const& object)
+        {
+            printer.addValue(magic_enum::enum_name(object));
+        }
 };
     }
 }
-#else
+
 #include <map>
 #include <string>
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
@@ -767,10 +767,13 @@ class Traits<EnumName>                                                  \
             auto find = getValues().find(value);                        \
             return printer.getSizeValue(find->second);                  \
         }                                                               \
+        static void serializeForBlock(PrinterInterface& printer, EnumName const& object) \
+        {                                                               \
+            printer.addValue(getValues().find(object)->second);         \
+        }                                                               \
 };                                                                      \
 }}                                                                      \
 DO_ASSERT(EnumName)
-#endif
 
 // This type is not useful for JSON or other serialization
 // But it can be useful to dump an enum that is a flag based enum.
