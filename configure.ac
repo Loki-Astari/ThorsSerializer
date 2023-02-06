@@ -22,6 +22,16 @@ AX_THOR_PROG_COV
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], [])
 
 AX_THOR_FUNC_USE_YAML
+AC_CHECK_HEADER(magic_enum.hpp, [],
+    [AC_MSG_ERROR(
+
+Could not find the header file <magic-enum.hpp>.
+You can install this with
+
+    brew install magic_enum
+
+    )]
+)
 AX_THOR_LIB_SELECT
 
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], ["$with_yamllib  $SERIALIZATION_EXTERN_LIBS"])
