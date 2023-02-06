@@ -17,13 +17,16 @@ namespace ThorsAnvil
 
 struct EscapeString
 {
-    std::string const& value;
+    std::string_view    value;
     EscapeString(std::string const& value)
+        : value(value)
+    {}
+    EscapeString(std::string_view const& value)
         : value(value)
     {}
     friend std::ostream& operator<<(std::ostream& stream, EscapeString const& data)
     {
-        std::string const& value = data.value;
+        std::string_view const& value = data.value;
 
         static auto isEscape = [](char c)
         {
@@ -112,7 +115,7 @@ extern std::string const defaultPolymorphicMarker;
 enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Reference, Custom_Depricated, Custom_Serialize};
 enum class FormatType{Json, Yaml, Bson};
 
-template<typename T>
+template<typename T, typename SFINE = void>
 class Traits;
 
 template <typename, typename = void>
@@ -314,6 +317,7 @@ class PrinterInterface
         virtual void    addValue(bool)                  = 0;
 
         virtual void    addValue(std::string const&)    = 0;
+        virtual void    addValue(std::string_view const&) = 0;
 
         virtual void    addRawValue(std::string const&) = 0;
 
@@ -339,6 +343,7 @@ class PrinterInterface
         virtual std::size_t getSizeValue(long double)               {return 0;}
         virtual std::size_t getSizeValue(bool)                      {return 0;}
         virtual std::size_t getSizeValue(std::string const&)        {return 0;}
+        virtual std::size_t getSizeValue(std::string_view const&)   {return 0;}
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 
         std::ostream& stream() {return output;}
