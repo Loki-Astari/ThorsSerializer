@@ -74,7 +74,7 @@ The use cases for serialization/de-serialization are the same:
 The one difference from normal serialization is that it adds an extra member to the output class. The key `"__type"` is serialized as the first member of an object. When reading (De-SErializing) a stream the key `"__type"` must be the first member of the object (Otherwise you will get an exception). Notice a `nullptr` is serialized as `null` in JSON.
 
 ````bash
-    > g++ -std=c++17 -o example3 example3.cpp -lThorSerialize17
+    > g++ -std=c++17 -o example3 example3.cpp -lThorSerialize17 -lThorsLogging17
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./example3
     {

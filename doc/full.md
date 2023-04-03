@@ -289,7 +289,7 @@ Strict parsing does not allow extra parameters in the Json input. Exact parsing 
 
 ### Build and run
 ````bash
-    > g++ -std=c++17 expample1.cpp -lThorSerialize17
+    > g++ -std=c++17 expample1.cpp -lThorSerialize17 -lThorsLogging17
     > ./a.out
         { 
             "name": "mark", 
@@ -407,7 +407,7 @@ This allows us to import and export object of the above class really easily.
 This generates:
 
 ````bash
-    > g++ -std=c++17 -o example2 example2.cpp -lThorSerialize17
+    > g++ -std=c++17 -o example2 example2.cpp -lThorSerialize17 -lThorsLogging17
     > ./example2
     Version 1
      
@@ -509,7 +509,7 @@ int main()
 The one difference from normal serialization is that it adds an extra member to the output class. The key `"__type"` is serialized as the first member of an object. When reading (De-SErializing) a stream the key `"__type"` must be the first member of the object (Otherwise you will get an exception). Notice a `nullptr` is serialized as `null` in JSON.
 
 ````bash
-    > g++ -std=c++17 -o example3 example3.cpp -lThorSerialize17
+    > g++ -std=c++17 -o example3 example3.cpp -lThorSerialize17 -lThorsLogging17
     > ./example3
     {
         "__type": "Bike",

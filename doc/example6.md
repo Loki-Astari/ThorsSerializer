@@ -61,7 +61,7 @@ int main()
 This generates:
 
 ````bash
-    > g++ -std=c++17 -o example6 example6.cpp -lThorSerialize17
+    > g++ -std=c++17 -o example6 example6.cpp -lThorSerialize17 -lThorsLogging17
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./example6
 Version 1
