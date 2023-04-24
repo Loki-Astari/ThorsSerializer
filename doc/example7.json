@@ -1,0 +1,16 @@
+{
+    "components": [
+        {
+            "type": "mesh",
+            "axis": ["x","y","z"]
+        }
+    ]
+}
+{
+    "components": [
+        {
+            "type": "mesh",
+            "axis": ["x","y",z]
+        }
+    ]
+}
