@@ -33,6 +33,7 @@
 
         Data                data1;
         Data                data2;
+        // See: https://github.com/Loki-Astari/ThorsSerializer/blob/master/doc/example7.json
         std::ifstream       file("example7.json");
 
         if (file >> jsonImporter(data1)) {
