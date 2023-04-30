@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $1 != "master" ]]; then
+if [[ "${1}" != "master" ]]; then
     echo "Safety check"
     echo "This scripts forces a commit to git."
     echo "This should only be done for master. Verify this by placing branch name as the parameter to the script"
@@ -11,10 +11,10 @@ if [[ $1 != "master" ]]; then
 fi
 
 rm -rf /tmp/TS
-git clone --single-branch --branch header-only https://Loki-Astari:${TMP}@github.com/Loki-Astari/ThorsSerializer.git /tmp/TS
+git clone --single-branch --branch header-only git@github.com:Loki-Astari/ThorsSerializer.git /tmp/TS
 wd=$(pwd)
 
-for locat in src/Serialize src/ThorsStorage/src/ThorsStorage src/GitUtility src/ThorsIOUtil; do
+for locat in src/Serialize src/ThorsStorage src/GitUtility src/ThorsIOUtil src/ThorsLogging; do
 
     cd ${wd}
 
@@ -29,16 +29,20 @@ for locat in src/Serialize src/ThorsStorage/src/ThorsStorage src/GitUtility src/
         file=${loop##*/}
         base=${file%%.cpp}
         echo cp ${file} /tmp/TS/${dst}/${base}.source
-        # cp ${loop} build/include/${dst}/${base}.source
+        cp ${loop} build/include/${dst}/${base}.source
         # Rather than simply copy we remove all the code that is only used for unit testing.
         awk 'BEGIN {PRINT=1;} /^#ifdef COVERAGE_TEST/ {if (PRINT==1){SAVEDEPTH=DEPTH;PRINT=0;}} /^#if/ {DEPTH+=1;} /^#endif/ {DEPTH-=1;if (PRINT == 0 && SAVEDEPTH==DEPTH){PRINT=1;}} {if (PRINT) {print;}}' ${loop} >  /tmp/TS/${dst}/${base}.source
+
     done
 
     cd /tmp/TS
     git checkout ${dst}/*Config.h
 
     git add ${dst}/*
+
 done
+
+cd /tmp/TS
 
 removed=$(git status | awk '/deleted/ {print $2}')
 if [[ ${removed} != "" ]]; then
