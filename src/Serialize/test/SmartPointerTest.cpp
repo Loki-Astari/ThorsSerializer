@@ -1,5 +1,5 @@
 #include "SerializeConfig.h"
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "SmartPointerTest.h"
 #include "JsonThor.h"
 #include "BsonThor.h"

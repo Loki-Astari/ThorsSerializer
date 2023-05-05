@@ -1,5 +1,5 @@
 #include "SerializeConfig.h"
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "test/SerializeTest.h"
 #include "SerUtil.h"
 #include "UnicodeIterator.h"

@@ -1,5 +1,5 @@
 #include "SerializeConfig.h"
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "BsonThor.h"
 #include "test/BsonUtilitySerializationTest.h"
 #include <sstream>

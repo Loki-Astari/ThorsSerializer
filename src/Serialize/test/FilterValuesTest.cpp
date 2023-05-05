@@ -1,5 +1,5 @@
 
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "Traits.h"
 #include "SerUtil.h"
 #include "JsonThor.h"

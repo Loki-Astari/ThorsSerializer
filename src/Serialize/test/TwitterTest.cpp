@@ -1,6 +1,6 @@
 #include "SerializeConfig.h"
 #include "SerUtil.h"
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "JsonThor.h"
 #include "test/TwitterTest.h"
 #include <fstream>
