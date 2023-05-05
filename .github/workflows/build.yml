@@ -1,0 +1,25 @@
+name:       Build
+run-name:   ${{ github.actor }} is learning
+on:         [push]
+jobs:
+        #  windows-latest
+        #  windows-2022
+        #  windows-2019
+        #  ubuntu-latest
+        #  ubuntu-22.04
+        #  ubuntu-20.04
+        #  ubuntu-18.04
+        #  macos-latest
+        #  macos-13
+        #  macos-12
+        #  macos-11
+    build:
+        runs-on:    macos-12
+        steps:
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install vera++
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install magic_enum
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install boost
+            - uses: actions/checkout@master
+            - run: ./configure
+            - run: make
+            - run: make install

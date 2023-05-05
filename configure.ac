@@ -27,7 +27,7 @@ AX_THOR_LIB_SELECT
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], ["$with_yamllib  $SERIALIZATION_EXTERN_LIBS"])
 
 AC_LANG_PUSH([C++])
-CXXFLAGS=" -std=c++17 -I${DefaultLinkDir}/include"
+CXXFLAGS=" ${CXXFLAGS} -std=c++17 -I${DefaultLinkDir}/include"
 AC_CHECK_HEADER(magic_enum.hpp, [],
     [AC_MSG_ERROR(
 
