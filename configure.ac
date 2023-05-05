@@ -22,23 +22,17 @@ AX_THOR_PROG_COV
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], [])
 
 AX_THOR_FUNC_USE_YAML
+AX_THOR_FUNC_USE_MAGIC_ENUM
 AX_THOR_LIB_SELECT
 
 AC_SUBST([SERIALIZATION_EXTERN_LIBS], ["$with_yamllib  $SERIALIZATION_EXTERN_LIBS"])
 
 AC_LANG_PUSH([C++])
 CXXFLAGS="${CXXFLAGS} -std=c++17"
-AC_CHECK_HEADER(magic_enum.hpp, [],
-    [AC_MSG_ERROR(
-
-Could not find the header file <magic-enum.hpp>.
-You can install this with
-
-    brew install magic_enum
-
-    )]
-)
 AX_CHECK_COMPILE_FLAG([-ansi], [AC_SUBST([CXXFLAGS], ["$CXXFLAGS -ansi"])])
+AX_CHECK_COMPILE_FLAG([-Winconsistent-missing-override], [AC_SUBST([INCONSISTENT_MISSING_OVERRIDE], [-Winconsistent-missing-override])], [], [$CXX_STD_FLAG -Werror -Wall -Wextra])
+AX_CHECK_COMPILE_FLAG([-Wdelete-non-abstract-non-virtual-dtor], [AC_SUBST([DELETE_NON_VIRTUAL_DESTRUCT_CLANG], [-Wdelete-non-abstract-non-virtual-dtor])], [], [$CXX_STD_FLAG -Werror -Wall -Wextra])
+AX_CHECK_COMPILE_FLAG([-Wdelete-non-virtual-dtor], [AC_SUBST([DELETE_NON_VIRTUAL_DESTRUCT_GCC], [-Wdelete-non-virtual-dtor])], [], [$CXX_STD_FLAG -Werror -Wall -Wextra])
 AX_CHECK_COMPILE_FLAG([-Wno-literal-suffix], [AC_SUBST([LITERAL_WARNING_SUFFIX], [-Wno-literal-suffix])], [], [$CXX_STD_FLAG -Werror -Wall -Wextra])
 AX_CHECK_COMPILE_FLAG([-Wno-literal-range],  [AC_SUBST([LITERAL_WARNING_RANGE],  [-Wno-literal-range])],  [], [$CXX_STD_FLAG -Werror -Wall -Wextra])
 AC_LANG_POP([C++])
