@@ -1,6 +1,6 @@
 #include "SerializeConfig.h"
 #include "IgnoreUneededDataTest.h"
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
 

@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "BsonThor.h"
 #include "SerUtil.h"
 

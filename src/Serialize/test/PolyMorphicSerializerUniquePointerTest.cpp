@@ -1,5 +1,5 @@
 #include "SerializeConfig.h"
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "Serialize.h"
 #include "Serialize.tpp"
 #include "Traits.h"

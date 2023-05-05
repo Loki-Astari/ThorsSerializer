@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "Traits.h"
 
 namespace Issue51

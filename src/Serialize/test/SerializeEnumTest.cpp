@@ -1,12 +1,12 @@
 #include "SerializeConfig.h"
-#include "gtest/gtest.h"
+#include "lokigtest.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
 #include "Serialize.h"
 #include "test/SerializeTest.h"
 #include <algorithm>
 
-std::string stripspace(std::string const& value)
+inline std::string stripspace(std::string const& value)
 {
     std::string  result(value);
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return std::isspace(x);}), std::end(result));

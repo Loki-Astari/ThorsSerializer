@@ -1,4 +1,5 @@
-#include "gtest/gtest.h"
+#include "lokigtest.h"
+
 #include "BankAccountTest.h"
 #include <algorithm>
 #include <string>
@@ -67,4 +68,3 @@ TEST(BankAccountTest, BsonExportCustomField)
     EXPECT_EQ(888 + 32 - 12, dst.getBalance());
     EXPECT_TRUE(dst.isValid());
 }
-
