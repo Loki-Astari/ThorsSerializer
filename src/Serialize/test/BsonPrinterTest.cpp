@@ -3,6 +3,12 @@
 #include "BsonPrinter.h"
 #include <algorithm>
 
+static constexpr std::int64_t	bit64_val57	= 57l;
+static constexpr std::int64_t	bit64_val58	= 58ll;
+static constexpr std::uint64_t	bit64_uval57	= 57ul;
+static constexpr std::uint64_t	bit64_uval58	= 58ull;
+
+
 class BsonTestPrinter: public ThorsAnvil::Serialize::BsonPrinter
 {
     public:
@@ -74,16 +80,16 @@ TEST(BsonPrinterTest, ArrayValues)
                         + printer.getSizeValueTest(static_cast<short>(55))
                         + printer.getSizeValueTest(56)
                         + printer.getSizeValueTest(78.89)
-                        + printer.getSizeValueTest(57l)
-                        + printer.getSizeValueTest(58ll)
+                        + printer.getSizeValueTest(bit64_val57)
+                        + printer.getSizeValueTest(bit64_val58)
                         + printer.getSizeValueTest(std::string("Astring")));
     printer.addValue(true);
     printer.addValue(false);
     printer.addValue(static_cast<short>(55));
     printer.addValue(56);
     printer.addValue(78.89);
-    printer.addValue(57l);
-    printer.addValue(58ll);
+    printer.addValue(bit64_val57);
+    printer.addValue(bit64_val58);
     printer.addValue(std::string("Astring"));
     printer.closeArray();
     printer.closeDoc();
@@ -116,8 +122,8 @@ TEST(BsonPrinterTest, MapValues)
                         + 2 + printer.getSizeValueTest(static_cast<short>(55))
                         + 2 + printer.getSizeValueTest(56)
                         + 2 + printer.getSizeValueTest(78.89)
-                        + 2 + printer.getSizeValueTest(57l)
-                        + 2 + printer.getSizeValueTest(58ll)
+                        + 2 + printer.getSizeValueTest(bit64_val57)
+                        + 2 + printer.getSizeValueTest(bit64_val58)
                         + 2 + printer.getSizeValueTest(std::string("Astring")));
     printer.addKey("K0");
     printer.addValue(true);
@@ -130,9 +136,9 @@ TEST(BsonPrinterTest, MapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(bit64_val57);
     printer.addKey("K6");
-    printer.addValue(58ll);
+    printer.addValue(bit64_val58);
     printer.addKey("K7");
     printer.addValue(std::string("Astring"));
     printer.closeMap();
@@ -166,8 +172,8 @@ TEST(BsonPrinterTest, MapWithMapValues)
     std::size_t map1map2Size =
             printer.getSizeMapTest(3)
                     + 2 + printer.getSizeValueTest(78.89)
-                    + 2 + printer.getSizeValueTest(57l)
-                    + 2 + printer.getSizeValueTest(58ll);
+                    + 2 + printer.getSizeValueTest(bit64_val57)
+                    + 2 + printer.getSizeValueTest(bit64_val58);
     std::size_t map1 =
             printer.getSizeMapTest(4)
                     + 2 + map1map1Size
@@ -190,9 +196,9 @@ TEST(BsonPrinterTest, MapWithMapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(bit64_val57);
     printer.addKey("K6");
-    printer.addValue(58ll);
+    printer.addValue(bit64_val58);
     printer.closeMap();
     printer.addKey("K7");
     printer.addValue(std::string("Astring"));
@@ -229,8 +235,8 @@ TEST(BsonPrinterTest, MapWithArrayValues)
             = printer.getSizeArrayTest(8)
             + printer.getSizeValueTest(static_cast<unsigned short>(55))
             + printer.getSizeValueTest(56u)
-            + printer.getSizeValueTest(57ul)
-            + printer.getSizeValueTest(58ull)
+            + printer.getSizeValueTest(bit64_uval57)
+            + printer.getSizeValueTest(bit64_uval58)
             + printer.getSizeValueTest(60.f)
             + printer.getSizeValueTest(61.0L);
     std::size_t map1array2Size
@@ -250,8 +256,8 @@ TEST(BsonPrinterTest, MapWithArrayValues)
     printer.addValue(false);
     printer.addValue(static_cast<unsigned short>(55));
     printer.addValue(56u);
-    printer.addValue(57ul);
-    printer.addValue(58ull);
+    printer.addValue(bit64_uval57);
+    printer.addValue(bit64_uval58);
     printer.addValue(60.f);
     printer.addValue(61.0L);
     printer.closeArray();
@@ -303,8 +309,8 @@ TEST(BsonPrinterTest, ArrayWithMapValues)
     std::size_t array1map2Size
             = printer.getSizeMapTest(3)
             + 2 + printer.getSizeValueTest(78.89)
-            + 2 + printer.getSizeValueTest(57l)
-            + 2 + printer.getSizeValueTest(58ll);
+            + 2 + printer.getSizeValueTest(bit64_val57)
+            + 2 + printer.getSizeValueTest(bit64_val58);
     std::size_t array1Size
             = printer.getSizeArrayTest(4)
             + array1map1Size
@@ -324,9 +330,9 @@ TEST(BsonPrinterTest, ArrayWithMapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(bit64_val57);
     printer.addKey("K6");
-    printer.addValue(58ll);
+    printer.addValue(bit64_val58);
     printer.closeMap();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
@@ -365,8 +371,8 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
     std::size_t array1array2Size
             = printer.getSizeArrayTest(3)
             + printer.getSizeValueTest(78.89)
-            + printer.getSizeValueTest(57l)
-            + printer.getSizeValueTest(58ll);
+            + printer.getSizeValueTest(bit64_val57)
+            + printer.getSizeValueTest(bit64_val58);
     std::size_t array1Size
             = printer.getSizeArrayTest(4)
             + array1array1Size
@@ -382,8 +388,8 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
     printer.addValue(56);
     printer.openArray(array1array2Size);
     printer.addValue(78.89);
-    printer.addValue(57l);
-    printer.addValue(58ll);
+    printer.addValue(bit64_val57);
+    printer.addValue(bit64_val58);
     printer.closeArray();
     printer.addValue(std::string("Astring"));
     printer.closeArray();
