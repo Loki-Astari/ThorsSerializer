@@ -59,6 +59,9 @@ jobs:
             - name:  SetUp Cygwin Git
               shell: bash
               run:   git config --global core.autocrlf input
+            - name:  SetUp Directory as Safe
+              shell: bash
+              run:   git config --global --add safe.directory /cygdrive/d/a/ThorsSerializer/ThorsSerializer
             - name:  Get Magic Enum
               shell: bash
               run:   git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
