@@ -40,7 +40,6 @@ jobs:
         steps:
             - run:  git config --global core.autocrlf input
             - uses: actions/checkout@master
-            - uses: actions/checkout@master
             - name: Install Cygwin
               uses: cygwin/cygwin-install-action@master
               with:
@@ -61,7 +60,7 @@ jobs:
               run:   find / -name "libyaml.*"
             - name:  Find Yaml
               shell: bash
-              run:   export yaml=$(find / -name "libyaml.a*";export yamlRoot=${yaml%%lib*}
+              run:   export yaml=$(find / -name "libyaml.a*");export yamlRoot=${yaml%%lib*}
             - name:  SetUp Cygwin Git
               shell: bash
               run:   git config --global core.autocrlf input
