@@ -57,7 +57,7 @@ jobs:
                     mingw64-x86_64-dlfcn
             - name:  Find Yaml
               shell: bash
-              run:   export yaml=$(find /usr/ -name "libyaml.a*");echo "YAML: ${yaml}";export yamlRoot=${yaml%%lib*};echo ${yaml} => ${yamlRoot}
+              run:   export yaml=$(find /usr/ -name "libyaml.a*");echo "YAML: ${yaml}";export yamlRoot="${yaml%%lib*}";echo "${yaml} => ${yamlRoot}"
             - name:  SetUp Cygwin Git
               shell: bash
               run:   git config --global core.autocrlf input
