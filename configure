@@ -5525,15 +5525,17 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 echo
 echo
 echo
-echo "Checking for YAML: ${with_yamlroot}"
-ls "${with_yamlroot}/lib"
 echo "char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}" > miytest.cpp
-echo "Try 1"
-echo "g++ miytest.cpp -L${with_yamlroot}lib -lyaml"
-g++ miytest.cpp -L${with_yamlroot}lib -lyaml
-echo "Try 2"
+echo "Checking for YAML: ${with_yamlroot}/lib/"
+ls "${with_yamlroot}/lib/libyaml*"
 echo "g++ miytest.cpp -L$with_yamlroot/lib -lyaml"
 g++ miytest.cpp -L$with_yamlroot/lib -lyaml
+echo "Checking for YAML: ${with_yamlroot}/bin/"
+ls "${with_yamlroot}/bin/libyaml*"
+echo "g++ miytest.cpp -L$with_yamlroot/bin -lyaml"
+g++ miytest.cpp -L$with_yamlroot/lib -lyaml
+
+echo
 echo "which g++"
 which g++
 echo "g++ --version miytest.cpp"
