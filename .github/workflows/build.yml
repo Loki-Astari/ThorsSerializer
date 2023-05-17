@@ -58,9 +58,9 @@ jobs:
             - name:  Find Yaml
               shell: bash
               run:   find /usr/ -name "libyaml*"
-            - name:  Find Yaml 2
-              shell: bash
-              run:   find /opt/ -name "libyaml*"
+            #- name:  Find Yaml 2
+            #  shell: bash
+            #  run:   find /opt/ -name "libyaml*"
             - name:  SetUp Cygwin Git
               shell: bash
               run:   git config --global core.autocrlf input
@@ -72,7 +72,7 @@ jobs:
               run:   git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
             - name:  Run Configuration
               shell: bash
-              run:   ./configure --enable-dark-mode --disable-vera --with-magicenumroot=/tmp/magic_enum --with-yamlroot=/usr/x86_64-w64-mingw32/sys-root/mingw/
+              run:   ./configure --enable-dark-mode --disable-vera --with-magicenumroot=/tmp/magic_enum --with-yamlroot=/usr/x86_64-w64-mingw32/sys-root/mingw
             - name:  Build
               shell: bash
               run:   make
