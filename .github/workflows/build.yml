@@ -56,6 +56,9 @@ jobs:
                     mingw64-x86_64-yaml
                     mingw64-x86_64-boost
                     mingw64-x86_64-dlfcn
-            - run:  ./configure --enable-dark-mode --disable-vera --with-magicenumroot=/tmp/magic_enum --with-yamlroot=/usr/x86_64-w64-mingw32/sys-root/mingw/
-            - run:  make
-            - run:  sudo make install
+            - name:  Run Configuration
+              shell: bash
+              run:   ./configure --enable-dark-mode --disable-vera --with-magicenumroot=/tmp/magic_enum --with-yamlroot=/usr/x86_64-w64-mingw32/sys-root/mingw/
+            - name:  Build
+              shell: bash
+              run:   make
