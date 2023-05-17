@@ -5521,6 +5521,18 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     ORIG_LDFLAGS="${LDFLAGS}"
 
 # Check whether --with-yamlroot was given.
+
+echo
+echo
+echo
+echo "Checking for YAML"
+ls "${with_yamlroot}/lib"
+echo "char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}" > miytest.cpp
+echo "Try 1"
+g++ miytest.cpp -L${with_yamlroot}/lib -lyaml
+echo "Try 2"
+g++ miytest.cpp -L$with_yamlroot/lib -lyaml
+
 if test ${with_yamlroot+y}
 then :
   withval=$with_yamlroot;
