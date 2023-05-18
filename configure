@@ -5524,6 +5524,15 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 echo
 echo
+echo "Path: ${PATH}"
+echo "====="
+echo "find /bin -name "*g++" || true"
+find /bin -name "*g++" || true
+echo "====="
+echo "find /usr -name "*g++" || true"
+find /usr -name "*g++" || true
+echo
+echo
 echo "Setting up test"
 echo 'extern "C" char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}' > miytest.cpp
 cat miytest.cpp
