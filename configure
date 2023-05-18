@@ -5525,27 +5525,27 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 echo
 echo
 echo "Setting up test"
-echo "char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}" > miytest.cpp
+echo "extern "C" char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}" > miytest.cpp
 cat miytest.cpp
 
 
-echo
-echo
-echo "Checking for YAML: ${with_yamlroot}/lib/"
-ls "${with_yamlroot}/lib/" | grep yaml | xargs -I^ ls -la ${with_yamlroot}/lib/^
-echo "====="
-echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml"
-g++ miytest.cpp -L${with_yamlroot}/lib -lyaml
-echo "====="
-echo "g++ miytest.cpp ${with_yamlroot}/lib/libyaml.a"
-g++ miytest.cpp ${with_yamlroot}/lib/libyaml.a
-echo "====="
-echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml.dll"
-g++ miytest.cpp -L${with_yamlroot}/lib -lyaml.dll
-echo "====="
-echo "g++ miytest.cpp ${with_yamlroot}/lib/libyaml.dll.a"
-g++ miytest.cpp ${with_yamlroot}/lib/libyaml.dll.a
-echo "====="
+#echo
+#echo
+#echo "Checking for YAML: ${with_yamlroot}/lib/"
+#ls "${with_yamlroot}/lib/" | grep yaml | xargs -I^ ls -la ${with_yamlroot}/lib/^
+#echo "====="
+#echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml"
+#g++ miytest.cpp -L${with_yamlroot}/lib -lyaml
+#echo "====="
+#echo "g++ miytest.cpp ${with_yamlroot}/lib/libyaml.a"
+#g++ miytest.cpp ${with_yamlroot}/lib/libyaml.a
+#echo "====="
+#echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml.dll"
+#g++ miytest.cpp -L${with_yamlroot}/lib -lyaml.dll
+#echo "====="
+#echo "g++ miytest.cpp ${with_yamlroot}/lib/libyaml.dll.a"
+#g++ miytest.cpp ${with_yamlroot}/lib/libyaml.dll.a
+#echo "====="
 
 
 echo
@@ -5556,9 +5556,9 @@ echo "====="
 echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml"
 g++ miytest.cpp -L$with_yamlroot/bin -lyaml
 echo "====="
-echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml-0-2"
-g++ miytest.cpp -L$with_yamlroot/bin/libyaml-0-2.dll
-echo "====="
+#echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml-0-2"
+#g++ miytest.cpp -L$with_yamlroot/bin/libyaml-0-2.dll
+#echo "====="
 
 
 
