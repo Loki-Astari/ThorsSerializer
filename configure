@@ -5526,6 +5526,78 @@ echo
 echo
 echo "Path: ${PATH}"
 echo "====="
+
+Path:
+    /usr/bin
+    cygdrive/c/Program Files/MongoDB/Server/5.0/bin
+    cygdrive/c/aliyun-cli
+    cygdrive/c/vcpkg
+    cygdrive/c/Program Files (x86)/NSIS
+    cygdrive/c/tools/zstd
+    cygdrive/c/Program Files/Mercurial
+    cygdrive/c/hostedtoolcache/windows/stack/2.9.3/x64
+    cygdrive/c/cabal/bin
+    cygdrive/c/ghcup/bin
+    cygdrive/c/Program Files/dotnet
+    cygdrive/c/mysql/bin
+    cygdrive/c/Program Files/R/R-4.3.0/bin/x64
+    cygdrive/c/SeleniumWebDrivers/GeckoDriver
+    cygdrive/c/Program Files (x86)/sbt/bin
+    cygdrive/c/Program Files (x86)/GitHub CLI
+    cygdrive/c/Program Files/Git/bin
+    cygdrive/c/Program Files (x86)/pipx_bin
+    cygdrive/c/npm/prefix
+    cygdrive/c/hostedtoolcache/windows/go/1.20.4/x64/bin
+    cygdrive/c/hostedtoolcache/windows/Python/3.9.13/x64/Scripts
+    cygdrive/c/hostedtoolcache/windows/Python/3.9.13/x64
+    cygdrive/c/hostedtoolcache/windows/Ruby/3.0.6/x64/bin
+    cygdrive/c/Program Files/OpenSSL/bin
+    cygdrive/c/tools/kotlinc/bin
+    cygdrive/c/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/8.0.372-7/x64/bin
+    cygdrive/c/Program Files/ImageMagick-7.1.1-Q16-HDRI
+    cygdrive/c/Program Files (x86)/Microsoft SDKs/Azure/CLI2/wbin
+    cygdrive/c/ProgramData/kind
+    cygdrive/c/Program Files/Microsoft/jdk-11.0.16.101-hotspot/bin
+    cygdrive/c/Windows/system32
+    cygdrive/c/Windows
+    cygdrive/c/Windows/System32/Wbem
+    cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
+    cygdrive/c/Windows/System32/OpenSSH
+    cygdrive/c/Program Files/dotnet
+    cygdrive/c/ProgramData/Chocolatey/bin
+    cygdrive/c/Program Files/PowerShell/7
+    cygdrive/c/Program Files/Microsoft/Web Platform Installer
+    cygdrive/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn
+    cygdrive/c/Program Files/Microsoft SQL Server/150/Tools/Binn
+    cygdrive/c/Strawberry/c/bin
+    cygdrive/c/Strawberry/perl/site/bin
+    cygdrive/c/Strawberry/perl/bin
+    cygdrive/c/ProgramData/chocolatey/lib/pulumi/tools/Pulumi/bin
+    cygdrive/c/Program Files/TortoiseSVN/bin
+    cygdrive/c/Program Files/CMake/bin
+    cygdrive/c/ProgramData/chocolatey/lib/maven/apache-maven-3.8.7/bin
+    cygdrive/c/Program Files/Microsoft Service Fabric/bin/Fabric/Fabric.Code
+    cygdrive/c/Program Files/Microsoft SDKs/Service Fabric/Tools/ServiceFabricLocalClusterManager
+    cygdrive/c/Program Files/nodejs
+    cygdrive/c/Program Files/Git/cmd
+    cygdrive/c/Program Files/Git/mingw64/bin
+    cygdrive/c/Program Files/Git/usr/bin
+    cygdrive/c/Program Files/GitHub CLI
+    cygdrive/c/tools/php
+    cygdrive/c/Program Files (x86)/sbt/bin
+    cygdrive/c/SeleniumWebDrivers/ChromeDriver
+    cygdrive/c/SeleniumWebDrivers/EdgeDriver
+    cygdrive/c/Program Files/Amazon/AWSCLIV2
+    cygdrive/c/Program Files/Amazon/SessionManagerPlugin/bin
+    cygdrive/c/Program Files/Amazon/AWSSAMCLI/bin
+    cygdrive/c/Program Files/Microsoft SQL Server/130/Tools/Binn
+    cygdrive/c/Program Files/LLVM/bin
+    cygdrive/c/Users/runneradmin/.dotnet/tools
+    cygdrive/c/Users/runneradmin/.cargo/bin
+    cygdrive/c/Users/runneradmin/AppData/Local/Microsoft/WindowsApps
+
+
+
 echo "find /bin -name "*g++" || true"
 find /bin -name "*g++" || true
 echo "====="
