@@ -5525,7 +5525,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 echo
 echo
 echo "Setting up test"
-echo "extern "C" char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}" > miytest.cpp
+echo 'extern "C" char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}' > miytest.cpp
 cat miytest.cpp
 
 
