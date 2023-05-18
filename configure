@@ -5527,13 +5527,29 @@ echo
 echo
 echo "char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}" > miytest.cpp
 echo "Checking for YAML: ${with_yamlroot}/lib/"
-ls "${with_yamlroot}/lib/libyaml*"
+ls "${with_yamlroot}/lib/" | grep yaml
 echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml"
 g++ miytest.cpp -L${with_yamlroot}/lib -lyaml
+echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml.dll"
+g++ miytest.cpp -L${with_yamlroot}/lib -lyaml.dll
+echo
+
+
 echo "Checking for YAML: ${with_yamlroot}/bin/"
-ls "${with_yamlroot}/bin/libyaml*"
+ls "${with_yamlroot}/bin/" | grep yaml
 echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml"
 g++ miytest.cpp -L$with_yamlroot/bin -lyaml
+echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml-0-2"
+g++ miytest.cpp -L$with_yamlroot/bin -lyaml-0-2
+
+echo "g++ miytest.cpp ${with_yamlroot}/lib/libyaml.a"
+g++ miytest.cpp ${with_yamlroot}/lib/libyaml.a
+echo "g++ miytest.cpp ${with_yamlroot}/lib/libyaml.dll.a"
+g++ miytest.cpp ${with_yamlroot}/lib/libyaml.dll.a
+echo "g++ miytest.cpp ${with_yamlroot}/bin/libyaml-0-2.dll"
+g++ miytest.cpp ${with_yamlroot}/bin/libyaml-0-2.dll
+
+
 
 echo
 echo "which g++"
