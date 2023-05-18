@@ -5553,13 +5553,15 @@ echo
 echo "Checking for YAML: ${with_yamlroot}/bin/"
 ls "${with_yamlroot}/bin/" | grep yaml | xargs -I^ ls -la ${with_yamlroot}/bin/^
 echo "====="
-echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml"
-g++ miytest.cpp -L$with_yamlroot/bin -lyaml
-echo "====="
-#echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml-0-2"
-#g++ miytest.cpp -L$with_yamlroot/bin/libyaml-0-2.dll
+#echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml"
+#g++ miytest.cpp -L$with_yamlroot/bin -lyaml
 #echo "====="
-
+echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml-0-2"
+g++ miytest.cpp -L$with_yamlroot/bin/ -lyaml-0-2
+echo "====="
+echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml"
+g++ miytest.cpp -L$with_yamlroot/lib/  -lyaml
+echo "====="
 
 
 

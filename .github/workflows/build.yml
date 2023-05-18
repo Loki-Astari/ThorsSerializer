@@ -61,6 +61,9 @@ jobs:
                 # /usr/x86_64-w64-mingw32/sys-root/mingw/lib/libyaml.a
                 # /usr/x86_64-w64-mingw32/sys-root/mingw
                 # /usr/x86_64-w64-mingw32/sys-root/mingw/lib/libyaml*
+            - name:   Fix Yaml
+              shell:  bash
+              run:    ln -s /usr/x86_64-w64-mingw32/sys-root/mingw/bin/libyaml-0-2.dll  /usr/x86_64-w64-mingw32/sys-root/mingw/lib/libyaml.dll
             #- name:  Find Yaml 2
             #  shell: bash
             #  run:   find /opt/ -name "libyaml*"
