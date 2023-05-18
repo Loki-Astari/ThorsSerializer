@@ -58,6 +58,9 @@ jobs:
             - name:  Find Yaml
               shell: bash
               run:   find /usr/ -name "libyaml*"
+                # /usr/x86_64-w64-mingw32/sys-root/mingw/lib/libyaml.a
+                # /usr/x86_64-w64-mingw32/sys-root/mingw
+                # /usr/x86_64-w64-mingw32/sys-root/mingw/lib/libyaml*
             #- name:  Find Yaml 2
             #  shell: bash
             #  run:   find /opt/ -name "libyaml*"

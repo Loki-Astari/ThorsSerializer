@@ -5528,12 +5528,12 @@ echo
 echo "char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}" > miytest.cpp
 echo "Checking for YAML: ${with_yamlroot}/lib/"
 ls "${with_yamlroot}/lib/libyaml*"
-echo "g++ miytest.cpp -L$with_yamlroot/lib -lyaml"
-g++ miytest.cpp -L$with_yamlroot/lib -lyaml
+echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml"
+g++ miytest.cpp -L${with_yamlroot}/lib -lyaml
 echo "Checking for YAML: ${with_yamlroot}/bin/"
 ls "${with_yamlroot}/bin/libyaml*"
-echo "g++ miytest.cpp -L$with_yamlroot/bin -lyaml"
-g++ miytest.cpp -L$with_yamlroot/lib -lyaml
+echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml"
+g++ miytest.cpp -L$with_yamlroot/bin -lyaml
 
 echo
 echo "which g++"
