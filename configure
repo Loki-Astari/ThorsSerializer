@@ -1,6 +1,13 @@
 #!/bin/sh
 
-export PATH="/cygdrive/c/Program\ Files/Git/mingw64/bin:${PATH}"
+export PATH="/cygdrive/c/Program Files/Git/mingw64/bin:${PATH}"
+echo "PATH: ${PATH}"
+echo "====="
+echo "ls '/cygdrive/c/Program Files/Git/mingw64/bin'"
+ls -la "/cygdrive/c/Program Files/Git/mingw64/bin"
+echo "====="
+
+
 
 # Set up the build system
 if [[ ! -e build/Notes ]]; then
