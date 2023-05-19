@@ -40,8 +40,8 @@ jobs:
               cxx:      x86_64-w64-mingw32-g++.exe,
               ar:       x86_64-w64-mingw32-gcc-ar.exe,
               msystem:  MINGW64,
-              vera:     --disable-vera
-              cov:      COV=gcov
+              vera:     --disable-vera,
+              cov:      COV=gcov,
             }
     name:    ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
