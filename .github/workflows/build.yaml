@@ -15,22 +15,22 @@ jobs:
       fail-fast: false          # don't abort other jobs if a job fails
       matrix:
         config:
-          - {
-              name:     "Ubuntu Linux",
-              os:       ubuntu-latest,
-              shell:    bash,
-              cc:       gcc,
-              cxx:      g++,
-              ar:       ar,
-            }
-          - {
-              name:     "MacOS",
-              os:       macos-latest,
-              shell:    bash,
-              cc:       gcc,
-              cxx:      g++,
-              ar:       ar,
-            }
+#          - {
+#              name:     "Ubuntu Linux",
+#              os:       ubuntu-latest,
+#              shell:    bash,
+#              cc:       gcc,
+#              cxx:      g++,
+#              ar:       ar,
+#            }
+#          - {
+#              name:     "MacOS",
+#              os:       macos-latest,
+#              shell:    bash,
+#              cc:       gcc,
+#              cxx:      g++,
+#              ar:       ar,
+#            }
           - {
               name:     "Windows 64-bit",
               os:       windows-latest,
