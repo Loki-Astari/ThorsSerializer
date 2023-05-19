@@ -4699,6 +4699,22 @@ fi
 fi
 
 fi
+    echo
+    echo
+    echo "Checking Grep"
+    echo "Lots"
+    echo "gcov (Lots of text) 11.2.0" | grep -Eo 'Lots'
+    echo "D"
+    echo "gcov (Lots of text) 11.2.0" | grep -Eo '\d'
+    echo "D+"
+    echo "gcov (Lots of text) 11.2.0" | grep -Eo '\d+'
+    echo "D+."
+    echo "gcov (Lots of text) 11.2.0" | grep -Eo '\d+\.'
+    echo "(D+.)+"
+    echo "gcov (Lots of text) 11.2.0" | grep -Eo '(\d+\.)+'
+    echo "(D+.)+D+"
+    echo "gcov (Lots of text) 11.2.0" | grep -Eo '(\d+\.)+\d+'
+    echo "Version"
     echo "${COV} --version"
     echo
     echo "Other Info"
