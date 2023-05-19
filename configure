@@ -4701,6 +4701,7 @@ fi
 fi
     echo
     echo
+    echo "LC_ALL = -${LC_ALL}-"
     export LC_ALL=C
     echo "Checking Grep"
     which grep
