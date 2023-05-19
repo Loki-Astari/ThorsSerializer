@@ -34,7 +34,8 @@ jobs:
           - {
               name:     "Windows 64-bit",
               os:       windows-latest,
-              shell:    'msys2 {0}',
+              shellold: 'msys2 {0}',
+              shell:    bash,
               cc:       x86_64-w64-mingw32-gcc.exe,
               cxx:      x86_64-w64-mingw32-g++.exe,
               ar:       x86_64-w64-mingw32-ar.exe,
