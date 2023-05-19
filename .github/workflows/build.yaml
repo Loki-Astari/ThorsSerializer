@@ -51,7 +51,7 @@ jobs:
       CC:   ${{ matrix.config.cc }}
       CXX:  ${{ matrix.config.cxx }}
       AR:   ${{ matrix.config.ar }}
-      MSYS  winsymlinks:nativestrict
+      MSYS: "winsymlinks:nativestrict"
 
     steps:
     - if: matrix.config.os == 'ubuntu-latest'
