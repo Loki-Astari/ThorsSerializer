@@ -4707,17 +4707,17 @@ fi
     grep --version
     grep --help
     echo "Lots"
-    echo "gcov (Lots of text) 11.2.0" | grep -Eo 'Lots'
+    echo "gcov (Lots of text) 11.2.0" | grep -Po 'Lots'
     echo "D"
-    echo "gcov (Lots of text) 11.2.0" | grep -Eo '\d'
+    echo "gcov (Lots of text) 11.2.0" | grep -Po '\d'
     echo "D+"
-    echo "gcov (Lots of text) 11.2.0" | grep -Eo '\d+'
+    echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+'
     echo "D+."
-    echo "gcov (Lots of text) 11.2.0" | grep -Eo '\d+\.'
+    echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+\.'
     echo "(D+.)+"
-    echo "gcov (Lots of text) 11.2.0" | grep -Eo '(\d+\.)+'
+    echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+'
     echo "(D+.)+D+"
-    echo "gcov (Lots of text) 11.2.0" | grep -Eo '(\d+\.)+\d+'
+    echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+\d+'
     echo "Version"
     echo "${COV} --version"
     echo
