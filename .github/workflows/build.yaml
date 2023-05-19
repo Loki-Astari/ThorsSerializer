@@ -38,7 +38,7 @@ jobs:
               shell:    bash,
               cc:       x86_64-w64-mingw32-gcc.exe,
               cxx:      x86_64-w64-mingw32-g++.exe,
-              ar:       x86_64-w64-mingw32-ar.exe,
+              ar:       x86_64-w64-mingw32-gcc-ar.exe,
               msystem:  MINGW64,
               vera:     --disable-vera
             }
@@ -51,6 +51,7 @@ jobs:
       CC:   ${{ matrix.config.cc }}
       CXX:  ${{ matrix.config.cxx }}
       AR:   ${{ matrix.config.ar }}
+      MSYS  winsymlinks:nativestrict
 
     steps:
     - if: matrix.config.os == 'ubuntu-latest'

@@ -1,7 +1,4 @@
 #!/bin/sh
-
-export PATH="/cygdrive/c/Program Files/Git/mingw64/bin:${PATH}"
-
 # Set up the build system
 if [[ ! -e build/Notes ]]; then
     git submodule init
@@ -9,12 +6,9 @@ if [[ ! -e build/Notes ]]; then
 fi
 echo "Before"
 ls -la
-
-ln -s .build build | echo "Build Already Setup"
 echo "After"
+ln -s .build build | echo "Build Already Setup"
 ls -la
-echo "DONE"
-
 
 
 #! /bin/sh
@@ -2987,13 +2981,7 @@ if [ ! -e build/Notes ]; then
     git submodule init
     git submodule update
 fi
-echo "Before"
-ls -la
-
 ln -s .build build | echo "Build Already Setup"
-echo "After"
-ls -la
-echo "DONE"
 
 
 
@@ -3870,11 +3858,7 @@ fi
     if test "x${with_hostbuild}" == "x"
 then :
 
-            echo "Starting setup"
-            pwd
             pushd build/third
-            echo "In third"
-            pwd
             ./setup "$CXX" || as_fn_error 1 "Failed to set up the test utilities" "$LINENO" 5
             popd
 
@@ -5541,140 +5525,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     ORIG_LDFLAGS="${LDFLAGS}"
 
 # Check whether --with-yamlroot was given.
-
-echo
-echo
-echo "Path: ${PATH}"
-echo "====="
-
-#Path:
-#    /usr/bin
-#    cygdrive/c/Program Files/MongoDB/Server/5.0/bin
-#    cygdrive/c/aliyun-cli
-#    cygdrive/c/vcpkg
-#    cygdrive/c/Program Files (x86)/NSIS
-#    cygdrive/c/tools/zstd
-#    cygdrive/c/Program Files/Mercurial
-#    cygdrive/c/hostedtoolcache/windows/stack/2.9.3/x64
-#    cygdrive/c/cabal/bin
-#    cygdrive/c/ghcup/bin
-#    cygdrive/c/Program Files/dotnet
-#    cygdrive/c/mysql/bin
-#    cygdrive/c/Program Files/R/R-4.3.0/bin/x64
-#    cygdrive/c/SeleniumWebDrivers/GeckoDriver
-#    cygdrive/c/Program Files (x86)/sbt/bin
-#    cygdrive/c/Program Files (x86)/GitHub CLI
-#    cygdrive/c/Program Files/Git/bin
-#    cygdrive/c/Program Files (x86)/pipx_bin
-#    cygdrive/c/npm/prefix
-#    cygdrive/c/hostedtoolcache/windows/go/1.20.4/x64/bin
-#    cygdrive/c/hostedtoolcache/windows/Python/3.9.13/x64/Scripts
-#    cygdrive/c/hostedtoolcache/windows/Python/3.9.13/x64
-#    cygdrive/c/hostedtoolcache/windows/Ruby/3.0.6/x64/bin
-#    cygdrive/c/Program Files/OpenSSL/bin
-#    cygdrive/c/tools/kotlinc/bin
-#    cygdrive/c/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/8.0.372-7/x64/bin
-#    cygdrive/c/Program Files/ImageMagick-7.1.1-Q16-HDRI
-#    cygdrive/c/Program Files (x86)/Microsoft SDKs/Azure/CLI2/wbin
-#    cygdrive/c/ProgramData/kind
-#    cygdrive/c/Program Files/Microsoft/jdk-11.0.16.101-hotspot/bin
-#    cygdrive/c/Windows/system32
-#    cygdrive/c/Windows
-#    cygdrive/c/Windows/System32/Wbem
-#    cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
-#    cygdrive/c/Windows/System32/OpenSSH
-#    cygdrive/c/Program Files/dotnet
-#    cygdrive/c/ProgramData/Chocolatey/bin
-#    cygdrive/c/Program Files/PowerShell/7
-#    cygdrive/c/Program Files/Microsoft/Web Platform Installer
-#    cygdrive/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn
-#    cygdrive/c/Program Files/Microsoft SQL Server/150/Tools/Binn
-#    cygdrive/c/Strawberry/c/bin
-#    cygdrive/c/Strawberry/perl/site/bin
-#    cygdrive/c/Strawberry/perl/bin
-#    cygdrive/c/ProgramData/chocolatey/lib/pulumi/tools/Pulumi/bin
-#    cygdrive/c/Program Files/TortoiseSVN/bin
-#    cygdrive/c/Program Files/CMake/bin
-#    cygdrive/c/ProgramData/chocolatey/lib/maven/apache-maven-3.8.7/bin
-#    cygdrive/c/Program Files/Microsoft Service Fabric/bin/Fabric/Fabric.Code
-#    cygdrive/c/Program Files/Microsoft SDKs/Service Fabric/Tools/ServiceFabricLocalClusterManager
-#    cygdrive/c/Program Files/nodejs
-#    cygdrive/c/Program Files/Git/cmd
-#    cygdrive/c/Program Files/Git/mingw64/bin
-#    cygdrive/c/Program Files/Git/usr/bin
-#    cygdrive/c/Program Files/GitHub CLI
-#    cygdrive/c/tools/php
-#    cygdrive/c/Program Files (x86)/sbt/bin
-#    cygdrive/c/SeleniumWebDrivers/ChromeDriver
-#    cygdrive/c/SeleniumWebDrivers/EdgeDriver
-#    cygdrive/c/Program Files/Amazon/AWSCLIV2
-#    cygdrive/c/Program Files/Amazon/SessionManagerPlugin/bin
-#    cygdrive/c/Program Files/Amazon/AWSSAMCLI/bin
-#    cygdrive/c/Program Files/Microsoft SQL Server/130/Tools/Binn
-#    cygdrive/c/Program Files/LLVM/bin
-#    cygdrive/c/Users/runneradmin/.dotnet/tools
-#    cygdrive/c/Users/runneradmin/.cargo/bin
-#    cygdrive/c/Users/runneradmin/AppData/Local/Microsoft/WindowsApps
-
-
-
-echo "find /bin -name "*g++" || true"
-find /bin -name "*g++" || true
-echo "====="
-echo "find /usr -name "*g++" || true"
-find /usr -name "*g++" || true
-echo
-echo
-echo "Setting up test"
-echo 'extern "C" char yaml_parser_initialize();int main(){return yaml_parser_initialize();return 0;}' > miytest.cpp
-cat miytest.cpp
-
-
-#echo
-#echo
-#echo "Checking for YAML: ${with_yamlroot}/lib/"
-#ls "${with_yamlroot}/lib/" | grep yaml | xargs -I^ ls -la ${with_yamlroot}/lib/^
-#echo "====="
-#echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml"
-#g++ miytest.cpp -L${with_yamlroot}/lib -lyaml
-#echo "====="
-#echo "g++ miytest.cpp ${with_yamlroot}/lib/libyaml.a"
-#g++ miytest.cpp ${with_yamlroot}/lib/libyaml.a
-#echo "====="
-#echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml.dll"
-#g++ miytest.cpp -L${with_yamlroot}/lib -lyaml.dll
-#echo "====="
-#echo "g++ miytest.cpp ${with_yamlroot}/lib/libyaml.dll.a"
-#g++ miytest.cpp ${with_yamlroot}/lib/libyaml.dll.a
-#echo "====="
-
-
-echo
-echo
-echo "Checking for YAML: ${with_yamlroot}/bin/"
-ls "${with_yamlroot}/bin/" | grep yaml | xargs -I^ ls -la ${with_yamlroot}/bin/^
-echo "====="
-#echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml"
-#g++ miytest.cpp -L$with_yamlroot/bin -lyaml
-#echo "====="
-echo "g++ miytest.cpp -L${with_yamlroot}/bin -lyaml-0-2"
-g++ miytest.cpp -L$with_yamlroot/bin/ -lyaml-0-2
-echo "====="
-echo "g++ miytest.cpp -L${with_yamlroot}/lib -lyaml"
-g++ miytest.cpp -L$with_yamlroot/lib/  -lyaml
-echo "====="
-
-
-
-echo
-echo "which g++"
-which g++
-echo "g++ --version miytest.cpp"
-g++ --version miytest.cpp
-echo
-echo
-echo
-
 if test ${with_yamlroot+y}
 then :
   withval=$with_yamlroot;
