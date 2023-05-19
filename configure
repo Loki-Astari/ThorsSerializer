@@ -5573,6 +5573,23 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     yaml_ROOT_LIB=""
     ORIG_LDFLAGS="${LDFLAGS}"
 
+
+echo
+echo
+echo "Checking /"
+ls -la / || true
+echo "Checking /msys64"
+ls -la /msys64/ || true
+echo "DONE"
+echo "Checking LIBYAML"
+echo "char yaml_parser_initialize();int main(){return yaml_parser_initialize ();}" > miyyaml.cpp
+${CXX} miyyaml.cpp -lyaml
+echo "LIB PATH"
+${CXX} miyyaml.cpp -L/msys64/ -lyaml
+echo "DONE"
+
+
+
 # Check whether --with-yamlroot was given.
 if test ${with_yamlroot+y}
 then :
