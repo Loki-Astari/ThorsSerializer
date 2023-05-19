@@ -21,13 +21,15 @@ jobs:
               shell:    bash,
               cc:       gcc,
               cxx:      g++,
+              ar:       ar,
             }
           - {
               name:     "MacOS",
               os:       macos-latest,
               shell:    bash,
               cc:       gcc,
-              cxx:      g++
+              cxx:      g++,
+              ar:       ar,
             }
           - {
               name:     "Windows 64-bit",
@@ -35,6 +37,7 @@ jobs:
               shell:    'msys2 {0}',
               cc:       x86_64-w64-mingw32-gcc.exe,
               cxx:      x86_64-w64-mingw32-g++.exe,
+              ar:       x86_64-w64-mingw32-ar.exe,
               msystem:  MINGW64,
               vera:     --disable-vera
             }
@@ -46,6 +49,7 @@ jobs:
     env:
       CC:   ${{ matrix.config.cc }}
       CXX:  ${{ matrix.config.cxx }}
+      AR:   ${{ matrix.config.ar }}
 
     steps:
     - if: matrix.config.os == 'ubuntu-latest'
