@@ -4701,7 +4701,11 @@ fi
 fi
     echo
     echo
+    export LC_ALL=C
     echo "Checking Grep"
+    which grep
+    grep --version
+    grep --help
     echo "Lots"
     echo "gcov (Lots of text) 11.2.0" | grep -Eo 'Lots'
     echo "D"
