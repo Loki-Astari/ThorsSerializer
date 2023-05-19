@@ -4699,7 +4699,15 @@ fi
 fi
 
 fi
-    echo "{COV} --version"
+    echo "${COV} --version"
+    echo
+    echo "Other Info"
+    which gcov
+    echo "Ming64?"
+    ls -la /mingw64/bin/gcov
+    echo "Where g++"
+    which ${CXX}
+    echo "Testing"
     ${COV} --version 2>&1
     echo "Result: $?"
     echo "${COV} --version Pipe grep -Eo '(\d+\.)+\d+'"
