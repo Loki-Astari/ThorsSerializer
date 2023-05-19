@@ -41,6 +41,7 @@ jobs:
               ar:       x86_64-w64-mingw32-gcc-ar.exe,
               msystem:  MINGW64,
               vera:     --disable-vera
+              cov:      COV=gcov
             }
     name:    ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -84,7 +85,7 @@ jobs:
     - name: Build
       run: |
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
-        ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
+        ${{ matrix.config.cov }} ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
         make
         sudo make install
 
