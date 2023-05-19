@@ -42,8 +42,8 @@ jobs:
               ar:           x86_64-w64-mingw32-gcc-ar.exe,
               msystem:      MINGW64,
               vera:         --disable-vera,
-              yaml:         --with-yamlroot=/mingw64
-              magic_enum:   --with-magicenumroot=/tmp/magic_enum
+              yaml:         --with-yamlroot=/mingw64,
+              magic_enum:   --with-magicenumroot=/tmp/magic_enum,
               cov:          COV=gcov,
             }
     name:    ${{ matrix.config.name }}
