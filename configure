@@ -5578,6 +5578,11 @@ echo
 echo
 echo "Checking /"
 ls -la /
+echo "Checking /mingw64"
+ls -la /mingw64
+echo "Test"
+cd /mingw64
+ls -la
 echo "Checking /mingw64/include/yaml.h"
 cd /mingw64/include || true
 pwd
