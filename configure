@@ -5576,28 +5576,15 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 echo
 echo
-echo "Checking /"
+echo "Checking /d/"
 ls -la /
-echo "Checking /mingw64"
-ls -la /mingw64
-echo "Test"
-cd /mingw64
-ls -la
-echo "Checking /mingw64/include/yaml.h"
-cd /mingw64/include || true
-pwd
-ls -la *yaml* || true
-echo "Checking /mingw64/lib/libyaml*"
-cd /mingw64/lib || true
-pwd
-ls -la libyaml* || true
-echo "DONE"
-echo "Checking LIBYAML"
-echo "char yaml_parser_initialize();int main(){return yaml_parser_initialize();}" > miyyaml.cpp
-cat miyyaml.cpp
-echo "LIB PATH"
-echo "${CXX} miyyaml.cpp -L/mingw64/ -lyaml"
-${CXX} miyyaml.cpp -L/mingw64/ -lyaml
+echo "Checking /d/mingw64"
+ls -la /d/mingw64
+echo "Checking /d/a/mingw64"
+ls -la /d/a/mingw64
+
+echo "Try D drive"
+${CXX} miyyaml.cpp -L/d/a/mingw64/ -lyaml
 echo "DONE"
 
 
