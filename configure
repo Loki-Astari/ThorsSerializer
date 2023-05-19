@@ -4699,6 +4699,19 @@ fi
 fi
 
 fi
+    echo "{COV} --version"
+    ${COV} --version 2>&1
+    echo "Result: $?"
+    echo "${COV} --version Pipe grep -Eo '(\d+\.)+\d+'"
+    ${COV} --version 2>&1 | grep -Eo '(\d+\.)+\d+'
+    echo "Result: $?"
+    echo "${COV} --version Pipe grep -Po '(\d+\.)+\d+'"
+    ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+'
+    echo "Result: $?"
+    echo "PreTest"
+    ${COV} --version 2>&1 | grep -Eo '(\d+\.)+\d+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
+    echo "Result: $?"
+
     ${COV} --version 2>&1 | grep -Eo '(\d+\.)+\d+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
     if test $? != 0
 then :
