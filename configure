@@ -5580,6 +5580,8 @@ echo "Checking /"
 ls -la / || true
 echo "Checking /msys64"
 ls -la /msys64/ || true
+echo "Checking /mingw64"
+ls -la /mingw64/ || true
 echo "DONE"
 echo "Checking LIBYAML"
 echo "char yaml_parser_initialize();int main(){return yaml_parser_initialize ();}" > miyyaml.cpp
