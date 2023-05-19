@@ -4709,16 +4709,22 @@ fi
     grep --help
     echo "Lots"
     echo "gcov (Lots of text) 11.2.0" | grep -Po 'Lots'
+    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po 'Lots'
     echo "D"
     echo "gcov (Lots of text) 11.2.0" | grep -Po '\d'
+    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '\d'
     echo "D+"
     echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+'
+    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+'
     echo "D+."
     echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+\.'
+    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+\.'
     echo "(D+.)+"
     echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+'
+    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+'
     echo "(D+.)+D+"
     echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+\d+'
+    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+\d+'
     echo "Version"
     echo "${COV} --version"
     echo
@@ -4731,17 +4737,17 @@ fi
     echo "Testing"
     ${COV} --version 2>&1
     echo "Result: $?"
-    echo "${COV} --version Pipe grep -Eo '(\d+\.)+\d+'"
-    ${COV} --version 2>&1 | grep -Eo '(\d+\.)+\d+'
+    echo "${COV} --version Pipe grep -Eo '([[:digit:]]+\.)+[[:digit:]]+'"
+    ${COV} --version 2>&1 | grep -Eo '([[:digit:]]+\.)+[[:digit:]]+'
     echo "Result: $?"
     echo "${COV} --version Pipe grep -Po '(\d+\.)+\d+'"
     ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+'
     echo "Result: $?"
     echo "PreTest"
-    ${COV} --version 2>&1 | grep -Eo '(\d+\.)+\d+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
+    ${COV} --version 2>&1 | grep -Eo '([[:digit:]]+\.)+[[:digit:]]+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
     echo "Result: $?"
 
-    ${COV} --version 2>&1 | grep -Eo '(\d+\.)+\d+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
+    ${COV} --version 2>&1 | grep -Eo '([[:digit:]]+\.)+[[:digit:]]+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
     if test $? != 0
 then :
   as_fn_error $? "
