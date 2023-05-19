@@ -68,6 +68,7 @@ jobs:
         update: false
         msystem: ${{ matrix.config.msystem }}
         install: >-
+          git
           mingw-w64-x86_64-toolchain
           mingw-w64-x86_64-yaml-cpp
           mingw-w64-x86_64-boost
@@ -78,5 +79,5 @@ jobs:
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
         make
-        make install
+        sudo make install
 
