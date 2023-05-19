@@ -3864,7 +3864,11 @@ fi
     if test "x${with_hostbuild}" == "x"
 then :
 
+            echo "Starting setup"
+            pwd
             pushd build/third
+            echo "In third"
+            pwd
             ./setup "$CXX" || as_fn_error 1 "Failed to set up the test utilities" "$LINENO" 5
             popd
 
