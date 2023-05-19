@@ -27,13 +27,13 @@ jobs:
               cxx:      g++
             }
           - {
-              name:     "Windows 64-bit"
+              name:     "Windows 64-bit",
               os:       windows-latest,
               shell:    'msys2 {0}',
               cc:       x86_64-w64-mingw32-gcc.exe,
               cxx:      x86_64-w64-mingw32-g++.exe,
               msystem:  MINGW64,
-              vera:     --disable-vera,
+              vera:     --disable-vera
             }
     name:    ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
