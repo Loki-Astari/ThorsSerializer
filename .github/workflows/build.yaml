@@ -40,7 +40,7 @@ jobs:
               cc:           x86_64-w64-mingw32-gcc.exe,
               cxx:          x86_64-w64-mingw32-g++.exe,
               ar:           x86_64-w64-mingw32-gcc-ar.exe,
-              msystem:      MINGW64,
+              msystem:      mingw64,
               vera:         --disable-vera,
               yaml:         --with-yamlroot=/mingw64,
               magic_enum:   --with-magicenumroot=/tmp/magic_enum,
