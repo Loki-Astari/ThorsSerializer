@@ -5595,6 +5595,16 @@ echo
 echo
 echo "Doing Find"
 mount
+echo "ROOT"
+ls -la /            || true
+echo "MINGW64"
+ls -la /mingw64/    || true
+echo "BIN"
+ls -la /bin/        || true
+echo "C"
+ls -la /c/          || true
+echo "D"
+ls -la /d/          || true
 echo "DONE"
 
 
