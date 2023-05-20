@@ -5579,6 +5579,7 @@ echo
 echo "Checking /d/"
 echo "which x86_64-w64-mingw32-g++.exe"
 which x86_64-w64-mingw32-g++.exe
+ls -la $(which x86_64-w64-mingw32-g++.exe)
 echo 'dirname $(which x86_64-w64-mingw32-g++.exe)'
 dirname $(which x86_64-w64-mingw32-g++.exe)
 echo 'dirname $(dirname $(which x86_64-w64-mingw32-g++.exe))'
@@ -5588,6 +5589,12 @@ echo "INCLUDE"
 ls -la ${a}/include
 echo "LIB"
 ls -la ${a}/lib
+echo "DONE"
+
+echo
+echo
+echo "Doing Find"
+find / -name "libyaml*"
 echo "DONE"
 
 
