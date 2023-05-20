@@ -5610,8 +5610,10 @@ echo "MINGW64"
 ls -la /mingw64/    || true
 echo "MingW64/lib"
 ls -la /mingw64/lib    || true
-echo "FIND"
-find /mingw64/ -name "*yaml*"
+echo "FIND C"
+find /c/ -name "*yaml*"
+echo "FIND D"
+find /d/ -name "*yaml*"
 echo "DONE"
 
 
