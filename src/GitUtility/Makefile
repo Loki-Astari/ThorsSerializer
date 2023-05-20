@@ -1,5 +1,5 @@
 
-THORSANVIL_ROOT				?= $(realpath ../../)
+THORSANVIL_ROOT				?= $(shell realpath ../../)
 
 TARGET						= GitUtility.head
 VERA						= echo
