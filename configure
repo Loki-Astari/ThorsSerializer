@@ -5577,15 +5577,20 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 echo
 echo
 echo "Checking /d/"
-ls -la /
-echo "Checking /d/mingw64"
-ls -la /d/mingw64
-echo "Checking /d/a/mingw64"
-ls -la /d/a/mingw64
-
-echo "Try D drive"
-${CXX} miyyaml.cpp -L/d/a/mingw64/ -lyaml
+echo "which x86_64-w64-mingw32-g++.exe"
+which x86_64-w64-mingw32-g++.exe
+echo 'dirname $(which x86_64-w64-mingw32-g++.exe)'
+dirname $(which x86_64-w64-mingw32-g++.exe)
+echo 'dirname $(dirname $(which x86_64-w64-mingw32-g++.exe))'
+a=$(dirname $(dirname $(which x86_64-w64-mingw32-g++.exe)))
+echo ${a}
+echo "INCLUDE"
+ls -la ${a}/include
+echo "LIB"
+ls -la ${a}/lib
 echo "DONE"
+
+
 
 
 
