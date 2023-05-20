@@ -95,6 +95,6 @@ jobs:
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ${{ matrix.config.cov }} ./configure --enable-dark-mode ${{ matrix.config.magic_enum }} ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
         pwd
-        make
-        sudo make install
+        /usr/bin/make
+        sudo /usr/bin/make install
 
