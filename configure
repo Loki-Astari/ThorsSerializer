@@ -5591,8 +5591,28 @@ echo "LIB"
 ls -la ${a}/lib
 echo "DONE"
 
+echo "Checking MINGW"
+echo "D"
+ls -la /d
+echo "D/A"
+ls -la /d/a/
+echo "D/A/_temp"
+ls -la /d/a/_temp
+echo "D/A/_temp/msys64"
+ls -la /d/a/_temp/msys64
+echo "D/A/_temp/msys64/mingw64"
+ls -la /d/a/_temp/msys64/mingw64
+echo "D/A/_temp/msys64/mingw64/lib/"
+ls -la /d/a/_temp/msys64/mingw64/lib
+echo "D/A/_temp/msys64/mingw64/lib/libyaml*"
+ls -la /d/a/_temp/msys64/mingw64/lib/libyaml*
+echo "D/A/_temp/msys64/mingw64/include"
+ls -la /d/a/_temp/msys64/mingw64/include
+echo "D/A/_temp/msys64/mingw64/include/yaml*"
+ls -la /d/a/_temp/msys64/mingw64/include/yaml*
+
 echo "extern int doYaml();int main(){return doYaml();}" > miyyaml.cpp
-echo "${CXX} miyyaml.cpp -L/mingw64/ -lyaml"
+echo "${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/ -lyaml"
 ${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/ -lyaml || true
 echo "DONE BUILD"
 export
