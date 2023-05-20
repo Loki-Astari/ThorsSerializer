@@ -42,9 +42,9 @@ jobs:
               ar:           x86_64-w64-mingw32-gcc-ar.exe,
               msystem:      mingw64,
               vera:         --disable-vera,
-              yaml:         --with-yamlroot=/d/a/_temp/msys64/mingw64/,
               magic_enum:   --with-magicenumroot=/tmp/magic_enum,
               cov:          COV=gcov,
+              path:         /d/a/_temp/msys64/mingw64/,
             }
     name:    ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -88,6 +88,8 @@ jobs:
     - uses: actions/checkout@master
     - name: Build
       run: |
+        export PATH="${{ matrix.config.path }}:${PATH}"
+        echo "PATH: ${PATH}"
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ${{ matrix.config.cov }} ./configure --enable-dark-mode ${{ matrix.config.magic_enum }} ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
         make

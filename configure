@@ -4,12 +4,7 @@ if [[ ! -e build/Notes ]]; then
     git submodule init
     git submodule update
 fi
-echo "Before"
-echo "MSYS: ${MSYS}"
-ls -la
-echo "After"
 ln -s .build build | echo "Build Already Setup"
-ls -la
 
 
 #! /bin/sh
@@ -4699,55 +4694,7 @@ fi
 fi
 
 fi
-    echo
-    echo
-    echo "LC_ALL = -${LC_ALL}-"
-    export LC_ALL=C
-    echo "Checking Grep"
-    which grep
-    grep --version
-    grep --help
-    echo "Lots"
-    echo "gcov (Lots of text) 11.2.0" | grep -Po 'Lots'
-    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po 'Lots'
-    echo "D"
-    echo "gcov (Lots of text) 11.2.0" | grep -Po '\d'
-    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '\d'
-    echo "D+"
-    echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+'
-    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+'
-    echo "D+."
-    echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+\.'
-    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '\d+\.'
-    echo "(D+.)+"
-    echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+'
-    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+'
-    echo "(D+.)+D+"
-    echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+\d+'
-    LC_ALL=en_US.utf8 echo "gcov (Lots of text) 11.2.0" | grep -Po '(\d+\.)+\d+'
-    echo "Version"
-    echo "${COV} --version"
-    echo
-    echo "Other Info"
-    which gcov
-    echo "Ming64?"
-    ls -la /mingw64/bin/gcov
-    echo "Where g++"
-    which ${CXX}
-    echo "Testing"
-    ${COV} --version 2>&1
-    echo "Result: $?"
-    echo "${COV} --version Pipe grep -Eo '([[:digit:]]+\.)+[[:digit:]]+'"
-    ${COV} --version 2>&1 | grep -Eo '([[:digit:]]+\.)+[[:digit:]]+'
-    echo "Result: $?"
-    echo "${COV} --version Pipe grep -Po '(\d+\.)+\d+'"
-    ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+'
-    echo "Result: $?"
-    echo "PreTest"
-    ${COV} --version 2>&1 | grep -Eo '([[:digit:]]+\.)+[[:digit:]]+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
-    echo "Result: $?"
-
-    ${COV} --version 2>&1 | grep -Eo '([[:digit:]]+\.)+[[:digit:]]+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
+    ${COV} --version 2>&1 | grep -Eo '([:digit:]+\.)+[:digit:]+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
     if test $? != 0
 then :
   as_fn_error $? "
@@ -5573,46 +5520,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     yaml_ROOT_LIB=""
     ORIG_LDFLAGS="${LDFLAGS}"
 
-
-echo
-echo
-echo "Checking /d/"
-echo "which x86_64-w64-mingw32-g++.exe"
-which x86_64-w64-mingw32-g++.exe
-ls -la $(which x86_64-w64-mingw32-g++.exe)
-echo 'dirname $(which x86_64-w64-mingw32-g++.exe)'
-dirname $(which x86_64-w64-mingw32-g++.exe)
-echo 'dirname $(dirname $(which x86_64-w64-mingw32-g++.exe))'
-a=$(dirname $(dirname $(which x86_64-w64-mingw32-g++.exe)))
-echo ${a}
-echo "INCLUDE"
-ls -la ${a}/include
-echo "LIB"
-ls -la ${a}/lib
-echo "DONE"
-
-echo "Checking MINGW YAML"
-ls -la /d/a/_temp/msys64/mingw64/lib/libyaml*
-ls -la /d/a/_temp/msys64/mingw64/include/yaml*
-echo "DONE"
-
-echo "Checking G++"
-ls -la /d/a/_temp/msys64/mingw64/bin/*g++*
-echo
-echo "PATH: ${PATH}"
-export PATH="/d/a/_temp/msys64/mingw64/bin:${PATH}"
-echo 'extern "C" char yaml_parser_initialize();int main(){return yaml_parser_initialize();}' > miyyaml.cpp
-echo 'extern char yaml_parser_initialize();int main(){return yaml_parser_initialize();}' > miyyaml.c
-echo "${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/lib -lyaml"
-${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/lib -lyaml || true
-echo "${CC} miyyaml.c -L/d/a/_temp/msys64/mingw64/lib -lyaml"
-${CC} miyyaml.c -L/d/a/_temp/msys64/mingw64/lib -lyaml || true
-echo "DONE"
-
-
-
-
-
 # Check whether --with-yamlroot was given.
 if test ${with_yamlroot+y}
 then :
@@ -5653,15 +5560,12 @@ then :
 else $as_nop
   ac_cv_lib_yaml_yaml_parser_initialize=no
 fi
-echo "LDFLAGS; ${LDFLAGS}"
-echo "LIBS:    ${LIBS}"
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_yaml_yaml_parser_initialize" >&5
 printf "%s\n" "$ac_cv_lib_yaml_yaml_parser_initialize" >&6; }
-
 if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes
 then :
 
