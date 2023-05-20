@@ -45,7 +45,7 @@ jobs:
               yaml:         --with-yamlroot=/d/a/_temp/msys64/mingw64/,
               magic_enum:   --with-magicenumroot=/tmp/magic_enum,
               cov:          COV=gcov,
-              path:         /d/a/_temp/msys64/mingw64/,
+              path:         /d/a/_temp/msys64/mingw64/bin,
             }
     name:    ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
