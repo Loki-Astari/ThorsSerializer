@@ -5611,9 +5611,9 @@ ls -la /d/a/_temp/msys64/mingw64/include
 echo "D/A/_temp/msys64/mingw64/include/yaml*"
 ls -la /d/a/_temp/msys64/mingw64/include/yaml*
 
-echo "extern int doYaml();int main(){return doYaml();}" > miyyaml.cpp
-echo "${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/ -lyaml"
-${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/ -lyaml || true
+echo "extern char yaml_parser_initialize();int main(){return yaml_parser_initialize();}" > miyyaml.cpp
+echo "${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/lib -lyaml"
+${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/lib -lyaml || true
 echo "DONE BUILD"
 export
 echo "DONE"
@@ -5668,6 +5668,9 @@ LIBS=$ac_check_lib_save_LIBS
 fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_yaml_yaml_parser_initialize" >&5
 printf "%s\n" "$ac_cv_lib_yaml_yaml_parser_initialize" >&6; }
+
+echo "LDFLAGS; ${LDFLAGS}"
+echo "LIBS:    ${LIBS}"
 if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes
 then :
 
