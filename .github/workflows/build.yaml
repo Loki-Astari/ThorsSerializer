@@ -92,16 +92,8 @@ jobs:
         export PATH="${{ matrix.config.path }}:${PATH}"
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ${{ matrix.config.cov }} ./configure --enable-dark-mode ${{ matrix.config.magic_enum }} ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
-        echo "ls -la /d/a/ThorsSerializer"
-        ls -la /d/a/ThorsSerializer                                                 || true
-        echo "ls -la /d/a/ThorsSerializer/ThorsSerializer"
-        ls -la /d/a/ThorsSerializer/ThorsSerializer                                 || true
-        echo "ls -la /d/a/ThorsSerializer/ThorsSerializer/build"
-        ls -la /d/a/ThorsSerializer/ThorsSerializer/build                           || true
-        echo "ls -la /d/a/ThorsSerializer/ThorsSerializer/build/tools"
-        ls -la /d/a/ThorsSerializer/ThorsSerializer/build/tools                     || true
-        echo "ls -la /d/a/ThorsSerializer/ThorsSerializer/build/tools/Project.Makefile"
-        ls -la /d/a/ThorsSerializer/ThorsSerializer/build/tools/Project.Makefile    || true
-        bash -c make
-        sudo "bash -c make install"
+        rm -rf build
+        mv .build build
+        make
+        sudo make install
 
