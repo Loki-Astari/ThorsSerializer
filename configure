@@ -5594,7 +5594,7 @@ echo "DONE"
 echo
 echo
 echo "Doing Find"
-find / -name "libyaml*"
+mount
 echo "DONE"
 
 
