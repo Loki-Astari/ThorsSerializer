@@ -5596,14 +5596,17 @@ ls -la /d/a/_temp/msys64/mingw64/lib/libyaml*
 ls -la /d/a/_temp/msys64/mingw64/include/yaml*
 echo "DONE"
 
+echo "Checking G++"
+ls -la /d/a/_temp/msys64/mingw64/bin/*g++*
+echo
+echo "PATH: ${PATH}"
+export PATH="/d/a/_temp/msys64/mingw64/bin:${PATH}"
 echo 'extern "C" char yaml_parser_initialize();int main(){return yaml_parser_initialize();}' > miyyaml.cpp
 echo 'extern char yaml_parser_initialize();int main(){return yaml_parser_initialize();}' > miyyaml.c
 echo "${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/lib -lyaml"
 ${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/lib -lyaml || true
 echo "${CC} miyyaml.c -L/d/a/_temp/msys64/mingw64/lib -lyaml"
 ${CC} miyyaml.c -L/d/a/_temp/msys64/mingw64/lib -lyaml || true
-echo "DONE BUILD"
-export
 echo "DONE"
 
 
