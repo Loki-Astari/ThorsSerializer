@@ -5591,29 +5591,17 @@ echo "LIB"
 ls -la ${a}/lib
 echo "DONE"
 
-echo "Checking MINGW"
-echo "D"
-ls -la /d
-echo "D/A"
-ls -la /d/a/
-echo "D/A/_temp"
-ls -la /d/a/_temp
-echo "D/A/_temp/msys64"
-ls -la /d/a/_temp/msys64
-echo "D/A/_temp/msys64/mingw64"
-ls -la /d/a/_temp/msys64/mingw64
-echo "D/A/_temp/msys64/mingw64/lib/"
-ls -la /d/a/_temp/msys64/mingw64/lib
-echo "D/A/_temp/msys64/mingw64/lib/libyaml*"
+echo "Checking MINGW YAML"
 ls -la /d/a/_temp/msys64/mingw64/lib/libyaml*
-echo "D/A/_temp/msys64/mingw64/include"
-ls -la /d/a/_temp/msys64/mingw64/include
-echo "D/A/_temp/msys64/mingw64/include/yaml*"
 ls -la /d/a/_temp/msys64/mingw64/include/yaml*
+echo "DONE"
 
-echo "extern char yaml_parser_initialize();int main(){return yaml_parser_initialize();}" > miyyaml.cpp
+echo 'extern "C" char yaml_parser_initialize();int main(){return yaml_parser_initialize();}' > miyyaml.cpp
+echo 'extern char yaml_parser_initialize();int main(){return yaml_parser_initialize();}' > miyyaml.c
 echo "${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/lib -lyaml"
 ${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/lib -lyaml || true
+echo "${CC} miyyaml.c -L/d/a/_temp/msys64/mingw64/lib -lyaml"
+${CC} miyyaml.c -L/d/a/_temp/msys64/mingw64/lib -lyaml || true
 echo "DONE BUILD"
 export
 echo "DONE"
@@ -5662,6 +5650,8 @@ then :
 else $as_nop
   ac_cv_lib_yaml_yaml_parser_initialize=no
 fi
+echo "LDFLAGS; ${LDFLAGS}"
+echo "LIBS:    ${LIBS}"
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
@@ -5669,8 +5659,6 @@ fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_yaml_yaml_parser_initialize" >&5
 printf "%s\n" "$ac_cv_lib_yaml_yaml_parser_initialize" >&6; }
 
-echo "LDFLAGS; ${LDFLAGS}"
-echo "LIBS:    ${LIBS}"
 if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes
 then :
 
