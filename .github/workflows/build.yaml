@@ -91,8 +91,10 @@ jobs:
       run: |
         export PATH="${{ matrix.config.path }}:${PATH}"
         echo "PATH: ${PATH}"
+        pwd
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ${{ matrix.config.cov }} ./configure --enable-dark-mode ${{ matrix.config.magic_enum }} ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
+        pwd
         make
         sudo make install
 
