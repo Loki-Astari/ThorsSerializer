@@ -5591,29 +5591,11 @@ echo "LIB"
 ls -la ${a}/lib
 echo "DONE"
 
-echo "MINGW_MOUNT_POINT: ${MINGW_MOUNT_POINT}"
 echo "extern int doYaml();int main(){return doYaml();}" > miyyaml.cpp
 echo "${CXX} miyyaml.cpp -L/mingw64/ -lyaml"
-${CXX} miyyaml.cpp -L/mingw64/ -lyaml || true
-echo "Try 2"
-echo "${CXX} miyyaml.cpp -L${MINGW_MOUNT_POINT} -lyaml"
-${CXX} miyyaml.cpp -L${MINGW_MOUNT_POINT} -lyaml || true
+${CXX} miyyaml.cpp -L/d/a/_temp/msys64/mingw64/ -lyaml || true
 echo "DONE BUILD"
-
-echo
-echo
-echo "Doing Find"
-mount
-echo "ROOT"
-ls -la /            || true
-echo "MINGW64"
-ls -la /mingw64/    || true
-echo "MingW64/lib"
-ls -la /mingw64/lib    || true
-echo "FIND C"
-find /c/ -name "*yaml*"
-echo "FIND D"
-find /d/ -name "*yaml*"
+export
 echo "DONE"
 
 
