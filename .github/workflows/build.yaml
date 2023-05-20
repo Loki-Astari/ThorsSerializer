@@ -91,12 +91,12 @@ jobs:
       run: |
         alias
         which make
-        ls -la /bin/make || true
-        ls -la /mingw64/bin/make || true
-        exit 1
+        make --version
         export PATH="${{ matrix.config.path }}:${PATH}"
+        which make
+        make --version
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ${{ matrix.config.cov }} ./configure --enable-dark-mode ${{ matrix.config.magic_enum }} ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
-        /usr/bin/make
-        sudo /usr/bin/make install
+        /c/ProgramData/Chocolatey/bin/make
+        sudo /c/ProgramData/Chocolatey/bin/make install
 
