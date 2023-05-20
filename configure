@@ -5591,9 +5591,14 @@ echo "LIB"
 ls -la ${a}/lib
 echo "DONE"
 
-echo "extern int doYaml();int main(){return doTaml();}" > miyyaml.cpp
+echo "MINGW_MOUNT_POINT: ${MINGW_MOUNT_POINT}"
+echo "extern int doYaml();int main(){return doYaml();}" > miyyaml.cpp
 echo "${CXX} miyyaml.cpp -L/mingw64/ -lyaml"
 ${CXX} miyyaml.cpp -L/mingw64/ -lyaml || true
+echo "Try 2"
+echo "${CXX} miyyaml.cpp -L${MINGW_MOUNT_POINT} -lyaml"
+${CXX} miyyaml.cpp -L${MINGW_MOUNT_POINT} -lyaml || true
+echo "DONE BUILD"
 
 echo
 echo
