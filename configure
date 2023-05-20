@@ -5591,6 +5591,10 @@ echo "LIB"
 ls -la ${a}/lib
 echo "DONE"
 
+echo "extern int doYaml();int main(){return doTaml();}" > miyyaml.cpp
+echo "${CXX} miyyaml.cpp -L/mingw64/ -lyaml"
+${CXX} miyyaml.cpp -L/mingw64/ -lyaml || true
+
 echo
 echo
 echo "Doing Find"
@@ -5599,12 +5603,10 @@ echo "ROOT"
 ls -la /            || true
 echo "MINGW64"
 ls -la /mingw64/    || true
-echo "BIN"
-ls -la /bin/        || true
-echo "C"
-ls -la /c/          || true
-echo "D"
-ls -la /d/          || true
+echo "MingW64/lib"
+ls -la /mingw64/lib    || true
+echo "FIND"
+find /mingw64/ -name "*yaml*"
 echo "DONE"
 
 
