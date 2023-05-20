@@ -10,7 +10,7 @@ fixDump:
 	$(realpath ./)
 	$(realpath ../)
 
-include $(THORSANVIL_ROOT)/build/tools/Project.Makefile
+include ./build/tools/Project.Makefile
 
 
 
