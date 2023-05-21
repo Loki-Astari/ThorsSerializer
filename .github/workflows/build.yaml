@@ -101,9 +101,6 @@ jobs:
         which make
         make --version
         echo
-        echo "Pacman Lookup"
-        pacman -Ql make
-        echo
         echo
         echo Find
         find /d/a -name make
