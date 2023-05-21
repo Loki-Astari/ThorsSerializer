@@ -100,13 +100,6 @@ jobs:
         echo "Make: "
         which make
         make --version
-        echo "Check msys/bin"
-        echo "/d/a/_temp"
-        ls /d/a/_temp/
-        echo "/d/a/_temp/msys64"
-        ls /d/a/_temp/msys64
-        echo "/d/a/_temp/msys64/bin"
-        ls /d/a/_temp/msys64/bin
         echo
         echo "Pacman Lookup"
         pacman -Ql make
