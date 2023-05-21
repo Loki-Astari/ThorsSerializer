@@ -1,5 +1,5 @@
 
-THORSANVIL_ROOT				?= $(shell realpath ../../)
+THORSANVIL_ROOT				?= ../..
 COVERAGE_REQUIRED			= 70
 
 TARGET						= ThorSerialize.lib

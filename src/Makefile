@@ -1,5 +1,5 @@
 
-THORSANVIL_ROOT				= $(shell realpath ../)
+THORSANVIL_ROOT				= ..
 
 TARGET						= ThorsLogging GitUtility ThorsIOUtil Serialize ThorsStorage
 

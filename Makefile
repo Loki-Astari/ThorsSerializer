@@ -1,5 +1,5 @@
 
-THORSANVIL_ROOT				= $(shell realpath ./)
+THORSANVIL_ROOT				= .
 
 TARGET						= src
 
@@ -10,7 +10,7 @@ fixDump:
 	$(realpath ./)
 	$(realpath ../)
 
-include ./build/tools/Project.Makefile
+include $(THORSANVIL_ROOT)/build/tools/Project.Makefile
 
 
 
