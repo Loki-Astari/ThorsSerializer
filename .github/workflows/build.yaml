@@ -99,8 +99,8 @@ jobs:
         rm src/ThorsIOUtil
         rm src/ThorsLogging
         rm src/ThorsStorage
-        mv third/ThorsStorage/src/ThorsIOUtil   src/
-        mv third/ThorsStorage/src/ThorsLogging  src/
+        mv third/ThorsStorage/third/ThorsLogging/src/ThorsLogging/ src/
+        mv third/ThorsStorage/third/ThorsIOUtil/src/ThorsIOUtil/   src/
         mv third/ThorsStorage/src/ThorsStorage  src/
         make
         sudo make install
