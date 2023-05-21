@@ -4,6 +4,12 @@
 echo "PATH: ${PATH}"
 echo -n "sh:   "
 which sh
+echo -n "make: "
+which make
+echo "Mount"
+mount
+echo
+echo
 
 if [[ ! -e build/Notes ]]; then
     git submodule init
