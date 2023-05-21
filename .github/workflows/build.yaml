@@ -89,6 +89,11 @@ jobs:
     - uses: actions/checkout@master
     - name: Build
       run: |
+        echo
+        echo
+        uname -s | sed 's/-.*//'
+        echo
+        echo
         export PATH="${{ matrix.config.path }}:${PATH}"
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ${{ matrix.config.cov }} ./configure --enable-dark-mode ${{ matrix.config.magic_enum }} ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
