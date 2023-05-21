@@ -97,7 +97,23 @@ jobs:
         echo
         export PATH="${{ matrix.config.path }}:${PATH}"
         uname -s | sed 's/-.*//'
+        echo "Make: "
+        which make
+        make --version
+        echo "Check msys/bin"
+        echo "/d/a/_temp"
+        ls /d/a/_temp/
+        echo "/d/a/_temp/msys64"
+        ls /d/a/_temp/msys64
+        echo "/d/a/_temp/msys64/bin"
+        ls /d/a/_temp/msys64/bin
         echo
+        echo "Pacman Lookup"
+        pacman -Ql make
+        echo
+        echo
+        echo Find
+        find /d/a -name make
         echo
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ${{ matrix.config.cov }} ./configure --enable-dark-mode ${{ matrix.config.magic_enum }} ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
