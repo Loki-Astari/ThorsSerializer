@@ -1,5 +1,10 @@
 #!/bin/sh
 # Set up the build system
+
+echo "PATH: ${PATH}"
+echo -n "sh:   "
+which sh
+
 if [[ ! -e build/Notes ]]; then
     git submodule init
     git submodule update
