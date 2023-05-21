@@ -93,20 +93,15 @@ jobs:
     - uses: actions/checkout@master
     - name: Build
       run: |
-        echo
-        echo
         export PATH="${{ matrix.config.path }}:${PATH}"
-        uname -s | sed 's/-.*//'
-        echo "Make: "
-        which make
-        make --version
-        echo
-        echo
-        echo Find
-        find /d/a -name make
-        echo
         git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
         ${{ matrix.config.cov }} ./configure --enable-dark-mode ${{ matrix.config.magic_enum }} ${{ matrix.config.yaml }} ${{ matrix.config.vera }}
+        rm src/ThorsIOUtil
+        rm src/ThorsLogging
+        rm src/ThorsStorage
+        mv third/ThorsStorage/src/ThorsIOUtil   src/
+        mv third/ThorsStorage/src/ThorsLogging  src/
+        mv third/ThorsStorage/src/ThorsStorage  src/
         make
         sudo make install
 
