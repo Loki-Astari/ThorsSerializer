@@ -38,6 +38,7 @@ jobs:
     Build_on_Windows:
         runs-on:    windows-latest
         steps:
+            - run: "Disabled for this test"
             #- run:  git config --global core.autocrlf input
             #- uses: actions/checkout@master
             #- name: Install Cygwin
