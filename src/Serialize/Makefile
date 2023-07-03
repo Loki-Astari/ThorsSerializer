@@ -24,7 +24,7 @@ LDLIBS_EXTERN_BUILD			+= $(yaml_ROOT_LIB)
 %/JsonLexer1.lex.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-register
 %/DeprecatedTest.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-declarations
 %/PolyMorphicSerializerUniquePointerTest.o:		FILE_WARNING_FLAGS	+= -Wno-inconsistent-missing-override
-%/SerArrayTest.o:			FILE_WARNING_FLAGS	+= -Wno-error=missing-braces
+%/SerArrayTest.o:			FILE_WARNING_FLAGS	+= -Wno-missing-braces
 VERA_PROFILE_Traits.h		= thor_Traits.h
 
 include $(THORSANVIL_ROOT)/build/tools/Makefile
