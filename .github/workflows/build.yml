@@ -31,6 +31,7 @@ jobs:
             - run: git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
             - uses: actions/checkout@master
             - run: ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum
+            - run: cat Makefile.config
             - run: make
             - run: sudo make install
     Build_on_Windows:
