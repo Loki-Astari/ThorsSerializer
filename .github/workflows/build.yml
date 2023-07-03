@@ -1,0 +1,66 @@
+name:       Build
+run-name:   ${{ github.actor }} is learning
+on:         [push]
+jobs:
+        #  windows-latest
+        #  windows-2022
+        #  windows-2019
+        #  ubuntu-latest
+        #  ubuntu-22.04
+        #  ubuntu-20.04
+        #  ubuntu-18.04
+        #  macos-latest
+        #  macos-13
+        #  macos-12
+        #  macos-11
+    Build_on_Mac:
+        runs-on:    macos-latest
+        steps:
+            #- run: echo "Done"
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install vera++
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install boost
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install magic_enum
+            - uses: actions/checkout@master
+            - run: ./configure --disable-colour
+            - run: make
+            - run: make install
+    Build_on_Linux:
+        runs-on:    ubuntu-latest
+        steps:
+            - run: echo "Disabled for Linux"
+            #- run: echo "Done"
+            #- run: sudo apt-get install vera++
+            #- run: sudo apt-get install libboost-all-dev
+            #- run: git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
+            #- uses: actions/checkout@master
+            #- run: ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum
+            #- run: make
+            #- run: sudo make install
+    Build_on_Windows:
+        runs-on:    windows-latest
+        steps:
+            - run: echo "Disabled for Windows"
+            #- run:  git config --global core.autocrlf input
+            #- uses: actions/checkout@master
+            #- name: Install Cygwin
+            #  uses: cygwin/cygwin-install-action@master
+            #  with:
+            #    packages: >-
+            #        autoconf
+            #        automake
+            #        make
+            #        git
+            #        gperf
+            #        gconfr
+            #        coreutils
+            #        mingw64-x86_64-gcc-g++
+            #        mingw64-x86_64-yaml
+            #        mingw64-x86_64-boost
+            #        mingw64-x86_64-dlfcn
+            #- run:  ln -s /cygdrive/c/cygwin64/bin/x86_64-w64-mingw32-g++.exe /cygdrive/c/cygwin64/bin/g++.exe
+            #- run:  ln -s /cygdrive/c/cygwin64/usr/x86_64-w64-mingw32/bin/ar.exe /cygdrive/c/cygwin64/bin/ar.exe
+            #- uses: actions/checkout@master
+            #- run: git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
+            #- run:  ./configure --enable-dark-mode --disable-vera --with-magicenumroot=/tmp/magic_enum --with-yamlroot=/cygdrive/c/cygwin64/usr/x86_64-w64-mingw32/sys-root/mingw/
+            #- run:  make
+            #- run:  sudo make install
