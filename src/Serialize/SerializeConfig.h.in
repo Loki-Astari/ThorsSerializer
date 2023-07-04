@@ -1,5 +1,10 @@
 /* src/Serialize/SerializeConfig.h.in.  Generated from configure.ac by autoheader.  */
 
+
+#ifndef  THORS_SERIALIZER_CONFIG_H
+#define  THORS_SERIALIZER_CONFIG_H
+
+
 /* define if the Boost library is available */
 #undef HAVE_BOOST
 
@@ -70,3 +75,7 @@
 
 /* Version number of package */
 #undef VERSION
+
+
+#endif
+

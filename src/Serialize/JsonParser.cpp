@@ -1,4 +1,3 @@
-#include "SerializeConfig.h"
 #include "JsonParser.h"
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"

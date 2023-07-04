@@ -1,14 +1,9 @@
-#include "SerializeConfig.h"
 #include "ThorsSerializerUtil.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
 #include <string>
 
-using std::string_literals::operator""s;
-
 using namespace ThorsAnvil::Serialize;
-
-std::string const ThorsAnvil::Serialize::defaultPolymorphicMarker = "__type"s;
 
 HEADER_ONLY_INCLUDE
 void ParserInterface::ignoreValue()

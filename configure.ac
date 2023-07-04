@@ -44,6 +44,14 @@ LT_INIT
 
 AX_THOR_CHECK_THIRD_PARTY_LIBS
 
+AH_TOP([
+#ifndef  THORS_SERIALIZER_CONFIG_H
+#define  THORS_SERIALIZER_CONFIG_H
+])
+AH_BOTTOM([
+#endif
+])
+
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_HEADERS([ src/Serialize/SerializeConfig.h src/GitUtility/GitUtilityConfig.h ])
 AC_CONFIG_FILES([Makefile.extra Makefile.config:build/autotools/build/Makefile.config.in:Makefile.config.in])
