@@ -36,7 +36,7 @@
 /* Enable to use header only libraries */
 #undef HEADER_ONLY
 
-/* For header only convert to inline */
+/* For header only convery to inline */
 #undef HEADER_ONLY_INCLUDE
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */

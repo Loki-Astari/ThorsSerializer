@@ -3851,6 +3851,14 @@ fi
 
 
 
+
+printf "%s\n" "#define HEADER_ONLY 0" >>confdefs.h
+
+
+printf "%s\n" "#define HEADER_ONLY_INCLUDE /**/" >>confdefs.h
+
+
+
     if test "x${with_hostbuild}" == "x"
 then :
 
@@ -18029,12 +18037,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
         popd
     fi
 
-
-
-printf "%s\n" "#define HEADER_ONLY 0" >>confdefs.h
-
-
-printf "%s\n" "#define HEADER_ONLY_INCLUDE /**/" >>confdefs.h
 
 am__api_version='1.16'
 
