@@ -1,5 +1,5 @@
 name:       Build
-run-name:   ${{ github.actor }} is learning
+run-name:   ${{ github.actor }} Building
 on:         [push]
 jobs:
         #  windows-latest
@@ -31,7 +31,6 @@ jobs:
             - run: git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
             - uses: actions/checkout@master
             - run: ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum
-            - run: cat Makefile.config
             - run: make
             - run: sudo make install
     Build_on_Windows:
