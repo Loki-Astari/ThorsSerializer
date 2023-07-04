@@ -47,6 +47,6 @@ AX_THOR_CHECK_THIRD_PARTY_LIBS
 AC_DEFINE([HEADER_ONLY], [0], [Enable to use header only libraries])
 AC_DEFINE([HEADER_ONLY_INCLUDE], [], [For header only convery to inline])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
-AC_CONFIG_HEADERS([ src/Serialize/SerializeConfig.h ])
+AC_CONFIG_HEADERS([ src/Serialize/SerializeConfig.h src/GitUtility/GitUtilityConfig.h ])
 AC_CONFIG_FILES([Makefile.extra Makefile.config:build/autotools/build/Makefile.config.in:Makefile.config.in])
 AC_OUTPUT

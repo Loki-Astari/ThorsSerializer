@@ -1,0 +1,9 @@
+/* src/GitUtility/GitUtilityConfig.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Enable to use header only libraries */
+#undef HEADER_ONLY
+
+/* For header only convery to inline */
+#undef HEADER_ONLY_INCLUDE
+
+
