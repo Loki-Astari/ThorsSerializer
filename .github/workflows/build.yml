@@ -16,7 +16,6 @@ jobs:
     Build_on_Mac:
         runs-on:    macos-latest
         steps:
-            #- run: echo "Done"
             - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install vera++
             - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install boost
             - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install magic_enum
@@ -27,15 +26,14 @@ jobs:
     Build_on_Linux:
         runs-on:    ubuntu-latest
         steps:
-            - run: echo "Disabled for Linux"
-            #- run: echo "Done"
-            #- run: sudo apt-get install vera++
-            #- run: sudo apt-get install libboost-all-dev
-            #- run: git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
-            #- uses: actions/checkout@master
-            #- run: ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum
-            #- run: make
-            #- run: sudo make install
+            - run: sudo apt-get install vera++
+            - run: sudo apt-get install libboost-all-dev
+            - run: git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
+            - uses: actions/checkout@master
+            - run: ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum
+            - run: cat Makefile.config
+            - run: make
+            - run: sudo make install
     Build_on_Windows:
         runs-on:    windows-latest
         steps:

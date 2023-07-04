@@ -747,6 +747,9 @@ StdFlag17
 StdFlag14
 StdFlag11
 CXXMaxLanguage
+DELETE_NON_VIRTUAL_DTOR
+DELETE_NON_ABSTRACT_NON_VIRTUAL_DTOR
+INCONSISTENT_MISSING_OVERRIDE
 NO_DEPRECATED_REGISTER_TEST
 NO_UNUSED_PRIVATE_FIELD_TEST
 LITERAL_WARNING_RANGE
@@ -769,6 +772,7 @@ build_os
 build_vendor
 build_cpu
 build
+DARK_MODE
 COLOUR_STATE
 THOR_TARGETLIBS
 VERATOOL
@@ -829,6 +833,7 @@ enable_option_checking
 enable_vera
 with_hostbuild
 enable_colour
+enable_dark_mode
 with_boost
 with_boost_libdir
 with_magicenumroot
@@ -1488,6 +1493,9 @@ Optional Features:
   --disable-vera          Disable vera. Disable Static analysis of source.
 
   --disable-colour        Turns off text colouring in the makefile output
+
+  --enable-dark-mode      If your background is black some text that was grey
+                          is turned yellow
 
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -3815,6 +3823,12 @@ then :
   enableval=$enable_colour;
 fi
 
+    # Check whether --enable-dark-mode was given.
+if test ${enable_dark_mode+y}
+then :
+  enableval=$enable_dark_mode;
+fi
+
     if test "x$enable_colour" == "xno"
 then :
 
@@ -3823,7 +3837,17 @@ then :
 
 
 fi
+    if test "x$enable_dark-mode" != "xyes"
+then :
+
+            DARK_MODE="ON"
+            subconfigure="${subconfigure} --enable-dark-mode"
+
+
+fi
     COLOUR_STATE=${COLOUR_STATE}
+
+    DARK_MODE=${DARK_MODE}
 
 
 
@@ -5889,6 +5913,126 @@ printf "%s\n" "$ax_cv_check_cflags___Wno_deprecated_register" >&6; }
 if test "x$ax_cv_check_cflags___Wno_deprecated_register" = xyes
 then :
   NO_DEPRECATED_REGISTER_TEST=-Wno-deprecated-register
+
+
+else $as_nop
+  :
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Winconsistent-missing-override" >&5
+printf %s "checking whether C compiler accepts -Winconsistent-missing-override... " >&6; }
+if test ${ax_cv_check_cflags___Winconsistent_missing_override+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -Winconsistent-missing-override"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ax_cv_check_cflags___Winconsistent_missing_override=yes
+else $as_nop
+  ax_cv_check_cflags___Winconsistent_missing_override=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Winconsistent_missing_override" >&5
+printf "%s\n" "$ax_cv_check_cflags___Winconsistent_missing_override" >&6; }
+if test "x$ax_cv_check_cflags___Winconsistent_missing_override" = xyes
+then :
+  INCONSISTENT_MISSING_OVERRIDE=-Winconsistent-missing-override
+
+
+else $as_nop
+  :
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wdelete-non-abstract-non-virtual-dtor" >&5
+printf %s "checking whether C compiler accepts -Wdelete-non-abstract-non-virtual-dtor... " >&6; }
+if test ${ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -Wdelete-non-abstract-non-virtual-dtor"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor=yes
+else $as_nop
+  ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor" >&5
+printf "%s\n" "$ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor" >&6; }
+if test "x$ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor" = xyes
+then :
+  DELETE_NON_ABSTRACT_NON_VIRTUAL_DTOR=-Wdelete-non-abstract-non-virtual-dtor
+
+
+else $as_nop
+  :
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wdelete-non-virtual-dtor" >&5
+printf %s "checking whether C compiler accepts -Wdelete-non-virtual-dtor... " >&6; }
+if test ${ax_cv_check_cflags___Wdelete_non_virtual_dtor+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -Wdelete-non-virtual-dtor"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ax_cv_check_cflags___Wdelete_non_virtual_dtor=yes
+else $as_nop
+  ax_cv_check_cflags___Wdelete_non_virtual_dtor=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wdelete_non_virtual_dtor" >&5
+printf "%s\n" "$ax_cv_check_cflags___Wdelete_non_virtual_dtor" >&6; }
+if test "x$ax_cv_check_cflags___Wdelete_non_virtual_dtor" = xyes
+then :
+  DELETE_NON_VIRTUAL_DTOR=-Wdelete-non-virtual-dtor
 
 
 else $as_nop
