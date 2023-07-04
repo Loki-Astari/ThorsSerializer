@@ -53,6 +53,6 @@ AH_BOTTOM([
 ])
 
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
-AC_CONFIG_HEADERS([ src/Serialize/SerializeConfig.h src/GitUtility/GitUtilityConfig.h ])
+AC_CONFIG_HEADERS([ config.h src/Serialize/SerializeConfig.h src/GitUtility/GitUtilityConfig.h ])
 AC_CONFIG_FILES([Makefile.extra Makefile.config:build/autotools/build/Makefile.config.in:Makefile.config.in])
 AC_OUTPUT
