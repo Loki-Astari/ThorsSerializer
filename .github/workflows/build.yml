@@ -67,5 +67,10 @@ jobs:
         #- if:         github.ref == 'refs/heads/master'
         steps:
             - run: echo "Building Header Only"
-            - run: ./CreateHeaderOnly ${{ github.ref }}
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install vera++
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install boost
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install magic_enum
+            - uses: actions/checkout@master
+            - run: ./configure --disable-colour
+            - run: make header-only
 
