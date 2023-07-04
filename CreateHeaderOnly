@@ -1,55 +1,110 @@
 #!/bin/bash
 
-if [[ "${1}" != "master" ]]; then
-    echo "Safety check"
-    echo "This scripts forces a commit to git."
-    echo "This should only be done for master. Verify this by placing branch name as the parameter to the script"
-    echo
-    echo
-    echo "Got: >$1<"
-    exit 0
-fi
+function get_awkScriptToConvertSourceToHeader {
+    includeToIgnore=$1
+    namespace=$2
+    awkScriptToConvertSourceToHeader=$(
+cat << AWK_SCRIPT_CONVERT_SRC
+BEGIN                           {PRINT=1;DEPTH=0;}
+/^#include "${includeToIgnore}"/{next;}
+/^using namespace ${namespace};/{printf("namespace ${namespace}\n{\n");next;}
+/^#ifdef COVERAGE_TEST/         {if (PRINT==1){SAVEDEPTH=DEPTH;PRINT=0;}}
+/^#if/                          {DEPTH+=1;}
+/^#endif/                       {DEPTH-=1;if (PRINT == 0 && SAVEDEPTH==DEPTH){PRINT=1;}}
+                                {if (PRINT) {print;}}
+END                             {print "}\n"}
+AWK_SCRIPT_CONVERT_SRC
+)
+    echo "${awkScriptToConvertSourceToHeader}"
+}
 
-rm -rf /tmp/TS
-git clone --single-branch --branch header-only git@github.com:Loki-Astari/ThorsSerializer.git /tmp/TS
-wd=$(pwd)
+function get_awkScriptToConvertMakeFileToHeader {
+    packageTarget=$1
+    awkScriptToConvertMakeFileToHeader=$(
+cat << AWK_SCRIPT_CONVERT_MAKE
+/TARGET/                        {print "TARGET = ${packageTarget}.head";next;}
+                                {print;}
+AWK_SCRIPT_CONVERT_MAKE
+)
+    echo "${awkScriptToConvertMakeFileToHeader}"
+}
 
-for locat in src/Serialize src/ThorsStorage src/GitUtility src/ThorsIOUtil src/ThorsLogging; do
+awkScriptToConvertConfigFileToHeader=$(
+cat << AWK_SCRIPT_CONVERT_CONFIG
+/^#define HEADER_ONLY_INCLUDE/  {print "#define HEADER_ONLY_INCLUDE inline";next;}
+/^#define HEADER_ONLY/          {print "#define HEADER_ONLY 1";next;}
+                                {print;}
+AWK_SCRIPT_CONVERT_CONFIG
+)
 
-    cd ${wd}
+function getHeaderOnlyCode {
+    dst=$1
+    branch=$2
+    rm -rf ${dst}
+    git clone --single-branch --branch ${branch} git@github.com:Loki-Astari/ThorsSerializer.git ${dst}
+}
 
-    dst=$(cat ${locat}/Makefile | awk '/TARGET/ {sub(/\..*/, "", $3);print $3;}')
-    echo "Got: ${locat} => ${dst}"
+function convertPackageToHeaderOnly {
 
-    rm -rf /tmp/TS/${dst}
-    mkdir /tmp/TS/${dst}
-    cp build/include/${dst}/*  /tmp/TS/${dst}/
+    dst=$1
+    package=$2
+    directory=${package#*/}
+    packageTarget=$(cat ${package}/Makefile | awk '/TARGET/ {sub(/\..*/, "", $3);print $3;}')
+    packageNamespace=$(cat ${package}/Makefile | awk '/NAMESPACE/ {print $3;}')
+    packageDst=${dst}/${packageTarget}
 
-    for loop in $(ls ${locat}/*.cpp 2> /dev/null); do
+    echo "Converting Module: ${package} => ${packageTarget}"
+
+    rm -rf ${dst}/${packageTarget}
+    mkdir ${dst}/${packageTarget}
+
+    echo "        Copying standard header files"
+    cp build/include/${packageTarget}/*  ${packageDst}
+
+    echo "        Converting Makefile"
+    awk "$(get_awkScriptToConvertMakeFileToHeader ${packageTarget})" ${package}/Makefile > ${packageDst}/Makefile
+
+    echo "        Converting Config"
+    awk "${awkScriptToConvertConfigFileToHeader}" ${package}/${directory}Config.h > ${packageDst}/${directory}Config.h
+
+    if [[ -e ${package}/test ]]; then
+        echo "        Copying test files and data"
+        cp -R ${package}/test ${dst}/${packageTarget}
+    fi
+
+    for loop in $(ls ${package}/*.cpp 2> /dev/null); do
         file=${loop##*/}
         base=${file%%.cpp}
-        echo cp ${file} /tmp/TS/${dst}/${base}.source
-        cp ${loop} build/include/${dst}/${base}.source
-        # Rather than simply copy we remove all the code that is only used for unit testing.
-        awk 'BEGIN {PRINT=1;} /^#ifdef COVERAGE_TEST/ {if (PRINT==1){SAVEDEPTH=DEPTH;PRINT=0;}} /^#if/ {DEPTH+=1;} /^#endif/ {DEPTH-=1;if (PRINT == 0 && SAVEDEPTH==DEPTH){PRINT=1;}} {if (PRINT) {print;}}' ${loop} >  /tmp/TS/${dst}/${base}.source
+        echo "        Converting ${loop}  Into: ${packageDst}/${base}.source"
+        awk "$(get_awkScriptToConvertSourceToHeader ${base}.h ${packageNamespace})" ${loop} >  ${packageDst}/${base}.source
+    done
+    echo
+}
+
+function convertToHeaderOnly {
+    dst=$1
+    getHeaderOnlyCode ${dst} header-only
+    for package in src/Serialize src/ThorsStorage src/GitUtility src/ThorsIOUtil src/ThorsLogging; do
+
+        convertPackageToHeaderOnly ${dst} "${package}"
 
     done
+}
 
-    cd /tmp/TS
-    git checkout ${dst}/*Config.h
+function testHeaderOnlyVersions {
+    dst=$1
+    wd=$(pwd)
+    for package in src/ThorsLogging src/GitUtility src/ThorsIOUtil src/Serialize src/ThorsStorage; do
+        packageTarget=$(cat ${package}/Makefile | awk '/TARGET/ {sub(/\..*/, "", $3);print $3;}')
+        packageDst=${dst}/${packageTarget}
 
-    git add ${dst}/*
+        cd ${packageDst}
+        THORSANVIL_ROOT=${wd} make clean
+        THORSANVIL_ROOT=${wd} make test
+        cd ${wd}
+    done
+}
 
-done
-
-cd /tmp/TS
-
-removed=$(git status | awk '/deleted/ {print $2}')
-if [[ ${removed} != "" ]]; then
-    git rm ${removed}
-fi
-
-
-git commit -m "Update the header only build to latest version"
-git push
+convertToHeaderOnly /tmp/TS
+testHeaderOnlyVersions /tmp/TS
 

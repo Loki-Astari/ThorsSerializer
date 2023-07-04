@@ -1,4 +1,3 @@
-#include "SerializeConfig.h"
 #include "BsonPrinter.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
@@ -6,9 +5,6 @@
 #include <algorithm>
 
 using namespace ThorsAnvil::Serialize;
-
-char  ThorsAnvil::Serialize::intKey[]      = {'\x10', '\x12'};
-char  ThorsAnvil::Serialize::floatKey[]    = {'\x01', '\x13'};
 
 HEADER_ONLY_INCLUDE
 BsonPrinter::BsonPrinter(std::ostream& output, PrinterConfig config)

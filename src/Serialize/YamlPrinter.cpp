@@ -1,4 +1,3 @@
-#include "SerializeConfig.h"
 #include "YamlPrinter.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"

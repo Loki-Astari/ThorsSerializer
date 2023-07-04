@@ -3,6 +3,7 @@ THORSANVIL_ROOT				?= $(realpath ../../)
 COVERAGE_REQUIRED			= 70
 
 TARGET						= ThorSerialize.lib
+NAMESPACE					= ThorsAnvil::Serialize
 LINK_LIBS					= ThorsLogging
 UNITTEST_LINK_LIBS			= ThorsLogging
 UNITTEST_LDLIBS				= -ldl

@@ -3851,6 +3851,14 @@ fi
 
 
 
+
+printf "%s\n" "#define HEADER_ONLY 0" >>confdefs.h
+
+
+printf "%s\n" "#define HEADER_ONLY_INCLUDE /**/" >>confdefs.h
+
+
+
     if test "x${with_hostbuild}" == "x"
 then :
 
@@ -18031,10 +18039,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-printf "%s\n" "#define HEADER_ONLY 0" >>confdefs.h
 
-
-printf "%s\n" "#define HEADER_ONLY_INCLUDE /**/" >>confdefs.h
 
 am__api_version='1.16'
 
@@ -18909,7 +18914,7 @@ END
   fi
 fi
 
-ac_config_headers="$ac_config_headers src/Serialize/SerializeConfig.h"
+ac_config_headers="$ac_config_headers src/Serialize/SerializeConfig.h src/GitUtility/GitUtilityConfig.h"
 
 ac_config_files="$ac_config_files Makefile.extra Makefile.config:build/autotools/build/Makefile.config.in:Makefile.config.in"
 
@@ -20023,6 +20028,7 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "src/Serialize/SerializeConfig.h") CONFIG_HEADERS="$CONFIG_HEADERS src/Serialize/SerializeConfig.h" ;;
+    "src/GitUtility/GitUtilityConfig.h") CONFIG_HEADERS="$CONFIG_HEADERS src/GitUtility/GitUtilityConfig.h" ;;
     "Makefile.extra") CONFIG_FILES="$CONFIG_FILES Makefile.extra" ;;
     "Makefile.config") CONFIG_FILES="$CONFIG_FILES Makefile.config:build/autotools/build/Makefile.config.in:Makefile.config.in" ;;
 
