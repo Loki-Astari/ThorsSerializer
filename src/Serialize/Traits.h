@@ -602,7 +602,6 @@ DO_ASSERT_WITH_TEMPLATE(DataType, Count)
 #define ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, ...)      \
     ThorsAnvil_RegisterPolyMorphicType(DataType)
 
-#pragma vera-pushoff
 #define ThorsAnvil_RegisterPolyMorphicType(DataType)                    \
 namespace ThorsAnvil { namespace Serialize {                            \
 namespace                                                               \
@@ -610,7 +609,6 @@ namespace                                                               \
     ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME ( # DataType); \
 }                                                                       \
 }}
-#pragma vera-pop
 
 #define ThorsAnvil_Parent(Count, ParentType, DataType, ...)             \
         using Parent = ParentType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count); \
