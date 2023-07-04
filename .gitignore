@@ -21,5 +21,6 @@ config.status
 libtool
 stamp-h[0-9]
 confdefs.h
+config.h
 
 build

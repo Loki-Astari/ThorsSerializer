@@ -59,7 +59,8 @@ function convertPackageToHeaderOnly {
     mkdir ${dst}/${packageTarget}
 
     echo "        Copying standard header files"
-    cp build/include/${packageTarget}/*  ${packageDst}
+    cp ${package}/*.h   ${packageDst}
+    cp ${package}/*.tpp ${packageDst}
 
     echo "        Converting Makefile"
     awk "$(get_awkScriptToConvertMakeFileToHeader ${packageTarget})" ${package}/Makefile > ${packageDst}/Makefile
@@ -99,8 +100,7 @@ function testHeaderOnlyVersions {
         packageDst=${dst}/${packageTarget}
 
         cd ${packageDst}
-        THORSANVIL_ROOT=${wd} make clean
-        THORSANVIL_ROOT=${wd} make test
+        HEADER_ONLY=1 THORSANVIL_ROOT="${wd}" CXXFLAGS="-I${dst}" make test
         cd ${wd}
     done
 }
