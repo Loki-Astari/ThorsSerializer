@@ -18019,11 +18019,18 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
     sedStrip='s/-.*//'
     UNAME=`uname -s | sed "${sedString}"`
+    echo "Checking Windows Symbolic Links: ${UNAME}"
     if test "x${UNAME}" = "xMSYS_NT"
 then :
 
+        echo "    Fixing"
         git config --local core.symlinks true
         find src/ -type f | xargs -I^ git restore --source=HEAD ^
+        echo "    Fixing DONE"
+
+else $as_nop
+
+        echo "    Not Windows"
 
 fi
 
