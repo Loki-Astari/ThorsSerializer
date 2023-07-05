@@ -4,7 +4,9 @@
 #include <iomanip>
 #include <iostream>
 #include <tuple>
+#ifndef __WINNT
 #include <arpa/inet.h>
+#endif
 
 using namespace ThorsAnvil::Serialize;
 using namespace ThorsAnvil::Serialize::MongoUtility;
