@@ -18017,11 +18017,25 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
+    sedStrip='s/-.*//'
+    UNAME=`uname -s | sed "${sedString}"`
+    if test "x${UNAME}" = "xMSYS_NT"
+then :
+
+        git config --local core.symlinks true
+        find src/ -type f | xargs -I^ git restore --source=HEAD ^
+
+fi
+
+
     export cwd=$(pwd)
 
     pushd third
     if [ $? == 0 ]; then
         for third in $(ls); do
+            echo
+            echo
+            echo "Building Third Party: ${third}"
             pushd ${third}
             if [ -e ./configure ]; then
                 echo "${third}:  ./configure ${subconfigure} --prefix=${prefix} --with-hostbuild=${cwd}/build"
@@ -18031,7 +18045,9 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
                     exit 1
                 fi
             fi
+            echo "Complete: ${third}"
             echo "================ DONE ================="
+            echo
             popd
         done
         popd
