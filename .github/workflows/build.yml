@@ -72,9 +72,6 @@ jobs:
             - name: Make
               shell: msys2 {0}
               run:   make
-            - name: Install
-              shell: msys2 {0}
-              run:   sudo make install
     Build_Header_Only_Version:
         needs:      [Build_on_Mac, Build_on_Linux, Build_on_Windows]
         runs-on:    macos-latest
