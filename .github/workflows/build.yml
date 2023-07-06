@@ -59,7 +59,7 @@ jobs:
               run: |
                     export
                     which g++
-                    for a in ${PATH//:/ }; do echo -n "${a}: "; ls -la ${a}/g++; done
+                    for a in ${PATH//:/ }; do echo -n "${a}: "; ls -la ${a}/g++ || :; done
             - name: Clone Magic Enum
               shell: bash
               run:   git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
