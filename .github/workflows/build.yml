@@ -64,19 +64,19 @@ jobs:
                     /c/ProgramData/Chocolatey/bin/g++ --version
                     /c/Strawberry/c/bin/g++ --version
             - name: Clone Magic Enum
-              shell: bash
+              shell: msys2 {0}
               run:   git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
             - uses: actions/checkout@master
             - name: Configure
-              shell: bash
+              shell: msys2 {0}
               env:
                      MSYS:  winsymlinks:nativestrict
               run:  ./configure --enable-dark-mode --disable-vera --with-magicenumroot=/tmp/magic_enum --with-yamlroot=/mingw64/ || cat config.log
             - name: Make
-              shell: bash
+              shell: msys2 {0}
               run:   make
             - name: Install
-              shell: bash
+              shell: msys2 {0}
               run:   sudo make install
     Build_Header_Only_Version:
         needs:      [Build_on_Mac, Build_on_Linux, Build_on_Windows]
