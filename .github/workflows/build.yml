@@ -26,6 +26,8 @@ jobs:
     Build_on_Linux:
         runs-on:    ubuntu-latest
         steps:
+            - run: g++ --version
+            - run: which g++
             - run: sudo apt-get install vera++
             - run: sudo apt-get install libboost-all-dev
             - run: git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
