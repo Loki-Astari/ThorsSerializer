@@ -57,12 +57,9 @@ jobs:
             - name: GetInfo
               shell: msys2 {0}
               run: |
-                    export
-                    which g++
-                    g++ --version
-                    for a in ${PATH//:/ }; do echo "${a}: "; (ls -la ${a}/g++ 2>&1) || :; done
-                    /c/ProgramData/Chocolatey/bin/g++ --version
-                    /c/Strawberry/c/bin/g++ --version
+                uname -a
+                uname -s
+                uname -s | sed 's/-.*//'
             - name: Clone Magic Enum
               shell: msys2 {0}
               run:   git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
