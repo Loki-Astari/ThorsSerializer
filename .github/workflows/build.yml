@@ -55,11 +55,14 @@ jobs:
                     mingw-w64-x86_64-libyaml
                     mingw-w64-x86_64-dlfcn
             - name: GetInfo
-              shell: bash
+              shell: msys2 {0}
               run: |
                     export
                     which g++
-                    for a in ${PATH//:/ }; do echo -n "${a}: "; ls -la ${a}/g++ || :; done
+                    g++ --version
+                    for a in ${PATH//:/ }; do echo "${a}: "; (ls -la ${a}/g++ 2>&1) || :; done
+                    /c/ProgramData/Chocolatey/bin/g++ --version
+                    /c/Strawberry/c/bin/g++ --version
             - name: Clone Magic Enum
               shell: bash
               run:   git clone https://github.com/Neargye/magic_enum.git /tmp/magic_enum
