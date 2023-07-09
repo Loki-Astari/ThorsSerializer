@@ -1,11 +1,8 @@
 #!/bin/sh
-# Set up the build system
-if [[ ! -e build/Notes ]]; then
-    git submodule init
-    git submodule update
-fi
-ln -s .build build | echo "Build Already Setup"
 
+if git submodule status | grep --quiet '^-'; then
+    git submodule update --init --recursive
+fi
 
 #! /bin/sh
 # Guess values for system-dependent variables and create Makefiles.
@@ -456,43 +453,11 @@ as_fn_error ()
   as_fn_exit $as_status
 } # as_fn_error
 
-if expr a : '\(a\)' >/dev/null 2>&1 &&
-   test "X`expr 00001 : '.*\(...\)'`" = X001; then
-  as_expr=expr
-else
-  as_expr=false
-fi
-
-if (basename -- /) >/dev/null 2>&1 && test "X`basename -- / 2>&1`" = "X/"; then
-  as_basename=basename
-else
-  as_basename=false
-fi
-
 if (as_dir=`dirname -- /` && test "X$as_dir" = X/) >/dev/null 2>&1; then
   as_dirname=dirname
 else
   as_dirname=false
 fi
-
-as_me=`$as_basename -- "$0" ||
-$as_expr X/"$0" : '.*/\([^/][^/]*\)/*$' \| \
-	 X"$0" : 'X\(//\)$' \| \
-	 X"$0" : 'X\(/\)' \| . 2>/dev/null ||
-printf "%s\n" X/"$0" |
-    sed '/^.*\/\([^/][^/]*\)\/*$/{
-	    s//\1/
-	    q
-	  }
-	  /^X\/\(\/\/\)$/{
-	    s//\1/
-	    q
-	  }
-	  /^X\/\(\/\).*/{
-	    s//\1/
-	    q
-	  }
-	  s/.*/./; q'`
 
 # Avoid depending upon Character Ranges.
 as_cr_letters='abcdefghijklmnopqrstuvwxyz'
@@ -734,7 +699,23 @@ FGREP
 EGREP
 GREP
 SED
+ac_ct_CC
+CFLAGS
+CC
 LIBTOOL
+yaml_ROOT_LIB
+yaml_ROOT_DIR
+magicenum_ROOT_DIR
+BOOST_LDFLAGS
+BOOST_CPPFLAGS
+host_os
+host_vendor
+host_cpu
+host
+build_os
+build_vendor
+build_cpu
+build
 CXX_STD_FLAG
 CXXSTDVER
 ExpFlag20
@@ -747,36 +728,13 @@ StdFlag17
 StdFlag14
 StdFlag11
 CXXMaxLanguage
+LITERAL_WARNING_RANGE
+LITERAL_WARNING_SUFFIX
 DELETE_NON_VIRTUAL_DTOR
 DELETE_NON_ABSTRACT_NON_VIRTUAL_DTOR
 INCONSISTENT_MISSING_OVERRIDE
 NO_DEPRECATED_REGISTER_TEST
 NO_UNUSED_PRIVATE_FIELD_TEST
-LITERAL_WARNING_RANGE
-LITERAL_WARNING_SUFFIX
-yaml_ROOT_LIB
-yaml_ROOT_DIR
-ac_ct_CC
-CFLAGS
-CC
-magic_enum_ROOT_DIR
-SERIALIZATION_EXTERN_LIBS
-COV
-BOOST_LDFLAGS
-BOOST_CPPFLAGS
-host_os
-host_vendor
-host_cpu
-host
-build_os
-build_vendor
-build_cpu
-build
-DARK_MODE
-COLOUR_STATE
-THOR_TARGETLIBS
-VERATOOL
-TestVera
 OBJEXT
 EXEEXT
 ac_ct_CXX
@@ -784,9 +742,14 @@ CPPFLAGS
 LDFLAGS
 CXXFLAGS
 CXX
+DARK_MODE
+COLOUR_STATE
+THOR_TARGETLIBS
+VERATOOL
+TestVera
+COV
 UNZIP
 DefaultLinkDir
-THOR_STD_INCLUDES
 target_alias
 host_alias
 build_alias
@@ -831,14 +794,13 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_vera
-with_hostbuild
 enable_colour
 enable_dark_mode
+with_standard
 with_boost
 with_boost_libdir
 with_magicenumroot
 with_yamlroot
-with_standard
 enable_shared
 enable_static
 with_pic
@@ -1512,7 +1474,9 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-hostbuild=<dir>  Use the build tools located at <dir>
+  --with-standard=<version>
+                          Use the specified version <version> of the C++
+                          standard
 
   --with-boost[=ARG]      use Boost library from a standard location
                           (ARG=yes), from the specified location (ARG=<path>),
@@ -1524,14 +1488,10 @@ Optional Packages:
                           fails and you know exactly where your boost
                           libraries are located.
   --with-magicenumroot=<location>
-                          Directory of YAML_ROOT
+                          Directory of MagicEnum_ROOT
 
   --with-yamlroot=<location>
                           Directory of YAML_ROOT
-
-  --with-standard=<version>
-                          Use the specified version <version> of the C++
-                          standard
 
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
@@ -1708,6 +1668,53 @@ printf "%s\n" "$ac_res" >&6; }
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
 
 } # ac_fn_cxx_check_header_compile
+
+# ac_fn_cxx_try_link LINENO
+# -------------------------
+# Try to link conftest.$ac_ext, and return whether this succeeded.
+ac_fn_cxx_try_link ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  rm -f conftest.$ac_objext conftest.beam conftest$ac_exeext
+  if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+printf "%s\n" "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    grep -v '^ *+' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+    mv -f conftest.er1 conftest.err
+  fi
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 test -x conftest$ac_exeext
+       }
+then :
+  ac_retval=0
+else $as_nop
+  printf "%s\n" "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_retval=1
+fi
+  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
+  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
+  # interfere with the next link command; also delete a directory that is
+  # left behind by Apple's compiler.  We do this before executing the actions.
+  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_cxx_try_link
 
 # ac_fn_c_try_compile LINENO
 # --------------------------
@@ -1927,53 +1934,6 @@ fi
   as_fn_set_status $ac_retval
 
 } # ac_fn_cxx_try_cpp
-
-# ac_fn_cxx_try_link LINENO
-# -------------------------
-# Try to link conftest.$ac_ext, and return whether this succeeded.
-ac_fn_cxx_try_link ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  rm -f conftest.$ac_objext conftest.beam conftest$ac_exeext
-  if { { ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-printf "%s\n" "$ac_try_echo"; } >&5
-  (eval "$ac_link") 2>conftest.err
-  ac_status=$?
-  if test -s conftest.err; then
-    grep -v '^ *+' conftest.err >conftest.er1
-    cat conftest.er1 >&5
-    mv -f conftest.er1 conftest.err
-  fi
-  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 test -x conftest$ac_exeext
-       }
-then :
-  ac_retval=0
-else $as_nop
-  printf "%s\n" "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_retval=1
-fi
-  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
-  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
-  # interfere with the next link command; also delete a directory that is
-  # left behind by Apple's compiler.  We do this before executing the actions.
-  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-  as_fn_set_status $ac_retval
-
-} # ac_fn_cxx_try_link
 ac_configure_args_raw=
 for ac_arg
 do
@@ -2804,7 +2764,7 @@ main (int argc, char **argv)
 
 
 # Auxiliary files required by this configure script.
-ac_aux_files="missing install-sh ltmain.sh compile config.guess config.sub"
+ac_aux_files="missing install-sh compile ltmain.sh config.guess config.sub"
 
 # Locations in which to look for auxiliary files.
 ac_aux_dir_candidates="${srcdir}/build/autotools/build"
@@ -2972,12 +2932,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-# Set up the build system
-if [ ! -e build/Notes ]; then
-    git submodule init
-    git submodule update
-fi
-ln -s .build build | echo "Build Already Setup"
 
 
 
@@ -2986,78 +2940,7 @@ ln -s .build build | echo "Build Already Setup"
 
 
 
-
-
-    DefaultLinkDir="/usr/local"
-    host=$(uname -p)
-    if test "${host}" == "arm"
-then :
-
-        DefaultLinkDir="/opt/homebrew"
-        if test "${prefix}" == "NONE"
-then :
-  prefix=${DefaultLinkDir}
-fi
-        THOR_STD_INCLUDES=-I${DefaultLinkDir}/include
-
-
-fi
-    DefaultLinkDir=${DefaultLinkDir}
-
-
-    for ac_prog in bzip2
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-printf %s "checking for $ac_word... " >&6; }
-if test ${ac_cv_prog_UNZIP+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if test -n "$UNZIP"; then
-  ac_cv_prog_UNZIP="$UNZIP" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_prog_UNZIP="$ac_prog"
-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-UNZIP=$ac_cv_prog_UNZIP
-if test -n "$UNZIP"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $UNZIP" >&5
-printf "%s\n" "$UNZIP" >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-
-
-  test -n "$UNZIP" && break
-done
-test -n "$UNZIP" || UNZIP=":"
-
-    if test "$UNZIP" = :; then
-        as_fn_error $? "The build tools needs bzip2. Please install it." "$LINENO" 5
-    fi
-
-    ac_ext=cpp
+ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
@@ -3675,15 +3558,160 @@ fi
 fi
 fi
 
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+
+
+    export BUILDING_ThorsSerializer=1
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+
+    DefaultLinkDir="/usr/local"
+    host=$(uname -p)
+    if test "${host}" == "arm"
+then :
+
+            DefaultLinkDir="/opt/homebrew"
+            if test "${prefix}" == "NONE"
+then :
+  prefix=${DefaultLinkDir}
+fi
+            DefaultLinkDir=${DefaultLinkDir}
+
+
+
+fi
+
+
+
+    for ac_prog in bzip2
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_prog_UNZIP+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -n "$UNZIP"; then
+  ac_cv_prog_UNZIP="$UNZIP" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_prog_UNZIP="$ac_prog"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+UNZIP=$ac_cv_prog_UNZIP
+if test -n "$UNZIP"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $UNZIP" >&5
+printf "%s\n" "$UNZIP" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+  test -n "$UNZIP" && break
+done
+test -n "$UNZIP" || UNZIP=":"
+
+    if test "$UNZIP" = :; then
+        as_fn_error $? "
+            The build tools needs bzip2. Please install it.
+            We use it to unzip google packages for building tests.
+        " "$LINENO" 5
+    fi
+    pushd build/third
+    ./setup "$CXX" || as_fn_error $? "Failed to set up the test utilities" "$LINENO" 5
+    popd
+
+
+
+    if test "x${COV}x" = "xx"
+then :
+
+            if test "${CXX}" = "g++"
+then :
+  COV=gcov
+
+else $as_nop
+
+                    if test "${CXX}" = "clang++"
+then :
+  COV=llvm-cov
+
+else $as_nop
+
+                            as_fn_error $? "
+
+Could not determine the coverage tool.
+
+For g++ we default to gcov
+For clang++ we default to llvm-cov
+
+The compiler currently defined is \"${CXX}\" and we do not know what coverage tool to use.
+
+One alternatives is to specify a know compiler before calling configure.
+
+    CXX=clang++ ./configure
+
+Another alternative is to explicitly specify the coverage tool to use.
+
+    COV=gcov ./confgiure
+
+                            " "$LINENO" 5
+
+
+fi
+
+
+fi
+
+
+fi
+    ${COV} --version 2>&1 | grep -Eo '([[:digit:]]+\.)+[[:digit:]]+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
+    if test $? != 0
+then :
+
+            as_fn_error $? "
+
+The coverage tool \"${COV}\" does not seem to be working.
+
+            " "$LINENO" 5
+
+
+fi
 
 
     subconfigure=""
-    git submodule update --init --recursive
 
     # Check whether --enable-vera was given.
 if test ${enable_vera+y}
@@ -3752,7 +3780,7 @@ test -n "$TestVera" || TestVera=":"
             if test "$TestVera" == ":"
 then :
 
-                as_fn_error $? "
+                    as_fn_error $? "
 
 By default the build tools use vera++ for static analysis of C++ code to ensure the project
 maintains a consistent style when people add pull requests. The configuration tests have
@@ -3762,8 +3790,7 @@ The easy way to install vera++ is using brew:
 
     > brew install vera++
 
-
-" "$LINENO" 5
+                    " "$LINENO" 5
 
 fi
             VERATOOL='vera++';
@@ -3793,26 +3820,6 @@ fi
 
     THOR_TARGETLIBS=${THOR_TARGETLIBS}
 
-
-
-
-# Check whether --with-hostbuild was given.
-if test ${with_hostbuild+y}
-then :
-  withval=$with_hostbuild;
-fi
-
-
-    if test "x${with_hostbuild}" != "x"
-then :
-
-            echo "Using Existing Host Build Tools: ${with_hostbuild}"
-            rm build
-            ln -s ${with_hostbuild} build
-            ls -la build
-
-
-fi
 
 
     COLOUR_STATE="ON"
@@ -3859,15 +3866,775 @@ printf "%s\n" "#define HEADER_ONLY_INCLUDE /**/" >>confdefs.h
 
 
 
-    if test "x${with_hostbuild}" == "x"
+
+
+
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-unused-private-field" >&5
+printf %s "checking whether C++ compiler accepts -Wno-unused-private-field... " >&6; }
+if test ${ax_cv_check_cxxflags___Wno_unused_private_field+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wno-unused-private-field"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___Wno_unused_private_field=yes
+else $as_nop
+  ax_cv_check_cxxflags___Wno_unused_private_field=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_unused_private_field" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___Wno_unused_private_field" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_unused_private_field" = xyes
+then :
+  NO_UNUSED_PRIVATE_FIELD_TEST=-Wno-unused-private-field
+
+
+else $as_nop
+  -Werror
+
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-deprecated-register" >&5
+printf %s "checking whether C++ compiler accepts -Wno-deprecated-register... " >&6; }
+if test ${ax_cv_check_cxxflags___Wno_deprecated_register+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wno-deprecated-register"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___Wno_deprecated_register=yes
+else $as_nop
+  ax_cv_check_cxxflags___Wno_deprecated_register=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wno_deprecated_register" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___Wno_deprecated_register" >&6; }
+if test "x$ax_cv_check_cxxflags___Wno_deprecated_register" = xyes
+then :
+  NO_DEPRECATED_REGISTER_TEST=-Wno-deprecated-register
+
+
+else $as_nop
+  -Werror
+
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Winconsistent-missing-override" >&5
+printf %s "checking whether C++ compiler accepts -Winconsistent-missing-override... " >&6; }
+if test ${ax_cv_check_cxxflags___Winconsistent_missing_override+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Winconsistent-missing-override"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___Winconsistent_missing_override=yes
+else $as_nop
+  ax_cv_check_cxxflags___Winconsistent_missing_override=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Winconsistent_missing_override" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___Winconsistent_missing_override" >&6; }
+if test "x$ax_cv_check_cxxflags___Winconsistent_missing_override" = xyes
+then :
+  INCONSISTENT_MISSING_OVERRIDE=-Winconsistent-missing-override
+
+
+else $as_nop
+  -Werror
+
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wdelete-non-abstract-non-virtual-dtor" >&5
+printf %s "checking whether C++ compiler accepts -Wdelete-non-abstract-non-virtual-dtor... " >&6; }
+if test ${ax_cv_check_cxxflags___Wdelete_non_abstract_non_virtual_dtor+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wdelete-non-abstract-non-virtual-dtor"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___Wdelete_non_abstract_non_virtual_dtor=yes
+else $as_nop
+  ax_cv_check_cxxflags___Wdelete_non_abstract_non_virtual_dtor=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wdelete_non_abstract_non_virtual_dtor" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___Wdelete_non_abstract_non_virtual_dtor" >&6; }
+if test "x$ax_cv_check_cxxflags___Wdelete_non_abstract_non_virtual_dtor" = xyes
+then :
+  DELETE_NON_ABSTRACT_NON_VIRTUAL_DTOR=-Wdelete-non-abstract-non-virtual-dtor
+
+
+else $as_nop
+  -Werror
+
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wdelete-non-virtual-dtor" >&5
+printf %s "checking whether C++ compiler accepts -Wdelete-non-virtual-dtor... " >&6; }
+if test ${ax_cv_check_cxxflags___Wdelete_non_virtual_dtor+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wdelete-non-virtual-dtor"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___Wdelete_non_virtual_dtor=yes
+else $as_nop
+  ax_cv_check_cxxflags___Wdelete_non_virtual_dtor=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wdelete_non_virtual_dtor" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___Wdelete_non_virtual_dtor" >&6; }
+if test "x$ax_cv_check_cxxflags___Wdelete_non_virtual_dtor" = xyes
+then :
+  DELETE_NON_VIRTUAL_DTOR=-Wdelete-non-virtual-dtor
+
+
+else $as_nop
+  -Werror
+
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-literal-suffix" >&5
+printf %s "checking whether C++ compiler accepts -Wno-literal-suffix... " >&6; }
+if test ${ax_cv_check_cxxflags__Werror_______Wno_literal_suffix+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS -Werror
+     -Wno-literal-suffix"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags__Werror_______Wno_literal_suffix=yes
+else $as_nop
+  ax_cv_check_cxxflags__Werror_______Wno_literal_suffix=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags__Werror_______Wno_literal_suffix" >&5
+printf "%s\n" "$ax_cv_check_cxxflags__Werror_______Wno_literal_suffix" >&6; }
+if test "x$ax_cv_check_cxxflags__Werror_______Wno_literal_suffix" = xyes
+then :
+  LITERAL_WARNING_SUFFIX=-Wno-literal-suffix
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-literal-range" >&5
+printf %s "checking whether C++ compiler accepts -Wno-literal-range... " >&6; }
+if test ${ax_cv_check_cxxflags__Werror_______Wno_literal_range+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS -Werror
+     -Wno-literal-range"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags__Werror_______Wno_literal_range=yes
+else $as_nop
+  ax_cv_check_cxxflags__Werror_______Wno_literal_range=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags__Werror_______Wno_literal_range" >&5
+printf "%s\n" "$ax_cv_check_cxxflags__Werror_______Wno_literal_range" >&6; }
+if test "x$ax_cv_check_cxxflags__Werror_______Wno_literal_range" = xyes
+then :
+  LITERAL_WARNING_RANGE=-Wno-literal-range
+
+else $as_nop
+  :
+fi
+
+
+
+
+# Check whether --with-standard was given.
+if test ${with_standard+y}
+then :
+  withval=$with_standard;
+fi
+
+
+    minLangFeature=17
+    askedLangFeature=${minLangFeature}
+    if test "x${with_standard}" != "x"
 then :
 
-            pushd build/third
-            ./setup "$CXX" || as_fn_error 1 "Failed to set up the test utilities" "$LINENO" 5
-            popd
+            askedLangFeature=${with_standard}
 
 
 fi
+
+    if test "" = ""
+then :
+  maxLangFeature=17
+else $as_nop
+  maxLangFeature=$askedLangFeature
+fi
+    if test $minLangFeature -gt $askedLangFeature
+then :
+  as_fn_error $? "Invalid Language requested: ${askedLangFeature}. Minimum: ${minLangFeature}" "$LINENO" 5
+fi
+    if test $askedLangFeature -gt $maxLangFeature
+then :
+  as_fn_error $? "Invalid Language requested: ${askedLangFeature}. Maximum: ${maxLangFeature}" "$LINENO" 5
+fi
+    if test $minLangFeature -gt $maxLangFeature
+then :
+  as_fn_error $? "Invalid Language max: ${maxLangFeature} can not be less ${minLangFeature}" "$LINENO" 5
+fi
+
+    CXXMaxLanguage=03
+    CXXExpLanguage=03
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++11" >&5
+printf %s "checking whether C++ compiler accepts -std=c++11... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp11+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++11"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp11=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp11=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp11" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp11" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp11" = xyes
+then :
+  CXXMaxLanguage=11
+ StdFlag11=-std=c++11
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++14" >&5
+printf %s "checking whether C++ compiler accepts -std=c++14... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp14+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++14"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp14=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp14=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp14" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp14" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp14" = xyes
+then :
+  CXXMaxLanguage=14
+ StdFlag14=-std=c++14
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++17" >&5
+printf %s "checking whether C++ compiler accepts -std=c++17... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp17+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++17"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp17=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp17=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp17" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp17" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp17" = xyes
+then :
+  CXXMaxLanguage=17
+ StdFlag17=-std=c++17
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++20" >&5
+printf %s "checking whether C++ compiler accepts -std=c++20... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp20+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++20"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp20=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp20=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp20" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp20" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp20" = xyes
+then :
+  CXXMaxLanguage=20
+ StdFlag20=-std=c++20
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++23" >&5
+printf %s "checking whether C++ compiler accepts -std=c++23... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp23+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++23"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp23=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp23=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp23" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp23" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp23" = xyes
+then :
+  CXXMaxLanguage=20
+ StdFlag20=-std=c++20
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++1x" >&5
+printf %s "checking whether C++ compiler accepts -std=c++1x... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp1x+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++1x"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp1x=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp1x=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp1x" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp1x" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp1x" = xyes
+then :
+  CXXExpLanguage=11
+ ExpFlag11=-std=c++1x
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++1y" >&5
+printf %s "checking whether C++ compiler accepts -std=c++1y... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp1y+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++1y"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp1y=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp1y=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp1y" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp1y" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp1y" = xyes
+then :
+  CXXExpLanguage=14
+ ExpFlag14=-std=c++1y
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++1z" >&5
+printf %s "checking whether C++ compiler accepts -std=c++1z... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp1z+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++1z"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp1z=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp1z=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp1z" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp1z" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp1z" = xyes
+then :
+  CXXExpLanguage=17
+ ExpFlag17=-std=c++1z
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++2a" >&5
+printf %s "checking whether C++ compiler accepts -std=c++2a... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp2a+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++2a"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp2a=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp2a=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp2a" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp2a" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp2a" = xyes
+then :
+  CXXExpLanguage=20
+ ExpFlag20=-std=c++2a
+
+else $as_nop
+  :
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++2b" >&5
+printf %s "checking whether C++ compiler accepts -std=c++2b... " >&6; }
+if test ${ax_cv_check_cxxflags___std_cpp2b+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -std=c++2b"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+  ax_cv_check_cxxflags___std_cpp2b=yes
+else $as_nop
+  ax_cv_check_cxxflags___std_cpp2b=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp2b" >&5
+printf "%s\n" "$ax_cv_check_cxxflags___std_cpp2b" >&6; }
+if test "x$ax_cv_check_cxxflags___std_cpp2b" = xyes
+then :
+  CXXExpLanguage=23
+ ExpFlag20=-std=c++2b
+
+else $as_nop
+  :
+fi
+
+
+    #CXX_STD_FLAG
+    #CXXSTDVER
+
+    if test $askedLangFeature -le $CXXMaxLanguage
+then :
+
+            CXXSTDVER=$askedLangFeature
+
+            CXX_STD_FLAG=$(eval echo "\${StdFlag${CXXSTDVER}}")
+
+
+else $as_nop
+
+            if test $askedLangFeature -le $CXXExpLanguage
+then :
+
+                    CXXSTDVER=$askedLangFeature
+
+                    CXX_STD_FLAG=$(eval echo "\${ExpFlag${CXXSTDVER}}")
+
+
+else $as_nop
+
+                    as_fn_error $? "
+
+Error: Need C++${askedLangFeature} but the compiler only supports ${CXXMaxLanguage} (Experimental ${CXXExpLanguage})
+
+
+                    " "$LINENO" 5
+
+
+fi
+
+
+fi
+
+
+
 
 
 
@@ -3943,7 +4710,6 @@ shift; shift
 host_os=$*
 IFS=$ac_save_IFS
 case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
-
 
 
 
@@ -4139,11 +4905,11 @@ printf "%s\n" "yes" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
@@ -4259,11 +5025,11 @@ printf "%s\n" "yes" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-        ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
+        ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
     fi
 
@@ -4290,430 +5056,6 @@ printf "%s\n" "#define HAVE_BOOST /**/" >>confdefs.h
 
 
 fi
-
-
-
-
-
-
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test -z "$CXX"; then
-  if test -n "$CCC"; then
-    CXX=$CCC
-  else
-    if test -n "$ac_tool_prefix"; then
-  for ac_prog in g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC clang++
-  do
-    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
-set dummy $ac_tool_prefix$ac_prog; ac_word=$2
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-printf %s "checking for $ac_word... " >&6; }
-if test ${ac_cv_prog_CXX+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if test -n "$CXX"; then
-  ac_cv_prog_CXX="$CXX" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_prog_CXX="$ac_tool_prefix$ac_prog"
-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-CXX=$ac_cv_prog_CXX
-if test -n "$CXX"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $CXX" >&5
-printf "%s\n" "$CXX" >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-
-
-    test -n "$CXX" && break
-  done
-fi
-if test -z "$CXX"; then
-  ac_ct_CXX=$CXX
-  for ac_prog in g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC clang++
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-printf %s "checking for $ac_word... " >&6; }
-if test ${ac_cv_prog_ac_ct_CXX+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if test -n "$ac_ct_CXX"; then
-  ac_cv_prog_ac_ct_CXX="$ac_ct_CXX" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_prog_ac_ct_CXX="$ac_prog"
-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-ac_ct_CXX=$ac_cv_prog_ac_ct_CXX
-if test -n "$ac_ct_CXX"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_ct_CXX" >&5
-printf "%s\n" "$ac_ct_CXX" >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-
-
-  test -n "$ac_ct_CXX" && break
-done
-
-  if test "x$ac_ct_CXX" = x; then
-    CXX="g++"
-  else
-    case $cross_compiling:$ac_tool_warned in
-yes:)
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
-printf "%s\n" "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
-ac_tool_warned=yes ;;
-esac
-    CXX=$ac_ct_CXX
-  fi
-fi
-
-  fi
-fi
-# Provide some information about the compiler.
-printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for C++ compiler version" >&5
-set X $ac_compile
-ac_compiler=$2
-for ac_option in --version -v -V -qversion; do
-  { { ac_try="$ac_compiler $ac_option >&5"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-printf "%s\n" "$ac_try_echo"; } >&5
-  (eval "$ac_compiler $ac_option >&5") 2>conftest.err
-  ac_status=$?
-  if test -s conftest.err; then
-    sed '10a\
-... rest of stderr output deleted ...
-         10q' conftest.err >conftest.er1
-    cat conftest.er1 >&5
-  fi
-  rm -f conftest.er1 conftest.err
-  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-done
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports GNU C++" >&5
-printf %s "checking whether the compiler supports GNU C++... " >&6; }
-if test ${ac_cv_cxx_compiler_gnu+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-#ifndef __GNUC__
-       choke me
-#endif
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ac_compiler_gnu=yes
-else $as_nop
-  ac_compiler_gnu=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-ac_cv_cxx_compiler_gnu=$ac_compiler_gnu
-
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cxx_compiler_gnu" >&5
-printf "%s\n" "$ac_cv_cxx_compiler_gnu" >&6; }
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-if test $ac_compiler_gnu = yes; then
-  GXX=yes
-else
-  GXX=
-fi
-ac_test_CXXFLAGS=${CXXFLAGS+y}
-ac_save_CXXFLAGS=$CXXFLAGS
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether $CXX accepts -g" >&5
-printf %s "checking whether $CXX accepts -g... " >&6; }
-if test ${ac_cv_prog_cxx_g+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_save_cxx_werror_flag=$ac_cxx_werror_flag
-   ac_cxx_werror_flag=yes
-   ac_cv_prog_cxx_g=no
-   CXXFLAGS="-g"
-   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ac_cv_prog_cxx_g=yes
-else $as_nop
-  CXXFLAGS=""
-      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-
-else $as_nop
-  ac_cxx_werror_flag=$ac_save_cxx_werror_flag
-	 CXXFLAGS="-g"
-	 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ac_cv_prog_cxx_g=yes
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-   ac_cxx_werror_flag=$ac_save_cxx_werror_flag
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_cxx_g" >&5
-printf "%s\n" "$ac_cv_prog_cxx_g" >&6; }
-if test $ac_test_CXXFLAGS; then
-  CXXFLAGS=$ac_save_CXXFLAGS
-elif test $ac_cv_prog_cxx_g = yes; then
-  if test "$GXX" = yes; then
-    CXXFLAGS="-g -O2"
-  else
-    CXXFLAGS="-g"
-  fi
-else
-  if test "$GXX" = yes; then
-    CXXFLAGS="-O2"
-  else
-    CXXFLAGS=
-  fi
-fi
-ac_prog_cxx_stdcxx=no
-if test x$ac_prog_cxx_stdcxx = xno
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CXX option to enable C++11 features" >&5
-printf %s "checking for $CXX option to enable C++11 features... " >&6; }
-if test ${ac_cv_prog_cxx_11+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_cv_prog_cxx_11=no
-ac_save_CXX=$CXX
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$ac_cxx_conftest_cxx11_program
-_ACEOF
-for ac_arg in '' -std=gnu++11 -std=gnu++0x -std=c++11 -std=c++0x -qlanglvl=extended0x -AA
-do
-  CXX="$ac_save_CXX $ac_arg"
-  if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ac_cv_prog_cxx_cxx11=$ac_arg
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam
-  test "x$ac_cv_prog_cxx_cxx11" != "xno" && break
-done
-rm -f conftest.$ac_ext
-CXX=$ac_save_CXX
-fi
-
-if test "x$ac_cv_prog_cxx_cxx11" = xno
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: unsupported" >&5
-printf "%s\n" "unsupported" >&6; }
-else $as_nop
-  if test "x$ac_cv_prog_cxx_cxx11" = x
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: none needed" >&5
-printf "%s\n" "none needed" >&6; }
-else $as_nop
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_cxx_cxx11" >&5
-printf "%s\n" "$ac_cv_prog_cxx_cxx11" >&6; }
-     CXX="$CXX $ac_cv_prog_cxx_cxx11"
-fi
-  ac_cv_prog_cxx_stdcxx=$ac_cv_prog_cxx_cxx11
-  ac_prog_cxx_stdcxx=cxx11
-fi
-fi
-if test x$ac_prog_cxx_stdcxx = xno
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CXX option to enable C++98 features" >&5
-printf %s "checking for $CXX option to enable C++98 features... " >&6; }
-if test ${ac_cv_prog_cxx_98+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_cv_prog_cxx_98=no
-ac_save_CXX=$CXX
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$ac_cxx_conftest_cxx98_program
-_ACEOF
-for ac_arg in '' -std=gnu++98 -std=c++98 -qlanglvl=extended -AA
-do
-  CXX="$ac_save_CXX $ac_arg"
-  if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ac_cv_prog_cxx_cxx98=$ac_arg
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam
-  test "x$ac_cv_prog_cxx_cxx98" != "xno" && break
-done
-rm -f conftest.$ac_ext
-CXX=$ac_save_CXX
-fi
-
-if test "x$ac_cv_prog_cxx_cxx98" = xno
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: unsupported" >&5
-printf "%s\n" "unsupported" >&6; }
-else $as_nop
-  if test "x$ac_cv_prog_cxx_cxx98" = x
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: none needed" >&5
-printf "%s\n" "none needed" >&6; }
-else $as_nop
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_cxx_cxx98" >&5
-printf "%s\n" "$ac_cv_prog_cxx_cxx98" >&6; }
-     CXX="$CXX $ac_cv_prog_cxx_cxx98"
-fi
-  ac_cv_prog_cxx_stdcxx=$ac_cv_prog_cxx_cxx98
-  ac_prog_cxx_stdcxx=cxx98
-fi
-fi
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-if test "x${COV}x" = "xx"
-then :
-  if test "${CXX}" = "g++"
-then :
-  COV=gcov
-
-else $as_nop
-  if test "${CXX}" = "clang++"
-then :
-  COV=llvm-cov
-
-else $as_nop
-  as_fn_error $? "
-
-Could not determine the coverage tool.
-
-For g++ we default to gcov
-For clang++ we default to llvm-cov
-
-The compiler currently defined is \"${CXX}\" and we do not know what coverage tool to use.
-
-One alternatives is to specify a know compiler before calling configure.
-
-    CXX=clang++ ./configure
-
-Another alternative is to explicitly specify the coverage tool to use.
-
-    COV=gcov ./confgiure
-
-                    " "$LINENO" 5
-
-
-fi
-
-fi
-
-fi
-    ${COV} --version 2>&1 | grep -Eo '([[:digit:]]+\.)+[[:digit:]]+' || ${COV} --version 2>&1 | grep -Po '(\d+\.)+\d+' > /dev/null
-    if test $? != 0
-then :
-  as_fn_error $? "
-
-The coverage tool \"${COV}\" does not seem to be working.
-
-         " "$LINENO" 5
-
-
-fi
-
 
 
 
@@ -4747,8 +5089,7 @@ printf "%s\n" "#define STDC_HEADERS 1" >>confdefs.h
 
 fi
 
-    magic_enum_ROOT_DIR=""
-    ORIG_CXXFLAGS="${CXXFLAGS}"
+
 
 # Check whether --with-magicenumroot was given.
 if test ${with_magicenumroot+y}
@@ -4756,27 +5097,36 @@ then :
   withval=$with_magicenumroot;
 fi
 
-    if test "${with_magicenumroot}" == ""; then
-        with_magicenumroot="${DefaultLinkDir}"
-    fi
-    CXXFLAGS="$CXXFLAGS -std=c++17 -I$with_magicenumroot/include"
 
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+    INCLUDE_DIR="-I ${with_magicenumroot}/include"
+    if test "x${with_magicenumroot}" == "x"
+then :
+  INCLUDE_DIR="-I${DefaultLinkDir}/include"
+
+fi
+
+    ORIG_CXXFLAGS="${CXXFLAGS}"
+    CXXFLAGS="${CXXFLAGS} ${CXX_STD_FLAG} ${INCLUDE_DIR}"
 
     ac_fn_cxx_check_header_compile "$LINENO" "magic_enum.hpp" "ac_cv_header_magic_enum_hpp" "$ac_includes_default"
 if test "x$ac_cv_header_magic_enum_hpp" = xyes
 then :
 
-            magic_enum_ROOT_DIR="${with_magicenumroot}"
-            subconfigure="${subconfigure} --with-magicenumroot=${with_magicenumroot}"
+            if test "x${with_magicenumroot}" != "x"
+then :
+
+
+printf "%s\n" "#define HAVE_MagicEnum 1" >>confdefs.h
+
+                    magicenum_ROOT_DIR=${with_magicenumroot}
+
+                    subconfigure="${subconfigure} --with-magicenumroot=${with_magicenumroot}"
+
+
+fi
 
 else $as_nop
-  as_fn_error $? "${CXXFLAGS}
-
+  as_fn_error $? "
 Could not find the header file <magic-enum.hpp>.
 You can install this with
 
@@ -4785,19 +5135,253 @@ You can install this with
 Alternately if you have manually installed magic_enum you can specify its location with
     --with-magicenumroot=<location of magic_enum installation>
 
-        " "$LINENO" 5
+            " "$LINENO" 5
 
 fi
 
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
 
     CXXFLAGS="${ORIG_CXXFLAGS}"
-    magic_enum_ROOT_DIR=${magic_enum_ROOT_DIR}
+
+
+
+
+
+
+# Check whether --with-yamlroot was given.
+if test ${with_yamlroot+y}
+then :
+  withval=$with_yamlroot;
+fi
+
+
+    LIBRARY_DIR="-L ${with_yamlroot}/lib"
+    if test "x${with_yamlroot}" == "x"
+then :
+  LIBRARY_DIR="-L ${DefaultLinkDir}/lib"
+
+fi
+
+    ORIG_LDFLAGS="${LDFLAGS}"
+    LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
+printf %s "checking for yaml_parser_initialize in -lyaml... " >&6; }
+if test ${ac_cv_lib_yaml_yaml_parser_initialize+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lyaml  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+namespace conftest {
+  extern "C" int yaml_parser_initialize ();
+}
+int
+main (void)
+{
+return conftest::yaml_parser_initialize ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"
+then :
+  ac_cv_lib_yaml_yaml_parser_initialize=yes
+else $as_nop
+  ac_cv_lib_yaml_yaml_parser_initialize=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_yaml_yaml_parser_initialize" >&5
+printf "%s\n" "$ac_cv_lib_yaml_yaml_parser_initialize" >&6; }
+if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes
+then :
+
+            if test "x${with_yamlroot}" != "x"
+then :
+
+
+printf "%s\n" "#define HAVE_YAML 1" >>confdefs.h
+
+                    yaml_ROOT_DIR=${with_yamlroot}
+
+
+
+fi
+            yaml_ROOT_LIB=yaml
+
+
+else $as_nop
+  as_fn_error $? "
+Error: Could not find libyaml
+
+You can solve this by installing libyaml
+    see http://pyyaml.org/wiki/LibYAML
+
+Alternately specify install location with:
+    --with-root=<location of yaml installation>
+
+
+    " "$LINENO" 5
+
+fi
+
+
+    LDFLAGS="${ORIG_LDFLAGS}"
+
+
+
+
+
+    if test "
+#include <utility>
+int main() {
+    std::index_sequence<1,2,3,4>    seq;
+}" != ""
+then :
+
+            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking Checking Compiler Compatibility ${CXX} ${CXX_STD_FLAG}" >&5
+printf %s "checking Checking Compiler Compatibility ${CXX} ${CXX_STD_FLAG}... " >&6; }
+            ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+            CXXFLAGS_SAVE="${CXXFLAGS}"
+            CXXFLAGS=${CXX_STD_FLAG}
+
+            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <utility>
+int main() {
+    std::index_sequence<1,2,3,4>    seq;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+
+                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: good" >&5
+printf "%s\n" "good" >&6; }
+
+else $as_nop
+
+                    as_fn_error $? "
+
+Error: Your compiler does not seem to support the language features required.
+       Try updating your compiler to use a more recent version.
+
+       Compiler used: ${CXX} ${CXX_STD_FLAG}
+                    " "$LINENO" 5
+
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+            CXXFLAGS=${CXXFLAGS_SAVE}
+
+
+
+fi
+
+
+
+case `pwd` in
+  *\ * | *\	*)
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
+printf "%s\n" "$as_me: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&2;} ;;
+esac
+
+
+
+macro_version='2.4.7'
+macro_revision='2.4.7'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ltmain=$ac_aux_dir/ltmain.sh
+
+# Backslashify metacharacters that are still active within
+# double-quoted strings.
+sed_quote_subst='s/\(["`$\\]\)/\\\1/g'
+
+# Same as above, but do not quote variable references.
+double_quote_subst='s/\(["`\\]\)/\\\1/g'
+
+# Sed substitution to delay expansion of an escaped shell variable in a
+# double_quote_subst'ed string.
+delay_variable_subst='s/\\\\\\\\\\\$/\\\\\\$/g'
+
+# Sed substitution to delay expansion of an escaped single quote.
+delay_single_quote_subst='s/'\''/'\'\\\\\\\'\''/g'
+
+# Sed substitution to avoid accidental globbing in evaled expressions
+no_glob_subst='s/\*/\\\*/g'
+
+ECHO='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+ECHO=$ECHO$ECHO$ECHO$ECHO$ECHO
+ECHO=$ECHO$ECHO$ECHO$ECHO$ECHO$ECHO
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking how to print strings" >&5
+printf %s "checking how to print strings... " >&6; }
+# Test print first, because it will be a builtin if present.
+if test "X`( print -r -- -n ) 2>/dev/null`" = X-n && \
+   test "X`print -r -- $ECHO 2>/dev/null`" = "X$ECHO"; then
+  ECHO='print -r --'
+elif test "X`printf %s $ECHO 2>/dev/null`" = "X$ECHO"; then
+  ECHO='printf %s\n'
+else
+  # Use this function as a fallback that always works.
+  func_fallback_echo ()
+  {
+    eval 'cat <<_LTECHO_EOF
+$1
+_LTECHO_EOF'
+  }
+  ECHO='func_fallback_echo'
+fi
+
+# func_echo_all arg...
+# Invoke $ECHO with all args, space-separated.
+func_echo_all ()
+{
+    $ECHO ""
+}
+
+case $ECHO in
+  printf*) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: printf" >&5
+printf "%s\n" "printf" >&6; } ;;
+  print*) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: print -r" >&5
+printf "%s\n" "print -r" >&6; } ;;
+  *) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: cat" >&5
+printf "%s\n" "cat" >&6; } ;;
+esac
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5538,11 +6122,11 @@ fi
 fi
 fi
 
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
   ac_ext=c
@@ -5598,1083 +6182,11 @@ if test "$am_cv_prog_cc_c_o" != yes; then
    # and then we could set am__CC="\$(top_srcdir)/compile \$(CC)"
    CC="$am_aux_dir/compile $CC"
 fi
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-
-    yaml_ROOT_DIR=""
-    yaml_ROOT_LIB=""
-    ORIG_LDFLAGS="${LDFLAGS}"
-
-# Check whether --with-yamlroot was given.
-if test ${with_yamlroot+y}
-then :
-  withval=$with_yamlroot;
-fi
-
-    if test "${with_yamlroot}" == ""; then
-        with_yamlroot="${DefaultLinkDir}"
-    fi
-    LDFLAGS="$LDFLAGS -L$with_yamlroot/lib"
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
-printf %s "checking for yaml_parser_initialize in -lyaml... " >&6; }
-if test ${ac_cv_lib_yaml_yaml_parser_initialize+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lyaml  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char yaml_parser_initialize ();
-int
-main (void)
-{
-return yaml_parser_initialize ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_yaml_yaml_parser_initialize=yes
-else $as_nop
-  ac_cv_lib_yaml_yaml_parser_initialize=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_yaml_yaml_parser_initialize" >&5
-printf "%s\n" "$ac_cv_lib_yaml_yaml_parser_initialize" >&6; }
-if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes
-then :
-
-            yaml_ROOT_DIR="${with_yamlroot}"
-            yaml_ROOT_LIB="yaml"
-
-else $as_nop
-  as_fn_error 1 "
-
-Error: Could not find libyaml
-
-You can solve this by installing libyaml
-    see http://pyyaml.org/wiki/LibYAML
-
-Alternately specify install location with:
-    --with-yamlroot=<location of yaml installation>
-
-        " "$LINENO" 5
-
-fi
-
-
-    LDFLAGS="${ORIG_LDFLAGS}"
-    yaml_ROOT_DIR=${yaml_ROOT_DIR}
-
-    yaml_ROOT_LIB=${yaml_ROOT_LIB}
-
-
-
-    THOR_TARGETLIBS=""
-    if test "x$enable_shared" == "xyes"
-then :
-  THOR_TARGETLIBS+=" slib"
-
-fi
-    if test "x$enable_static" == "xyes"
-then :
-  THOR_TARGETLIBS+=" a"
-
-fi
-    if test "x$THOR_TARGETLIBS" == "x"
-then :
-  THOR_TARGETLIBS="slib"
-
-fi
-
-    THOR_TARGETLIBS=${THOR_TARGETLIBS}
-
-
-
-SERIALIZATION_EXTERN_LIBS="$with_yamllib  $SERIALIZATION_EXTERN_LIBS"
-
-
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -ansi" >&5
-printf %s "checking whether C++ compiler accepts -ansi... " >&6; }
-if test ${ax_cv_check_cxxflags___ansi+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -ansi"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___ansi=yes
-else $as_nop
-  ax_cv_check_cxxflags___ansi=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___ansi" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___ansi" >&6; }
-if test "x$ax_cv_check_cxxflags___ansi" = xyes
-then :
-  CXXFLAGS="$CXXFLAGS -ansi"
-
-else $as_nop
-  :
-fi
-
-as_CACHEVAR=`printf "%s\n" "ax_cv_check_cxxflags_$CXX_STD_FLAG -Werror -Wall -Wextra_-Wno-literal-suffix" | $as_tr_sh`
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-literal-suffix" >&5
-printf %s "checking whether C++ compiler accepts -Wno-literal-suffix... " >&6; }
-if eval test \${$as_CACHEVAR+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS $CXX_STD_FLAG -Werror -Wall -Wextra -Wno-literal-suffix"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  eval "$as_CACHEVAR=yes"
-else $as_nop
-  eval "$as_CACHEVAR=no"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-eval ac_res=\$$as_CACHEVAR
-	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-printf "%s\n" "$ac_res" >&6; }
-if eval test \"x\$"$as_CACHEVAR"\" = x"yes"
-then :
-  LITERAL_WARNING_SUFFIX=-Wno-literal-suffix
-
-else $as_nop
-  :
-fi
-
-as_CACHEVAR=`printf "%s\n" "ax_cv_check_cxxflags_$CXX_STD_FLAG -Werror -Wall -Wextra_-Wno-literal-range" | $as_tr_sh`
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wno-literal-range" >&5
-printf %s "checking whether C++ compiler accepts -Wno-literal-range... " >&6; }
-if eval test \${$as_CACHEVAR+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS $CXX_STD_FLAG -Werror -Wall -Wextra -Wno-literal-range"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  eval "$as_CACHEVAR=yes"
-else $as_nop
-  eval "$as_CACHEVAR=no"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-eval ac_res=\$$as_CACHEVAR
-	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-printf "%s\n" "$ac_res" >&6; }
-if eval test \"x\$"$as_CACHEVAR"\" = x"yes"
-then :
-  LITERAL_WARNING_RANGE=-Wno-literal-range
-
-else $as_nop
-  :
-fi
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wno-unused-private-field" >&5
-printf %s "checking whether C compiler accepts -Wno-unused-private-field... " >&6; }
-if test ${ax_cv_check_cflags___Wno_unused_private_field+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -Wno-unused-private-field"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  ax_cv_check_cflags___Wno_unused_private_field=yes
-else $as_nop
-  ax_cv_check_cflags___Wno_unused_private_field=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wno_unused_private_field" >&5
-printf "%s\n" "$ax_cv_check_cflags___Wno_unused_private_field" >&6; }
-if test "x$ax_cv_check_cflags___Wno_unused_private_field" = xyes
-then :
-  NO_UNUSED_PRIVATE_FIELD_TEST=-Wno-unused-private-field
-
-
-else $as_nop
-  :
-fi
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wno-deprecated-register" >&5
-printf %s "checking whether C compiler accepts -Wno-deprecated-register... " >&6; }
-if test ${ax_cv_check_cflags___Wno_deprecated_register+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -Wno-deprecated-register"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  ax_cv_check_cflags___Wno_deprecated_register=yes
-else $as_nop
-  ax_cv_check_cflags___Wno_deprecated_register=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wno_deprecated_register" >&5
-printf "%s\n" "$ax_cv_check_cflags___Wno_deprecated_register" >&6; }
-if test "x$ax_cv_check_cflags___Wno_deprecated_register" = xyes
-then :
-  NO_DEPRECATED_REGISTER_TEST=-Wno-deprecated-register
-
-
-else $as_nop
-  :
-fi
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Winconsistent-missing-override" >&5
-printf %s "checking whether C compiler accepts -Winconsistent-missing-override... " >&6; }
-if test ${ax_cv_check_cflags___Winconsistent_missing_override+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -Winconsistent-missing-override"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  ax_cv_check_cflags___Winconsistent_missing_override=yes
-else $as_nop
-  ax_cv_check_cflags___Winconsistent_missing_override=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Winconsistent_missing_override" >&5
-printf "%s\n" "$ax_cv_check_cflags___Winconsistent_missing_override" >&6; }
-if test "x$ax_cv_check_cflags___Winconsistent_missing_override" = xyes
-then :
-  INCONSISTENT_MISSING_OVERRIDE=-Winconsistent-missing-override
-
-
-else $as_nop
-  :
-fi
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wdelete-non-abstract-non-virtual-dtor" >&5
-printf %s "checking whether C compiler accepts -Wdelete-non-abstract-non-virtual-dtor... " >&6; }
-if test ${ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -Wdelete-non-abstract-non-virtual-dtor"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor=yes
-else $as_nop
-  ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor" >&5
-printf "%s\n" "$ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor" >&6; }
-if test "x$ax_cv_check_cflags___Wdelete_non_abstract_non_virtual_dtor" = xyes
-then :
-  DELETE_NON_ABSTRACT_NON_VIRTUAL_DTOR=-Wdelete-non-abstract-non-virtual-dtor
-
-
-else $as_nop
-  :
-fi
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wdelete-non-virtual-dtor" >&5
-printf %s "checking whether C compiler accepts -Wdelete-non-virtual-dtor... " >&6; }
-if test ${ax_cv_check_cflags___Wdelete_non_virtual_dtor+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -Wdelete-non-virtual-dtor"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  ax_cv_check_cflags___Wdelete_non_virtual_dtor=yes
-else $as_nop
-  ax_cv_check_cflags___Wdelete_non_virtual_dtor=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___Wdelete_non_virtual_dtor" >&5
-printf "%s\n" "$ax_cv_check_cflags___Wdelete_non_virtual_dtor" >&6; }
-if test "x$ax_cv_check_cflags___Wdelete_non_virtual_dtor" = xyes
-then :
-  DELETE_NON_VIRTUAL_DTOR=-Wdelete-non-virtual-dtor
-
-
-else $as_nop
-  :
-fi
-
-
-
-
-
-
-
-# Check whether --with-standard was given.
-if test ${with_standard+y}
-then :
-  withval=$with_standard;
-fi
-
-
-        minLangFeature=17
-        askedLangFeature=${minLangFeature}
-        if test "x${with_standard}" != "x"
-then :
-
-                askedLangFeature=${with_standard}
-
-
-fi
-
-        if test "" = ""
-then :
-  maxLangFeature=17
-else $as_nop
-  maxLangFeature=$askedLangFeature
-fi
-        if test $minLangFeature -gt $askedLangFeature
-then :
-  as_fn_error 1 "Invalid Language requested: ${askedLangFeature}. Minimum: ${minLangFeature}" "$LINENO" 5
-fi
-        if test $askedLangFeature -gt $maxLangFeature
-then :
-  as_fn_error 1 "Invalid Language requested: ${askedLangFeature}. Maximum: ${maxLangFeature}" "$LINENO" 5
-fi
-        if test $minLangFeature -gt $maxLangFeature
-then :
-  as_fn_error 1 "Invalid Language max: ${maxLangFeature} can not be less ${minLangFeature}" "$LINENO" 5
-fi
-
-        ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-        CXXMaxLanguage=03
-        CXXExpLanguage=03
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++11" >&5
-printf %s "checking whether C++ compiler accepts -std=c++11... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp11+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++11"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp11=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp11=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp11" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp11" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp11" = xyes
-then :
-  CXXMaxLanguage=11
- StdFlag11=-std=c++11
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++14" >&5
-printf %s "checking whether C++ compiler accepts -std=c++14... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp14+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++14"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp14=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp14=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp14" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp14" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp14" = xyes
-then :
-  CXXMaxLanguage=14
- StdFlag14=-std=c++14
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++17" >&5
-printf %s "checking whether C++ compiler accepts -std=c++17... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp17+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++17"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp17=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp17=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp17" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp17" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp17" = xyes
-then :
-  CXXMaxLanguage=17
- StdFlag17=-std=c++17
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++20" >&5
-printf %s "checking whether C++ compiler accepts -std=c++20... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp20+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++20"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp20=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp20=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp20" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp20" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp20" = xyes
-then :
-  CXXMaxLanguage=20
- StdFlag20=-std=c++20
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++23" >&5
-printf %s "checking whether C++ compiler accepts -std=c++23... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp23+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++23"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp23=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp23=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp23" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp23" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp23" = xyes
-then :
-  CXXMaxLanguage=20
- StdFlag20=-std=c++20
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++1x" >&5
-printf %s "checking whether C++ compiler accepts -std=c++1x... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp1x+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++1x"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp1x=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp1x=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp1x" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp1x" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp1x" = xyes
-then :
-  CXXExpLanguage=11
- ExpFlag11=-std=c++1x
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++1y" >&5
-printf %s "checking whether C++ compiler accepts -std=c++1y... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp1y+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++1y"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp1y=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp1y=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp1y" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp1y" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp1y" = xyes
-then :
-  CXXExpLanguage=14
- ExpFlag14=-std=c++1y
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++1z" >&5
-printf %s "checking whether C++ compiler accepts -std=c++1z... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp1z+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++1z"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp1z=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp1z=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp1z" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp1z" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp1z" = xyes
-then :
-  CXXExpLanguage=17
- ExpFlag17=-std=c++1z
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++2a" >&5
-printf %s "checking whether C++ compiler accepts -std=c++2a... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp2a+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++2a"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp2a=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp2a=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp2a" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp2a" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp2a" = xyes
-then :
-  CXXExpLanguage=20
- ExpFlag20=-std=c++2a
-
-else $as_nop
-  :
-fi
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -std=c++2b" >&5
-printf %s "checking whether C++ compiler accepts -std=c++2b... " >&6; }
-if test ${ax_cv_check_cxxflags___std_cpp2b+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  ax_check_save_flags=$CXXFLAGS
-  CXXFLAGS="$CXXFLAGS  -std=c++2b"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ax_cv_check_cxxflags___std_cpp2b=yes
-else $as_nop
-  ax_cv_check_cxxflags___std_cpp2b=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-  CXXFLAGS=$ax_check_save_flags
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___std_cpp2b" >&5
-printf "%s\n" "$ax_cv_check_cxxflags___std_cpp2b" >&6; }
-if test "x$ax_cv_check_cxxflags___std_cpp2b" = xyes
-then :
-  CXXExpLanguage=23
- ExpFlag20=-std=c++2b
-
-else $as_nop
-  :
-fi
-
-
-        #CXX_STD_FLAG
-        #CXXSTDVER
-
-        if test $askedLangFeature -le $CXXMaxLanguage
-then :
-
-                CXXSTDVER=$askedLangFeature
-
-                CXX_STD_FLAG=$(eval echo "\${StdFlag${CXXSTDVER}}")
-
-
-else $as_nop
-  if test $askedLangFeature -le $CXXExpLanguage
-then :
-
-                    CXXSTDVER=$askedLangFeature
-
-                    CXX_STD_FLAG=$(eval echo "\${ExpFlag${CXXSTDVER}}")
-
-
-else $as_nop
-  as_fn_error 1 "
-
-Error: Need C++${askedLangFeature} but the compiler only supports ${CXXMaxLanguage} (Experimental ${CXXExpLanguage})
-
-                    " "$LINENO" 5
-
-fi
-
-fi
-
-
-
-        if test "
-#include <utility>
-int main() {
-    std::index_sequence<1,2,3,4>    seq;
-}" != ""
-then :
-
-                { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking Checking Compiler Compatibility ${CXX} ${CXX_STD_FLAG}" >&5
-printf %s "checking Checking Compiler Compatibility ${CXX} ${CXX_STD_FLAG}... " >&6; }
-                ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-                CXXFLAGS_SAVE="${CXXFLAGS}"
-                CXXFLAGS=${CXX_STD_FLAG}
-
-                cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <utility>
-int main() {
-    std::index_sequence<1,2,3,4>    seq;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-
-                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: good" >&5
-printf "%s\n" "good" >&6; }
-
-else $as_nop
-
-                    as_fn_error $? "
-
-Error: Your compiler does not seem to support the language features required.
-       Try updating your compiler to use a more recent version.
-
-       Compiler used: ${CXX} ${CXX_STD_FLAG}
-                    " "$LINENO" 5
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-                CXXFLAGS=${CXXFLAGS_SAVE}
-
-
-fi
-
-
-
-case `pwd` in
-  *\ * | *\	*)
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
-printf "%s\n" "$as_me: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&2;} ;;
-esac
-
-
-
-macro_version='2.4.7'
-macro_revision='2.4.7'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-ltmain=$ac_aux_dir/ltmain.sh
-
-# Backslashify metacharacters that are still active within
-# double-quoted strings.
-sed_quote_subst='s/\(["`$\\]\)/\\\1/g'
-
-# Same as above, but do not quote variable references.
-double_quote_subst='s/\(["`\\]\)/\\\1/g'
-
-# Sed substitution to delay expansion of an escaped shell variable in a
-# double_quote_subst'ed string.
-delay_variable_subst='s/\\\\\\\\\\\$/\\\\\\$/g'
-
-# Sed substitution to delay expansion of an escaped single quote.
-delay_single_quote_subst='s/'\''/'\'\\\\\\\'\''/g'
-
-# Sed substitution to avoid accidental globbing in evaled expressions
-no_glob_subst='s/\*/\\\*/g'
-
-ECHO='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-ECHO=$ECHO$ECHO$ECHO$ECHO$ECHO
-ECHO=$ECHO$ECHO$ECHO$ECHO$ECHO$ECHO
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking how to print strings" >&5
-printf %s "checking how to print strings... " >&6; }
-# Test print first, because it will be a builtin if present.
-if test "X`( print -r -- -n ) 2>/dev/null`" = X-n && \
-   test "X`print -r -- $ECHO 2>/dev/null`" = "X$ECHO"; then
-  ECHO='print -r --'
-elif test "X`printf %s $ECHO 2>/dev/null`" = "X$ECHO"; then
-  ECHO='printf %s\n'
-else
-  # Use this function as a fallback that always works.
-  func_fallback_echo ()
-  {
-    eval 'cat <<_LTECHO_EOF
-$1
-_LTECHO_EOF'
-  }
-  ECHO='func_fallback_echo'
-fi
-
-# func_echo_all arg...
-# Invoke $ECHO with all args, space-separated.
-func_echo_all ()
-{
-    $ECHO ""
-}
-
-case $ECHO in
-  printf*) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: printf" >&5
-printf "%s\n" "printf" >&6; } ;;
-  print*) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: print -r" >&5
-printf "%s\n" "print -r" >&6; } ;;
-  *) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: cat" >&5
-printf "%s\n" "cat" >&6; } ;;
-esac
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for a sed that does not truncate output" >&5
@@ -9234,6 +8746,7 @@ func_cc_basename ()
     done
     func_cc_basename_result=`$ECHO "$cc_temp" | $SED "s%.*/%%; s%^$host_alias-%%"`
 }
+
 
 # Check whether --enable-libtool-lock was given.
 if test ${enable_libtool_lock+y}
@@ -18016,54 +17529,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-
-    sedStrip='s/-.*//'
-    UNAME=`uname -s | sed "${sedStrip}"`
-    echo "Checking Windows Symbolic Links: ${UNAME}"
-    if test "x${UNAME}" = "xMSYS_NT" || test "x${UNAME}" = "xMINGW64_NT"
-then :
-
-        echo "    Fixing"
-        git config --local core.symlinks true
-        find src/ -type f | xargs -I^ git restore --source=HEAD ^
-        echo "    Fixing DONE"
-
-else $as_nop
-
-        echo "    Not Windows"
-
-fi
-
-
-    export cwd=$(pwd)
-
-    pushd third
-    if [ $? == 0 ]; then
-        for third in $(ls); do
-            echo
-            echo
-            echo "Building Third Party: ${third}"
-            pushd ${third}
-            if [ -e ./configure ]; then
-                echo "${third}:  ./configure ${subconfigure} --prefix=${prefix} --with-hostbuild=${cwd}/build"
-                ./configure ${subconfigure} --prefix=${prefix} --with-hostbuild=${cwd}/build
-                if [ $? != 0 ]; then
-                    "Failed to configure: ${third}"
-                    exit 1
-                fi
-            fi
-            echo "Complete: ${third}"
-            echo "================ DONE ================="
-            echo
-            popd
-        done
-        popd
-    fi
-
-
-
-
-
+subconfigure="${subconfigure} --with-ThorsSerializeroot=$(pwd) "
 am__api_version='1.16'
 
 
@@ -18568,7 +18034,66 @@ else
 fi
 AM_BACKSLASH='\'
 
-if test "`cd $srcdir && pwd`" != "`pwd`"; then
+
+
+    sedStrip='s/-.*//'
+    UNAME=`uname -s | sed "${sedStrip}"`
+    echo "Checking Windows Symbolic Links: ${UNAME}"
+    if test "x${UNAME}" = "xMSYS_NT" || test "x${UNAME}" = "xMINGW64_NT"
+then :
+
+        echo "    Fixing"
+        git config --local core.symlinks true
+        find src/ -type f | xargs -I^ git restore --source=HEAD ^
+        echo "    Fixing DONE"
+
+else $as_nop
+
+        echo "    Not Windows"
+
+fi
+
+
+    export cwd=$(pwd)
+
+    pushd third
+    if [ $? == 0 ]; then
+        for third in $(ls); do
+            echo
+            echo
+            echo "Building Third Party: ${third}"
+            pushd ${third}
+            if [ -e ./configure ]; then
+                echo "${third}:  ./configure ${subconfigure} --prefix=${prefix} "
+                ./configure ${subconfigure} --prefix=${prefix}
+                if [ $? != 0 ]; then
+                    "Failed to configure: ${third}"
+                    exit 1
+                fi
+            fi
+            echo "Complete: ${third}"
+            echo "================ DONE ================="
+            echo
+            popd
+
+    export BUILDING_${third}=1
+
+        done
+        popd
+    fi
+
+
+    #
+    # Add your defintions in here.
+    # Note there are some predefined macros in build/autotools/m4/
+
+
+
+    # Build all the Makefiles and configuration files.
+    # Used by ThorMaker
+    # Note: you can push the config file to sub directories in the AC_CONFIG_HEADERS macro (see example)
+    # Note: Local Make variables should be placed in Makefile.config.in
+    if test "`cd $srcdir && pwd`" != "`pwd`"; then
   # Use -I$(srcdir) only when $(srcdir) != ., so that make's output
   # is not polluted with repeated "-I."
   am__isrc=' -I$(srcdir)'
@@ -18937,9 +18462,14 @@ END
   fi
 fi
 
-ac_config_headers="$ac_config_headers config.h src/Serialize/SerializeConfig.h src/GitUtility/GitUtilityConfig.h"
 
-ac_config_files="$ac_config_files Makefile.extra Makefile.config:build/autotools/build/Makefile.config.in:Makefile.config.in"
+
+
+    ac_config_headers="$ac_config_headers config.h src/Serialize/SerializeConfig.h src/GitUtility/GitUtilityConfig.h"
+
+    ac_config_files="$ac_config_files Makefile.extra Makefile.config:build/autotools/build/Makefile.config.in:Makefile.config.in"
+
+
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
