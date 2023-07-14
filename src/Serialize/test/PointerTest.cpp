@@ -115,11 +115,12 @@ TEST(PointerTest, BsonBuildStringFromTree)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    // R"({"value":34,"left":{"value":22,"left":{"value":10,"left":null,"right":null},"right":null},"right":{"value":50,"left":null,"right":{"value":70,"left":null,"right":null}}})");
+    //NOTE OUTPUT R"({"value":34,"left":{"value":22,"left":{"value":10,"left":null,"right":null},"right":null},"right":{"value":50,"left":null,"right":{"value":70,"left":null,"right":null}}})");
 }
 TEST(PointerTest, BsonBuildTreeFromString)
 {
-#if 0
+/*
+NOTE INPUT
     std::string bson(R"(
 {
 	"value": 34,
@@ -146,7 +147,7 @@ TEST(PointerTest, BsonBuildTreeFromString)
 		}
 	}
 })");
-#endif
+*/
     static const char bsonRaw[]
                 = "\x91\x00\x00\x00"
                       "\x10" "value\x00" "\x22\x00\x00\x00"

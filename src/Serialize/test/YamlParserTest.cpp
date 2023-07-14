@@ -2,8 +2,6 @@
 #include "gtest/gtest.h"
 #include "YamlParser.h"
 
-// enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
-
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 

@@ -182,7 +182,7 @@ TEST(Issue50Test, BsonNullPointer)
                       "\x10" "age\x00"  "\x0A\x00\x00\x00"
                       "\x0A" "transport\x00"
                       "\x00"s);
-    //EXPECT_EQ(result, R"({"age":10,"transport":null})");
+    //NOTE OUTPUT (result, R"({"age":10,"transport":null})");
 }
 TEST(Issue50Test, BsonVehiclePointer)
 {
@@ -202,7 +202,7 @@ TEST(Issue50Test, BsonVehiclePointer)
                             "\x10" "speed\x00"  "\x0C\x00\x00\x00"
                             "\x00"
                       "\x00"s);
-    //EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Vehicle","speed":12}})");
+    //NOTE OUTPUT (result, R"({"age":10,"transport":{"$type":"Issue50Test::Vehicle","speed":12}})");
 }
 TEST(Issue50Test, BsonCarPointer)
 {
@@ -223,7 +223,7 @@ TEST(Issue50Test, BsonCarPointer)
                             "\x10" "speed\x00"  "\x10\x00\x00\x00"
                             "\x00"
                       "\x00"s);
-    //EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Car","speed":16,"make":"Turbo"}})");
+    //NOTE OUTPUT (result, R"({"age":10,"transport":{"$type":"Issue50Test::Car","speed":16,"make":"Turbo"}})");
 }
 
 TEST(Issue50Test, BsonBikePointer)
@@ -245,14 +245,14 @@ TEST(Issue50Test, BsonBikePointer)
                             "\x10" "speed\x00"  "\x12\x00\x00\x00"
                             "\x00"
                       "\x00"s);
-    //EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Bike","speed":18,"stroke":7}})");
+    //NOTE OUTPUT (result, R"({"age":10,"transport":{"$type":"Issue50Test::Bike","speed":18,"stroke":7}})");
 }
 
 TEST(Issue50Test, BsonReadNull)
 {
     using namespace std::string_literals;
 
-    //std::stringstream   stream(R"({"age":10,"transport":null})");
+    //NOTE INPUT (R"({"age":10,"transport":null})");
     std::string input = "\x19\x00\x00\x00"
                         "\x10" "age\x00"  "\x0A\x00\x00\x00"
                         "\x0A" "transport\x00"
@@ -269,7 +269,7 @@ TEST(Issue50Test, BsonReadVehicle)
 {
     using namespace std::string_literals;
 
-    //std::stringstream   stream(R"({"age":10,"transport":{"$type":"Issue50Test::Vehicle","speed":12}})");
+    //NOTE INPUT (R"({"age":10,"transport":{"$type":"Issue50Test::Vehicle","speed":12}})");
     std::string input = "\x49\x00\x00\x00"
                         "\x10" "age\x00"   "\x0A\x00\x00\x00"
                         "\x03" "transport\x00"
@@ -291,7 +291,7 @@ TEST(Issue50Test, BsonReadCar)
 {
     using namespace std::string_literals;
 
-    //std::stringstream   stream(R"({"age":10,"transport":{"$type":"Issue50Test::Car","speed":16,"make":"Turbo"}})");
+    //NOTE INPUT (R"({"age":10,"transport":{"$type":"Issue50Test::Car","speed":16,"make":"Turbo"}})");
     std::string input = "\x55\x00\x00\x00"
                         "\x10" "age\x00"  "\x0A\x00\x00\x00"
                         "\x03" "transport\x00"
@@ -318,7 +318,7 @@ TEST(Issue50Test, BsonReadBike)
 {
     using namespace std::string_literals;
 
-    //std::stringstream   stream(R"({"age":10,"transport":{"$type":"Issue50Test::Bike","speed":18,"stroke":7}})");
+    //NOTE INPUT (R"({"age":10,"transport":{"$type":"Issue50Test::Bike","speed":18,"stroke":7}})");
     std::string input = "\x52\x00\x00\x00"
                         "\x10" "age\x00"  "\x0A\x00\x00\x00"
                         "\x03" "transport\x00"

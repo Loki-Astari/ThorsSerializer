@@ -45,14 +45,14 @@ TEST(SerMemoryTest, Bsonserialize)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"({"first":56,"second":78.901})");
+    //NOTE OUTPUT (result, R"({"first":56,"second":78.901})");
 }
 
 TEST(SerMemoryTest, BsondeSerialize)
 {
     std::pair<int, double>  data;
 
-    //std::stringstream       stream(R"({"first":22,"second":45.67})");
+    //NOTE INPUT (R"({"first":22,"second":45.67})");
     static const char inputRaw[]
                 = "\x20\x00\x00\x00"
                   "\x10" "first\x00"  "\x16\x00\x00\x00"

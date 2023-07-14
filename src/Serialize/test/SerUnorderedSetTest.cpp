@@ -105,7 +105,7 @@ TEST(SerUnorderedSetTest, BsondeSerialize)
 {
     std::unordered_set<int>  data;
 
-    //std::stringstream       stream(R"([5,6,8,101,123])");
+    //NOTE INPUT (R"([5,6,8,101,123])");
     static const char inputRaw[]
                 = "\x28\x00\x00\x00"
                   "\x10" "0\x00" "\x05\x00\x00\x00"

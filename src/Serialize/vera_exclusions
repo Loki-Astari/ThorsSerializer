@@ -1,0 +1,4 @@
+set ruleExclusions(T017) {
+    Traits.h
+}
+

@@ -180,7 +180,7 @@ TEST(PolymorphicTest, BsonNullPointer)
                       "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    // R"({"age":10,"transport":null})");
+    //NOTE INPUT ":10,"transport":null})");
 }
 TEST(PolymorphicTest, BsonVehiclePointer)
 {
@@ -201,7 +201,7 @@ TEST(PolymorphicTest, BsonVehiclePointer)
                       "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
+    //NOTE OUTPUT (result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
 }
 TEST(PolymorphicTest, BsonCarPointer)
 {
@@ -223,7 +223,7 @@ TEST(PolymorphicTest, BsonCarPointer)
                       "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+    //NOTE OUTPUT (result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
 }
 
 TEST(PolymorphicTest, BsonBikePointer)
@@ -246,7 +246,7 @@ TEST(PolymorphicTest, BsonBikePointer)
                       "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+    //NOTE OUTPUT (result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
 }
 
 TEST(PolymorphicTest, BsonReadNull)
@@ -257,7 +257,7 @@ TEST(PolymorphicTest, BsonReadNull)
                       "\x0A" "transport\x00"
                       "\x00";
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
-    //std::stringstream   stream(R"({"age":10,"transport":null})");
+    //NOTE INPUT (R"({"age":10,"transport":null})");
     std::stringstream stream(input);
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(12)};
 
@@ -278,7 +278,7 @@ TEST(PolymorphicTest, BsonReadVehicle)
                             "\x00"
                       "\x00";
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
-    //std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
+    //NOTE INPUT (R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
     std::stringstream stream(input);
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(13)};
 
@@ -301,7 +301,7 @@ TEST(PolymorphicTest, BsonReadCar)
                             "\x00"
                       "\x00";
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
-    //std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
+    //NOTE INPUT (R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","speed":16,"make":"Turbo"}})");
     std::stringstream stream(input);
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(14)};
 
@@ -328,7 +328,7 @@ TEST(PolymorphicTest, BsonReadBike)
                             "\x00"
                       "\x00";
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
-    //std::stringstream   stream(R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
+    //NOTE INPUT (R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","speed":18,"stroke":7}})");
     std::stringstream stream(input);
     PolymorphicTest::User                user1 {12, new PolymorphicTest::Vehicle(15)};
 

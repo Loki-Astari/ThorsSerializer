@@ -84,7 +84,7 @@ TEST(TemplateTypeTest, JsontemplateInheritingFromtemplateTest)
 TEST(TemplateTypeTest, BsontemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    //std::string         inputStr(R"({"templateMember":[1,2,3,4]})");
+    //NOTE INPUT (R"({"templateMember":[1,2,3,4]})");
     std::string         inputStr("\x36\x00\x00\x00"
                                  "\x04" "templateMember\x00"
                                         "\x21\x00\x00\x00"
@@ -107,7 +107,7 @@ TEST(TemplateTypeTest, BsontemplateTest)
 TEST(TemplateTypeTest, BsonnormalInheritingFromtemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    //std::string         inputStr(R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
+    //NOTE INPUT (R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
     std::string         inputStr("\x4D\x00\x00\x00"
                                  "\x02" "normalName\x00"    "\x07\x00\x00\x00" "A name\x00"
                                  "\x04" "templateMember\x00"
@@ -131,7 +131,7 @@ TEST(TemplateTypeTest, BsonnormalInheritingFromtemplateTest)
 TEST(TemplateTypeTest, BsontemplateInheritingFromtemplateTest)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    //std::string         inputStr(R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
+    //NOTE INPUT (R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
     std::string         inputStr("\x64\x00\x00\x00"
                                  "\x04" "alternative\x00"
                                         "\x21\x00\x00\x00"

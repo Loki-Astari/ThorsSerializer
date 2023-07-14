@@ -14,9 +14,8 @@ TEST(IgnoreUneededDataTest, JsonArrayEmpty)
 
     IgnoreUneededDataTest::ThingVersion objver;
     data >> TA::jsonImporter(objver, false);
-/*
+
     EXPECT_EQ(3, objver.version);
-*/
 }
 TEST(IgnoreUneededDataTest, BsonArrayEmpty)
 {
@@ -28,8 +27,7 @@ TEST(IgnoreUneededDataTest, BsonArrayEmpty)
 
     IgnoreUneededDataTest::ThingVersion objver;
     data >> TA::bsonImporter(objver, false);
-/*
+
     EXPECT_EQ(3, objver.version);
-*/
 }
 

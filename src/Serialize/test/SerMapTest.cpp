@@ -77,14 +77,14 @@ TEST(SerMapTest, Bsonserialize)
 
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"([{"first":56,"second":78.901}])");
+    //NOTE OUTPUT (result, R"([{"first":56,"second":78.901}])");
 }
 
 TEST(SerMapTest, BsondeSerialize)
 {
     std::map<int, double>  data;
 
-    //std::stringstream       stream(R"([{"first":64,"second":12}, {"first":118,"second":14}])");
+    //NOTE INPUT (R"([{"first":64,"second":12}, {"first":118,"second":14}])");
     static const char inputRaw[]
                 = "\x43\x00\x00\x00"
                   "\x03" "0\x00"
@@ -123,14 +123,14 @@ TEST(SerMapTest, BsonserializeStringKey)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"({"AStringKey":78.902,"TestValue":22.903})");
+    //NOTE OUTPUT (result, R"({"AStringKey":78.902,"TestValue":22.903})");
 }
 
 TEST(SerMapTest, BsondeSerializeStringKey)
 {
     std::map<std::string, bool>  data;
 
-    //std::stringstream       stream(R"({"OneFileDay":true, "TheLastStand":false, "OfMiceAndMen":true})");
+    //NOTE INPUT (R"({"OneFileDay":true, "TheLastStand":false, "OfMiceAndMen":true})");
     static const char inputRaw[]
                 = "\x30\x00\x00\x00"
                   "\x08" "OneFileDay\x00"   "\x01"
