@@ -1491,7 +1491,7 @@ Optional Packages:
                           Directory of MagicEnum_ROOT
 
   --with-yamlroot=<location>
-                          Directory of YAML_ROOT
+                          Define the root directory of package YAML
 
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
@@ -5164,7 +5164,33 @@ fi
     ORIG_LDFLAGS="${LDFLAGS}"
     LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
 
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
+    echo "Building: NotThor"
+    echo "Mark:     $BUILDING_NotThor"
+    echo "Checking"
+    if test "x$BUILDING_NotThor" == "x1"
+then :
+
+
+    if test "x${with_yamlroot}" != "x"
+then :
+
+
+printf "%s\n" "#define HAVE_YAML 1" >>confdefs.h
+
+            yaml_ROOT_DIR=${with_yamlroot}
+
+            subconfigure="${subconfigure} --with-yamlroot=${with_yamlroot}"
+
+
+fi
+    echo "Setting: yaml_ROOT_LIB TO yaml"
+    yaml_ROOT_LIB="yaml"
+
+
+
+else $as_nop
+
+            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
 printf %s "checking for yaml_parser_initialize in -lyaml... " >&6; }
 if test ${ac_cv_lib_yaml_yaml_parser_initialize+y}
 then :
@@ -5201,35 +5227,47 @@ printf "%s\n" "$ac_cv_lib_yaml_yaml_parser_initialize" >&6; }
 if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes
 then :
 
-            if test "x${with_yamlroot}" != "x"
+
+    if test "x${with_yamlroot}" != "x"
 then :
 
 
 printf "%s\n" "#define HAVE_YAML 1" >>confdefs.h
 
-                    yaml_ROOT_DIR=${with_yamlroot}
+            yaml_ROOT_DIR=${with_yamlroot}
 
+            subconfigure="${subconfigure} --with-yamlroot=${with_yamlroot}"
 
 
 fi
-            yaml_ROOT_LIB=yaml
+    echo "Setting: yaml_ROOT_LIB TO yaml"
+    yaml_ROOT_LIB="yaml"
+
 
 
 else $as_nop
-  as_fn_error $? "
+
+                    echo "FAIL: Using: >${with_yamlroot}<"
+                    as_fn_error $? "
 Error: Could not find libyaml
 
 You can solve this by installing libyaml
     see http://pyyaml.org/wiki/LibYAML
 
 Alternately specify install location with:
-    --with-root=<location of yaml installation>
+    --with-yamlroot=<location of yaml installation>
 
 
     " "$LINENO" 5
+                    echo "FAIL DONE"
+
 
 fi
 
+
+
+fi
+    echo "Checking DONE"
 
     LDFLAGS="${ORIG_LDFLAGS}"
 
@@ -18067,7 +18105,7 @@ fi
                 echo "${third}:  ./configure ${subconfigure} --prefix=${prefix} "
                 ./configure ${subconfigure} --prefix=${prefix}
                 if [ $? != 0 ]; then
-                    "Failed to configure: ${third}"
+                    echo "Failed to configure: ${third}"
                     exit 1
                 fi
             fi
