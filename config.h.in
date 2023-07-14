@@ -1,9 +1,11 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 
+
 #ifndef  THORS_SERIALIZER_CONFIG_H
 #define  THORS_SERIALIZER_CONFIG_H
 
+    
 
 /* define if the Boost library is available */
 #undef HAVE_BOOST
@@ -13,6 +15,9 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* We have found MagicEnum package */
+#undef HAVE_MagicEnum
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -37,6 +42,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* We have found YAML package */
+#undef HAVE_YAML
 
 /* Enable to use header only libraries */
 #undef HEADER_ONLY
@@ -77,5 +85,7 @@
 #undef VERSION
 
 
+
 #endif
 
+    

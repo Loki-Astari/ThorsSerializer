@@ -15,9 +15,10 @@ TEST_IGNORE					+= JsonLexemes.h
 #▸  ▸   Is set up in the config for any external libraries that we need.
 #
 
-CXXFLAGS					+= -I$(magic_enum_ROOT_DIR)/include
-CXXFLAGS					+= -DSCGRROT_SHARED_PTR_SUPPRT=1
+MAGIC_ENUM_FLAGS			= $(if $(magicenum_ROOT_DIR), -I $(magicenum_ROOT_DIR)/include)
+CXXFLAGS					+= $(MAGIC_ENUM_FLAGS)
 LDLIBS_EXTERN_BUILD			+= $(yaml_ROOT_LIB)
+CXXFLAGS					+= -DSCGRROT_SHARED_PTR_SUPPRT=1
 FILE_WARNING_FLAGS			+= -Wno-unused-parameter
 %/JsonLexer.lex.o:			FILE_WARNING_FLAGS	+= -Wno-sign-compare -Wno-register
 %/JsonLexer1.lex.o:			FILE_WARNING_FLAGS	+= -Wno-deprecated-register
