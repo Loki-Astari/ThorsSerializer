@@ -20,7 +20,7 @@ ThorsAnvil_MakeFilter(FilterTestType, filter);
 ThorsAnvil_MakeTrait(FilterTestType, m1, m2);
 
 
-TEST(FilterMemberTests, JsonFilterOutZeroMember)
+TEST(FilterValuesTest, JsonFilterOutZeroMember)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", true}, {"m2", true}}};
 
@@ -34,7 +34,7 @@ TEST(FilterMemberTests, JsonFilterOutZeroMember)
     auto findM2 = streamData.find("m2");
     EXPECT_NE(std::string::npos, findM2);
 }
-TEST(FilterMemberTests, JsonFilterOutM1Member)
+TEST(FilterValuesTest, JsonFilterOutM1Member)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", false}, {"m2", true}}};
 
@@ -48,7 +48,7 @@ TEST(FilterMemberTests, JsonFilterOutM1Member)
     auto findM2 = streamData.find("m2");
     EXPECT_NE(std::string::npos, findM2);
 }
-TEST(FilterMemberTests, JsonFilterOutM2Member)
+TEST(FilterValuesTest, JsonFilterOutM2Member)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", true}, {"m2", false}}};
 
@@ -62,7 +62,7 @@ TEST(FilterMemberTests, JsonFilterOutM2Member)
     auto findM2 = streamData.find("m2");
     EXPECT_EQ(std::string::npos, findM2);
 }
-TEST(FilterMemberTests, JsonFilterOutAllMember)
+TEST(FilterValuesTest, JsonFilterOutAllMember)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", false}, {"m2", false}}};
 
@@ -78,7 +78,7 @@ TEST(FilterMemberTests, JsonFilterOutAllMember)
 }
 
 
-TEST(FilterMemberTests, YamlFilterOutZeroMember)
+TEST(FilterValuesTest, YamlFilterOutZeroMember)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", true}, {"m2", true}}};
 
@@ -92,7 +92,7 @@ TEST(FilterMemberTests, YamlFilterOutZeroMember)
     auto findM2 = streamData.find("m2");
     EXPECT_NE(std::string::npos, findM2);
 }
-TEST(FilterMemberTests, YamlFilterOutM1Member)
+TEST(FilterValuesTest, YamlFilterOutM1Member)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", false}, {"m2", true}}};
 
@@ -106,7 +106,7 @@ TEST(FilterMemberTests, YamlFilterOutM1Member)
     auto findM2 = streamData.find("m2");
     EXPECT_NE(std::string::npos, findM2);
 }
-TEST(FilterMemberTests, YamlFilterOutM2Member)
+TEST(FilterValuesTest, YamlFilterOutM2Member)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", true}, {"m2", false}}};
 
@@ -120,7 +120,7 @@ TEST(FilterMemberTests, YamlFilterOutM2Member)
     auto findM2 = streamData.find("m2");
     EXPECT_EQ(std::string::npos, findM2);
 }
-TEST(FilterMemberTests, YamlFilterOutAllMember)
+TEST(FilterValuesTest, YamlFilterOutAllMember)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", false}, {"m2", false}}};
 
@@ -136,7 +136,7 @@ TEST(FilterMemberTests, YamlFilterOutAllMember)
 }
 
 
-TEST(FilterMemberTests, BsonFilterOutZeroMember)
+TEST(FilterValuesTest, BsonFilterOutZeroMember)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", true}, {"m2", true}}};
 
@@ -151,7 +151,7 @@ TEST(FilterMemberTests, BsonFilterOutZeroMember)
 
     EXPECT_EQ(expected, stream.str());
 }
-TEST(FilterMemberTests, BsonFilterOutM1Member)
+TEST(FilterValuesTest, BsonFilterOutM1Member)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", false}, {"m2", true}}};
 
@@ -165,7 +165,7 @@ TEST(FilterMemberTests, BsonFilterOutM1Member)
 
     EXPECT_EQ(expected, stream.str());
 }
-TEST(FilterMemberTests, BsonFilterOutM2Member)
+TEST(FilterValuesTest, BsonFilterOutM2Member)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", true}, {"m2", false}}};
 
@@ -179,7 +179,7 @@ TEST(FilterMemberTests, BsonFilterOutM2Member)
 
     EXPECT_EQ(expected, stream.str());
 }
-TEST(FilterMemberTests, BsonFilterOutAllMember)
+TEST(FilterValuesTest, BsonFilterOutAllMember)
 {
     FilterTestType      test{"Data 1", "Other Stuff", {{"m1", false}, {"m2", false}}};
 

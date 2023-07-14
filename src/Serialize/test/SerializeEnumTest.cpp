@@ -37,7 +37,7 @@ TEST(SerializeEnumTest, JsonRedGreenBlueAtBlue)
 
     EXPECT_EQ(R"("Blue")", stripspace(str.str()));
 }
-TEST(DeSerializeEnumTest, JsonRefGreenBlueFromRed)
+TEST(SerializeEnumTest, JsonRefGreenBlueFromRed)
 {
     std::stringstream   str(R"("Red")");
     SerializeTest::RGB     enumHolder {SerializeTest::Green};
@@ -45,7 +45,7 @@ TEST(DeSerializeEnumTest, JsonRefGreenBlueFromRed)
     str >> ThorsAnvil::Serialize::jsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Red, enumHolder);
 }
-TEST(DeSerializeEnumTest, JsonRefGreenBlueFromGreen)
+TEST(SerializeEnumTest, JsonRefGreenBlueFromGreen)
 {
     std::stringstream   str(R"("Green")");
     SerializeTest::RGB     enumHolder {SerializeTest::Red};
@@ -53,7 +53,7 @@ TEST(DeSerializeEnumTest, JsonRefGreenBlueFromGreen)
     str >> ThorsAnvil::Serialize::jsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Green, enumHolder);
 }
-TEST(DeSerializeEnumTest, JsonRefGreenBlueFromBlue)
+TEST(SerializeEnumTest, JsonRefGreenBlueFromBlue)
 {
     std::stringstream   str(R"("Blue")");
     SerializeTest::RGB     enumHolder {SerializeTest::Green};
@@ -122,7 +122,7 @@ TEST(SerializeEnumTest, BsonRedGreenBlueAtBlue)
     EXPECT_EQ(expected, str.str());
     //EXPECT_EQ(R"("Blue")", stripspace(str.str()));
 }
-TEST(DeSerializeEnumTest, BsonRefGreenBlueFromRed)
+TEST(SerializeEnumTest, BsonRefGreenBlueFromRed)
 {
     //std::stringstream   str(R"("Red")");
     static const char inputRaw[]
@@ -136,7 +136,7 @@ TEST(DeSerializeEnumTest, BsonRefGreenBlueFromRed)
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Red, enumHolder);
 }
-TEST(DeSerializeEnumTest, BsonRefGreenBlueFromGreen)
+TEST(SerializeEnumTest, BsonRefGreenBlueFromGreen)
 {
     //std::stringstream   str(R"("Green")");
     static const char inputRaw[]
@@ -150,7 +150,7 @@ TEST(DeSerializeEnumTest, BsonRefGreenBlueFromGreen)
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Green, enumHolder);
 }
-TEST(DeSerializeEnumTest, BsonRefGreenBlueFromBlue)
+TEST(SerializeEnumTest, BsonRefGreenBlueFromBlue)
 {
     //std::stringstream   str(R"("Blue")");
     static const char inputRaw[]
