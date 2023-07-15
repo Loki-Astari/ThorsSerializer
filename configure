@@ -801,6 +801,7 @@ with_boost
 with_boost_libdir
 with_magicenumroot
 with_yamlroot
+enable_with_locked_file
 enable_shared
 enable_static
 with_pic
@@ -1458,6 +1459,14 @@ Optional Features:
 
   --enable-dark-mode      If your background is black some text that was grey
                           is turned yellow
+
+  --disable-with-locked-file
+                          Windows does not provide the same locking
+                          capabilities as Linux. Thus during testing when we
+                          try and lock files (it does not work) so that an
+                          attempt to open them would fail. Unfortunately we
+                          can't lock the files and thus the test pass. Don't
+                          run these tests on Windows.
 
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -5275,10 +5284,33 @@ fi
 
 
 
+    # Check whether --enable-with-locked-file was given.
+if test ${enable_with_locked_file+y}
+then :
+  enableval=$enable_with_locked_file;
+fi
+
+
+    if test "x${enable_with-locked-file}" != "xno"
+then :
+
+
+printf "%s\n" "#define THOR_DISABLE_TEST_WITH_LOCKED_FILES 1" >>confdefs.h
+
+        subconfigure="${subconfigure} --disable-with-locked-file";
+
+
+
+
+
     if test "
 #include <utility>
 int main() {
-    std::index_sequence<1,2,3,4>    seq;
+    std::index_sequence<1
+elif 2
+then :
+  3
+elif 4>    seq;
 }" != ""
 then :
 
@@ -5298,7 +5330,12 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 #include <utility>
 int main() {
-    std::index_sequence<1,2,3,4>    seq;
+    std::index_sequence<1
+then :
+  2
+elif 3
+then :
+  4>    seq;
 }
 _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"
@@ -5329,7 +5366,8 @@ fi
 
 
 case `pwd` in
-  *\ * | *\	*)
+  *\ * | *\	*
+fi
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
 printf "%s\n" "$as_me: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&2;} ;;
 esac

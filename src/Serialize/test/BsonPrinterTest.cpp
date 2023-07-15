@@ -100,6 +100,30 @@ TEST(BsonPrinterTest, ArrayValues)
                     "\x12" "6\x00" "\x3A\x00\x00\x00\x00\x00\x00\x00"
                     "\x02" "7\x00" "\x08\x00\x00\x00" "Astring\x00"
                   "\x00";
+
+  expected
+      Which is: "K\0\0\0"
+                    "\b"    "0\0"   "\x1"
+                    "\b"    "1\0"   "\0"
+                    "\x10"  "2\0"   "7\0\0\0"
+                    "\x10"  "3\0"   "8\0\0\0"
+                    "\x1"   "4\0"   ")\\\x8F\xC2\xF5\xB8S@"
+                    "\x12"  "5\0"   "9\0\0\0\0\0\0\0"
+                    "\x12"  "6\0"   ":\0\0\0\0\0\0\0"
+                    "\x2"   "7\0"   "\b\0\0\0"  "Astring\0"
+                "\0"
+        result
+                "G\0\0\0"
+                    "\b"    "0\0"   "\x1"
+                    "\b"    "1\0"   "\0"
+                    "\x10"  "2\0"   "7\0\0\0"
+                    "\x10"  "3\0"   "8\0\0\0"
+                    "\x1"   "4\0"   ")\\\x8F\xC2\xF5\xB8S@"
+                    "\x10"  "5\0"   "9\0\0\0"                   <-----
+                    "\x12"  "6\0"   ":\0\0\0\0\0\0\0"
+                    "\x2"   "7\0"   "\b\0\0\0" "Astring\0"
+                "\0"
+
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
     //NOTE OUTPUT (R"([true,false,55,56,78.89,57,58,"Astring"])", result);

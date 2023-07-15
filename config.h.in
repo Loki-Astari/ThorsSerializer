@@ -81,6 +81,9 @@
    backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
 
+/* Disable test that require files to be locked */
+#undef THOR_DISABLE_TEST_WITH_LOCKED_FILES
+
 /* Version number of package */
 #undef VERSION
 
