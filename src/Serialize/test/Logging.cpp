@@ -4,9 +4,6 @@
 #include <iostream>
 #include <string>
 
-
-#ifndef HEADER_ONLY
-
 class LoggingEnvironment: public ::testing::Environment
 {
     public:
@@ -71,6 +68,9 @@ bool initLogging()
     return true;
 }
 
+#ifdef THOR_DISABLE_TEST_LOGGING
+bool logingInit = false;
+#else
 bool logingInit = initLogging();
-
 #endif
+

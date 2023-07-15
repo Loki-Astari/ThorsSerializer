@@ -321,7 +321,7 @@ std::string const testData1Bson = "\x4a\x00\x00\x00"
                                   "\x08" "test\x00"             "\x01"
                                   "\x02" "normalString\x00"     "\x05\x00\x00\x00" "Done\x00"
                                   "\x00"s;
-//R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done"})";
+//NOTE OUTPUT  R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done"})";
 std::string const testData2Bson = "\x72\x00\x00\x00"
                                   "\x10" "data1\x00"            "\x01\x00\x00\x00"
                                   "\x10" "data2\x00"            "\x02\x00\x00\x00"
@@ -330,7 +330,7 @@ std::string const testData2Bson = "\x72\x00\x00\x00"
                                   "\x08" "test\x00"             "\x00"
                                   "\x02" "normalString\x00"     "\x17\x00\x00\x00" "Akinkthatisnotstraight\x00"
                                   "\x00"s;
-//R"({"theInteger":456,"aNonRealValue":89.101,"test":false,"normalString":"Akinkthatisnotstraight","data1":1,"data2":2})";
+//NOTE OUTPUT  R"({"theInteger":456,"aNonRealValue":89.101,"test":false,"normalString":"Akinkthatisnotstraight","data1":1,"data2":2})";
 std::string const testData3Bson = "\xE9\x00\x00\x00"
                                   "\x03" "member1\x00"
                                       "\x5E\x00\x00\x00"
@@ -349,8 +349,8 @@ std::string const testData3Bson = "\xE9\x00\x00\x00"
                                       "\x02" "normalString\x00"     "\x19\x00\x00\x00" "NotASquareAndOnlyOneSide\x00"
                                       "\x00"
                                   "\x00"s;
-//R"({"member1":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide"})"
-//R"(,"member2":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide","data1":67,"data2":11}})";
+//NOTE OUTPUT  R"({"member1":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide"})"
+//NOTE OUTPUT  R"(,"member2":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide","data1":67,"data2":11}})";
 // testData4 is identical to testData1 but with several ignored fields added.
 std::string const testData4Bson = "\xbc\x00\x00\x00"
                                   "\x10" "theInteger\x00"       "\x22\x00\x00\x00"
@@ -378,7 +378,7 @@ std::string const testData4Bson = "\xbc\x00\x00\x00"
                                                 "\x00"
                                         "\x00"
                                   "\x00"s;
-//R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","ShouldIgnore":true, "ignoreMap": {"Plop":true}, "ignoreArray":[true, false, [1,2,34], {"key":"value"}]})";
+//NOTE OUTPUT  R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","ShouldIgnore":true, "ignoreMap": {"Plop":true}, "ignoreArray":[true, false, [1,2,34], {"key":"value"}]})";
 std::string const testData5Bson = "\x5c\x00\x00\x00"
                                   "\x10" "theInteger\x00"       "\x22\x00\x00\x00"
                                   "\x01" "aNonRealValue\x00"    "\xa4\x70\x3d\x0a\xd7\x63\x4c\x40"
@@ -386,7 +386,7 @@ std::string const testData5Bson = "\x5c\x00\x00\x00"
                                   "\x02" "normalString\x00"     "\x05\x00\x00\x00" "Done\x00"
                                   "\x10" "anotherValue\x00"     "\x0E\x00\x00\x00"
                                   "\x00"s;
-//R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","anotherValue":14})";
+//NOTE OUTPUT  R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","anotherValue":14})";
 TEST(SerializeTest, BsonSerializeStructureOfValue)
 {
     SerializeTest::SerializeTestExtra        data(34,56.78, true, "Done");

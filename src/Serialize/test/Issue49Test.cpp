@@ -120,7 +120,7 @@ TEST(Issue49Test, BsonStreamScientific)
     EXPECT_EQ(result, "\x17\x00\x00\x00"
                       "\x02" "0\x00" "\x0B\x00\x00\x00" "scientific\x00"
                       "\x00"s);
-    //EXPECT_EQ("\"scientific\"", result);
+    // NOTE OUTPUT ("\"scientific\"", result);
 }
 TEST(Issue49Test, BsonStreamFixed)
 {
@@ -134,7 +134,7 @@ TEST(Issue49Test, BsonStreamFixed)
     EXPECT_EQ(result, "\x12\x00\x00\x00"
                       "\x02" "0\x00" "\x06\x00\x00\x00" "fixed\x00"
                       "\x00"s);
-    //EXPECT_EQ("\"fixed\"", result);
+    // NOTE OUTPUT ("\"fixed\"", result);
 }
 TEST(Issue49Test, BsonStreamHex)
 {
@@ -148,7 +148,7 @@ TEST(Issue49Test, BsonStreamHex)
     EXPECT_EQ(result, "\x10\x00\x00\x00"
                       "\x02" "0\x00" "\x04\x00\x00\x00" "hex\x00"
                       "\x00"s);
-    //EXPECT_EQ("\"hex\"", result);
+    // NOTE OUTPUT ("\"hex\"", result);
 }
 TEST(Issue49Test, BsonStreamGeneral)
 {
@@ -162,11 +162,11 @@ TEST(Issue49Test, BsonStreamGeneral)
     EXPECT_EQ(result, "\x14\x00\x00\x00"
                       "\x02" "0\x00" "\x08\x00\x00\x00" "general\x00"
                       "\x00"s);
-    //EXPECT_EQ("\"general\"", result);
+    // NOTE OUTPUT ("\"general\"", result);
 }
 TEST(Issue49Test, BsonImportScientific)
 {
-    //std::string input = R"("scientific")";
+    //NOTE INPUT  = R"("scientific")";
     std::string input = "\x17\x00\x00\x00"
                         "\x02" "0\x00" "\x0B\x00\x00\x00" "scientific\x00"
                         "\x00"s;
@@ -179,7 +179,7 @@ TEST(Issue49Test, BsonImportScientific)
 }
 TEST(Issue49Test, BsonImportFixed)
 {
-    //std::string input = R"("fixed")";
+    //NOTE INPUT  = R"("fixed")";
     std::string input = "\x12\x00\x00\x00"
                         "\x02" "0\x00" "\x06\x00\x00\x00" "fixed\x00"
                         "\x00"s;
@@ -192,7 +192,7 @@ TEST(Issue49Test, BsonImportFixed)
 }
 TEST(Issue49Test, BsonImportHex)
 {
-    //std::string input = R"("hex")";
+    //NOTE INPUT  = R"("hex")";
     std::string input = "\x10\x00\x00\x00"
                         "\x02" "0\x00" "\x04\x00\x00\x00" "hex\x00"
                         "\x00"s;
@@ -205,7 +205,7 @@ TEST(Issue49Test, BsonImportHex)
 }
 TEST(Issue49Test, BsonImportGeneral)
 {
-    //std::string input = R"("general")";
+    //NOTE INPUT  = R"("general")";
     std::string input = "\x14\x00\x00\x00"
                         "\x02" "0\x00" "\x08\x00\x00\x00" "general\x00"
                         "\x00"s;

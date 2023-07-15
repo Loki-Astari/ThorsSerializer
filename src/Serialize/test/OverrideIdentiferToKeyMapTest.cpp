@@ -118,8 +118,6 @@ TEST(OverrideIdentiferToKeyMapTest, BsonImportCheckNormalOverrideWorks)
     EXPECT_EQ("A valid string", object.deleteKey);
 }
 
-// ----
-
 TEST(OverrideIdentiferToKeyMapTest, JsonExportCheckTemplateOverrideWorks)
 {
     OverrideTemplate<double>    object{12.23, "The Stuff to Delete"};

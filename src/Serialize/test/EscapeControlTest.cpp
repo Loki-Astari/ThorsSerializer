@@ -163,7 +163,7 @@ TEST(EscapeControlTest, JsonOutputContainsCR)
 TEST(EscapeControlTest, BsonNormalInput)
 {
     using ThorsAnvil::Serialize::ParserInterface;
-    //std::stringstream   input("\"String With no special characters\"");
+    //NOTE INPUT ("\"String With no special characters\"");
     static const char inputRaw[]
                 = "\x2E\x00\x00\x00"
                   "\x02" "0\x00" "\x22\x00\x00\x00" "String With no special characters\x00"

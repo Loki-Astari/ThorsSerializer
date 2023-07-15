@@ -55,7 +55,7 @@ TEST(SerListTest, JsonListOfIntDeSerialize)
 
 TEST(SerListTest, BsonArrayEmpty)
 {
-    //std::stringstream   stream("[]");
+    //NOTE INPUT ("[]");
     static const char inputRaw[]
             = "\x05\x00\x00\x00"
               "\x00";
@@ -94,13 +94,13 @@ TEST(SerListTest, BsonListOfIntSerialize)
               "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"([1,2,3,4,5,6,7,8,101,102,9,10])");
+    //NOTE OUTPUT (result, R"([1,2,3,4,5,6,7,8,101,102,9,10])");
 }
 
 TEST(SerListTest, BsonListOfIntDeSerialize)
 {
     std::list<int>    data;
-    //std::stringstream   stream("[1,2,3,4,5,6,7,8,101,102,9,10]");
+    //NOTE INPUT ("[1,2,3,4,5,6,7,8,101,102,9,10]");
     static const char inputRaw[]
             = "\x5B\x00\x00\x00"
               "\x10" "0\x00"  "\x01\x00\x00\x00"

@@ -304,7 +304,7 @@ TEST(Issue38Test, JsonUdp6Connection)
 }
 TEST(Issue38Test, BsonConnection)
 {
-    //std::string input = R"( { "active": true })";
+    //NOTE INPUT  = R"( { "active": true })";
     std::string input = "\x0E\x00\x00\x00"
                         "\x08" "active\x00" "\x01"
                         "\x00"s;
@@ -321,7 +321,7 @@ TEST(Issue38Test, BsonConnection)
 }
 TEST(Issue38Test, BsonIPConnection)
 {
-    //std::string input = R"({ "active": true, "port":   22 })";
+    //NOTE INPUT  = R"({ "active": true, "port":   22 })";
     std::string input = "\x18\x00\x00\x00"
                         "\x10" "port\x00"   "\x16\x00\x00\x00"
                         "\x08" "active\x00" "\x01"
@@ -339,7 +339,7 @@ TEST(Issue38Test, BsonIPConnection)
 }
 TEST(Issue38Test, BsonIPv4Connection)
 {
-    //std::string input = R"( { "active": true, "port": 56, "v4Name": "LongPort" })";
+    //NOTE INPUT  = R"( { "active": true, "port": 56, "v4Name": "LongPort" })";
     std::string input = "\x2D\x00\x00\x00"
                         "\x02" "v4Name\x00" "\x09\x00\x00\x00" "LongPort\x00"
                         "\x10" "port\x00"   "\x38\x00\x00\x00"
@@ -358,7 +358,7 @@ TEST(Issue38Test, BsonIPv4Connection)
 }
 TEST(Issue38Test, BsonIPv6Connection)
 {
-    //std::string input = R"( { "active": true, "port": 67, "v6Name": "ShortPort", "cost": 12.5 })";
+    //NOTE INPUT  = R"( { "active": true, "port": 67, "v6Name": "ShortPort", "cost": 12.5 })";
     std::string input = "\x3C\x00\x00\x00"
                         "\x02" "v6Name\x00" "\x0A\x00\x00\x00" "ShortPort\x00"
                         "\x01" "cost\x00"   "\x00\x00\x00\x00\x00\x00\x29\x40"
@@ -378,7 +378,7 @@ TEST(Issue38Test, BsonIPv6Connection)
 }
 TEST(Issue38Test, BsonTcpConnection)
 {
-    //std::string input = R"( { "blocks": 8 })";
+    //NOTE INPUT  = R"( { "blocks": 8 })";
     std::string input = "\x11\x00\x00\x00"
                         "\x10" "blocks\x00" "\x08\x00\x00\x00"
                         "\x00"s;
@@ -395,7 +395,7 @@ TEST(Issue38Test, BsonTcpConnection)
 }
 TEST(Issue38Test, BsonUdpConnection)
 {
-    //std::string input = R"( { "listeners": 12 })";
+    //NOTE INPUT  = R"( { "listeners": 12 })";
     std::string input = "\x14\x00\x00\x00"
                         "\x10" "listeners\x00"  "\x0C\x00\x00\x00"
                         "\x00"s;
@@ -412,7 +412,7 @@ TEST(Issue38Test, BsonUdpConnection)
 }
 TEST(Issue38Test, BsonTcp4Connection)
 {
-    //std::string input = R"( { "active": true, "port": 56, "v4Name": "LongPort", "blocks": 8, "data": [15, 67] })";
+    //NOTE INPUT  = R"( { "active": true, "port": 56, "v4Name": "LongPort", "blocks": 8, "data": [15, 67] })";
     std::string input = "\x52\x00\x00\x00"
                         "\x04" "data\x00"
                                 "\x13\x00\x00\x00"
@@ -437,7 +437,7 @@ TEST(Issue38Test, BsonTcp4Connection)
 }
 TEST(Issue38Test, BsonTcp6Connection)
 {
-    //std::string input = R"( { "active": true, "port": 56, "v6Name": "LongPort", "cost": 12, "blocks": 88, "sync": [15, 67] })";
+    //NOTE INPUT  = R"( { "active": true, "port": 56, "v6Name": "LongPort", "cost": 12, "blocks": 88, "sync": [15, 67] })";
     std::string input = "\x60\x00\x00\x00"
                         "\x04" "sync\x00"
                                 "\x13\x00\x00\x00"
@@ -463,7 +463,7 @@ TEST(Issue38Test, BsonTcp6Connection)
 }
 TEST(Issue38Test, BsonUdp4Connection)
 {
-    //std::string input = R"( { "active": true, "port": 67, "v4Name": "ShortPort", "listeners": 999, "fly": [13, 14, 12.5] })";
+    //NOTE INPUT  = R"( { "active": true, "port": 67, "v4Name": "ShortPort", "listeners": 999, "fly": [13, 14, 12.5] })";
     std::string input = "\x68\x00\x00\x00"
                         "\x04" "fly\x00"
                                 "\x26\x00\x00\x00"
@@ -489,7 +489,7 @@ TEST(Issue38Test, BsonUdp4Connection)
 }
 TEST(Issue38Test, BsonUdp6Connection)
 {
-    //std::string input = R"( { "active": true, "port": 56, "v6Name": "LongPort", "cost": 88, "listeners": 101, "fancy": ["long", "way", "down"] })";
+    //NOTE INPUT  = R"( { "active": true, "port": 56, "v6Name": "LongPort", "cost": 88, "listeners": 101, "fancy": ["long", "way", "down"] })";
     std::string input = "\x79\x00\x00\x00"
                         "\x04" "fancy\x00"
                                 "\x28\x00\x00\x00"

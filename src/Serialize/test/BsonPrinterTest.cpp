@@ -42,7 +42,7 @@ TEST(BsonPrinterTest, ArrayTokens)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ("{}", result);
+    //NOTE OUTPUT ("{}", result);
 }
 TEST(BsonPrinterTest, MapTokens)
 {
@@ -60,7 +60,7 @@ TEST(BsonPrinterTest, MapTokens)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ("[]", result);
+    //NOTE OUTPUT ("[]", result);
 }
 TEST(BsonPrinterTest, ArrayValues)
 {
@@ -102,7 +102,7 @@ TEST(BsonPrinterTest, ArrayValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"([true,false,55,56,78.89,57,58,"Astring"])", result);
+    //NOTE OUTPUT (R"([true,false,55,56,78.89,57,58,"Astring"])", result);
 }
 TEST(BsonPrinterTest, MapValues)
 {
@@ -152,7 +152,7 @@ TEST(BsonPrinterTest, MapValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K6":"Astring"})", result);
+    //NOTE OUTPUT (R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K6":"Astring"})", result);
 }
 TEST(BsonPrinterTest, MapWithMapValues)
 {
@@ -218,7 +218,7 @@ TEST(BsonPrinterTest, MapWithMapValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89},"K6":"Astring"})", result);
+    //NOTE OUTPUT (R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89},"K6":"Astring"})", result);
 }
 TEST(BsonPrinterTest, MapWithArrayValues)
 {
@@ -289,7 +289,7 @@ TEST(BsonPrinterTest, MapWithArrayValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"({"K1":[true,false,55,56,57,58,60,61],"K3":56,"K4":[78.89],"K6":"Astring"})", result);
+    //NOTE OUTPUT (R"({"K1":[true,false,55,56,57,58,60,61],"K3":56,"K4":[78.89],"K6":"Astring"})", result);
 }
 TEST(BsonPrinterTest, ArrayWithMapValues)
 {
@@ -351,7 +351,7 @@ TEST(BsonPrinterTest, ArrayWithMapValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"([{"K1":true,"K2":false},56,{"K4":78.89},"Astring"])", result);
+    //NOTE OUTPUT (R"([{"K1":true,"K2":false},56,{"K4":78.89},"Astring"])", result);
 }
 TEST(BsonPrinterTest, ArrayWithArrayValues)
 {
@@ -408,7 +408,7 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"([[true,false],56,[78.89],"Astring"])", result);
+    //NOTE OUTPUT (R"([[true,false],56,[78.89],"Astring"])", result);
 
 }
 TEST(BsonPrinterTest, CloseMapWithArray)
@@ -464,6 +464,6 @@ TEST(BsonPrinterTest, AddRawValueTest)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(result, R"({"K1":12})");
+    //NOTE OUTPUT (result, R"({"K1":12})");
 }
 

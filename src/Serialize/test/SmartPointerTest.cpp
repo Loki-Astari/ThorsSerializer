@@ -217,7 +217,7 @@ TEST(SmartPointerTest, BsonCreateNormalPtrNull)
     using ThorsAnvil::Serialize::ParserInterface;
     ThorsAnvil::Serialize::ParserInterface::ParserConfig config(ParserInterface::ParseType::Weak);
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
-    //std::stringstream           stream(R"(null)");
+    //NOTE INPUT (R"(null)");
     std::string input = "\x0B\x00\x00\x00"
                         "\x0A" "data\x00"
                         "\x00"s;
@@ -237,7 +237,7 @@ TEST(SmartPointerTest, BsonCreateNormalPtrNull)
 TEST(SmartPointerTest, BsonCreateNormalPtrObject)
 {
     using ThorsAnvil::Serialize::ParserInterface;
-    //std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
+    //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
     std::string                 input = "\x26\x00\x00\x00"
                                         "\x10" "id\x00"      "\xc8\x01\x00\x00"
                                         "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
@@ -261,7 +261,7 @@ TEST(SmartPointerTest, BsonCreateUniquePtrNull)
 {
     using ThorsAnvil::Serialize::ParserInterface;
 
-    //std::stringstream           stream(R"(null)");
+    //NOTE INPUT (R"(null)");
     std::string                 input = "\x0B\x00\x00\x00"
                                         "\x0A" "data\x00"
                                         "\x00"s;
@@ -283,7 +283,7 @@ TEST(SmartPointerTest, BsonCreateUniquePtrObject)
     using ThorsAnvil::Serialize::ParserInterface;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
-    //std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
+    //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
     std::string                 input = "\x26\x00\x00\x00"
                                         "\x10" "id\x00"      "\xc8\x01\x00\x00"
                                         "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
@@ -306,7 +306,7 @@ TEST(SmartPointerTest, BsonCreateSharedPtrNull)
 {
     using ThorsAnvil::Serialize::ParserInterface;
 
-    //std::stringstream           stream(R"(null)");
+    //NOTE INPUT (R"(null)");
     std::string                 input = "\x0B\x00\x00\x00"
                                         "\x0A" "data\x00"
                                         "\x00"s;
@@ -328,7 +328,7 @@ TEST(SmartPointerTest, BsonCreateSharedPtrObject)
     using ThorsAnvil::Serialize::ParserInterface;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
-    //std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
+    //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
     std::string                 input = "\x26\x00\x00\x00"
                                         "\x10" "id\x00"      "\xc8\x01\x00\x00"
                                         "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
@@ -363,7 +363,7 @@ TEST(SmartPointerTest, BsonSerializeNormalPtrNull)
     EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //EXPECT_EQ(stream.str(), " null");
+    //NOTE OUTPUT  (stream.str(), " null");
 }
 
 TEST(SmartPointerTest, BsonSerializeNormalPtrObject)
@@ -382,7 +382,7 @@ TEST(SmartPointerTest, BsonSerializeNormalPtrObject)
                             "\x10" "id\x00"      "\xc8\x01\x00\x00"
                             "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
                             "\x00"s);
-    //EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+    //NOTE OUTPUT  (stream.str(), R"({"id":456,"name":"This is a test"})");
     delete data;
 }
 
@@ -402,7 +402,7 @@ TEST(SmartPointerTest, BsonSerializeUniquePtrNull)
     EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //EXPECT_EQ(stream.str(), " null");
+    //NOTE OUTPUT  (stream.str(), " null");
 }
 
 TEST(SmartPointerTest, BsonSerializeUniquePtrObject)
@@ -422,7 +422,7 @@ TEST(SmartPointerTest, BsonSerializeUniquePtrObject)
                             "\x10" "id\x00"      "\xc8\x01\x00\x00"
                             "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
                             "\x00"s);
-    //EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+    //NOTE OUTPUT  (stream.str(), R"({"id":456,"name":"This is a test"})");
 }
 
 TEST(SmartPointerTest, BsonSerializeSharedPtrNull)
@@ -441,7 +441,7 @@ TEST(SmartPointerTest, BsonSerializeSharedPtrNull)
     EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //EXPECT_EQ(stream.str(), " null");
+    //NOTE OUTPUT  (stream.str(), " null");
 }
 
 TEST(SmartPointerTest, BsonSerializeSharedPtrObject)
@@ -461,7 +461,7 @@ TEST(SmartPointerTest, BsonSerializeSharedPtrObject)
                             "\x10" "id\x00"      "\xc8\x01\x00\x00"
                             "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
                             "\x00"s);
-    //EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+    //NOTE OUTPUT  (stream.str(), R"({"id":456,"name":"This is a test"})");
 }
 
 

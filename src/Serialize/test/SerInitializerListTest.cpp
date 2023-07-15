@@ -47,7 +47,7 @@ TEST(SerInitializerListTest, BsonInitListOfIntSerialize)
               "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"([1,2,3,4,5,6,7,8,101,102,9,10])");
+    //NOTE OUTPUT (result, R"([1,2,3,4,5,6,7,8,101,102,9,10])");
 }
 
 

@@ -53,7 +53,7 @@ TEST(Issue42Test, JsonPointerUniquePtrMultiple)
 TEST(Issue42Test, BsonPointerUniquePtrMultiple)
 {
     Issue42Test::Fleet test {};
-    //string str = R"( {"vehicles":[ { "__type": "Issue42Test::Vehicle", "id":0 } ]})";
+    //NOTE INPUT "( {"vehicles":[ { "__type": "Issue42Test::Vehicle", "id":0 } ]})";
     std::string str = "\x45\x00\x00\x00"
                       "\x04" "vehicles\x00"
                             "\x36\x00\x00\x00"//54

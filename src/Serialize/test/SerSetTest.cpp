@@ -51,14 +51,14 @@ TEST(SerSetTest, Bsonserialize)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"([2,8,11,24,34])");
+    //NOTE OUTPUT (result, R"([2,8,11,24,34])");
 }
 
 TEST(SerSetTest, BsonbeSerialize)
 {
     std::set<int>  data;
 
-    //std::stringstream       stream(R"([5,6,8,101,123])");
+    //NOTE INPUT (R"([5,6,8,101,123])");
     static const char inputRaw[]
                 = "\x28\x00\x00\x00"
                   "\x10" "0\x00" "\x05\x00\x00\x00"
