@@ -74,7 +74,7 @@ TEST(BsonPrinterTest, ArrayValues)
                         + printer.getSizeValueTest(static_cast<short>(55))
                         + printer.getSizeValueTest(56)
                         + printer.getSizeValueTest(78.89)
-                        + printer.getSizeValueTest(57l)
+                        + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
                         + printer.getSizeValueTest(58ll)
                         + printer.getSizeValueTest(std::string("Astring")));
     printer.addValue(true);
@@ -82,7 +82,7 @@ TEST(BsonPrinterTest, ArrayValues)
     printer.addValue(static_cast<short>(55));
     printer.addValue(56);
     printer.addValue(78.89);
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addValue(58ll);
     printer.addValue(std::string("Astring"));
     printer.closeArray();
@@ -101,29 +101,6 @@ TEST(BsonPrinterTest, ArrayValues)
                     "\x02" "7\x00" "\x08\x00\x00\x00" "Astring\x00"
                   "\x00";
 
-  expected
-      Which is: "K\0\0\0"
-                    "\b"    "0\0"   "\x1"
-                    "\b"    "1\0"   "\0"
-                    "\x10"  "2\0"   "7\0\0\0"
-                    "\x10"  "3\0"   "8\0\0\0"
-                    "\x1"   "4\0"   ")\\\x8F\xC2\xF5\xB8S@"
-                    "\x12"  "5\0"   "9\0\0\0\0\0\0\0"
-                    "\x12"  "6\0"   ":\0\0\0\0\0\0\0"
-                    "\x2"   "7\0"   "\b\0\0\0"  "Astring\0"
-                "\0"
-        result
-                "G\0\0\0"
-                    "\b"    "0\0"   "\x1"
-                    "\b"    "1\0"   "\0"
-                    "\x10"  "2\0"   "7\0\0\0"
-                    "\x10"  "3\0"   "8\0\0\0"
-                    "\x1"   "4\0"   ")\\\x8F\xC2\xF5\xB8S@"
-                    "\x10"  "5\0"   "9\0\0\0"                   <-----
-                    "\x12"  "6\0"   ":\0\0\0\0\0\0\0"
-                    "\x2"   "7\0"   "\b\0\0\0" "Astring\0"
-                "\0"
-
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
     //NOTE OUTPUT (R"([true,false,55,56,78.89,57,58,"Astring"])", result);
@@ -140,7 +117,7 @@ TEST(BsonPrinterTest, MapValues)
                         + 2 + printer.getSizeValueTest(static_cast<short>(55))
                         + 2 + printer.getSizeValueTest(56)
                         + 2 + printer.getSizeValueTest(78.89)
-                        + 2 + printer.getSizeValueTest(57l)
+                        + 2 + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
                         + 2 + printer.getSizeValueTest(58ll)
                         + 2 + printer.getSizeValueTest(std::string("Astring")));
     printer.addKey("K0");
@@ -154,7 +131,7 @@ TEST(BsonPrinterTest, MapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addKey("K6");
     printer.addValue(58ll);
     printer.addKey("K7");
@@ -190,7 +167,7 @@ TEST(BsonPrinterTest, MapWithMapValues)
     std::size_t map1map2Size =
             printer.getSizeMapTest(3)
                     + 2 + printer.getSizeValueTest(78.89)
-                    + 2 + printer.getSizeValueTest(57l)
+                    + 2 + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
                     + 2 + printer.getSizeValueTest(58ll);
     std::size_t map1 =
             printer.getSizeMapTest(4)
@@ -214,7 +191,7 @@ TEST(BsonPrinterTest, MapWithMapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addKey("K6");
     printer.addValue(58ll);
     printer.closeMap();
@@ -253,7 +230,7 @@ TEST(BsonPrinterTest, MapWithArrayValues)
             = printer.getSizeArrayTest(8)
             + printer.getSizeValueTest(static_cast<unsigned short>(55))
             + printer.getSizeValueTest(56u)
-            + printer.getSizeValueTest(57ul)
+            + printer.getSizeValueTest(static_cast<std::uint64_t>(57ul))
             + printer.getSizeValueTest(58ull)
             + printer.getSizeValueTest(60.f)
             + printer.getSizeValueTest(61.0L);
@@ -274,7 +251,7 @@ TEST(BsonPrinterTest, MapWithArrayValues)
     printer.addValue(false);
     printer.addValue(static_cast<unsigned short>(55));
     printer.addValue(56u);
-    printer.addValue(57ul);
+    printer.addValue(static_cast<std::uint64_t>(57ul));
     printer.addValue(58ull);
     printer.addValue(60.f);
     printer.addValue(61.0L);
@@ -327,7 +304,7 @@ TEST(BsonPrinterTest, ArrayWithMapValues)
     std::size_t array1map2Size
             = printer.getSizeMapTest(3)
             + 2 + printer.getSizeValueTest(78.89)
-            + 2 + printer.getSizeValueTest(57l)
+            + 2 + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
             + 2 + printer.getSizeValueTest(58ll);
     std::size_t array1Size
             = printer.getSizeArrayTest(4)
@@ -348,7 +325,7 @@ TEST(BsonPrinterTest, ArrayWithMapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addKey("K6");
     printer.addValue(58ll);
     printer.closeMap();
@@ -389,7 +366,7 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
     std::size_t array1array2Size
             = printer.getSizeArrayTest(3)
             + printer.getSizeValueTest(78.89)
-            + printer.getSizeValueTest(57l)
+            + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
             + printer.getSizeValueTest(58ll);
     std::size_t array1Size
             = printer.getSizeArrayTest(4)
@@ -406,7 +383,7 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
     printer.addValue(56);
     printer.openArray(array1array2Size);
     printer.addValue(78.89);
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addValue(58ll);
     printer.closeArray();
     printer.addValue(std::string("Astring"));

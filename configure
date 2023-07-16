@@ -801,7 +801,7 @@ with_boost
 with_boost_libdir
 with_magicenumroot
 with_yamlroot
-enable_with_locked_file
+enable_test_with_locked_file
 enable_shared
 enable_static
 with_pic
@@ -1460,7 +1460,7 @@ Optional Features:
   --enable-dark-mode      If your background is black some text that was grey
                           is turned yellow
 
-  --disable-with-locked-file
+  --disable-test-with-locked-file
                           Windows does not provide the same locking
                           capabilities as Linux. Thus during testing when we
                           try and lock files, it does not work, so that an
@@ -5284,20 +5284,26 @@ fi
 
 
 
-    # Check whether --enable-with-locked-file was given.
-if test ${enable_with_locked_file+y}
+    # Check whether --enable-test-with-locked-file was given.
+if test ${enable_test_with_locked_file+y}
 then :
-  enableval=$enable_with_locked_file;
+  enableval=$enable_test_with_locked_file;
 fi
 
 
-    if test "x${enable_with-locked-file}" != "xno"
+    if test "x${enable_test_with_locked_file}" == "xno"
 then :
 
 
 printf "%s\n" "#define THOR_DISABLE_TEST_WITH_LOCKED_FILES 1" >>confdefs.h
 
-            subconfigure="${subconfigure} --disable-with-locked-file";
+            subconfigure="${subconfigure} --disable-test-with-locked-file";
+
+else $as_nop
+
+
+printf "%s\n" "#define THOR_DISABLE_TEST_WITH_LOCKED_FILES 0" >>confdefs.h
+
 
 
 fi
