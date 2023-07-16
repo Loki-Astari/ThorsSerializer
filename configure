@@ -18110,10 +18110,17 @@ AM_BACKSLASH='\'
     if test "x${UNAME}" = "xMSYS_NT" || test "x${UNAME}" = "xMINGW64_NT"
 then :
 
-        echo "    Fixing"
-        git config --local core.symlinks true
-        find src/ -type f | xargs -I^ git restore --source=HEAD ^
-        echo "    Fixing DONE"
+        if test ! -e .windows.fix
+then :
+
+                echo "    Fixing"
+                git config --local core.symlinks true
+                find src/ -type f | xargs -I^ git restore --source=HEAD ^
+                echo "    Fixing DONE"
+                touch .windows.fix
+
+
+fi
 
 else $as_nop
 
