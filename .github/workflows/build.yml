@@ -38,7 +38,7 @@ jobs:
               with:
                 submodules: recursive
                 token: ${{ secrets.GITHUB_TOKEN }}
-            - run: ./configure --enable-dark-mode --with-magicenumroot=/tmp/magic_enum
+            - run: ./configure --enable-dark-mode --with-magicenum-root=/tmp/magic_enum
             - run: make
             - run: sudo make install
     Build_on_Windows:
@@ -79,7 +79,7 @@ jobs:
               shell: msys2 {0}
               env:
                      MSYS:  winsymlinks:nativestrict
-              run:  ./configure --disable-colour --disable-vera --with-magicenumroot=/tmp/magic_enum --with-yamlroot=/mingw64/ --disable-test-with-locked-file || cat config.log
+              run:  ./configure --disable-colour --disable-vera --with-magicenum-root=/tmp/magic_enum --with-yaml-root=/mingw64/ --disable-test-with-locked-file || cat config.log
             - name: Make
               shell: msys2 {0}
               run:   make
