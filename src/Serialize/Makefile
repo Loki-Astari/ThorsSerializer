@@ -6,7 +6,7 @@ TARGET						= ThorSerialize.lib
 NAMESPACE					= ThorsAnvil::Serialize
 
 CXXFLAGS					+= -DSCGRROT_SHARED_PTR_SUPPRT=1
-LDLIBS_EXTERN_BUILD			+= MagicEnum $(yaml_ROOT_LIB)
+LDLIBS_EXTERN_BUILD			+= MagicEnum yaml
 LINK_LIBS					= ThorsLogging
 UNITTEST_LINK_LIBS			= ThorsLogging
 UNITTEST_LDLIBS				= -ldl
