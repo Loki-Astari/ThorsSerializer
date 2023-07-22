@@ -16,8 +16,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* We have found MagicEnum package */
-#undef HAVE_MagicEnum
+/* We have found MagicEnumHeaderOnly package */
+#undef HAVE_MagicEnumHeaderOnly
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

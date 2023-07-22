@@ -705,7 +705,7 @@ CC
 LIBTOOL
 yaml_ROOT_LIB
 yaml_ROOT_DIR
-MagicEnum_ROOT_DIR
+MagicEnumHeaderOnly_ROOT_DIR
 BOOST_LDFLAGS
 BOOST_CPPFLAGS
 host_os
@@ -799,7 +799,7 @@ enable_dark_mode
 with_standard
 with_boost
 with_boost_libdir
-with_magicenum_root
+with_magicenum_header_only_root
 with_yaml_root
 enable_test_with_locked_file
 enable_shared
@@ -1496,9 +1496,9 @@ Optional Packages:
                           this parameter only if default library detection
                           fails and you know exactly where your boost
                           libraries are located.
-  --with-magicenum-root=<location>
-                          Directory of MagicEnum include folder: the folder
-                          that has the include file
+  --with-magicenum-header-only-root=<location>
+                          Directory of MagicEnumHeaderOnly include folder: the
+                          folder that has the include file
 
   --with-yaml-root=<location>
                           Define the root directory of package YAML
@@ -5102,15 +5102,15 @@ fi
 
 
 
-# Check whether --with-magicenum-root was given.
-if test ${with_magicenum_root+y}
+# Check whether --with-magicenum-header-only-root was given.
+if test ${with_magicenum_header_only_root+y}
 then :
-  withval=$with_magicenum_root;
+  withval=$with_magicenum_header_only_root;
 fi
 
 
-    INCLUDE_DIR="-I${with_magicenum_root}"
-    if test "x${with_magicenum_root}" == "x"
+    INCLUDE_DIR="-I${with_magicenum_header_only_root}"
+    if test "x${with_magicenum_header_only_root}" == "x"
 then :
   INCLUDE_DIR="-I${DefaultLinkDir}"
 
@@ -5123,16 +5123,16 @@ fi
 if test "x$ac_cv_header_magic_enum_hpp" = xyes
 then :
 
-            if test "x${with_magicenum_root}" != "x"
+            if test "x${with_magicenum_header_only_root}" != "x"
 then :
 
 
-printf "%s\n" "#define HAVE_MagicEnum 1" >>confdefs.h
+printf "%s\n" "#define HAVE_MagicEnumHeaderOnly 1" >>confdefs.h
 
-                    magicenum_defined=1
-                    MagicEnum_ROOT_DIR=${with_magicenum_root}
+                    magicenum_header_only_defined=1
+                    MagicEnumHeaderOnly_ROOT_DIR=${with_magicenum_header_only_root}
 
-                    subconfigure="${subconfigure} --with-magicenum-root=${with_magicenum_root}"
+                    subconfigure="${subconfigure} --with-magicenum-header-only-root=${with_magicenum_header_only_root}"
 
 
 fi
