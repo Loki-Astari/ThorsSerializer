@@ -39,6 +39,10 @@ jobs:
                 submodules: recursive
                 token: ${{ secrets.GITHUB_TOKEN }}
             - run: ./configure --enable-dark-mode --with-magicenum-root=/tmp/magic_enum
+            - run: |
+                cat Makefile.config
+                cat third/ThorsStorage/Makefile.config
+                cat third/ThorsStorage/src/ThorsStorage/Makefile
             - run: make
             - run: sudo make install
     Build_on_Windows:
