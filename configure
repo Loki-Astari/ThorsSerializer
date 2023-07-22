@@ -1497,7 +1497,8 @@ Optional Packages:
                           fails and you know exactly where your boost
                           libraries are located.
   --with-magicenum-root=<location>
-                          Directory of MagicEnum_ROOT
+                          Directory of MagicEnum include folder: the folder
+                          that has the include file
 
   --with-yaml-root=<location>
                           Define the root directory of package YAML
@@ -5108,10 +5109,10 @@ then :
 fi
 
 
-    INCLUDE_DIR="-I ${with_magicenum_root}/include"
+    INCLUDE_DIR="-I${with_magicenum_root}"
     if test "x${with_magicenum_root}" == "x"
 then :
-  INCLUDE_DIR="-I${DefaultLinkDir}/include"
+  INCLUDE_DIR="-I${DefaultLinkDir}"
 
 fi
 
