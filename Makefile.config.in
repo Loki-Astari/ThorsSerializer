@@ -1,5 +1,5 @@
 
-magicenum_ROOT_DIR=@magicenum_ROOT_DIR@
+MagicEnum_ROOT_DIR=@MagicEnum_ROOT_DIR@
 
 yaml_ROOT_DIR=@yaml_ROOT_DIR@
 yaml_ROOT_LIB=@yaml_ROOT_LIB@

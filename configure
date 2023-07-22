@@ -705,7 +705,7 @@ CC
 LIBTOOL
 yaml_ROOT_LIB
 yaml_ROOT_DIR
-magicenum_ROOT_DIR
+MagicEnum_ROOT_DIR
 BOOST_LDFLAGS
 BOOST_CPPFLAGS
 host_os
@@ -5100,6 +5100,7 @@ fi
 
 
 
+
 # Check whether --with-magicenum-root was given.
 if test ${with_magicenum_root+y}
 then :
@@ -5127,7 +5128,8 @@ then :
 
 printf "%s\n" "#define HAVE_MagicEnum 1" >>confdefs.h
 
-                    magicenum_ROOT_DIR=${with_magicenum_root}
+                    magicenum_defined=1
+                    MagicEnum_ROOT_DIR=${with_magicenum_root}
 
                     subconfigure="${subconfigure} --with-magicenum-root=${with_magicenum_root}"
 
@@ -5135,6 +5137,9 @@ printf "%s\n" "#define HAVE_MagicEnum 1" >>confdefs.h
 fi
 
 else $as_nop
+
+            if test "1" == "1"
+then :
   as_fn_error $? "
 Could not find the header file <magic-enum.hpp>.
 You can install this with
@@ -5142,9 +5147,12 @@ You can install this with
     brew install magic_enum
 
 Alternately if you have manually installed magic_enum you can specify its location with
-    --with-magicenumroot=<location of magic_enum installation>
+    --with-magicenum-root=<location of magic_enum installation>
 
             " "$LINENO" 5
+
+fi
+
 
 fi
 
@@ -5170,13 +5178,16 @@ then :
 
 fi
 
-    ORIG_LDFLAGS="${LDFLAGS}"
-    LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
+    if test "x${yaml_header_only_defined}" == "x"
+then :
 
-    echo "Building: NotThor"
-    echo "Mark:     $BUILDING_NotThor"
-    echo "Checking"
-    if test "x$BUILDING_NotThor" == "x1"
+            ORIG_LDFLAGS="${LDFLAGS}"
+            LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
+
+            echo "Building: NotThor"
+            echo "Mark:     $BUILDING_NotThor"
+            echo "Checking"
+            if test "x$BUILDING_NotThor" == "x1"
 then :
 
 
@@ -5199,7 +5210,7 @@ fi
 
 else $as_nop
 
-            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
+                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
 printf %s "checking for yaml_parser_initialize in -lyaml... " >&6; }
 if test ${ac_cv_lib_yaml_yaml_parser_initialize+y}
 then :
@@ -5256,19 +5267,19 @@ fi
 
 else $as_nop
 
-                    echo "FAIL: Using: >${with_yaml_root}<"
-                    as_fn_error $? "
+                            echo "FAIL: Using: >${with_yaml_root}<"
+                            as_fn_error $? "
 Error: Could not find libyaml
 
 You can solve this by installing libyaml
     see http://pyyaml.org/wiki/LibYAML
 
 Alternately specify install location with:
-    --with-yamlroot=<location of yaml installation>
+    --with-yaml-root=<location of yaml installation>
 
 
     " "$LINENO" 5
-                    echo "FAIL DONE"
+                            echo "FAIL DONE"
 
 
 fi
@@ -5276,9 +5287,12 @@ fi
 
 
 fi
-    echo "Checking DONE"
+            echo "Checking DONE"
 
-    LDFLAGS="${ORIG_LDFLAGS}"
+            LDFLAGS="${ORIG_LDFLAGS}"
+
+
+fi
 
 
 
