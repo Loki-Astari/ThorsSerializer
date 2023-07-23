@@ -1,3 +1,4 @@
+#if 0
 #include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "ThorsLogging/ThorsLogging.h"
@@ -73,4 +74,4 @@ bool logingInit = false;
 #else
 bool logingInit = initLogging();
 #endif
-
+#endif

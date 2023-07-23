@@ -13,5 +13,5 @@ UNITTEST_LDLIBS				= -ldl
 
 include $(THORSANVIL_ROOT)/build/tools/Makefile
 
-
+%/DeprecatedTest.o:			FILE_WARNING_FLAGS += -Wno-deprecated-declarations
 

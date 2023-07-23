@@ -30,7 +30,7 @@ struct AbstractTourResult
 struct TourResult : public AbstractTourResult
 {
     ~TourResult() override                      = default;
-    ThorsAnvil_PolyMorphicSerializer(TourResult);
+    ThorsAnvil_PolyMorphicSerializerWithOverride(TourResult);
 };
 
 struct Tour
