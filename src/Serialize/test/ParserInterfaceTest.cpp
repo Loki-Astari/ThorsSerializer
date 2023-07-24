@@ -91,7 +91,7 @@ TEST(ParserInterfaceTest, JsonPushBackTwoValueWithReads)
 
 TEST(ParserInterfaceTest, BsonNormalNoPushBack)
 {
-    //std::stringstream   stream("[10,11,12]");
+    //NOTE INPUT ("[10,11,12]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"
@@ -119,7 +119,7 @@ TEST(ParserInterfaceTest, BsonNormalNoPushBack)
 
 TEST(ParserInterfaceTest, BsonPushBackValue)
 {
-    //std::stringstream   stream("[10,11,12]");
+    //NOTE INPUT ("[10,11,12]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"
@@ -151,7 +151,7 @@ TEST(ParserInterfaceTest, BsonPushBackValue)
 
 TEST(ParserInterfaceTest, BsonPushBackTwoValue)
 {
-    //std::stringstream   stream("[10,11,12]");
+    //NOTE INPUT ("[10,11,12]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"
@@ -181,7 +181,7 @@ TEST(ParserInterfaceTest, BsonPushBackTwoValue)
 
 TEST(ParserInterfaceTest, BsonPushBackTwoValueWithReads)
 {
-    //std::stringstream   stream("[10,11,12]");
+    //NOTE INPUT ("[10,11,12]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"

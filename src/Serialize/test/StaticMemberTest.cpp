@@ -42,7 +42,7 @@ TEST(StaticMemberTest, JsonserializeStaticMember)
 TEST(StaticMemberTest, BsonserializeStaticMember)
 {
     using ThorsAnvil::Serialize::PrinterInterface;
-    //std::string         inputStr(R"({"normalMember":7,"staticMember":14})");
+    //NOTE INPUT (R"({"normalMember":7,"staticMember":14})");
     std::string           inputStr("\x29\x00\x00\x00"
                               "\x10" "normalMember\x00" "\x07\x00\x00\x00"
                               "\x10" "staticMember\x00" "\x0E\x00\x00\x00"

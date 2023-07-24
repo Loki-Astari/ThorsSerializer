@@ -87,14 +87,14 @@ TEST(SerMultiMapTest, Bsonserialize)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"([{"first":56,"second":78.901},{"first":56,"second":901}])");
+    //NOTE OUTPUT (result, R"([{"first":56,"second":78.901},{"first":56,"second":901}])");
 }
 
 TEST(SerMultiMapTest, BsondeSerialize)
 {
     std::multimap<int, double>  data;
 
-    //std::stringstream       stream(R"([{"first":64,"second":12}, {"first":118,"second":14}, {"first":118,"second": 112}])");
+    //NOTE INPUT (R"([{"first":64,"second":12}, {"first":118,"second":14}, {"first":118,"second": 112}])");
     static const char inputRaw[]
                 = "\x6E\x00\x00\x00"
                   "\x03" "0\x00"
@@ -141,14 +141,14 @@ TEST(SerMultiMapTest, BsonserializeStringKey)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"({"AStringKey":78.902,"TestValue":22.903,"TestValue":903})");
+    //NOTE OUTPUT (result, R"({"AStringKey":78.902,"TestValue":22.903,"TestValue":903})");
 }
 
 TEST(SerMultiMapTest, BsondeSerializeStringKey)
 {
     std::multimap<std::string, bool>  data;
 
-    //std::stringstream       stream(R"({"OneFileDay":true, "TheLastStand":false, "OfMiceAndMen":true, "1":true, "1":false})");
+    //NOTE INPUT (R"({"OneFileDay":true, "TheLastStand":false, "OfMiceAndMen":true, "1":true, "1":false})");
     static const char inputRaw[]
                 = "\x38\x00\x00\x00"
                   "\x08" "OneFileDay\x00"   "\x01"

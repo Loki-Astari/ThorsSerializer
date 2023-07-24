@@ -205,7 +205,7 @@ TEST(RoundTripTest, BsonMap)
 
     stream << TA::bsonExporter(base, PrinterInterface::OutputType::Stream);
 
-    //std::string expected(R"({"ace":10,"val":1024})");
+    //NOTE INPUT (R"({"ace":10,"val":1024})");
     static const char expectedRaw[]
                        = "\x17\x00\x00\x00" // doc size
                          "\x10" /*Integer*/ "ace\x00" /* ace - fieldName*/ "\x0A\x00\x00\x00" /* 10 */
@@ -238,7 +238,7 @@ TEST(RoundTripTest, BsonParent)
 
     stream << TA::bsonExporter(deri, PrinterInterface::OutputType::Stream);
 
-    //std::string expected(R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
+    //NOTE INPUT (R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
     static const char expectedRaw[]
                 = "\x2D\x00\x00\x00"        // Length
                   "\x10" "der\x00"  "\xD5\xDD\x00\x00"
@@ -269,7 +269,7 @@ TEST(RoundTripTest, BsonArray)
 
     stream << TA::bsonExporter(data, PrinterInterface::OutputType::Stream);
 
-    //std::string expected(R"([10,1024,9,367,12,34])");
+    //NOTE INPUT (R"([10,1024,9,367,12,34])");
     static const char expectedRaw[]
                 = "\x2F\x00\x00\x00"
                   "\x10" "0\x00" "\x0A\x00\x00\x00"
@@ -305,7 +305,7 @@ TEST(RoundTripTest, BsonValue)
 
     stream << TA::bsonExporter(data, PrinterInterface::OutputType::Stream);
 
-    //std::string expected("68456231");
+    //NOTE INPUT ("68456231");
     static const char expectedRaw[]
                 = "\x0C\x00\x00\x00"
                   "\x10" "0\x00" "\x27\x8F\x14\x04" // 0x04148F27

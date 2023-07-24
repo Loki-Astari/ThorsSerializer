@@ -37,7 +37,7 @@ TEST(SerializeEnumTest, JsonRedGreenBlueAtBlue)
 
     EXPECT_EQ(R"("Blue")", stripspace(str.str()));
 }
-TEST(DeSerializeEnumTest, JsonRefGreenBlueFromRed)
+TEST(SerializeEnumTest, JsonRefGreenBlueFromRed)
 {
     std::stringstream   str(R"("Red")");
     SerializeTest::RGB     enumHolder {SerializeTest::Green};
@@ -45,7 +45,7 @@ TEST(DeSerializeEnumTest, JsonRefGreenBlueFromRed)
     str >> ThorsAnvil::Serialize::jsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Red, enumHolder);
 }
-TEST(DeSerializeEnumTest, JsonRefGreenBlueFromGreen)
+TEST(SerializeEnumTest, JsonRefGreenBlueFromGreen)
 {
     std::stringstream   str(R"("Green")");
     SerializeTest::RGB     enumHolder {SerializeTest::Red};
@@ -53,7 +53,7 @@ TEST(DeSerializeEnumTest, JsonRefGreenBlueFromGreen)
     str >> ThorsAnvil::Serialize::jsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Green, enumHolder);
 }
-TEST(DeSerializeEnumTest, JsonRefGreenBlueFromBlue)
+TEST(SerializeEnumTest, JsonRefGreenBlueFromBlue)
 {
     std::stringstream   str(R"("Blue")");
     SerializeTest::RGB     enumHolder {SerializeTest::Green};
@@ -92,7 +92,7 @@ TEST(SerializeEnumTest, BsonRedGreenBlueAtRed)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, str.str());
-    //EXPECT_EQ(R"("Red")", stripspace(str.str()));
+    //NOTE OUTPUT (R"("Red")", stripspace(str.str()));
 }
 TEST(SerializeEnumTest, BsonRedGreenBlueAtGreen)
 {
@@ -106,7 +106,7 @@ TEST(SerializeEnumTest, BsonRedGreenBlueAtGreen)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, str.str());
-    //EXPECT_EQ(R"("Green")", stripspace(str.str()));
+    //NOTE OUTPUT (R"("Green")", stripspace(str.str()));
 }
 TEST(SerializeEnumTest, BsonRedGreenBlueAtBlue)
 {
@@ -120,11 +120,11 @@ TEST(SerializeEnumTest, BsonRedGreenBlueAtBlue)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, str.str());
-    //EXPECT_EQ(R"("Blue")", stripspace(str.str()));
+    //NOTE OUTPUT  (R"("Blue")", stripspace(str.str()));
 }
-TEST(DeSerializeEnumTest, BsonRefGreenBlueFromRed)
+TEST(SerializeEnumTest, BsonRefGreenBlueFromRed)
 {
-    //std::stringstream   str(R"("Red")");
+    //NOTE INPUT (R"("Red")");
     static const char inputRaw[]
                 = "\x10\x00\x00\x00"
                   "\x02" "0\x00" "\x04\x00\x00\x00"  "Red\x00"
@@ -136,9 +136,9 @@ TEST(DeSerializeEnumTest, BsonRefGreenBlueFromRed)
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Red, enumHolder);
 }
-TEST(DeSerializeEnumTest, BsonRefGreenBlueFromGreen)
+TEST(SerializeEnumTest, BsonRefGreenBlueFromGreen)
 {
-    //std::stringstream   str(R"("Green")");
+    //NOTE INPUT (R"("Green")");
     static const char inputRaw[]
                 = "\x12\x00\x00\x00"
                   "\x02" "0\x00" "\x06\x00\x00\x00"  "Green\x00"
@@ -150,9 +150,9 @@ TEST(DeSerializeEnumTest, BsonRefGreenBlueFromGreen)
     str >> ThorsAnvil::Serialize::bsonImporter(enumHolder, false);
     EXPECT_EQ(SerializeTest::Green, enumHolder);
 }
-TEST(DeSerializeEnumTest, BsonRefGreenBlueFromBlue)
+TEST(SerializeEnumTest, BsonRefGreenBlueFromBlue)
 {
-    //std::stringstream   str(R"("Blue")");
+    //NOTE INPUT (R"("Blue")");
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
                   "\x02" "0\x00" "\x05\x00\x00\x00"  "Blue\x00"
@@ -177,12 +177,12 @@ TEST(SerializeEnumTest, BsonSerEnumInContainer)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, str.str());
-    //EXPECT_EQ(R"({"value":"Red"})", stripspace(str.str()));
+    //NOTE OUTPUT  (R"({"value":"Red"})", stripspace(str.str()));
 }
 TEST(SerializeEnumTest, BsonDeSerEnumInContainer)
 {
     SerializeTest::EumHolder  holder { SerializeTest::Red };
-    //std::stringstream   str(R"({"value": "Green"})");
+    //NOTE INPUT (R"({"value": "Green"})");
     static const char inputRaw[]
                 = "\x16\x00\x00\x00"
                   "\x02" "value\x00" "\x06\x00\x00\x00"  "Green\x00"

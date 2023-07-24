@@ -16,8 +16,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* We have found MagicEnum package */
-#undef HAVE_MagicEnum
+/* We have found MagicEnumHeaderOnly package */
+#undef HAVE_MagicEnumHeaderOnly
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -43,7 +43,7 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* We have found YAML package */
+/* We have found package YAML */
 #undef HAVE_YAML
 
 /* Enable to use header only libraries */
@@ -80,6 +80,9 @@
    required in a freestanding environment). This macro is provided for
    backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
+
+/* Disable test that require files to be locked */
+#undef THOR_DISABLE_TEST_WITH_LOCKED_FILES
 
 /* Version number of package */
 #undef VERSION

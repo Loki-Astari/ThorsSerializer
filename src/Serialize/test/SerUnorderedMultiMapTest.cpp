@@ -111,8 +111,8 @@ TEST(SerUnorderedMultiMapTest, Bsonserialize)
     std::string expected1(std::begin(expectedRaw1), std::end(expectedRaw1) - 1);
     std::string expected2(std::begin(expectedRaw2), std::end(expectedRaw2) - 1);
     bool test = result == expected1 || result == expected2;
-    //bool test = result == R"([{"first":56,"second":78.901},{"first":56,"second":901}])"
-    //         || result == R"([{"first":56,"second":901},{"first":56,"second":78.901}])";
+    //NOTE OUTPUT  R"([{"first":56,"second":78.901},{"first":56,"second":901}])"
+    //NOTE OUTPUT  R"([{"first":56,"second":901},{"first":56,"second":78.901}])";
 
     EXPECT_TRUE(test);
 }
@@ -121,7 +121,7 @@ TEST(SerUnorderedMultiMapTest, BsondeSerialize)
 {
     std::unordered_multimap<int, double>  data;
 
-    //std::stringstream       stream(R"([{"first":64,"second":12}, {"first":118,"second":14}, {"first":118,"second": 112}])");
+    //NOTE INPUT (R"([{"first":64,"second":12}, {"first":118,"second":14}, {"first":118,"second": 112}])");
     static const char inputRaw[]
                 = "\x62\x00\x00\x00"
                   "\x03" "0\x00"
@@ -203,12 +203,12 @@ TEST(SerUnorderedMultiMapTest, BsonserializeStringKey)
     std::string expected5(std::begin(expectedRaw5), std::end(expectedRaw5) - 1);
     std::string expected6(std::begin(expectedRaw6), std::end(expectedRaw6) - 1);
 
-    //bool test =  result == R"({"AStringKey":78.902,"TestValue":22.903,"TestValue":903})"
-    //          || result == R"({"AStringKey":78.902,"TestValue":903,"TestValue":22.903})"
-    //          || result == R"({"TestValue":22.903,"AStringKey":78.902,"TestValue":903})"
-    //          || result == R"({"TestValue":22.903,"TestValue":903,"AStringKey":78.902})"
-    //          || result == R"({"TestValue":903,"AStringKey":78.902,"TestValue":22.903})"
-    //          || result == R"({"TestValue":903,"TestValue":22.903,"AStringKey":78.902})";
+    //NOTE OUTPUT  R"({"AStringKey":78.902,"TestValue":22.903,"TestValue":903})"
+    //NOTE OUTPUT  R"({"AStringKey":78.902,"TestValue":903,"TestValue":22.903})"
+    //NOTE OUTPUT  R"({"TestValue":22.903,"AStringKey":78.902,"TestValue":903})"
+    //NOTE OUTPUT  R"({"TestValue":22.903,"TestValue":903,"AStringKey":78.902})"
+    //NOTE OUTPUT  R"({"TestValue":903,"AStringKey":78.902,"TestValue":22.903})"
+    //NOTE OUTPUT  R"({"TestValue":903,"TestValue":22.903,"AStringKey":78.902})";
     bool test = result == expected1 || result == expected2 || result == expected3
              || result == expected4 || result == expected5 || result == expected6;
     EXPECT_TRUE(test);
@@ -218,7 +218,7 @@ TEST(SerUnorderedMultiMapTest, BsondeSerializeStringKey)
 {
     std::unordered_multimap<std::string, bool>  data;
 
-    //std::stringstream       stream(R"({"OneFileDay":true, "TheLastStand":false, "OfMiceAndMen":true, "1":true, "1":false})");
+    //NOTE INPUT (R"({"OneFileDay":true, "TheLastStand":false, "OfMiceAndMen":true, "1":true, "1":false})");
     static const char inputRaw[]
                 = "\x38\x00\x00\x00"
                   "\x08" "OneFileDay\x00"    "\x01"

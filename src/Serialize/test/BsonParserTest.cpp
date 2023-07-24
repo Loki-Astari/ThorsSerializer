@@ -2,14 +2,12 @@
 #include "gtest/gtest.h"
 #include "BsonParser.h"
 
-// enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
-
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
 
 TEST(BsonParserTest, ArrayEmpty)
 {
-    //std::stringstream   stream("[]");
+    //NOTE INPUT ("[]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x05\x00\x00\x00"
@@ -27,7 +25,7 @@ TEST(BsonParserTest, ArrayEmpty)
 }
 TEST(BsonParserTest, ArrayOneValue)
 {
-    //std::stringstream   stream("[12]");
+    //NOTE INPUT ("[12]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -48,7 +46,7 @@ TEST(BsonParserTest, ArrayOneValue)
 }
 TEST(BsonParserTest, ArrayTwoValue)
 {
-    //std::stringstream   stream("[12,13]");
+    //NOTE INPUT ("[12,13]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x13\x00\x00\x00"
@@ -72,7 +70,7 @@ TEST(BsonParserTest, ArrayTwoValue)
 }
 TEST(BsonParserTest, ArrayThreeValue)
 {
-    //std::stringstream   stream("[12,13,14]");
+    //NOTE INPUT ("[12,13,14]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"
@@ -99,7 +97,7 @@ TEST(BsonParserTest, ArrayThreeValue)
 }
 TEST(BsonParserTest, ArrayWithArray)
 {
-    //std::stringstream   stream("[[]]");
+    //NOTE INPUT ("[[]]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -122,7 +120,7 @@ TEST(BsonParserTest, ArrayWithArray)
 }
 TEST(BsonParserTest, ArrayWithTwoArray)
 {
-    //std::stringstream   stream("[[],[]]");
+    //NOTE INPUT ("[[],[]]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x15\x00\x00\x00"
@@ -150,7 +148,7 @@ TEST(BsonParserTest, ArrayWithTwoArray)
 }
 TEST(BsonParserTest, ArrayWithMap)
 {
-    //std::stringstream   stream("[{}]");
+    //NOTE INPUT ("[{}]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -173,7 +171,7 @@ TEST(BsonParserTest, ArrayWithMap)
 }
 TEST(BsonParserTest, ArrayWithTwoMap)
 {
-    //std::stringstream   stream("[{},{}]");
+    //NOTE INPUT ("[{},{}]");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x15\x00\x00\x00"
@@ -201,7 +199,7 @@ TEST(BsonParserTest, ArrayWithTwoMap)
 }
 TEST(BsonParserTest, MapEmpty)
 {
-    //std::stringstream   stream("{}");
+    //NOTE INPUT ("{}");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x05\x00\x00\x00"
@@ -218,7 +216,7 @@ TEST(BsonParserTest, MapEmpty)
 }
 TEST(BsonParserTest, MapOneValue)
 {
-    //std::stringstream   stream(R"({"One": 12})");
+    //NOTE INPUT (R"({"One": 12})");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0E\x00\x00\x00"
@@ -240,7 +238,7 @@ TEST(BsonParserTest, MapOneValue)
 }
 TEST(BsonParserTest, MapTwoValue)
 {
-    //std::stringstream   stream(R"({"one": 12, "two": 13})");
+    //NOTE INPUT (R"({"one": 12, "two": 13})");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x17\x00\x00\x00"
@@ -267,7 +265,7 @@ TEST(BsonParserTest, MapTwoValue)
 }
 TEST(BsonParserTest, MapThreeValue)
 {
-    //std::stringstream   stream(R"({"one":12, "two": 13, "three": 14})");
+    //NOTE INPUT (R"({"one":12, "two": 13, "three": 14})");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x22\x00\x00\x00"
@@ -299,7 +297,7 @@ TEST(BsonParserTest, MapThreeValue)
 }
 TEST(BsonParserTest, MapWithArray)
 {
-    //std::stringstream   stream(R"({"one": []})");
+    //NOTE INPUT (R"({"one": []})");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0F\x00\x00\x00"
@@ -323,7 +321,7 @@ TEST(BsonParserTest, MapWithArray)
 }
 TEST(BsonParserTest, MapWithTwoArray)
 {
-    //std::stringstream   stream(R"({"one": [], "two": []}])");
+    //NOTE INPUT (R"({"one": [], "two": []}])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x19\x00\x00\x00"
@@ -354,7 +352,7 @@ TEST(BsonParserTest, MapWithTwoArray)
 }
 TEST(BsonParserTest, MapWithMap)
 {
-    //std::stringstream   stream(R"({"one": {}})");
+    //NOTE INPUT (R"({"one": {}})");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0F\x00\x00\x00"
@@ -378,7 +376,7 @@ TEST(BsonParserTest, MapWithMap)
 }
 TEST(BsonParserTest, MapWithTwoMap)
 {
-    //std::stringstream   stream(R"({"one": {}, "two": {}})");
+    //NOTE INPUT (R"({"one": {}, "two": {}})");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x19\x00\x00\x00"
@@ -409,7 +407,7 @@ TEST(BsonParserTest, MapWithTwoMap)
 }
 TEST(BsonParserTest, GetKeyValue)
 {
-    //std::stringstream   stream(R"({"one": 15})");
+    //NOTE INPUT (R"({"one": 15})");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0E\x00\x00\x00"
@@ -438,7 +436,7 @@ TEST(BsonParserTest, GetKeyValue)
 }
 TEST(BsonParserTest, GetArrayValues)
 {
-    //std::stringstream   stream(R"([true, false, 123, 123.4, "A String"])");
+    //NOTE INPUT (R"([true, false, 123, 123.4, "A String"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x2F\x00\x00\x00"
@@ -493,7 +491,7 @@ TEST(BsonParserTest, GetArrayValues)
 
 TEST(BsonParserTest, getDataFromString_1)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -518,7 +516,7 @@ TEST(BsonParserTest, getDataFromString_1)
 
 TEST(BsonParserTest, getDataFromString_2)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x13\x00\x00\x00"
@@ -541,7 +539,7 @@ TEST(BsonParserTest, getDataFromString_2)
 
 TEST(BsonParserTest, getDataFromString_3)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -564,7 +562,7 @@ TEST(BsonParserTest, getDataFromString_3)
 
 TEST(BsonParserTest, getDataFromString_4)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -587,7 +585,7 @@ TEST(BsonParserTest, getDataFromString_4)
 
 TEST(BsonParserTest, getDataFromString_5)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -610,7 +608,7 @@ TEST(BsonParserTest, getDataFromString_5)
 
 TEST(BsonParserTest, getDataFromString_6)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -633,7 +631,7 @@ TEST(BsonParserTest, getDataFromString_6)
 
 TEST(BsonParserTest, getDataFromString_7)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -656,7 +654,7 @@ TEST(BsonParserTest, getDataFromString_7)
 
 TEST(BsonParserTest, getDataFromString_8)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -679,7 +677,7 @@ TEST(BsonParserTest, getDataFromString_8)
 
 TEST(BsonParserTest, getDataFromString_9)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -703,7 +701,7 @@ TEST(BsonParserTest, getDataFromString_9)
 
 TEST(BsonParserTest, getDataFromString_a)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -726,7 +724,7 @@ TEST(BsonParserTest, getDataFromString_a)
 
 TEST(BsonParserTest, getDataFromString_b)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -749,7 +747,7 @@ TEST(BsonParserTest, getDataFromString_b)
 
 TEST(BsonParserTest, getDataFromString_c)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -768,7 +766,7 @@ TEST(BsonParserTest, getDataFromString_c)
 
 TEST(BsonParserTest, getDataFromString_d)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -792,7 +790,7 @@ TEST(BsonParserTest, getDataFromString_d)
 
 TEST(BsonParserTest, getDataFromString_e)
 {
-    //std::stringstream   stream(R"(["Test"])");
+    //NOTE INPUT (R"(["Test"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x11\x00\x00\x00"
@@ -815,7 +813,7 @@ TEST(BsonParserTest, getDataFromString_e)
 
 TEST(BsonParserTest, getDataFromInt_1)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -839,7 +837,7 @@ TEST(BsonParserTest, getDataFromInt_1)
 
 TEST(BsonParserTest, getDataFromInt_2)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -864,7 +862,7 @@ TEST(BsonParserTest, getDataFromInt_2)
 
 TEST(BsonParserTest, getDataFromInt_3)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -888,7 +886,7 @@ TEST(BsonParserTest, getDataFromInt_3)
 
 TEST(BsonParserTest, getDataFromInt_4)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -912,7 +910,7 @@ TEST(BsonParserTest, getDataFromInt_4)
 
 TEST(BsonParserTest, getDataFromInt_5)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -936,7 +934,7 @@ TEST(BsonParserTest, getDataFromInt_5)
 
 TEST(BsonParserTest, getDataFromInt_6)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -960,7 +958,7 @@ TEST(BsonParserTest, getDataFromInt_6)
 
 TEST(BsonParserTest, getDataFromInt_7)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -984,7 +982,7 @@ TEST(BsonParserTest, getDataFromInt_7)
 
 TEST(BsonParserTest, getDataFromInt_8)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1008,7 +1006,7 @@ TEST(BsonParserTest, getDataFromInt_8)
 
 TEST(BsonParserTest, getDataFromInt_9)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1032,7 +1030,7 @@ TEST(BsonParserTest, getDataFromInt_9)
 
 TEST(BsonParserTest, getDataFromInt_a)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1056,7 +1054,7 @@ TEST(BsonParserTest, getDataFromInt_a)
 
 TEST(BsonParserTest, getDataFromInt_b)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1080,7 +1078,7 @@ TEST(BsonParserTest, getDataFromInt_b)
 
 TEST(BsonParserTest, getDataFromInt_c)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1104,7 +1102,7 @@ TEST(BsonParserTest, getDataFromInt_c)
 
 TEST(BsonParserTest, getDataFromInt_d)
 {
-    //std::stringstream   stream(R"([56])");
+    //NOTE INPUT (R"([56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1127,7 +1125,7 @@ TEST(BsonParserTest, getDataFromInt_d)
 
 TEST(BsonParserTest, getDataFromFloat_1)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1151,7 +1149,7 @@ TEST(BsonParserTest, getDataFromFloat_1)
 
 TEST(BsonParserTest, getDataFromFloat_2)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1175,7 +1173,7 @@ TEST(BsonParserTest, getDataFromFloat_2)
 
 TEST(BsonParserTest, getDataFromFloat_3)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1199,7 +1197,7 @@ TEST(BsonParserTest, getDataFromFloat_3)
 
 TEST(BsonParserTest, getDataFromFloat_4)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1223,7 +1221,7 @@ TEST(BsonParserTest, getDataFromFloat_4)
 
 TEST(BsonParserTest, getDataFromFloat_5)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1247,7 +1245,7 @@ TEST(BsonParserTest, getDataFromFloat_5)
 
 TEST(BsonParserTest, getDataFromFloat_6)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1271,7 +1269,7 @@ TEST(BsonParserTest, getDataFromFloat_6)
 
 TEST(BsonParserTest, getDataFromFloat_7)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1295,7 +1293,7 @@ TEST(BsonParserTest, getDataFromFloat_7)
 
 TEST(BsonParserTest, getDataFromFloat_8)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1319,7 +1317,7 @@ TEST(BsonParserTest, getDataFromFloat_8)
 
 TEST(BsonParserTest, getDataFromFloat_9)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1343,7 +1341,7 @@ TEST(BsonParserTest, getDataFromFloat_9)
 
 TEST(BsonParserTest, getDataFromFloat_a)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1368,7 +1366,7 @@ TEST(BsonParserTest, getDataFromFloat_a)
 
 TEST(BsonParserTest, getDataFromFloat_b)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1393,7 +1391,7 @@ TEST(BsonParserTest, getDataFromFloat_b)
 
 TEST(BsonParserTest, getDataFromFloat_c)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1419,7 +1417,7 @@ TEST(BsonParserTest, getDataFromFloat_c)
 
 TEST(BsonParserTest, getDataFromFloat_d)
 {
-    //std::stringstream   stream(R"([123.56])");
+    //NOTE INPUT (R"([123.56])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0C\x00\x00\x00"
@@ -1442,7 +1440,7 @@ TEST(BsonParserTest, getDataFromFloat_d)
 }
 TEST(BsonParserTest, getDataFromBool_1)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1467,7 +1465,7 @@ TEST(BsonParserTest, getDataFromBool_1)
 
 TEST(BsonParserTest, getDataFromBool_2)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1492,7 +1490,7 @@ TEST(BsonParserTest, getDataFromBool_2)
 
 TEST(BsonParserTest, getDataFromBool_3)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1517,7 +1515,7 @@ TEST(BsonParserTest, getDataFromBool_3)
 
 TEST(BsonParserTest, getDataFromBool_4)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1542,7 +1540,7 @@ TEST(BsonParserTest, getDataFromBool_4)
 
 TEST(BsonParserTest, getDataFromBool_5)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1567,7 +1565,7 @@ TEST(BsonParserTest, getDataFromBool_5)
 
 TEST(BsonParserTest, getDataFromBool_6)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1592,7 +1590,7 @@ TEST(BsonParserTest, getDataFromBool_6)
 
 TEST(BsonParserTest, getDataFromBool_7)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1617,7 +1615,7 @@ TEST(BsonParserTest, getDataFromBool_7)
 
 TEST(BsonParserTest, getDataFromBool_8)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1642,7 +1640,7 @@ TEST(BsonParserTest, getDataFromBool_8)
 
 TEST(BsonParserTest, getDataFromBool_9)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1667,7 +1665,7 @@ TEST(BsonParserTest, getDataFromBool_9)
 
 TEST(BsonParserTest, getDataFromBool_a)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1692,7 +1690,7 @@ TEST(BsonParserTest, getDataFromBool_a)
 
 TEST(BsonParserTest, getDataFromBool_b)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1717,7 +1715,7 @@ TEST(BsonParserTest, getDataFromBool_b)
 
 TEST(BsonParserTest, getDataFromBool_c)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1742,7 +1740,7 @@ TEST(BsonParserTest, getDataFromBool_c)
 
 TEST(BsonParserTest, getDataFromBool_d)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1767,7 +1765,7 @@ TEST(BsonParserTest, getDataFromBool_d)
 
 TEST(BsonParserTest, getDataFromBool_e)
 {
-    //std::stringstream   stream(R"([true, false])");
+    //NOTE INPUT (R"([true, false])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x0D\x00\x00\x00"
@@ -1798,7 +1796,7 @@ TEST(BsonParserTest, getDataFromBool_e)
 }
 TEST(BsonParserTest, getRawValue)
 {
-    //std::stringstream   stream(R"([true, false, 0, 15.4, "The Best"])");
+    //NOTE INPUT (R"([true, false, 0, 15.4, "The Best"])");
     using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x2F\x00\x00\x00"

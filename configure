@@ -705,7 +705,7 @@ CC
 LIBTOOL
 yaml_ROOT_LIB
 yaml_ROOT_DIR
-magicenum_ROOT_DIR
+MagicEnumHeaderOnly_ROOT_DIR
 BOOST_LDFLAGS
 BOOST_CPPFLAGS
 host_os
@@ -799,8 +799,9 @@ enable_dark_mode
 with_standard
 with_boost
 with_boost_libdir
-with_magicenumroot
-with_yamlroot
+with_magicenum_header_only_root
+with_yaml_root
+enable_test_with_locked_file
 enable_shared
 enable_static
 with_pic
@@ -1459,6 +1460,14 @@ Optional Features:
   --enable-dark-mode      If your background is black some text that was grey
                           is turned yellow
 
+  --disable-test-with-locked-file
+                          Windows does not provide the same locking
+                          capabilities as Linux. Thus during testing when we
+                          try and lock files, it does not work, so that an
+                          attempt to open them would fail. Unfortunately we
+                          can't lock the files and thus the test pass. Don't
+                          run these tests on Windows.
+
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
   --enable-fast-install[=PKGS]
@@ -1487,11 +1496,12 @@ Optional Packages:
                           this parameter only if default library detection
                           fails and you know exactly where your boost
                           libraries are located.
-  --with-magicenumroot=<location>
-                          Directory of MagicEnum_ROOT
+  --with-magicenum-header-only-root=<location>
+                          Directory of MagicEnumHeaderOnly include folder: the
+                          folder that has the include file
 
-  --with-yamlroot=<location>
-                          Directory of YAML_ROOT
+  --with-yaml-root=<location>
+                          Define the root directory of package YAML
 
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
@@ -5091,17 +5101,18 @@ fi
 
 
 
-# Check whether --with-magicenumroot was given.
-if test ${with_magicenumroot+y}
+
+# Check whether --with-magicenum-header-only-root was given.
+if test ${with_magicenum_header_only_root+y}
 then :
-  withval=$with_magicenumroot;
+  withval=$with_magicenum_header_only_root;
 fi
 
 
-    INCLUDE_DIR="-I ${with_magicenumroot}/include"
-    if test "x${with_magicenumroot}" == "x"
+    INCLUDE_DIR="-I${with_magicenum_header_only_root}"
+    if test "x${with_magicenum_header_only_root}" == "x"
 then :
-  INCLUDE_DIR="-I${DefaultLinkDir}/include"
+  INCLUDE_DIR="-I${DefaultLinkDir}"
 
 fi
 
@@ -5112,20 +5123,24 @@ fi
 if test "x$ac_cv_header_magic_enum_hpp" = xyes
 then :
 
-            if test "x${with_magicenumroot}" != "x"
+            if test "x${with_magicenum_header_only_root}" != "x"
 then :
 
 
-printf "%s\n" "#define HAVE_MagicEnum 1" >>confdefs.h
+printf "%s\n" "#define HAVE_MagicEnumHeaderOnly 1" >>confdefs.h
 
-                    magicenum_ROOT_DIR=${with_magicenumroot}
+                    magicenum_header_only_defined=1
+                    MagicEnumHeaderOnly_ROOT_DIR=${with_magicenum_header_only_root}
 
-                    subconfigure="${subconfigure} --with-magicenumroot=${with_magicenumroot}"
+                    subconfigure="${subconfigure} --with-magicenum-header-only-root=${with_magicenum_header_only_root}"
 
 
 fi
 
 else $as_nop
+
+            if test "1" == "1"
+then :
   as_fn_error $? "
 Could not find the header file <magic-enum.hpp>.
 You can install this with
@@ -5133,9 +5148,12 @@ You can install this with
     brew install magic_enum
 
 Alternately if you have manually installed magic_enum you can specify its location with
-    --with-magicenumroot=<location of magic_enum installation>
+    --with-magicenum-root=<location of magic_enum installation>
 
             " "$LINENO" 5
+
+fi
+
 
 fi
 
@@ -5147,24 +5165,53 @@ fi
 
 
 
-# Check whether --with-yamlroot was given.
-if test ${with_yamlroot+y}
+# Check whether --with-yaml-root was given.
+if test ${with_yaml_root+y}
 then :
-  withval=$with_yamlroot;
+  withval=$with_yaml_root;
 fi
 
 
-    LIBRARY_DIR="-L ${with_yamlroot}/lib"
-    if test "x${with_yamlroot}" == "x"
+    LIBRARY_DIR="-L ${with_yaml_root}/lib"
+    if test "x${with_yaml_root}" == "x"
 then :
   LIBRARY_DIR="-L ${DefaultLinkDir}/lib"
 
 fi
 
-    ORIG_LDFLAGS="${LDFLAGS}"
-    LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
+    if test "x${yaml_header_only_defined}" == "x"
+then :
 
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
+            ORIG_LDFLAGS="${LDFLAGS}"
+            LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
+
+            echo "Building: NotThor"
+            echo "Mark:     $BUILDING_NotThor"
+            echo "Checking"
+            if test "x$BUILDING_NotThor" == "x1"
+then :
+
+
+    if test "x${with_yaml_root}" != "x"
+then :
+
+
+printf "%s\n" "#define HAVE_YAML 1" >>confdefs.h
+
+            yaml_ROOT_DIR=${with_yaml_root}
+
+            subconfigure="${subconfigure} --with-yaml-root=${with_yaml_root}"
+
+
+fi
+    echo "Setting: yaml_ROOT_LIB TO yaml"
+    yaml_ROOT_LIB="yaml"
+
+
+
+else $as_nop
+
+                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for yaml_parser_initialize in -lyaml" >&5
 printf %s "checking for yaml_parser_initialize in -lyaml... " >&6; }
 if test ${ac_cv_lib_yaml_yaml_parser_initialize+y}
 then :
@@ -5201,38 +5248,80 @@ printf "%s\n" "$ac_cv_lib_yaml_yaml_parser_initialize" >&6; }
 if test "x$ac_cv_lib_yaml_yaml_parser_initialize" = xyes
 then :
 
-            if test "x${with_yamlroot}" != "x"
+
+    if test "x${with_yaml_root}" != "x"
 then :
 
 
 printf "%s\n" "#define HAVE_YAML 1" >>confdefs.h
 
-                    yaml_ROOT_DIR=${with_yamlroot}
+            yaml_ROOT_DIR=${with_yaml_root}
 
+            subconfigure="${subconfigure} --with-yaml-root=${with_yaml_root}"
 
 
 fi
-            yaml_ROOT_LIB=yaml
+    echo "Setting: yaml_ROOT_LIB TO yaml"
+    yaml_ROOT_LIB="yaml"
+
 
 
 else $as_nop
-  as_fn_error $? "
+
+                            echo "FAIL: Using: >${with_yaml_root}<"
+                            as_fn_error $? "
 Error: Could not find libyaml
 
 You can solve this by installing libyaml
     see http://pyyaml.org/wiki/LibYAML
 
 Alternately specify install location with:
-    --with-root=<location of yaml installation>
+    --with-yaml-root=<location of yaml installation>
 
 
     " "$LINENO" 5
+                            echo "FAIL DONE"
+
 
 fi
 
 
-    LDFLAGS="${ORIG_LDFLAGS}"
 
+fi
+            echo "Checking DONE"
+
+            LDFLAGS="${ORIG_LDFLAGS}"
+
+
+fi
+
+
+
+
+
+    # Check whether --enable-test-with-locked-file was given.
+if test ${enable_test_with_locked_file+y}
+then :
+  enableval=$enable_test_with_locked_file;
+fi
+
+
+    if test "x${enable_test_with_locked_file}" == "xno"
+then :
+
+
+printf "%s\n" "#define THOR_DISABLE_TEST_WITH_LOCKED_FILES 1" >>confdefs.h
+
+            subconfigure="${subconfigure} --disable-test-with-locked-file";
+
+else $as_nop
+
+
+printf "%s\n" "#define THOR_DISABLE_TEST_WITH_LOCKED_FILES 0" >>confdefs.h
+
+
+
+fi
 
 
 
@@ -18042,10 +18131,17 @@ AM_BACKSLASH='\'
     if test "x${UNAME}" = "xMSYS_NT" || test "x${UNAME}" = "xMINGW64_NT"
 then :
 
-        echo "    Fixing"
-        git config --local core.symlinks true
-        find src/ -type f | xargs -I^ git restore --source=HEAD ^
-        echo "    Fixing DONE"
+        if test ! -e .windows.fix
+then :
+
+                echo "    Fixing"
+                git config --local core.symlinks true
+                find src/ -type f | xargs -I^ git restore --source=HEAD ^
+                echo "    Fixing DONE"
+                touch .windows.fix
+
+
+fi
 
 else $as_nop
 
@@ -18067,7 +18163,7 @@ fi
                 echo "${third}:  ./configure ${subconfigure} --prefix=${prefix} "
                 ./configure ${subconfigure} --prefix=${prefix}
                 if [ $? != 0 ]; then
-                    "Failed to configure: ${third}"
+                    echo "Failed to configure: ${third}"
                     exit 1
                 fi
             fi

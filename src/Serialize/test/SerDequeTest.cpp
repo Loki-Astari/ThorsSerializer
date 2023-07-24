@@ -53,7 +53,7 @@ TEST(SerDequeTest, JsonDequeOfIntDeSerialize)
 
 TEST(SerDequeTest, BsonArrayEmpty)
 {
-    //std::stringstream   stream("[]");
+    //NOTE INPUT ("[]");
     static const char expectedRaw[]
             = "\x05\x00\x00\x00"
               "\x00";
@@ -96,7 +96,7 @@ TEST(SerDequeTest, BsonDequeOfIntSerialize)
 TEST(SerDequeTest, BsonDequeOfIntDeSerialize)
 {
     std::deque<int>    data;
-    //std::stringstream   stream("[1,2,3,4,5,6,7,8,101,102,9,10]");
+    //NOTE INPUT ("[1,2,3,4,5,6,7,8,101,102,9,10]");
     static const char expectedRaw[]
                     = "\x5B\x00\x00\x00"
                       "\x10" "0\x00"  "\x01\x00\x00\x00"

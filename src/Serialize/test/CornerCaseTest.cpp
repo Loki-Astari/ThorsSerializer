@@ -768,10 +768,10 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid)
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
     // Should be R"(\udd1e)"
-    //EXPECT_EQ('\xf0', *loop);   ++loop;
-    //EXPECT_EQ('\x9d', *loop);   ++loop;
-    //EXPECT_EQ('\x84', *loop);   ++loop;
-    //EXPECT_EQ('\x9e', *loop);   ++loop;
+    //IF VALID WOULD BE ('\xf0', *loop);   ++loop;
+    //IF VALID WOULD BE('\x9d', *loop);   ++loop;
+    //IF VALID WOULD BE('\x84', *loop);   ++loop;
+    //IF VALID WOULD BE('\x9e', *loop);   ++loop;
     EXPECT_THROW(
         *loop,
         std::runtime_error
@@ -785,10 +785,10 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid_P2)
     std::string                 stream(R"("\ud834\\")");
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
-    //EXPECT_EQ('\xf0', *loop);   ++loop;
-    //EXPECT_EQ('\x9d', *loop);   ++loop;
-    //EXPECT_EQ('\x84', *loop);   ++loop;
-    //EXPECT_EQ('\x9e', *loop);   ++loop;
+    //IF VALID WOULD BE('\xf0', *loop);   ++loop;
+    //IF VALID WOULD BE('\x9d', *loop);   ++loop;
+    //IF VALID WOULD BE('\x84', *loop);   ++loop;
+    //IF VALID WOULD BE('\x9e', *loop);   ++loop;
     EXPECT_THROW(
         *loop,
         std::runtime_error
@@ -802,10 +802,10 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid_P3)
     std::string                 stream(R"("\ud834\u1d1e")");
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
-    //EXPECT_EQ('\xf0', *loop);   ++loop;
-    //EXPECT_EQ('\x9d', *loop);   ++loop;
-    //EXPECT_EQ('\x84', *loop);   ++loop;
-    //EXPECT_EQ('\x9e', *loop);   ++loop;
+    //IF VALID WOULD BE('\xf0', *loop);   ++loop;
+    //IF VALID WOULD BE('\x9d', *loop);   ++loop;
+    //IF VALID WOULD BE('\x84', *loop);   ++loop;
+    //IF VALID WOULD BE('\x9e', *loop);   ++loop;
     EXPECT_THROW(
         *loop,
         std::runtime_error

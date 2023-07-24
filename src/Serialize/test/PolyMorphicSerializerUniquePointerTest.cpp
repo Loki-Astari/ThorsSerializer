@@ -30,7 +30,7 @@ struct AbstractTourResult
 struct TourResult : public AbstractTourResult
 {
     ~TourResult() override                      = default;
-    ThorsAnvil_PolyMorphicSerializer(TourResult);
+    ThorsAnvil_PolyMorphicSerializerWithOverride(TourResult);
 };
 
 struct Tour
@@ -130,7 +130,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, JsonTourEmpty)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantitiesEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
-    //std::string                 str = R"({})";;
+    //NOTE INPUT  = R"({})";;
     static const char strRaw[]
                     = "\x05\x00\x00\x00"
                       "\x00";
@@ -142,7 +142,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantitiesEmpty)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::Quantities                  t{};
-    //std::string                 str = R"({"quantities":[15,23]})";;
+    //NOTE INPUT  = R"({"quantities":[15,23]})";;
     static const char strRaw[]
                     = "\x24\x00\x00\x00"
                       "\x04" "quantities\x00"
@@ -161,7 +161,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonQuantities)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
-    //std::string                 str = R"({})";;
+    //NOTE INPUT  = R"({})";;
     static const char strRaw[]
                     = "\x05\x00\x00\x00"
                       "\x00";
@@ -173,7 +173,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultEmpty)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResult)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
-    //std::string                 str = R"({"maxQuantities":{}})";;
+    //NOTE INPUT  = R"({"maxQuantities":{}})";;
     static const char strRaw[]
                     = "\x19\x00\x00\x00"
                       "\x03" "maxQuantities\x00"
@@ -189,7 +189,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResult)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultWithQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::AbstractTourResult          t{};
-    //std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
+    //NOTE INPUT  = R"({"maxQuantities":{"quantities":[34,56]}})";;
     static const char strRaw[]
                     = "\x38\x00\x00\x00"
                       "\x03" "maxQuantities\x00"
@@ -212,7 +212,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonAbstractTourResultWithQuantitie
 TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
-    //std::string                 str = R"({})";;
+    //NOTE INPUT  = R"({})";;
     static const char strRaw[]
                     = "\x05\x00\x00\x00"
                       "\x00";
@@ -224,7 +224,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultEmpty)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResult)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
-    //std::string                 str = R"({"maxQuantities":{}})";;
+    //NOTE INPUT  = R"({"maxQuantities":{}})";;
     static const char strRaw[]
                     = "\x19\x00\x00\x00"
                       "\x03" "maxQuantities\x00"
@@ -240,7 +240,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResult)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultWithQuantities)
 {
     PolyMorphicSerializerUniquePointerTest::TourResult                  t{};
-    //std::string                 str = R"({"maxQuantities":{"quantities":[34,56]}})";;
+    //NOTE INPUT  = R"({"maxQuantities":{"quantities":[34,56]}})";;
     static const char strRaw[]
                     = "\x38\x00\x00\x00"
                       "\x03" "maxQuantities\x00"
@@ -263,7 +263,7 @@ TEST(PolyMorphicSerializerUniquePointerTest, BsonTourResultWithQuantities)
 TEST(PolyMorphicSerializerUniquePointerTest, BsonTourEmpty)
 {
     PolyMorphicSerializerUniquePointerTest::Tour                        t{};
-    //std::string                 str = R"({})";;
+    //NOTE INPUT  = R"({})";;
     static const char strRaw[]
                     = "\x05\x00\x00\x00"
                       "\x00";

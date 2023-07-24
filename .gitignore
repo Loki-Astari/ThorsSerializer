@@ -2,6 +2,8 @@
 *.lex.cpp
 *.lex.h
 .*.swp
+*.gcov
+
 unittest
 coverage/
 debug/

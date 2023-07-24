@@ -44,12 +44,12 @@ TEST(SerTuppleTest, Bsonserialize)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(result, expected);
-    //EXPECT_EQ(result, R"([56,78.901])");
+    //NOTE OUTPUT (result, R"([56,78.901])");
 }
 
 TEST(SerTuppleTest, BsondeSerialize)
 {
-    //std::stringstream   stream(R"([59,22.801])");
+    //NOTE INPUT (R"([59,22.801])");
     static const char inputRaw[]
                 = "\x17\x00\x00\x00"
                   "\x10" "0\x00"    "\x3B\x00\x00\x00"

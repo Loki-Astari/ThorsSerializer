@@ -55,30 +55,30 @@ TEST(ReferenceWrapperTest, JsonComplexWrapperRead)
 
 TEST(ReferenceWrapperTest, YamlnSimpleWrapperRead)
 {
-    //bool                        import = false;
+    bool                        import = false;
     int                         value = 9;
     ReferenceWrapperTest<int>   wrapper(value);
     std::stringstream           stream("---\ndata: 12\n...\n");
 
     if (stream >> ThorsAnvil::Serialize::yamlImporter(wrapper, ThorsAnvil::Serialize::ParserInterface::ParserConfig{false}))
     {
-        //import = true;
+        import = true;
     }
-    //EXPECT_TRUE(import);
+    EXPECT_TRUE(import);
     EXPECT_EQ(12, value);
 }
 TEST(ReferenceWrapperTest, YamlnComplexWrapperRead)
 {
-    //bool                            import = false;
+    bool                            import = false;
     Marker                          value{8, "Bob"};
     ReferenceWrapperTest<Marker>    wrapper(value);
     std::stringstream               stream("---\ndata:\n  value: 13\n  data: A string\n...\n");
 
     if (stream >> ThorsAnvil::Serialize::yamlImporter(wrapper, ThorsAnvil::Serialize::ParserInterface::ParserConfig{false}))
     {
-        //import = true;
+        import = true;
     }
-    //EXPECT_TRUE(import);
+    EXPECT_TRUE(import);
     EXPECT_EQ(13, value.value);
     EXPECT_EQ("A string", value.data);
 }

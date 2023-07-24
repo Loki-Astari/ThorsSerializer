@@ -42,7 +42,7 @@ TEST(BsonPrinterTest, ArrayTokens)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ("{}", result);
+    //NOTE OUTPUT ("{}", result);
 }
 TEST(BsonPrinterTest, MapTokens)
 {
@@ -60,7 +60,7 @@ TEST(BsonPrinterTest, MapTokens)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ("[]", result);
+    //NOTE OUTPUT ("[]", result);
 }
 TEST(BsonPrinterTest, ArrayValues)
 {
@@ -74,7 +74,7 @@ TEST(BsonPrinterTest, ArrayValues)
                         + printer.getSizeValueTest(static_cast<short>(55))
                         + printer.getSizeValueTest(56)
                         + printer.getSizeValueTest(78.89)
-                        + printer.getSizeValueTest(57l)
+                        + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
                         + printer.getSizeValueTest(58ll)
                         + printer.getSizeValueTest(std::string("Astring")));
     printer.addValue(true);
@@ -82,7 +82,7 @@ TEST(BsonPrinterTest, ArrayValues)
     printer.addValue(static_cast<short>(55));
     printer.addValue(56);
     printer.addValue(78.89);
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addValue(58ll);
     printer.addValue(std::string("Astring"));
     printer.closeArray();
@@ -100,9 +100,10 @@ TEST(BsonPrinterTest, ArrayValues)
                     "\x12" "6\x00" "\x3A\x00\x00\x00\x00\x00\x00\x00"
                     "\x02" "7\x00" "\x08\x00\x00\x00" "Astring\x00"
                   "\x00";
+
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"([true,false,55,56,78.89,57,58,"Astring"])", result);
+    //NOTE OUTPUT (R"([true,false,55,56,78.89,57,58,"Astring"])", result);
 }
 TEST(BsonPrinterTest, MapValues)
 {
@@ -116,7 +117,7 @@ TEST(BsonPrinterTest, MapValues)
                         + 2 + printer.getSizeValueTest(static_cast<short>(55))
                         + 2 + printer.getSizeValueTest(56)
                         + 2 + printer.getSizeValueTest(78.89)
-                        + 2 + printer.getSizeValueTest(57l)
+                        + 2 + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
                         + 2 + printer.getSizeValueTest(58ll)
                         + 2 + printer.getSizeValueTest(std::string("Astring")));
     printer.addKey("K0");
@@ -130,7 +131,7 @@ TEST(BsonPrinterTest, MapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addKey("K6");
     printer.addValue(58ll);
     printer.addKey("K7");
@@ -152,7 +153,7 @@ TEST(BsonPrinterTest, MapValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K6":"Astring"})", result);
+    //NOTE OUTPUT (R"({"K1":true,"K2":false,"K3":56,"K4":78.89,"K6":"Astring"})", result);
 }
 TEST(BsonPrinterTest, MapWithMapValues)
 {
@@ -166,7 +167,7 @@ TEST(BsonPrinterTest, MapWithMapValues)
     std::size_t map1map2Size =
             printer.getSizeMapTest(3)
                     + 2 + printer.getSizeValueTest(78.89)
-                    + 2 + printer.getSizeValueTest(57l)
+                    + 2 + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
                     + 2 + printer.getSizeValueTest(58ll);
     std::size_t map1 =
             printer.getSizeMapTest(4)
@@ -190,7 +191,7 @@ TEST(BsonPrinterTest, MapWithMapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addKey("K6");
     printer.addValue(58ll);
     printer.closeMap();
@@ -218,7 +219,7 @@ TEST(BsonPrinterTest, MapWithMapValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89},"K6":"Astring"})", result);
+    //NOTE OUTPUT (R"({"K1":{"K1":true,"K2":false},"K3":56,"K4":{"K4":78.89},"K6":"Astring"})", result);
 }
 TEST(BsonPrinterTest, MapWithArrayValues)
 {
@@ -229,7 +230,7 @@ TEST(BsonPrinterTest, MapWithArrayValues)
             = printer.getSizeArrayTest(8)
             + printer.getSizeValueTest(static_cast<unsigned short>(55))
             + printer.getSizeValueTest(56u)
-            + printer.getSizeValueTest(57ul)
+            + printer.getSizeValueTest(static_cast<std::uint64_t>(57ul))
             + printer.getSizeValueTest(58ull)
             + printer.getSizeValueTest(60.f)
             + printer.getSizeValueTest(61.0L);
@@ -250,7 +251,7 @@ TEST(BsonPrinterTest, MapWithArrayValues)
     printer.addValue(false);
     printer.addValue(static_cast<unsigned short>(55));
     printer.addValue(56u);
-    printer.addValue(57ul);
+    printer.addValue(static_cast<std::uint64_t>(57ul));
     printer.addValue(58ull);
     printer.addValue(60.f);
     printer.addValue(61.0L);
@@ -289,7 +290,7 @@ TEST(BsonPrinterTest, MapWithArrayValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"({"K1":[true,false,55,56,57,58,60,61],"K3":56,"K4":[78.89],"K6":"Astring"})", result);
+    //NOTE OUTPUT (R"({"K1":[true,false,55,56,57,58,60,61],"K3":56,"K4":[78.89],"K6":"Astring"})", result);
 }
 TEST(BsonPrinterTest, ArrayWithMapValues)
 {
@@ -303,7 +304,7 @@ TEST(BsonPrinterTest, ArrayWithMapValues)
     std::size_t array1map2Size
             = printer.getSizeMapTest(3)
             + 2 + printer.getSizeValueTest(78.89)
-            + 2 + printer.getSizeValueTest(57l)
+            + 2 + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
             + 2 + printer.getSizeValueTest(58ll);
     std::size_t array1Size
             = printer.getSizeArrayTest(4)
@@ -324,7 +325,7 @@ TEST(BsonPrinterTest, ArrayWithMapValues)
     printer.addKey("K4");
     printer.addValue(78.89);
     printer.addKey("K5");
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addKey("K6");
     printer.addValue(58ll);
     printer.closeMap();
@@ -351,7 +352,7 @@ TEST(BsonPrinterTest, ArrayWithMapValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"([{"K1":true,"K2":false},56,{"K4":78.89},"Astring"])", result);
+    //NOTE OUTPUT (R"([{"K1":true,"K2":false},56,{"K4":78.89},"Astring"])", result);
 }
 TEST(BsonPrinterTest, ArrayWithArrayValues)
 {
@@ -365,7 +366,7 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
     std::size_t array1array2Size
             = printer.getSizeArrayTest(3)
             + printer.getSizeValueTest(78.89)
-            + printer.getSizeValueTest(57l)
+            + printer.getSizeValueTest(static_cast<std::int64_t>(57l))
             + printer.getSizeValueTest(58ll);
     std::size_t array1Size
             = printer.getSizeArrayTest(4)
@@ -382,7 +383,7 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
     printer.addValue(56);
     printer.openArray(array1array2Size);
     printer.addValue(78.89);
-    printer.addValue(57l);
+    printer.addValue(static_cast<std::int64_t>(57l));
     printer.addValue(58ll);
     printer.closeArray();
     printer.addValue(std::string("Astring"));
@@ -408,7 +409,7 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(R"([[true,false],56,[78.89],"Astring"])", result);
+    //NOTE OUTPUT (R"([[true,false],56,[78.89],"Astring"])", result);
 
 }
 TEST(BsonPrinterTest, CloseMapWithArray)
@@ -464,6 +465,6 @@ TEST(BsonPrinterTest, AddRawValueTest)
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
-    //EXPECT_EQ(result, R"({"K1":12})");
+    //NOTE OUTPUT (result, R"({"K1":12})");
 }
 
