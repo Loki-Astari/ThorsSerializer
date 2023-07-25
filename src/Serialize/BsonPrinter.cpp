@@ -6,13 +6,13 @@
 
 using namespace ThorsAnvil::Serialize;
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 BsonPrinter::BsonPrinter(std::ostream& output, PrinterConfig config)
     : PrinterInterface(output, config)
 {}
 
 // MAP
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::size_t BsonPrinter::getSizeMap(std::size_t count)
 {
     /*
@@ -25,7 +25,7 @@ std::size_t BsonPrinter::getSizeMap(std::size_t count)
 }
 
 // ARRAY
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::size_t BsonPrinter::getSizeArray(std::size_t count)
 {
     /*
@@ -57,7 +57,7 @@ std::size_t BsonPrinter::getSizeArray(std::size_t count)
 }
 
 // Add a new Key
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::addKey(std::string const& key)
 {
     if (currentContainer.back() != BsonContainer::Map)
@@ -69,7 +69,7 @@ void BsonPrinter::addKey(std::string const& key)
     currentKey = key;
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::writeKey(char value, std::size_t size)
 {
     if (!currentContainer.empty())
@@ -102,10 +102,12 @@ void BsonPrinter::writeKey(char value, std::size_t size)
     }
 }
 
-HEADER_ONLY_INCLUDE void BsonPrinter::openDoc()
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void BsonPrinter::openDoc()
 {}
 
-HEADER_ONLY_INCLUDE void BsonPrinter::closeDoc()
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void BsonPrinter::closeDoc()
 {
     if (config.parserInfo == static_cast<long>(BsonContainer::Value))
     {
@@ -115,7 +117,7 @@ HEADER_ONLY_INCLUDE void BsonPrinter::closeDoc()
         output.write("", 1);
     }
 }
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::openMap(std::size_t size)
 {
     writeKey('\x03', -1);
@@ -123,7 +125,7 @@ void BsonPrinter::openMap(std::size_t size)
     currentContainer.emplace_back(BsonContainer::Map);
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::closeMap()
 {
     if (currentContainer.back() != BsonContainer::Map)
@@ -136,7 +138,7 @@ void BsonPrinter::closeMap()
     currentContainer.pop_back();
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::openArray(std::size_t size)
 {
     writeKey('\x04', -1);
@@ -145,7 +147,7 @@ void BsonPrinter::openArray(std::size_t size)
     arrayIndex.emplace_back(0);
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::closeArray()
 {
     if (currentContainer.back() != BsonContainer::Array)
@@ -159,7 +161,7 @@ void BsonPrinter::closeArray()
     arrayIndex.pop_back();
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::writeBool(bool value)
 {
     writeKey('\x08', 1);
@@ -167,7 +169,7 @@ void BsonPrinter::writeBool(bool value)
     output.write(&outVal, 1);
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::writeString(std::string const& value)
 {
     writeKey('\x02', 4 + value.size() + 1);
@@ -176,13 +178,13 @@ void BsonPrinter::writeString(std::string const& value)
     output.write("", 1);
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::writeNull()
 {
     writeKey('\x0A', 0);
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::writeBinary(std::string const& value)
 {
     writeKey('\x05', 4 + 1 + value.size());    // binary

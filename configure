@@ -3869,14 +3869,6 @@ fi
 
 
 
-printf "%s\n" "#define HEADER_ONLY 0" >>confdefs.h
-
-
-printf "%s\n" "#define HEADER_ONLY_INCLUDE /**/" >>confdefs.h
-
-
-
-
 
 
 
@@ -4648,6 +4640,15 @@ fi
 
 
 
+printf "%s\n" "#define THORS_SERIALIZER_HEADER_ONLY 0" >>confdefs.h
+
+
+printf "%s\n" "#define THORS_SERIALIZER_HEADER_ONLY_INCLUDE /**/" >>confdefs.h
+
+
+
+
+
 
   # Make sure we can run config.sub.
 $SHELL "${ac_aux_dir}config.sub" sun4 >/dev/null 2>&1 ||
@@ -5112,7 +5113,7 @@ fi
     INCLUDE_DIR="-I${with_magicenum_header_only_root}"
     if test "x${with_magicenum_header_only_root}" == "x"
 then :
-  INCLUDE_DIR="-I${DefaultLinkDir}"
+  INCLUDE_DIR="-I${DefaultLinkDir}/include"
 
 fi
 

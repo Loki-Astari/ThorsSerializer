@@ -357,7 +357,7 @@ ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::MongoUtility::ObjectI
 ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::MongoUtility::UTCDateTime,    ThorsAnvil::Serialize::MongoUtility::DataTimeSerializer<ThorsAnvil::Serialize::MongoUtility::UTCDateTime>);
 ThorsAnvil_MakeTraitCustomSerialize(ThorsAnvil::Serialize::MongoUtility::BsonTimeStamp,  ThorsAnvil::Serialize::MongoUtility::TimeStampSerializer<ThorsAnvil::Serialize::MongoUtility::BsonTimeStamp>);
 
-#if defined(HEADER_ONLY) && HEADER_ONLY == 1
+#if defined(THORS_SERIALIZER_HEADER_ONLY) && THORS_SERIALIZER_HEADER_ONLY == 1
 #include "MongoUtility.source"
 #endif
 

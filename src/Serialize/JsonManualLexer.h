@@ -59,7 +59,7 @@ inline T JsonManualLexer::scan()
     }
 }
 
-#if defined(HEADER_ONLY) && HEADER_ONLY == 1
+#if defined(THORS_SERIALIZER_HEADER_ONLY) && THORS_SERIALIZER_HEADER_ONLY == 1
 #include "JsonManualLexer.source"
 #endif
 
