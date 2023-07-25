@@ -13,7 +13,7 @@ using ParserToken = ParserInterface::ParserToken;
 
 char const* getTokenTypeAsString(ParserToken result);
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 BsonParser::BsonParser(std::istream& stream, ParserConfig config)
     : ParserInterface(stream, config)
     , nextToken(ParserToken::DocStart)
@@ -23,7 +23,7 @@ BsonParser::BsonParser(std::istream& stream, ParserConfig config)
     currentContainer.emplace_back(static_cast<BsonContainer>(config.parserInfo));
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 ParserToken BsonParser::getNextToken()
 {
     if (skipOverValue)
@@ -143,7 +143,7 @@ ParserToken BsonParser::getNextToken()
     return result;
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 char const* getTokenTypeAsString(ParserToken result)
 {
     switch (result)
@@ -162,7 +162,7 @@ char const* getTokenTypeAsString(ParserToken result)
     }
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonParser::ignoreDataValue()
 {
     if (skipOverValue == false)
@@ -189,7 +189,7 @@ void BsonParser::ignoreDataValue()
     }
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 bool BsonParser::isEndOfContainer(std::size_t excess)
 {
     ThorsMessage(5, "BsonParser", "isEndOfContainer", "isEndOfContainer: dataLeft.back(): ", dataLeft.back(), " Excess: ",  excess);
@@ -207,7 +207,7 @@ bool BsonParser::isEndOfContainer(std::size_t excess)
     return false;
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonParser::readEndOfContainer()
 {
     char    mark = '\xFF';
@@ -229,7 +229,7 @@ void BsonParser::readEndOfContainer()
     }
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonParser::readKey()
 {
     if (input.read(&nextType, 1) && std::getline(input, nextKey, '\0'))
@@ -243,7 +243,7 @@ void BsonParser::readKey()
                      "Failed to read Key");
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 bool BsonParser::readBool()
 {
     bool result;
@@ -257,7 +257,7 @@ bool BsonParser::readBool()
                      "Failed to read Bool");
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::size_t BsonParser::peekSize()
 {
     std::int32_t size;
@@ -273,7 +273,7 @@ std::size_t BsonParser::peekSize()
                      "Failed to peek at the size of the next object");
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::string BsonParser::readString()
 {
     std::int32_t size = readSize<4, std::int32_t>();
@@ -290,11 +290,11 @@ std::string BsonParser::readString()
                      "Failed to read String");
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonParser::readNull()
 {}
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::string BsonParser::readBinary()
 {
     char            subType     = '\xFF';
@@ -316,13 +316,13 @@ std::string BsonParser::readBinary()
                      "Failed to read Binary Data");
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::string BsonParser::getKey()
 {
     return nextKey;
 }
 
-HEADER_ONLY_INCLUDE
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::string BsonParser::getRawValue()
 {
     switch (nextType)

@@ -8,7 +8,7 @@
 #define LOGURU_WITH_STREAMS 1
 #endif
 
-#if defined(HEADER_ONLY) && HEADER_ONLY == 1
+#if defined(THORS_LOGGING_HEADER_ONLY) && THORS_LOGGING_HEADER_ONLY == 1
 // Don't use logru with header only
 #include <iostream>
 #define Verbosity_FATAL       2
@@ -75,7 +75,7 @@ namespace ThorsAnvil
     }
 }
 
-#if HEADER_ONLY
+#if defined(THORS_LOGGING_HEADER_ONLY) && THORS_LOGGING_HEADER_ONLY == 1
 #define ThorsLogAndThrowAction(Level, Exception, Scope, Function, ...)  \
 do                                                                      \
 {                                                                       \

@@ -4,10 +4,11 @@
 
 
 /* Enable to use header only libraries */
-#define HEADER_ONLY 1
+#define THORS_IOUTIL_HEADER_ONLY 1
 
-/* For header only convery to inline */
-#define HEADER_ONLY_INCLUDE inline
+/* For header only convert to inline */
+#define THORS_IOUTIL_HEADER_ONLY_INCLUDE inline
+
 
 #endif
 
