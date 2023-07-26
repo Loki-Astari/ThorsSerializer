@@ -1,5 +1,5 @@
-#ifndef THORS_ANVIL_SERIALIZE_UNICODE_ITERATOR_H
-#define THORS_ANVIL_SERIALIZE_UNICODE_ITERATOR_H
+#ifndef THORSANVIL_SERIALIZE_UNICODE_ITERATOR_H
+#define THORSANVIL_SERIALIZE_UNICODE_ITERATOR_H
 /*
  * An iterator used to scan the inside of a quoted string.
  * It will convert all escaped characters into the actual UTF-8 character.

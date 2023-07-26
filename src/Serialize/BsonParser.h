@@ -1,5 +1,5 @@
-#ifndef THORS_ANVIL_SERIALIZE_BSON_PARSER_H
-#define THORS_ANVIL_SERIALIZE_BSON_PARSER_H
+#ifndef THORSANVIL_SERIALIZE_BSON_PARSER_H
+#define THORSANVIL_SERIALIZE_BSON_PARSER_H
 /*
  * BsonParser<T>
  *      This is used in conjunction with BsonPrinter<T>

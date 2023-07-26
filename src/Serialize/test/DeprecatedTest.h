@@ -1,5 +1,5 @@
-#ifndef DEPRICATED_TEST_H
-#define DEPRICATED_TEST_H
+#ifndef THORSANVIL_DEPRICATED_TEST_H
+#define THORSANVIL_DEPRICATED_TEST_H
 
 #include "Traits.h"
 #include <iostream>

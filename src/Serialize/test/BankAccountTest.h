@@ -1,5 +1,5 @@
-#ifndef BANK_ACCOUNT_TEST_H
-#define BANK_ACCOUNT_TEST_H
+#ifndef THORSANVIL_BANK_ACCOUNT_TEST_H
+#define THORSANVIL_BANK_ACCOUNT_TEST_H
 
 #include "SerializeConfig.h"
 
