@@ -22,7 +22,7 @@ int main() {
 
 LT_INIT
 
-subconfigure="${subconfigure} --with-ThorsSerializeroot=$(pwd) "
+subconfigure="${subconfigure} --with-thorserialize-root=$(pwd)/build --with-crypto-root=$(pwd)/build "
 AX_THOR_FUNC_TERM_BUILD([SERIALIZER], [src/Serialize/SerializeConfig.h src/GitUtility/GitUtilityConfig.h])
 
 AC_OUTPUT
