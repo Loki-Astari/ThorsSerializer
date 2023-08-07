@@ -1,7 +1,7 @@
 /* src/Serialize/SerializeConfig.h.  Generated from SerializeConfig.h.in by configure.  */
 
-#ifndef  THORS_SERIALIZER_CONFIG_H
-#define  THORS_SERIALIZER_CONFIG_H
+#ifndef  THORSANVIL_SERIALIZER_CONFIG_H
+#define  THORSANVIL_SERIALIZER_CONFIG_H
 
 
 /* Enable to use header only libraries */

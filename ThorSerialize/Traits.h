@@ -1,5 +1,5 @@
-#ifndef THORS_ANVIL_SERIALIZE_TRAITS_H
-#define THORS_ANVIL_SERIALIZE_TRAITS_H
+#ifndef THORSANVIL_SERIALIZE_TRAITS_H
+#define THORSANVIL_SERIALIZE_TRAITS_H
 /*
  *  This file is all about defineing the template type Traits<T>
  *

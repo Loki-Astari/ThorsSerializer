@@ -1,5 +1,5 @@
-#ifndef THORS_ANVIL_SERIALIZE_BSON_H
-#define THORS_ANVIL_SERIALIZE_BSON_H
+#ifndef THORSANVIL_SERIALIZE_BSON_H
+#define THORSANVIL_SERIALIZE_BSON_H
 /*
  * Defines the Bson Serialization interface
  *      ThorsAnvil::Serialize::Bson

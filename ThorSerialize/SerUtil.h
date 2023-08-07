@@ -1,5 +1,5 @@
-#ifndef THORS_ANVIL_SERIALIZE_SER_UTIL_H
-#define THORS_ANVIL_SERIALIZE_SER_UTIL_H
+#ifndef THORSANVIL_SERIALIZE_SER_UTIL_H
+#define THORSANVIL_SERIALIZE_SER_UTIL_H
 
 #include "SerializeConfig.h"
 #include "Traits.h"
