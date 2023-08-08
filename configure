@@ -17609,7 +17609,8 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-subconfigure="${subconfigure} --with-thorserialize-root=$(pwd)/build --with-crypto-root=$(pwd)/build "
+subconfigure="${subconfigure} --with-thorserialize-root=$(pwd)/build "
+
 am__api_version='1.16'
 
 
