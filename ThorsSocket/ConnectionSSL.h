@@ -57,20 +57,16 @@ class ConnectionSSL: public ConnectionNormal
         ConnectionSSL(SSLctx const& ctx, int fd);
         ~ConnectionSSL();
 
-        virtual void accept()                                           override;
+        virtual void acceptEstablishConnection()                        override;
         virtual void connect(std::string const& host, int port)         override;
     // BUG:
     // This function is for StreamSimple.
     // It needs to be factored out.
         void doConnect();
-        virtual IOInfo read(char* buffer, std::size_t len)              override;
-        virtual IOInfo write(char const* buffer, std::size_t len)       override;
-    private:
-        int  errorCode(int ret);
-    // BUG: Next function needs to be public for StreamSimple.
-    //      When we refactor that class make this private again.
-    public:
-        int  nativeErrorCode(int ret);
+        virtual IOResult read(char* buffer, std::size_t len)            override;
+        virtual IOResult write(char const* buffer, std::size_t len)     override;
+
+        virtual std::string errorMessage(ssize_t result)                override;
 };
 
 }

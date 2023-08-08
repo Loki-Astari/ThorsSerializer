@@ -216,7 +216,7 @@ ConnectionSSL::~ConnectionSSL()
 }
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-void ConnectionSSL::accept()
+void ConnectionSSL::acceptEstablishConnection()
 {
     if (SSL_accept(ssl) != 1)
     {
@@ -247,48 +247,99 @@ void ConnectionSSL::doConnect()
 }
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-IOInfo ConnectionSSL::read(char* buffer, std::size_t len)
+IOResult ConnectionSSL::read(char* buffer, std::size_t len)
 {
-    int r = SSL_read(ssl, buffer, len);
-    return {r, errorCode(r)};
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-IOInfo ConnectionSSL::write(char const* buffer, std::size_t len)
-{
-    int w = SSL_write(ssl, buffer, len);
-    return {w, errorCode(w)};
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-int ConnectionSSL::nativeErrorCode(int ret)
-{
-    return SSL_get_error(ssl, ret);
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-int ConnectionSSL::errorCode(int ret)
-{
-    int sslCode = nativeErrorCode(ret);
-    switch (sslCode)
+    ssize_t get = SSL_read(ssl, buffer, len);
+    Result  r   = Result::OK;
+    switch (SSL_get_error(ssl, get))
     {
-                case SSL_ERROR_WANT_CONNECT:
-                case SSL_ERROR_WANT_ACCEPT:
-                case SSL_ERROR_SYSCALL:
-                case SSL_ERROR_SSL:
-                    return EBADF;
-                case SSL_ERROR_WANT_ASYNC:
-                case SSL_ERROR_WANT_ASYNC_JOB:
-                    return EINTR;
-                case SSL_ERROR_WANT_READ:
-                case SSL_ERROR_WANT_WRITE:
-                case SSL_ERROR_WANT_X509_LOOKUP:
-                case SSL_ERROR_WANT_CLIENT_HELLO_CB:
-                    return ETIMEDOUT;
-                case SSL_ERROR_ZERO_RETURN:
-                    return ENOTCONN;
+        case SSL_ERROR_NONE:
+            break;
+        case SSL_ERROR_WANT_CONNECT:
+        case SSL_ERROR_WANT_ACCEPT:
+        case SSL_ERROR_SYSCALL:
+        case SSL_ERROR_SSL:
+        {
+            r = Result::CriticalBug;
+            break;
+        }
+        case SSL_ERROR_WANT_ASYNC:
+        case SSL_ERROR_WANT_ASYNC_JOB:
+        {
+            r = Result::Interupt;
+            break;
+        }
+        case SSL_ERROR_WANT_READ:
+        case SSL_ERROR_WANT_WRITE:
+        case SSL_ERROR_WANT_X509_LOOKUP:
+        case SSL_ERROR_WANT_CLIENT_HELLO_CB:
+        {
+            r = Result::Timeout;
+            break;
+        }
+        case SSL_ERROR_ZERO_RETURN:
+        {
+            r = Result::ConnectionClosed;
+            break;
+        }
+        default:
+        {
+            r = Result::Unknown;
+            break;
+        }
     }
-    return 0;
+    return {get, r};
+}
+
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+IOResult ConnectionSSL::write(char const* buffer, std::size_t len)
+{
+    ssize_t put = SSL_write(ssl, buffer, len);
+    Result  r   = Result::OK;
+    switch (SSL_get_error(ssl, put))
+    {
+        case SSL_ERROR_NONE:
+            break;
+        case SSL_ERROR_WANT_CONNECT:
+        case SSL_ERROR_WANT_ACCEPT:
+        case SSL_ERROR_SYSCALL:
+        case SSL_ERROR_SSL:
+        {
+            r = Result::CriticalBug;
+            break;
+        }
+        case SSL_ERROR_WANT_ASYNC:
+        case SSL_ERROR_WANT_ASYNC_JOB:
+        {
+            r = Result::Interupt;
+            break;
+        }
+        case SSL_ERROR_WANT_READ:
+        case SSL_ERROR_WANT_WRITE:
+        case SSL_ERROR_WANT_X509_LOOKUP:
+        case SSL_ERROR_WANT_CLIENT_HELLO_CB:
+        {
+            r = Result::Timeout;
+            break;
+        }
+        case SSL_ERROR_ZERO_RETURN:
+        {
+            r = Result::ConnectionClosed;
+            break;
+        }
+        default:
+        {
+            r = Result::Unknown;
+            break;
+        }
+    }
+    return {put, r};
+}
+
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+std::string ConnectionSSL::errorMessage(ssize_t result)
+{
+    return SSLUtil::sslError(ssl, result);
 }
 }
 

@@ -22,17 +22,13 @@ namespace ThorsAnvil::ThorsSocket
 // All socket classes are movable but not copyable.
 class BaseSocket
 {
-    int     socketId;
     protected:
-        static constexpr int invalidSocketId      = -1;
-
-        BaseSocket();
         // Designed to be a base class not used used directly.
-        BaseSocket(int socketId, bool blocking = false);                    // Normal Socket
-    public:
-        int  getSocketId() const {return socketId;}
+        BaseSocket(std::unique_ptr<Connection>&& connection, bool blocking = false);                    // Normal Socket
     public:
         virtual ~BaseSocket();
+        bool isValid()                              const;
+        int  socketId()                             const;      // Only useful for unit tests
 
         // Moveable but not Copyable
         // @method
@@ -48,6 +44,8 @@ class BaseSocket
         // @method
         void close();
         void makeSocketNonBlocking();
+    protected:
+        std::unique_ptr<Connection>     connection;
 };
 
 // @class
@@ -61,7 +59,7 @@ class DataSocket: public BaseSocket
 
     public:
         // @method
-        DataSocket(ConnectionBuilder const& builder, int socketId, bool blocking = false, bool server = false);
+        DataSocket(std::unique_ptr<Connection>&& connection, bool blocking = false);
 
         // @method
         void setYield(std::function<void()>&& yr, std::function<void()>&& yw);
@@ -88,8 +86,6 @@ class DataSocket: public BaseSocket
         // closes the write end of the socket and flushes (write) data.
         // @return              closes the write end of the socket and flushes (write) data.
         void        putMessageClose();
-    protected:
-        std::unique_ptr<Connection>     connection;
 };
 
 // @class
