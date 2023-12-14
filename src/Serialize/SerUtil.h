@@ -885,7 +885,8 @@ class Traits<std::tuple<Args...>>
 template<typename T>
 struct BaseTypeGetter<std::unique_ptr<T>>
 {
-    using type = typename std::unique_ptr<T>::element_type;
+    using ExactType = typename std::unique_ptr<T>::element_type;
+    using type = std::remove_cv_t<ExactType>;
 };
 template<typename T>
 class Traits<std::unique_ptr<T>>
@@ -898,7 +899,7 @@ class Traits<std::unique_ptr<T>>
         {
             if (object)
             {
-                return Traits<T>::getPrintSize(printer, *object, true);
+                return Traits<std::remove_cv_t<T>>::getPrintSize(printer, *object, true);
             }
             return printer.getSizeNull();
         }
@@ -907,7 +908,8 @@ class Traits<std::unique_ptr<T>>
 template<typename T>
 struct BaseTypeGetter<std::shared_ptr<T>>
 {
-    using type = typename std::shared_ptr<T>::element_type;
+    using ExactType = typename std::shared_ptr<T>::element_type;
+    using type = std::remove_cv_t<ExactType>;
 };
 template<typename T>
 class Traits<std::shared_ptr<T>>
@@ -920,7 +922,7 @@ class Traits<std::shared_ptr<T>>
         {
             if (object)
             {
-                return Traits<T>::getPrintSize(printer, *object, true);
+                return Traits<std::remove_cv_t<T>>::getPrintSize(printer, *object, true);
             }
             return printer.getSizeNull();
         }

@@ -15,7 +15,7 @@ struct Example
 };
 struct Adeek
 {
-    std::shared_ptr<Example> member;
+    std::shared_ptr<const Example> member;
 };
 
 ThorsAnvil_MakeTrait(Example, x);
