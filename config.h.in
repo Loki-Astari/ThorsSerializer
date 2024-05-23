@@ -84,6 +84,9 @@
 /* Disable test that require files to be locked */
 #undef THOR_DISABLE_TEST_WITH_LOCKED_FILES
 
+/* Name of package for header files */
+#undef THOR_PACKAGE_NAME
+
 /* Version number of package */
 #undef VERSION
 
