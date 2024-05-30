@@ -3,7 +3,7 @@
 	url = git@github.com:Loki-Astari/andvari-theme-documentation.git
 [submodule ".build"]
 	path = build
-	url = git@github.com:Loki-Astari/ThorMaker.git
+	url = ../ThorMaker.git
 [submodule "third/ThorsStorage"]
 	path = third/ThorsStorage
 	url = git@github.com:Loki-Astari/ThorsStorage.git
