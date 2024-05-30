@@ -1,21 +1,21 @@
 [submodule "docSource/themes/documentation"]
 	path = docSource/themes/documentation
-	url = git@github.com:Loki-Astari/andvari-theme-documentation.git
+	url = ../andvari-theme-documentation.git
 [submodule ".build"]
 	path = build
 	url = ../ThorMaker.git
 [submodule "third/ThorsStorage"]
 	path = third/ThorsStorage
-	url = git@github.com:Loki-Astari/ThorsStorage.git
+	url = ../ThorsStorage.git
 [submodule "third/ThorsCrypto"]
 	path = third/ThorsCrypto
-	url = git@github.com:Loki-Astari/ThorsCrypto.git
+	url = ../ThorsCrypto.git
 [submodule "third/ThorsSocket"]
 	path = third/ThorsSocket
-	url = git@github.com:Loki-Astari/ThorsSocket.git
+	url = ../ThorsSocket.git
 [submodule "third/ThorsLogging"]
 	path = third/ThorsLogging
-	url = git@github.com:Loki-Astari/ThorsLogging.git
+	url = ../ThorsLogging.git
 [submodule "third/ThorsIOUtil"]
 	path = third/ThorsIOUtil
-	url = git@github.com:Loki-Astari/ThorsIOUtil.git
+	url = ../ThorsIOUtil.git
