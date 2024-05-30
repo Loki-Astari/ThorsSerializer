@@ -8,6 +8,9 @@
 
     
 
+/* EWOULDBLOCK is defined and different from EAGAIN */
+#define HAS_UNIQUE_EWOULDBLOCK 0
+
 /* We have found package CRYPTO */
 /* #undef HAVE_CRYPTO */
 
@@ -81,6 +84,9 @@
 
 /* For header only convert to inline */
 #define THORS_SOCKET_HEADER_ONLY_INCLUDE inline
+
+/* Name of package for header files */
+#define THOR_PACKAGE_NAME ThorsSocket
 
 /* Version number of package */
 #define VERSION "3.0"

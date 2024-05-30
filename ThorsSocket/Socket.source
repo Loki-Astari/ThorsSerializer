@@ -1,261 +1,121 @@
-#include "ThorsIOUtil/Utility.h"
+#include "Connection.h"
 #include "ThorsLogging/ThorsLogging.h"
 
 namespace ThorsAnvil::ThorsSocket
 {
 
-namespace Utility = ThorsAnvil::Utility;
-
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-BaseSocket::BaseSocket(std::unique_ptr<Connection>&& newConnection, bool blocking)
-    : connection(std::move(newConnection))
-{
-    if (!isValid())
-    {
-        ThorsLogAndThrowCritical("ThorsAnvil::ThorsSocket::BaseSocket::",
-                                 "BaseSocket",
-                                 "bad socket: ", Utility::systemErrorMessage());
-    }
-    if (!blocking)
-    {
-        connection->makeSocketNonBlocking();
-    }
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-BaseSocket::~BaseSocket()
+Socket::Socket(std::unique_ptr<Connection>&& connectionP, std::function<void()>&& readYield, std::function<void()>&& writeYield)
+    : connection(std::move(connectionP))
+    , readYield(std::move(readYield))
+    , writeYield(std::move(writeYield))
 {}
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-bool BaseSocket::isValid() const
-{
-    return connection.get() != nullptr && connection->isValid();
-}
+Socket::Socket(Socket&& move) noexcept
+    : connection(std::exchange(move.connection, nullptr))
+    , readYield(std::exchange(move.readYield, [](){}))
+    , writeYield(std::exchange(move.writeYield, [](){}))
+{}
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int BaseSocket::socketId() const
+Socket& Socket::operator=(Socket&& move) noexcept
 {
-    return connection.get() == nullptr ? -1 : connection->socketId();
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-void BaseSocket::close()
-{
-    if (!isValid())
-    {
-        ThorsLogAndThrowLogical("ThorsAnvil::ThorsSocket::BaseSocket::",
-                                "close",
-                                "Called on a bad socket object (this object was moved)");
-    }
-    connection->close();
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-void BaseSocket::swap(BaseSocket& other) noexcept
-{
-    using std::swap;
-    swap(connection,   other.connection);
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-BaseSocket::BaseSocket(BaseSocket&& move) noexcept
-    : connection(nullptr)
-{
-    move.swap(*this);
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-BaseSocket& BaseSocket::operator=(BaseSocket&& move) noexcept
-{
-    move.swap(*this);
+    connection.reset(nullptr);
+    readYield = [](){};
+    writeYield =[](){};
+    swap(move);
     return *this;
 }
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-DataSocket::DataSocket(std::unique_ptr<Connection>&& connection, bool blocking)
-    : BaseSocket(std::move(connection), blocking)
-    , readYield([](){})
-    , writeYield([](){})
-{}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-void DataSocket::setYield(std::function<void()>&& yr, std::function<void()>&& yw)
+void Socket::swap(Socket& other) noexcept
 {
-    readYield = std::move(yr);
-    writeYield= std::move(yw);
+    using std::swap;
+    swap(connection, other.connection);
+    swap(readYield,  other.readYield);
+    swap(writeYield, other.writeYield);
 }
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-std::pair<bool, std::size_t> DataSocket::getMessageData(char* buffer, std::size_t size, std::size_t alreadyGot)
+bool Socket::isConnected() const
 {
-    if (!isValid())
-    {
-        ThorsLogAndThrowLogical("ThorsAnvil::ThorsSocket::DataSocket::",
-                                "getMessageData",
-                                "called on a bad socket object (this object was moved)");
+    return connection.get() != nullptr && connection->isConnected();
+}
+
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+int Socket::socketId(Mode rw) const
+{
+    if (!isConnected()) {
+        ThorsLogAndThrow("ThorsAnvil::ThorsSocket::Socket", "socketId", "Socket is in an invalid state");
+    }
+    return connection->socketId(rw);
+}
+
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+IOData Socket::getMessageData(void* b, std::size_t size)
+{
+    char* buffer = reinterpret_cast<char*>(b);
+
+    if (!isConnected()) {
+        ThorsLogAndThrow("ThorsAnvil::ThorsSocket::Socket", "getMessageData", "Socket is in an invalid state");
     }
 
-    std::size_t     dataRead  = alreadyGot;
-    while (dataRead < size)
+    std::size_t dataRead = 0;
+    while (dataRead != size)
     {
-        // The inner loop handles interactions with the socket.
-        IOResult get = connection->read(buffer + dataRead, size - dataRead);
-        switch (get.second)
-        {
-            case Result::OK:
-                break;
-            case Result::CriticalBug:
-                {
-                    // Fatal error. Programming bug
-                    ThorsLogAndThrowCritical("ThorsAnvil::ThorsSocket::DataSocket::",
-                                             "getMessageData",
-                                             "::read() critical error: ", connection->errorMessage(get.first));
-                }
-            case Result::ResourceFail:
-                {
-                   // Resource acquisition failure or device error
-                    ThorsLogAndThrow("ThorsAnvil::ThorsSocket::DataSocket::",
-                                     "getMessageData",
-                                     "::read(): resource failure: ", connection->errorMessage(get.first));
-                }
-            case Result::Interupt:
-                {
-                    // TODO: Check for user interrupt flags.
-                    //       Beyond the scope of this project
-                    //       so continue normal operations.
-                    continue;
-                }
-            case Result::Timeout:
-                {
-                    // Temporary error.
-                    // Simply retry the read.
-                    readYield();
-                    return {true, dataRead - alreadyGot};
-                }
-            case Result::ConnectionClosed:
-                {
-                    // Connection broken.
-                    // Return the data we have available and exit
-                    // as if the connection was closed correctly.
-                    return {false, dataRead - alreadyGot};
-                }
-            default:
-                {
-                    ThorsLogAndThrow("ThorsAnvil::ThorsSocket::DataSocket::",
-                                     "getMessageData",
-                                     "::read() returned -1: ", connection->errorMessage(get.first));
-                }
+        IOData chunk = connection->readFromStream(buffer + dataRead, size - dataRead);
+        dataRead += chunk.dataSize;
+        if (!chunk.stillOpen) {
+            return {dataRead, false, false};
         }
-        if (get.first == 0)
-        {
-            return {false, dataRead - alreadyGot};
+        if (chunk.blocked) {
+            readYield();
         }
-        dataRead += get.first;
     }
-
-    return {true, dataRead - alreadyGot};
+    return {dataRead, true, false};
 }
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-std::pair<bool, std::size_t> DataSocket::putMessageData(char const* buffer, std::size_t size, std::size_t alreadyPut)
+IOData Socket::putMessageData(void const* b, std::size_t size)
 {
-    if (!isValid())
-    {
-        ThorsLogAndThrowLogical("ThorsAnvil::Socket::DataSocket::",
-                                "putMessageData",
-                                "called on a bad socket object (this object was moved)");
+    char const* buffer = reinterpret_cast<char const*>(b);
+
+    if (!isConnected()) {
+        ThorsLogAndThrow("ThorsAnvil::ThorsSocket::Socket", "putMessageData", "Socket is in an invalid state");
     }
 
-    std::size_t     dataWritten = alreadyPut;
-
-    while (dataWritten < size)
+    std::size_t dataWritten = 0;
+    while (dataWritten != size)
     {
-        IOResult put = connection->write(buffer + dataWritten, size - dataWritten);
-        switch (put.second)
-        {
-            case Result::OK:
-                break;
-            case Result::CriticalBug:
-                {
-                    // Fatal error. Programming bug
-                    ThorsLogAndThrowCritical("ThorsAnvil::Socket::DataSocket::",
-                                             "putMessageData",
-                                             "::write() critical error: ", connection->errorMessage(put.first));
-                }
-            case Result::ResourceFail:
-                {
-                    // Resource acquisition failure or device error
-                    ThorsLogAndThrow("ThorsAnvil::Socket::DataSocket::",
-                                     "putMessageData",
-                                     "::write() resource failure: ", connection->errorMessage(put.first));
-                }
-            case Result::Interupt:
-                {
-                    // TODO: Check for user interrupt flags.
-                    //       Beyond the scope of this project
-                    //       so continue normal operations.
-                    continue;
-                }
-            case Result::Timeout:
-                {
-                    // Temporary error.
-                    // Simply retry the read.
-                    writeYield();
-                    return {true, dataWritten - alreadyPut};
-                }
-            case Result::ConnectionClosed:
-                {
-                    // Connection broken.
-                    // Return the data we have available and exit
-                    // as if the connection was closed correctly.
-                    return {false, dataWritten - alreadyPut};
-                }
-            default:
-                {
-                    ThorsLogAndThrow("ThorsAnvil::Socket::DataSocket::",
-                                     "putMessageData",
-                                     "::write() returned -1: ", connection->errorMessage(put.first));
-                }
+        IOData chunk = connection->writeToStream(buffer + dataWritten, size - dataWritten);
+        dataWritten += chunk.dataSize;
+        if (!chunk.stillOpen) {
+            return {dataWritten, false, false};
         }
-        dataWritten += put.first;
+        if (chunk.blocked) {
+            writeYield();
+        }
     }
-    return {true, dataWritten - alreadyPut};
+    return {dataWritten, true, false};
 }
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-void DataSocket::putMessageClose()
+void Socket::tryFlushBuffer()
 {
-    connection->shutdown();
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-ConnectSocket::ConnectSocket(ConnectionBuilder const& builder, std::string const& host, int port)
-    : DataSocket(builder(socketWrapper(PF_INET, SOCK_STREAM, 0)), true)
-{
-    connection->connect(host, port);
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-ServerSocket::ServerSocket(int port, bool blocking, int maxWaitingConnections)
-    : BaseSocket(std::make_unique<ConnectionNormal>(socketWrapper(PF_INET, SOCK_STREAM, 0)), blocking)
-{
-    connection->bind(port, maxWaitingConnections);
-}
-
-THORS_SOCKET_HEADER_ONLY_INCLUDE
-DataSocket ServerSocket::accept(ConnectionBuilder const& builder, bool blocking)
-{
-    if (!isValid())
-    {
-        ThorsLogAndThrowLogical("ThorsAnvil::Socket::ServerSocket::",
-                                "accept",
-                                ": called on a bad socket object (this object was moved)");
+    if (!isConnected()) {
+        ThorsLogAndThrow("ThorsAnvil::ThorsSocket::Socket", "tryFlushBuffer", "Socket is in an invalid state");
     }
+    connection->tryFlushBuffer();
+}
 
-    int newSocket = connection->accept();
-    std::unique_ptr<Connection> newConnection   = builder(newSocket);
-    newConnection->acceptEstablishConnection();
-    return DataSocket(std::move(newConnection), blocking);
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+void Socket::close()
+{
+    if (!isConnected()) {
+        ThorsLogAndThrow("ThorsAnvil::ThorsSocket::Socket", "close", "Socket is in an invalid state");
+    }
+    connection->close();
 }
 }
 
