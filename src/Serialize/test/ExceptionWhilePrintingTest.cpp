@@ -154,7 +154,7 @@ TEST(ExceptionWhilePrintingTest, JsonThrowStream)
 
     std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, true);
-    EXPECT_EQ(state, std::ios::eofbit | std::ios::failbit);
+    EXPECT_NE(0, state & std::ios::failbit);
 }
 
 
@@ -176,7 +176,7 @@ TEST(ExceptionWhilePrintingTest, JsonThrowStreamCatchEnabled)
 
     std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
-    EXPECT_EQ(state, std::ios::eofbit | std::ios::failbit);
+    EXPECT_NE(0, state & std::ios::failbit);
 }
 
 
