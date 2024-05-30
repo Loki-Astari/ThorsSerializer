@@ -13,3 +13,9 @@
 [submodule "third/ThorsSocket"]
 	path = third/ThorsSocket
 	url = git@github.com:Loki-Astari/ThorsSocket.git
+[submodule "third/ThorsLogging"]
+	path = third/ThorsLogging
+	url = git@github.com:Loki-Astari/ThorsLogging.git
+[submodule "third/ThorsIOUtil"]
+	path = third/ThorsIOUtil
+	url = git@github.com:Loki-Astari/ThorsIOUtil.git
