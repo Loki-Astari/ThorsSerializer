@@ -6,6 +6,9 @@
 #include "ConnectionSocket.h"
 #include "ThorsLogging/ThorsLogging.h"
 
+#include <utility>
+#include <string>
+#include <cstddef>
 #include <openssl/ssl.h>
 
 

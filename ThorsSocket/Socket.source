@@ -1,6 +1,9 @@
 #include "Connection.h"
 #include "ThorsLogging/ThorsLogging.h"
 
+#include <utility>
+#include <algorithm>
+
 namespace ThorsAnvil::ThorsSocket
 {
 

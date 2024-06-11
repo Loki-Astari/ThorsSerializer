@@ -1,7 +1,7 @@
 
 #include <map>
-#include <openssl/err.h>
 #include <iostream>
+#include <openssl/err.h>
 
 namespace ThorsAnvil::ThorsSocket::ConnectionType
 {

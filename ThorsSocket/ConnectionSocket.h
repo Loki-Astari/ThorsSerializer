@@ -4,7 +4,8 @@
 #include "ThorsSocketConfig.h"
 #include "ConnectionFileDescriptor.h"
 
-#include <map>
+#include <string>
+#include <cstddef>
 
 namespace ThorsAnvil::ThorsSocket::ConnectionType
 {

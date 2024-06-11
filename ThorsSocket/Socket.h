@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <functional>
+#include <cstddef>
 
 namespace ThorsAnvil::ThorsSocket
 {

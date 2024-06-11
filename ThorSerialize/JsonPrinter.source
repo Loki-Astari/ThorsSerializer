@@ -16,10 +16,10 @@ namespace
         static char const*  colon[];
 
         PrinterInterface::OutputType    characteristics;
-        int                             size;
+        std::size_t                     size;
         std::pair<int, TraitType>&      state;
         public:
-            Prefix(PrinterInterface::OutputType characteristics, int size, std::pair<int, TraitType>& state)
+            Prefix(PrinterInterface::OutputType characteristics, std::size_t size, std::pair<int, TraitType>& state)
                 : characteristics(characteristics)
                 , size(size)
                 , state(state)

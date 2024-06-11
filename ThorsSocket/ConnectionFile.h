@@ -3,6 +3,7 @@
 
 #include "ThorsSocketConfig.h"
 #include "ConnectionFileDescriptor.h"
+#include <string>
 
 namespace ThorsAnvil::ThorsSocket::ConnectionType
 {

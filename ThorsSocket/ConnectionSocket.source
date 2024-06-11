@@ -5,6 +5,7 @@
 #include <fcntl.h>
 
 #include <iostream>
+#include <algorithm>
 
 namespace ThorsAnvil::ThorsSocket::ConnectionType
 {

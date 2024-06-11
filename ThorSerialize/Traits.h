@@ -578,7 +578,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
                 std::make_pair(std::size_t{0}, std::size_t{0}),                         \
                 addSizeEachMemberItem(printer, object, std::get<Seq>(members))...       \
             };                                                          \
-            return std::accumulate(std::begin(sizeData), std::end(sizeData), std::make_pair(0UL, 0UL),                                  \
+            return std::accumulate(std::begin(sizeData), std::end(sizeData), std::make_pair(std::size_t{0}, std::size_t{0}),                                  \
                                    [](auto lhs, auto rhs){return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);});     \
         }                                                               \
                                                                         \
