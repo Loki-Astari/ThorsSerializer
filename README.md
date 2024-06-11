@@ -54,9 +54,10 @@ To install header only version
 
     git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsSerializer.git
 
-## Version 2
+## Building With Visual Studio
 
-I have deprecated the `jsonImport()` and `jsonExport()` functions. These have been replaced with `jsonImporter()` and `jsonExporter()` functions (though the original versions still exist but are marked `[[deprecated]]`). The main difference is that the new functions catch exceptions (by default) this makes the serialization work like normal C++ serialization and simply set the bad bit on the stream.
+To build on windows you will need to add the flag: [`/Zc:preprocessor`](https://learn.microsoft.com/en-us/cpp/build/reference/zc-preprocessor?view=msvc-170). These libraries make heavy use of VAR_ARG macros to generate code for you so require conforming pre-processor. See [Macro Expansion of __VA_ARGS__ Bug in Visual Studio?](https://stackoverflow.com/questions/78605945/macro-expansion-of-va-args-bug-in-visual-studio) for details.
+
 
 ## Contributors
 
