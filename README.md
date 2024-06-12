@@ -54,6 +54,13 @@ To install header only version
 
     git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsSerializer.git
 
+Some dependencies:
+
+    For All:    Magic Enum: https://github.com/Neargye/magic_enum
+    For Json:   None        :-)
+    For Bson:   boost       https://www.boost.org/                  needs  boost/endian/conversion.hpp
+    For Yaml:   libYaml     https://github.com/yaml/libyaml
+
 ## Building With Visual Studio
 
 To build on windows you will need to add the flag: [`/Zc:preprocessor`](https://learn.microsoft.com/en-us/cpp/build/reference/zc-preprocessor?view=msvc-170). These libraries make heavy use of VAR_ARG macros to generate code for you so require conforming pre-processor. See [Macro Expansion of __VA_ARGS__ Bug in Visual Studio?](https://stackoverflow.com/questions/78605945/macro-expansion-of-va-args-bug-in-visual-studio) for details.
