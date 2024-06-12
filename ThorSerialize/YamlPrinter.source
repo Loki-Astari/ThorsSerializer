@@ -159,7 +159,7 @@ void YamlPrinter::emit(T const& data)
                         NULL,
                         NULL,
                         reinterpret_cast<yaml_char_t*>(const_cast<char*>(buffer.str().c_str())),
-                        buffer.str().size(),
+                        static_cast<int>(buffer.str().size()),
                         1,
                         0,
                         YAML_ANY_SCALAR_STYLE);

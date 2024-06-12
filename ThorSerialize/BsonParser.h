@@ -60,7 +60,7 @@ class BsonParser: public ParserInterface
 
         virtual void    ignoreDataValue()                       override;
 
-        virtual void    getValue(short int& value)              override    {value = getIntValue<MaxTemplate<4, sizeof(short int)>::value, short int>();}
+        virtual void    getValue(short int& value)              override    {value = static_cast<int>(getIntValue<MaxTemplate<4, sizeof(short int)>::value, short int>());}
         virtual void    getValue(int& value)                    override    {value = getIntValue<sizeof(int), int>();}
         virtual void    getValue(long int& value)               override    {value = getIntValue<sizeof(long int), long int>();}
         virtual void    getValue(long long int& value)          override    {value = getIntValue<sizeof(long long int), long long int>();}
@@ -194,17 +194,17 @@ inline IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat()
 template<std::size_t Size, typename Int>
 inline Int BsonParser::getIntValue()
 {
-    if (nextType == '\x10')     {ThorsMessage(5, "BsonParser", "getIntValue", "Int-32"); return readInt<4, std::int32_t>();}
-    if (nextType == '\x12')     {ThorsMessage(5, "BsonParser", "getIntValue", "Int-64"); return readInt<8, std::int64_t>();}
+    if (nextType == '\x10')     {ThorsMessage(5, "BsonParser", "getIntValue", "Int-32"); return static_cast<Int>(readInt<4, std::int32_t>());}
+    if (nextType == '\x12')     {ThorsMessage(5, "BsonParser", "getIntValue", "Int-64"); return static_cast<Int>(readInt<8, std::int64_t>());}
     badType("Int(32 or 64)", nextType);
 }
 
 template<std::size_t Size, typename Float>
 inline Float BsonParser::getFloatValue()
 {
-    if (nextType == '\x10')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-32");return readInt<4, std::int32_t>();}
-    if (nextType == '\x12')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-64");return readInt<8, std::int64_t>();}
-    if (nextType == '\x01')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-128");return readFloat<8>();}
+    if (nextType == '\x10')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-32");return static_cast<Float>(readInt<4, std::int32_t>());}
+    if (nextType == '\x12')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-64");return static_cast<Float>(readInt<8, std::int64_t>());}
+    if (nextType == '\x01')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-128");return static_cast<Float>(readFloat<8>());}
 #if 0
     if (nextType == '\x13')     {return readFloat<16>();}
 #endif
