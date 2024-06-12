@@ -93,7 +93,7 @@ void BsonPrinter::writeKey(char value, std::size_t size)
         // So when we write a single value we wrap it just like an array.
         //
         // <4 byte Doc Size> <1 byte Type info> <2 byte Index "0"> <value> <1 byte doc term>
-        std::int32_t totalSize = 4 + 1 + 2 + size + 1;
+        std::int32_t totalSize = static_cast<std::int32_t>(4 + 1 + 2 + size + 1);
         writeSize<4, std::int32_t>(totalSize);
         output.write(&value, 1);
         output.write("0", 2);
@@ -121,7 +121,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::openMap(std::size_t size)
 {
     writeKey('\x03', -1);
-    writeSize<4, std::int32_t>(size);
+    writeSize<4, std::int32_t>(static_cast<std::int32_t>(size));
     currentContainer.emplace_back(BsonContainer::Map);
 }
 
@@ -142,7 +142,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::openArray(std::size_t size)
 {
     writeKey('\x04', -1);
-    writeSize<4, std::int32_t>(size);
+    writeSize<4, std::int32_t>(static_cast<std::int32_t>(size));
     currentContainer.emplace_back(BsonContainer::Array);
     arrayIndex.emplace_back(0);
 }
@@ -173,7 +173,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::writeString(std::string const& value)
 {
     writeKey('\x02', 4 + value.size() + 1);
-    writeSize<4, std::int32_t>(value.size() + 1);
+    writeSize<4, std::int32_t>(static_cast<std::int32_t>(value.size() + 1));
     output << EscapeString(value);
     output.write("", 1);
 }
@@ -188,7 +188,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::writeBinary(std::string const& value)
 {
     writeKey('\x05', 4 + 1 + value.size());    // binary
-    writeSize<4, std::int32_t>(value.size());
+    writeSize<4, std::int32_t>(static_cast<std::int32_t>(value.size()));
     output.write("\x80", 1);
     output.write(value.c_str(), value.size());
 }
