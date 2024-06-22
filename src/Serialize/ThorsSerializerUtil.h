@@ -426,6 +426,9 @@ class Traits<TYPE>                                                  \
         }                                                           \
 }
 
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(char);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(unsigned char);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(signed char);
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(short int);
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(int);
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(long int);
