@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <cstddef>
 #include <algorithm>
+#include <functional>
 
 namespace ThorsAnvil
 {
@@ -162,6 +163,16 @@ struct GetPrimaryParentType<Parents<Args...>>
     using type = typename std::tuple_element<0, std::tuple<Args...>>::type;
 };
 
+struct IgnoreCallBack
+{
+    using AppendFunc = std::function<void(char const*, std::size_t)>;
+    using ReadFunc   = std::function<void(std::istream&, char*, std::size_t)>;
+    using IgnoreFunc = std::function<void(std::istream&, std::size_t)>;
+    AppendFunc  append  = [](char const*, std::size_t){};
+    ReadFunc    read    = [](std::istream& s, char* d, std::size_t size){s.read(d, size);};
+    IgnoreFunc  ignore  = [](std::istream& s, std::size_t size)         {s.ignore(size);};
+};
+
 class ParserInterface
 {
     public:
@@ -169,6 +180,16 @@ class ParserInterface
         enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
         struct ParserConfig
         {
+            ParserConfig(IgnoreCallBack&& cb,
+                         ParseType parseStrictness = ParseType::Weak,
+                         std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
+                         bool catchExceptions = true)
+                : parseStrictness(parseStrictness)
+                , polymorphicMarker(polymorphicMarker)
+                , catchExceptions(catchExceptions)
+                , parserInfo(0)
+                , ignoreCallBack(std::move(cb))
+            {}
             ParserConfig(ParseType parseStrictness = ParseType::Weak,
                          std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
                          bool catchExceptions = true)
@@ -199,6 +220,7 @@ class ParserInterface
             std::string     polymorphicMarker;
             bool            catchExceptions;
             long            parserInfo;
+            IgnoreCallBack  ignoreCallBack;
         };
 
         std::istream&   input;
@@ -217,7 +239,9 @@ class ParserInterface
         virtual ParserToken     getNextToken()          = 0;
         virtual std::string     getKey()                = 0;
 
-        virtual void    ignoreDataValue()                {}
+        virtual void    ignoreDataValue()               {}
+        virtual void    ignoreDataMap(bool)             {}
+        virtual void    ignoreDataArray(bool)           {}
 
         virtual void    getValue(short int&)             = 0;
         virtual void    getValue(int&)                   = 0;

@@ -59,6 +59,8 @@ class BsonParser: public ParserInterface
         virtual std::string getKey()                            override;
 
         virtual void    ignoreDataValue()                       override;
+        virtual void    ignoreDataMap(bool)                     override;
+        virtual void    ignoreDataArray(bool)                   override;
 
         virtual void    getValue(short int& value)              override    {value = static_cast<int>(getIntValue<MaxTemplate<4, sizeof(short int)>::value, short int>());}
         virtual void    getValue(int& value)                    override    {value = getIntValue<sizeof(int), int>();}
