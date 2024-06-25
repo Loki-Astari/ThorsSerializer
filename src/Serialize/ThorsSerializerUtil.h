@@ -135,7 +135,7 @@ struct HasParent: std::false_type
 {};
 
 template <class T>
-struct HasParent<T, std::enable_if_t<(sizeof(typename Traits<T>::Parent) >= 0)>>: std::true_type
+struct HasParent<T, std::enable_if_t<(sizeof(typename Traits<std::remove_cv_t<T>>::Parent) >= 0)>>: std::true_type
 {};
 
 /*
@@ -397,7 +397,8 @@ struct CalcSizeHelper<T, true>
 {
     std::size_t getPrintSize(PrinterInterface& printer, T const& object, std::size_t& count, std::size_t& memberSize)
     {
-        return ThorsAnvil::Serialize::Traits<typename Traits<T>::Parent>::getPrintSizeTotal(printer, object, count, memberSize);
+        using Parent = typename Traits<std::remove_cv_t<T>>::Parent;
+        return ThorsAnvil::Serialize::Traits<std::remove_cv_t<Parent>>::getPrintSizeTotal(printer, object, count, memberSize);
     }
 };
 
@@ -510,7 +511,7 @@ class Traits<T*>
         {
             if (object)
             {
-                return Traits<T>::getPrintSize(printer, *object, true);
+                return Traits<std::remove_cv_t<T>>::getPrintSize(printer, *object, true);
             }
             return printer.getSizeNull();
         }
@@ -529,7 +530,7 @@ class Traits<Parents<Args...>>
         static std::size_t getPrintSizeTotalParent(PrinterInterface& printer, ChildType const& object, std::size_t& count, std::size_t& memberSize)
         {
             using Parent = typename std::tuple_element<Index, std::tuple<Args...>>::type;
-            return Traits<Parent>::getPrintSizeTotal(printer, static_cast<Parent const&>(object), count, memberSize);
+            return Traits<std::remove_cv_t<Parent>>::getPrintSizeTotal(printer, static_cast<Parent const&>(object), count, memberSize);
         }
 
         template<typename ChildType, std::size_t... Seq>
@@ -575,7 +576,7 @@ auto tryGetPolyMorphicPrintSize(PrinterInterface& printer, T const& object, bool
 template<typename T>
 std::size_t getNormalPrintSize(PrinterInterface& printer, T const& object, std::size_t count, std::size_t memberSize)
 {
-    std::size_t result = Traits<T>::getPrintSizeTotal(printer, object, count, memberSize);
+    std::size_t result = Traits<std::remove_cv_t<T>>::getPrintSizeTotal(printer, object, count, memberSize);
     return result;
 }
 

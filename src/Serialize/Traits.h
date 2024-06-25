@@ -548,7 +548,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
             using MemberType    = std::decay_t<M>;                      \
             if (staticObjPtr)                                           \
             {                                                           \
-                return Traits<MemberType>::getPrintSize(printer, *staticObjPtr, false);\
+                return Traits<std::remove_cv_t<MemberType>>::getPrintSize(printer, *staticObjPtr, false);\
             }                                                           \
             return printer.getSizeNull();                               \
         }                                                               \
@@ -557,7 +557,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
         {                                                               \
             using MemberTypeDec = decltype(object.*memPtr);             \
             using MemberType    = std::decay_t<MemberTypeDec>;          \
-            return Traits<MemberType>::getPrintSize(printer, object.*memPtr, false);\
+            return Traits<std::remove_cv_t<MemberType>>::getPrintSize(printer, object.*memPtr, false);\
         }                                                               \
                                                                         \
         template<typename M>                                            \
@@ -681,7 +681,7 @@ DO_ASSERT(DataType)
         std::is_base_of<typename ThorsAnvil::Serialize::GetPrimaryParentType<ParentType>::type, DataType>::value,                  \
         "ParentType must be a base class of DataType");                 \
     static_assert(                                                      \
-        ::ThorsAnvil::Serialize::Traits<ParentType>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
+        ::ThorsAnvil::Serialize::Traits<std::remove_cv_t<ParentType>>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
     ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType, DataType, __VA_ARGS__), Parent, 00, DataType, __VA_ARGS__); \
@@ -950,9 +950,9 @@ struct GetRootType
     using Root = R;
 };
 template<typename T>
-struct GetRootType<T, typename Traits<T>::Root>
+struct GetRootType<T, typename Traits<std::remove_cv_t<T>>::Root>
 {
-    using Root = typename Traits<T>::Root;
+    using Root = typename Traits<std::remove_cv_t<T>>::Root;
 };
 template<typename T>
 struct GetAllocationType
@@ -1042,7 +1042,7 @@ struct ThorsAnvil_InitPolyMorphicType<T, true>
             []() -> void*
             {
                 using Root = typename GetRootType<T>::Root;
-                return dynamic_cast<Root*>(Traits<T*>::alloc());
+                return dynamic_cast<Root*>(Traits<std::remove_cv_t<T>*>::alloc());
             };
     }
 };

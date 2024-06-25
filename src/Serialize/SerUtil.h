@@ -77,7 +77,7 @@ struct MapLike
         for (auto const& value: object)
         {
             result += std::size(value.first);
-            result += Traits<T>::getPrintSize(printer, value.second, false);
+            result += Traits<std::remove_cv_t<T>>::getPrintSize(printer, value.second, false);
         }
         return result;
     }
@@ -91,7 +91,7 @@ struct ArrayLike
         std::size_t result = printer.getSizeArray(std::size(object));
         for (auto const& val: object)
         {
-            result += Traits<T>::getPrintSize(printer, val, false);
+            result += Traits<std::remove_cv_t<T>>::getPrintSize(printer, val, false);
         }
         return result;
     }
@@ -104,7 +104,7 @@ struct ArrayLike
  * A normal value is retrieved directly from the stream (via the parser object).
  * A compound type Map/Array is retrieved from the stream using a DeSerializer.
  */
-template<typename V, TraitType type = Traits<V>::type>
+template<typename V, TraitType type = Traits<std::remove_cv_t<V>>::type>
 class GetValueType
 {
     public:
@@ -137,7 +137,7 @@ class GetValueType<V, TraitType::Value>
  * A normal value is put directly onto the stream (via the printer object).
  * A compound type Map/Array is printed to the stream using a Serializer.
  */
-template<typename V, TraitType type = Traits<V>::type>
+template<typename V, TraitType type = Traits<std::remove_cv_t<V>>::type>
 class PutValueType
 {
     Serializer      serializer;
@@ -255,8 +255,8 @@ class Traits<std::pair<F, S>>
             return printer.getSizeMap(2)
                  + std::strlen("first")
                  + std::strlen("second")
-                 + Traits<typename std::decay<F>::type>::getPrintSize(printer, object.first, false)
-                 + Traits<typename std::decay<S>::type>::getPrintSize(printer, object.second, false);
+                 + Traits<std::remove_cv_t<typename std::decay<F>::type>>::getPrintSize(printer, object.first, false)
+                 + Traits<std::remove_cv_t<typename std::decay<S>::type>>::getPrintSize(printer, object.second, false);
         }
 };
 
@@ -862,7 +862,7 @@ class Traits<std::tuple<Args...>>
         template<typename E>
         static std::size_t getPrintSizeElement(PrinterInterface& printer, E const& object)
         {
-            return Traits<E>::getPrintSize(printer, object, false);
+            return Traits<std::remove_cv_t<E>>::getPrintSize(printer, object, false);
         }
 
         template<std::size_t... Seq>
@@ -936,7 +936,7 @@ class Traits<std::reference_wrapper<T>>
         static constexpr TraitType type = TraitType::Reference;
         static std::size_t getPrintSize(PrinterInterface& printer, std::reference_wrapper<T> const& object, bool p)
         {
-            return Traits<T>::getPrintSize(printer, object, p);
+            return Traits<std::remove_cv_t<T>>::getPrintSize(printer, object, p);
         }
 };
 
