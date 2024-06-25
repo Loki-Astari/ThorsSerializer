@@ -160,7 +160,7 @@ struct GetPrimaryParentType
 template<typename... Args>
 struct GetPrimaryParentType<Parents<Args...>>
 {
-    using type = typename std::tuple_element<0, std::tuple<Args...>>::type;
+    using type = std::tuple_element_t<0, std::tuple<Args...>>;
 };
 
 struct IgnoreCallBack
@@ -529,7 +529,7 @@ class Traits<Parents<Args...>>
         template<typename ChildType, std::size_t Index>
         static std::size_t getPrintSizeTotalParent(PrinterInterface& printer, ChildType const& object, std::size_t& count, std::size_t& memberSize)
         {
-            using Parent = typename std::tuple_element<Index, std::tuple<Args...>>::type;
+            using Parent = std::tuple_element_t<Index, std::tuple<Args...>>;
             return Traits<std::remove_cv_t<Parent>>::getPrintSizeTotal(printer, static_cast<Parent const&>(object), count, memberSize);
         }
 

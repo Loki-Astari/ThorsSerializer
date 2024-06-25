@@ -255,8 +255,8 @@ class Traits<std::pair<F, S>>
             return printer.getSizeMap(2)
                  + std::strlen("first")
                  + std::strlen("second")
-                 + Traits<std::remove_cv_t<typename std::decay<F>::type>>::getPrintSize(printer, object.first, false)
-                 + Traits<std::remove_cv_t<typename std::decay<S>::type>>::getPrintSize(printer, object.second, false);
+                 + Traits<std::remove_cv_t<std::decay_t<F>>>::getPrintSize(printer, object.first, false)
+                 + Traits<std::remove_cv_t<std::decay_t<S>>>::getPrintSize(printer, object.second, false);
         }
 };
 
@@ -814,7 +814,7 @@ class ContainerTuppleExtractor
         template<std::size_t... index>
         void printTupleValues(PrinterInterface& printer, C const& object, std::index_sequence<index...> const&) const
         {
-            auto discard = {(printTupleValue<index, typename std::tuple_element_t<index, C>>(printer, object),1)...};
+            auto discard = {(printTupleValue<index, std::tuple_element_t<index, C>>(printer, object),1)...};
             (void)discard;
         }
         template<std::size_t index, typename V>
@@ -826,8 +826,8 @@ class ContainerTuppleExtractor
         template<std::size_t... index>
         void parseTupleValues(ParserInterface& parser, std::size_t const& id, C& object,  std::index_sequence<index...> const&) const
         {
-            using MemberDecoder = decltype(&ContainerTuppleExtractor::parseTupleValue<0, typename std::tuple_element_t<0, C>>);
-            static std::initializer_list<MemberDecoder> parseTuppleValue = {&ContainerTuppleExtractor::parseTupleValue<index, typename std::tuple_element_t<index, C>>...};
+            using MemberDecoder = decltype(&ContainerTuppleExtractor::parseTupleValue<0, std::tuple_element_t<0, C>>);
+            static std::initializer_list<MemberDecoder> parseTuppleValue = {&ContainerTuppleExtractor::parseTupleValue<index, std::tuple_element_t<index, C>>...};
             auto iteratorToFunction = parseTuppleValue.begin() + id;
             auto function = *iteratorToFunction;
             (this->*function)(parser, object);

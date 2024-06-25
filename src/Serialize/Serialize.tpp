@@ -71,12 +71,12 @@ template<typename T>
 struct HeedAllValues;
 
 template<typename T>
-typename std::enable_if<! HasParent<T>::value>::type
+typename std::enable_if_t<! HasParent<T>::value>
 heedAllParentMembers(std::map<std::string, bool> const& /*membersound*/)
 {}
 
 template<typename T>
-typename std::enable_if<HasParent<T>::value>::type
+std::enable_if_t<HasParent<T>::value>
 heedAllParentMembers(std::map<std::string, bool> const& membersFound)
 {
     HeedAllValues<typename Traits<std::remove_cv_t<T>>::Parent>   heedParent;
@@ -376,7 +376,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
     std::string className;
     parser.getValue(className);
 
-    using BaseType  = typename std::remove_pointer<T>::type;
+    using BaseType  = std::remove_pointer_t<T>;
     using AllocType = typename GetAllocationType<BaseType>::AllocType;
     object = ConvertPointer<BaseType>::assign(PolyMorphicRegistry::getNamedTypeConvertedTo<AllocType>(className));
 
@@ -791,7 +791,7 @@ auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T 
 template<typename T>
 void printPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object)
 {
-    using BaseType = typename std::remove_pointer<T>::type;
+    using BaseType = std::remove_pointer_t<T>;
     SerializerForBlock<ThorsAnvil::Serialize::Traits<std::remove_cv_t<BaseType>>::type, BaseType>  block(parent, printer, object, true);
 
     // Note the call to printPolyMorphicMembers() rather than printMembers()
