@@ -21,6 +21,7 @@
 #include <memory>
 #include <cstring>
 #include <functional>
+#include <optional>
 
 /*
  * Container Types:
@@ -940,6 +941,19 @@ class Traits<std::reference_wrapper<T>>
         }
 };
 
+template<typename T>
+class Traits<std::optional<T>>
+{
+    public:
+        using RefType = T;
+        static constexpr TraitType type = TraitType::Reference;
+        static std::size_t getPrintSize(PrinterInterface& printer, std::optional<T> const& object, bool p)
+        {
+            return (object.has_value())
+                ? Traits<std::remove_cv_t<T>>::getPrintSize(printer, object.value(), p)
+                : 0;
+        }
+};
     }
 }
 
