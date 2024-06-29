@@ -438,11 +438,15 @@
  * Lists the members of the type that can be serialized.
  */
 #define DO_ASSERT(DataType)             DO_ASSERT_WITH_TEMPLATE(DataType, 00)
+#if defined(NEOVIM)
+#define DO_ASSERT_WITH_TEMPLATE(DataType, Count)
+#else
 #define DO_ASSERT_WITH_TEMPLATE(DataType, Count)                        \
 static_assert(                                                          \
     ::ThorsAnvil::Serialize::Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPE_INT_VALUE, Count) >::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
 )
+#endif
 
 #define ThorsAnvil_PointerAllocator(DataType, ActionObj)                \
 namespace ThorsAnvil { namespace Serialize {                            \
@@ -603,6 +607,9 @@ DO_ASSERT_WITH_TEMPLATE(DataType, Count)
 #define ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, ...)      \
     ThorsAnvil_RegisterPolyMorphicType(DataType)
 
+#if defined(NEOVIM)
+#define ThorsAnvil_RegisterPolyMorphicType(DataType)
+#else
 #define ThorsAnvil_RegisterPolyMorphicType(DataType)                    \
 namespace ThorsAnvil { namespace Serialize {                            \
 namespace                                                               \
@@ -610,6 +617,7 @@ namespace                                                               \
     ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME ( # DataType); \
 }                                                                       \
 }}
+#endif
 
 #define ThorsAnvil_Parent(Count, ParentType, DataType, ...)             \
         using Parent = ParentType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count); \
