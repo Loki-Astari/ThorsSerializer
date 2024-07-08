@@ -22,7 +22,7 @@ std::string buildOpenSSLErrorMessage(bool prefix)
     if (prefix) {
         result << "ConnectionType::SSocket: ";
     }
-    for (long code = ERR_get_error(); code != 0; code = MOCK_FUNC(ERR_get_error)())
+    for (long code = MOCK_FUNC(ERR_get_error)(); code != 0; code = MOCK_FUNC(ERR_get_error)())
     {
         errorAdded = true;
         result << "ErrorCode=" << code << ": msg: " << ERR_error_string(code, nullptr) << ":";
@@ -70,14 +70,14 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 void ProtocolInfo::apply(SSL_CTX* ctx) const
 {
     //if (SSL_CTX_set_min_proto_version(ctx, convertProtocolToOpenSSL(minProtocol)) != 1)
-    if (SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MIN_PROTO_VERSION, convertProtocolToOpenSSL(minProtocol), nullptr) != 1)
+    if (MOCK_FUNC(SSL_CTX_ctrl)(ctx, SSL_CTRL_SET_MIN_PROTO_VERSION, convertProtocolToOpenSSL(minProtocol), nullptr) != 1)
     {
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::ProtocolInfo",
                          "setProtocolInfo",
                          "SSL_CTX_set_min_proto_version() failed: ", buildOpenSSLErrorMessage());
     }
     //if (SSL_CTX_set_max_proto_version(ctx, convertProtocolToOpenSSL(maxProtocol)) != 1)
-    if (SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MAX_PROTO_VERSION, convertProtocolToOpenSSL(maxProtocol), nullptr) != 1)
+    if (MOCK_FUNC(SSL_CTX_ctrl)(ctx, SSL_CTRL_SET_MAX_PROTO_VERSION, convertProtocolToOpenSSL(maxProtocol), nullptr) != 1)
     {
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::ProtocolInfo",
                          "setProtocolInfo",
@@ -89,14 +89,14 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 void ProtocolInfo::apply(SSL* ssl) const
 {
     //if (SSL_set_min_proto_version(ssl, convertProtocolToOpenSSL(minProtocol)) != 1)
-    if (SSL_ctrl(ssl, SSL_CTRL_SET_MIN_PROTO_VERSION, convertProtocolToOpenSSL(minProtocol), nullptr) != 1)
+    if (MOCK_FUNC(SSL_ctrl)(ssl, SSL_CTRL_SET_MIN_PROTO_VERSION, convertProtocolToOpenSSL(minProtocol), nullptr) != 1)
     {
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::ProtocolInfo",
                          "setProtocolInfo",
                          "SSL_set_min_proto_version() failed: ", buildOpenSSLErrorMessage());
     }
     //if (SSL_set_max_proto_version(ssl, convertProtocolToOpenSSL(maxProtocol)) != 1)
-    if (SSL_ctrl(ssl, SSL_CTRL_SET_MAX_PROTO_VERSION, convertProtocolToOpenSSL(maxProtocol), nullptr) != 1)
+    if (MOCK_FUNC(SSL_ctrl)(ssl, SSL_CTRL_SET_MAX_PROTO_VERSION, convertProtocolToOpenSSL(maxProtocol), nullptr) != 1)
     {
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::ProtocolInfo",
                          "setProtocolInfo",
@@ -108,13 +108,13 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 void CipherInfo::apply(SSL_CTX* ctx) const
 {
     /*Set the Cipher List*/
-    if (SSL_CTX_set_cipher_list(ctx, cipherList.c_str()) <= 0)
+    if (MOCK_FUNC(SSL_CTX_set_cipher_list)(ctx, cipherList.c_str()) <= 0)
     {
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CipherInfo",
                          "setCipherInfo",
                          "SSL_CTX_set_cipher_list() failed: ", buildOpenSSLErrorMessage());
     }
-    if (SSL_CTX_set_ciphersuites(ctx, cipherSuite.c_str()) <= 0)
+    if (MOCK_FUNC(SSL_CTX_set_ciphersuites)(ctx, cipherSuite.c_str()) <= 0)
     {
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CipherInfo",
                          "setCipherInfo",
@@ -126,13 +126,13 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 void CipherInfo::apply(SSL* ssl) const
 {
     /*Set the Cipher List*/
-    if (SSL_set_cipher_list(ssl, cipherList.c_str()) <= 0)
+    if (MOCK_FUNC(SSL_set_cipher_list)(ssl, cipherList.c_str()) <= 0)
     {
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CipherInfo",
                          "setCipherInfo",
                          "SSL_set_cipher_list() failed: ", buildOpenSSLErrorMessage());
     }
-    if (SSL_set_ciphersuites(ssl, cipherSuite.c_str()) <= 0)
+    if (MOCK_FUNC(SSL_set_ciphersuites)(ssl, cipherSuite.c_str()) <= 0)
     {
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CipherInfo",
                          "setCipherInfo",
@@ -164,11 +164,11 @@ void CertificateInfo::apply(SSL_CTX* ctx) const
     if (certificateFileName != "")
     {
         /*Load the password for the Private Key*/
-        SSL_CTX_set_default_passwd_cb(ctx, certificateInfo_PasswdCB);
-        SSL_CTX_set_default_passwd_cb_userdata(ctx, static_cast<void*>(const_cast<CertificateInfo*>(this)));
+        MOCK_FUNC(SSL_CTX_set_default_passwd_cb)(ctx, certificateInfo_PasswdCB);
+        MOCK_FUNC(SSL_CTX_set_default_passwd_cb_userdata)(ctx, static_cast<void*>(const_cast<CertificateInfo*>(this)));
 
         /*Set the certificate to be used.*/
-        if (SSL_CTX_use_certificate_file(ctx, certificateFileName.c_str(), SSL_FILETYPE_PEM) <= 0)
+        if (MOCK_FUNC(SSL_CTX_use_certificate_file)(ctx, certificateFileName.c_str(), SSL_FILETYPE_PEM) <= 0)
         {
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CertificateInfo",
                              "setCertificateInfo",
@@ -176,7 +176,7 @@ void CertificateInfo::apply(SSL_CTX* ctx) const
         }
 
         /*Indicate the key file to be used*/
-        if (SSL_CTX_use_PrivateKey_file(ctx, keyFileName.c_str(), SSL_FILETYPE_PEM) <= 0)
+        if (MOCK_FUNC(SSL_CTX_use_PrivateKey_file)(ctx, keyFileName.c_str(), SSL_FILETYPE_PEM) <= 0)
         {
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CertificateInfo",
                              "setCertificateInfo",
@@ -184,7 +184,7 @@ void CertificateInfo::apply(SSL_CTX* ctx) const
         }
 
         /*Make sure the key and certificate file match*/
-        if (SSL_CTX_check_private_key(ctx) == 0)
+        if (MOCK_FUNC(SSL_CTX_check_private_key)(ctx) == 0)
         {
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CertificateInfo",
                              "setCertificateInfo",
@@ -199,11 +199,11 @@ void CertificateInfo::apply(SSL* ssl) const
     if (certificateFileName != "")
     {
         /*Load the password for the Private Key*/
-        SSL_set_default_passwd_cb(ssl, certificateInfo_PasswdCB);
-        SSL_set_default_passwd_cb_userdata(ssl, static_cast<void*>(const_cast<CertificateInfo*>(this)));
+        MOCK_FUNC(SSL_set_default_passwd_cb)(ssl, certificateInfo_PasswdCB);
+        MOCK_FUNC(SSL_set_default_passwd_cb_userdata)(ssl, static_cast<void*>(const_cast<CertificateInfo*>(this)));
 
         /*Set the certificate to be used.*/
-        if (SSL_use_certificate_file(ssl, certificateFileName.c_str(), SSL_FILETYPE_PEM) <= 0)
+        if (MOCK_FUNC(SSL_use_certificate_file)(ssl, certificateFileName.c_str(), SSL_FILETYPE_PEM) <= 0)
         {
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CertificateInfo",
                              "setCertificateInfo",
@@ -211,7 +211,7 @@ void CertificateInfo::apply(SSL* ssl) const
         }
 
         /*Indicate the key file to be used*/
-        if (SSL_use_PrivateKey_file(ssl, keyFileName.c_str(), SSL_FILETYPE_PEM) <= 0)
+        if (MOCK_FUNC(SSL_use_PrivateKey_file)(ssl, keyFileName.c_str(), SSL_FILETYPE_PEM) <= 0)
         {
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CertificateInfo",
                              "setCertificateInfo",
@@ -219,7 +219,7 @@ void CertificateInfo::apply(SSL* ssl) const
         }
 
         /*Make sure the key and certificate file match*/
-        if (SSL_check_private_key(ssl) == 0)
+        if (MOCK_FUNC(SSL_check_private_key)(ssl) == 0)
         {
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::CertificateInfo",
                              "setCertificateInfo",
@@ -258,23 +258,23 @@ void CertifcateAuthorityDataInfo<A>::apply(SSL_CTX* ctx) const
 
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int CertifcateAuthorityDataInfo<File>::setDefaultCertifcateAuthorityInfo(SSL_CTX* ctx)               const {return SSL_CTX_set_default_verify_file(ctx);}
+int CertifcateAuthorityDataInfo<File>::setDefaultCertifcateAuthorityInfo(SSL_CTX* ctx)               const {return MOCK_FUNC(SSL_CTX_set_default_verify_file)(ctx);}
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int CertifcateAuthorityDataInfo<Dir>::setDefaultCertifcateAuthorityInfo(SSL_CTX* ctx)                const {return SSL_CTX_set_default_verify_dir(ctx);}
+int CertifcateAuthorityDataInfo<Dir>::setDefaultCertifcateAuthorityInfo(SSL_CTX* ctx)                const {return MOCK_FUNC(SSL_CTX_set_default_verify_dir)(ctx);}
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int CertifcateAuthorityDataInfo<Store>::setDefaultCertifcateAuthorityInfo(SSL_CTX* ctx)              const {return SSL_CTX_set_default_verify_store(ctx);}
+int CertifcateAuthorityDataInfo<Store>::setDefaultCertifcateAuthorityInfo(SSL_CTX* ctx)              const {return MOCK_FUNC(SSL_CTX_set_default_verify_store)(ctx);}
 
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int CertifcateAuthorityDataInfo<File>::setOneCertifcateAuthorityInfo(SSL_CTX* ctx, char const* item) const {return SSL_CTX_load_verify_file(ctx, item);}
+int CertifcateAuthorityDataInfo<File>::setOneCertifcateAuthorityInfo(SSL_CTX* ctx, char const* item) const {return MOCK_FUNC(SSL_CTX_load_verify_file)(ctx, item);}
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int CertifcateAuthorityDataInfo<Dir>::setOneCertifcateAuthorityInfo(SSL_CTX* ctx, char const* item)  const {return SSL_CTX_load_verify_dir(ctx, item);}
+int CertifcateAuthorityDataInfo<Dir>::setOneCertifcateAuthorityInfo(SSL_CTX* ctx, char const* item)  const {return MOCK_FUNC(SSL_CTX_load_verify_dir)(ctx, item);}
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int CertifcateAuthorityDataInfo<Store>::setOneCertifcateAuthorityInfo(SSL_CTX* ctx, char const* item)const {return SSL_CTX_load_verify_store(ctx, item);}
+int CertifcateAuthorityDataInfo<Store>::setOneCertifcateAuthorityInfo(SSL_CTX* ctx, char const* item)const {return MOCK_FUNC(SSL_CTX_load_verify_store)(ctx, item);}
 
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
@@ -296,13 +296,13 @@ void CertifcateAuthorityInfo::apply(SSL_CTX* ctx) const
 
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int ClientCAListDataInfo<File>::addCAToList(STACK_OF(X509_NAME)* certs, char const* item)   const {return SSL_add_file_cert_subjects_to_stack(certs, item);}
+int ClientCAListDataInfo<File>::addCAToList(STACK_OF(X509_NAME)* certs, char const* item)   const {return MOCK_FUNC(SSL_add_file_cert_subjects_to_stack)(certs, item);}
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int ClientCAListDataInfo<Dir>::addCAToList(STACK_OF(X509_NAME)* certs, char const* item)    const {return SSL_add_dir_cert_subjects_to_stack(certs, item);}
+int ClientCAListDataInfo<Dir>::addCAToList(STACK_OF(X509_NAME)* certs, char const* item)    const {return MOCK_FUNC(SSL_add_dir_cert_subjects_to_stack)(certs, item);}
 template<>
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int ClientCAListDataInfo<Store>::addCAToList(STACK_OF(X509_NAME)* certs, char const* item)  const {return SSL_add_store_cert_subjects_to_stack(certs, item);}
+int ClientCAListDataInfo<Store>::addCAToList(STACK_OF(X509_NAME)* certs, char const* item)  const {return MOCK_FUNC(SSL_add_store_cert_subjects_to_stack)(certs, item);}
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 STACK_OF(X509_NAME)* ClientCAListInfo::buildCAToList() const
@@ -312,10 +312,10 @@ STACK_OF(X509_NAME)* ClientCAListInfo::buildCAToList() const
     }
 
     // This macro calls: OPENSSL_sk_new_null (which is mocked).
-    STACK_OF(X509_NAME)* list = sk_X509_NAME_new_null_wrapper();
+    STACK_OF(X509_NAME)* list = MOCK_FUNC(sk_X509_NAME_new_null_wrapper)();
     if (list == nullptr)
     {
-        sk_X509_NAME_free_wrapper(list);
+        MOCK_FUNC(sk_X509_NAME_free_wrapper)(list);
         ThorsLogAndThrow("ThorsAnvil::ThorsSocket::ClientCAListInfo",
                          "buildCAToList",
                          "sk_X509_NAME_new_null() failed: ", buildOpenSSLErrorMessage());
@@ -325,7 +325,7 @@ STACK_OF(X509_NAME)* ClientCAListInfo::buildCAToList() const
         int stat = file.addCAToList(list, item.c_str());
         if (stat != 1)
         {
-            sk_X509_NAME_pop_free_wrapper(list);
+            MOCK_FUNC(sk_X509_NAME_pop_free_wrapper)(list);
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::ClientCAListDataInfo<File>",
                              "addCAToList failed: >", item, "< ", buildOpenSSLErrorMessage());
         }
@@ -335,7 +335,7 @@ STACK_OF(X509_NAME)* ClientCAListInfo::buildCAToList() const
         int stat = dir.addCAToList(list, item.c_str());
         if (stat != 1)
         {
-            sk_X509_NAME_pop_free_wrapper(list);
+            MOCK_FUNC(sk_X509_NAME_pop_free_wrapper)(list);
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::ClientCAListDataInfo<Dir>",
                              "addCAToList failed: >", item, "< ", buildOpenSSLErrorMessage());
         }
@@ -345,7 +345,7 @@ STACK_OF(X509_NAME)* ClientCAListInfo::buildCAToList() const
         int stat = store.addCAToList(list, item.c_str());
         if (stat != 1)
         {
-            sk_X509_NAME_pop_free_wrapper(list);
+            MOCK_FUNC(sk_X509_NAME_pop_free_wrapper)(list);
             ThorsLogAndThrow("ThorsAnvil::ThorsSocket::ClientCAListDataInfo<Store>",
                              "addCAToList failed: >", item, "< ", buildOpenSSLErrorMessage());
         }
@@ -357,11 +357,11 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 void ClientCAListInfo::apply(SSL_CTX* ctx) const
 {
     if (verifyClientCA) {
-        SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT, nullptr);
+        MOCK_FUNC(SSL_CTX_set_verify)(ctx, SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT, nullptr);
     }
     STACK_OF(X509_NAME)* list = buildCAToList();
     if (list != nullptr) {
-        SSL_CTX_set_client_CA_list(ctx, list);
+        MOCK_FUNC(SSL_CTX_set_client_CA_list)(ctx, list);
     }
 };
 
@@ -369,20 +369,20 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 void ClientCAListInfo::apply(SSL* ssl) const
 {
     if (verifyClientCA) {
-        SSL_set_verify(ssl, SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT, nullptr);
+        MOCK_FUNC(SSL_set_verify)(ssl, SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT, nullptr);
     }
     STACK_OF(X509_NAME)* list = buildCAToList();
     if (list != nullptr) {
-        SSL_set_client_CA_list(ssl, list);
+        MOCK_FUNC(SSL_set_client_CA_list)(ssl, list);
     }
 };
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-SSL_METHOD const* SSLctx::createClient()            {return TLS_client_method();}
+SSL_METHOD const* SSLctx::createClient()            {return MOCK_FUNC(TLS_client_method)();}
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-SSL_METHOD const* SSLctx::createServer()            {return TLS_server_method();}
+SSL_METHOD const* SSLctx::createServer()            {return MOCK_FUNC(TLS_server_method)();}
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-SSL_CTX* SSLctx::newCtx(SSL_METHOD const* method)   {return SSL_CTX_new(method);}
+SSL_CTX* SSLctx::newCtx(SSL_METHOD const* method)   {return MOCK_FUNC(SSL_CTX_new)(method);}
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 SSLUtil::SSLUtil()
@@ -403,7 +403,7 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 SSLctx::~SSLctx()
 {
     if (ctx) {
-        SSL_CTX_free(ctx);
+        MOCK_FUNC(SSL_CTX_free)(ctx);
     }
 }
 }

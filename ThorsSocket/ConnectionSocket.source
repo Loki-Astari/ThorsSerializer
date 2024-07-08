@@ -9,7 +9,7 @@ Socket::Socket(SocketInfo const& socketInfo, Blocking blocking)
     : fd(thorInvalidFD())
 {
     // https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-socket
-    fd  = socket(AF_INET, SOCK_STREAM, 0);
+    fd  = MOCK_FUNC(socket)(AF_INET, SOCK_STREAM, 0);
     if (fd == thorInvalidFD())
     {
         int saveErrno = thorGetSocketError();
@@ -26,14 +26,14 @@ Socket::Socket(SocketInfo const& socketInfo, Blocking blocking)
     do
     {
         // https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-gethostbyname
-        serv = gethostbyname(&socketInfo.host[0]);
+        serv = MOCK_FUNC(gethostbyname)(&socketInfo.host[0]);
     }
     while (serv == nullptr && thorErrorIsTryAgain(thorGetSocketError()));
 
     if (serv == nullptr)
     {
         int saveErrno = thorGetSocketError();
-        thorCloseSocket(fd);
+        MOCK_FUNC(thorCloseSocket)(fd);
 
         ThorsLogAndThrow(
             "ThorsAnvil::ThorsSocket::ConnectionType::Socket",
@@ -52,12 +52,12 @@ Socket::Socket(SocketInfo const& socketInfo, Blocking blocking)
     std::copy(src, src + serv->h_length, dst);
 
     // https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect
-    int result = connect(fd, reinterpret_cast<SocketAddr*>(&serverAddr), sizeof(serverAddr));
-    //int result = connect(fd, reinterpret_cast<SOCKADDR*>(&serverAddr), sizeof(serverAddr));
+    int result = MOCK_FUNC(connect)(fd, reinterpret_cast<SocketAddr*>(&serverAddr), sizeof(serverAddr));
+    //int result = MOCK_FUNC(connect)(fd, reinterpret_cast<SOCKADDR*>(&serverAddr), sizeof(serverAddr));
     if (result != 0)
     {
         int saveErrno = thorGetSocketError();
-        thorCloseSocket(fd);
+        MOCK_FUNC(thorCloseSocket)(fd);
 
         ThorsLogAndThrow(
             "ThorsAnvil::ThorsSocket::ConnectionType::Socket",
@@ -70,10 +70,10 @@ Socket::Socket(SocketInfo const& socketInfo, Blocking blocking)
 
     if (blocking == Blocking::No)
     {
-        if (thorSetSocketNonBlocking(fd) == -1)
+        if (MOCK_FUNC(thorSetSocketNonBlocking)(fd) == -1)
         {
             int saveErrno = thorGetSocketError();
-            thorCloseSocket(fd);
+            MOCK_FUNC(thorCloseSocket)(fd);
 
             ThorsLogAndThrow(
                 "ThorsAnvil::ThorsSocket::ConnectionType::Socket",
@@ -113,7 +113,7 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 void Socket::close()
 {
     if (fd != thorInvalidFD()) {
-        thorCloseSocket(fd);
+        MOCK_FUNC(thorCloseSocket)(fd);
     }
     fd = thorInvalidFD();
 }
@@ -121,7 +121,7 @@ void Socket::close()
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 void Socket::tryFlushBuffer()
 {
-    int result = thorShutdownSocket(fd);
+    int result = MOCK_FUNC(thorShutdownSocket)(fd);
     if (result != 0)
     {
         int saveErrno = thorGetSocketError();
@@ -144,7 +144,7 @@ void Socket::release()
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 IOData Socket::readFromStream(char* buffer, std::size_t size)
 {
-    int chunkRead = recv(fd, buffer, size, 0);
+    int chunkRead = MOCK_FUNC(recv)(fd, buffer, size, 0);
     if (chunkRead == 0) {
         return {0, false, false};
     }
@@ -198,7 +198,7 @@ THORS_SOCKET_HEADER_ONLY_INCLUDE
 IOData Socket::writeToStream(char const* buffer, std::size_t size)
 {
     // https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send
-    int chunkWritten = send(fd, buffer, size, 0);
+    int chunkWritten = MOCK_FUNC(send)(fd, buffer, size, 0);
     if (chunkWritten == SOCKET_ERROR)
     {
         // https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send
