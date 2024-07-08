@@ -3,18 +3,17 @@
 
 #include "ThorsSocketConfig.h"
 #include "ConnectionFileDescriptor.h"
-#include <string>
 
 namespace ThorsAnvil::ThorsSocket::ConnectionType
 {
 
-class File: public FileDescriptor
+class SimpleFile: public FileDescriptor
 {
     int fd;
     public:
-        File(std::string const& fileName, Open type, Blocking blocking);
-        File(int fd);
-        virtual ~File();
+        SimpleFile(FileInfo const& fileInfo, Blocking blocking);
+        SimpleFile(int fd);
+        virtual ~SimpleFile();
 
         virtual bool isConnected()                          const   override;
         virtual int  socketId(Mode mode)                    const   override;
@@ -22,12 +21,13 @@ class File: public FileDescriptor
 
         virtual int getReadFD()                             const   override;
         virtual int getWriteFD()                            const   override;
+        virtual void release()                                      override;
 };
 
 }
 
 #if THORS_SOCKET_HEADER_ONLY
-#include "ConnectionFile.source"
+#include "ConnectionSimpleFile.source"
 #endif
 
 #endif

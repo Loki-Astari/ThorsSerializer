@@ -2,9 +2,9 @@
 #define THORSANVIL_THORSSOCKET_CONNECTION_SOCKET_H
 
 #include "ThorsSocketConfig.h"
+#include "ConnectionUtil.h"
 #include "ConnectionFileDescriptor.h"
 
-#include <string>
 #include <cstddef>
 
 namespace ThorsAnvil::ThorsSocket::ConnectionType
@@ -22,14 +22,15 @@ class Socket: public ConnectionType::FileDescriptor
 {
     SOCKET_TYPE fd;
     public:
-        Socket(std::string const& host, int port, Blocking blocking);
-        Socket(SOCKET_TYPE fd);
+        Socket(SocketInfo const& socketInfo, Blocking blocking);
+        Socket(OpenSocketInfo const& socketInfo);
         virtual ~Socket();
 
         virtual bool isConnected()                          const   override;
         virtual int  socketId(Mode rw)                      const   override;
         virtual void close()                                        override;
         virtual void tryFlushBuffer()                               override;
+        virtual void release()                                      override;
 
 #if __WINNT__
         virtual IOData readFromStream(char* buffer, std::size_t size)       override;

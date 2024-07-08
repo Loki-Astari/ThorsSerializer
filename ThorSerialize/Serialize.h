@@ -170,7 +170,7 @@ template<typename P>
 struct BaseTypeGetter
 {
     // Done this way so smart pointers can specialize
-    using type = typename std::remove_pointer<P>::type;
+    using type = std::remove_pointer_t<P>;
 };
 
 /* ------------ MetaTraits for Serialization/DeSerialization ------------------------- */

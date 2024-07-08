@@ -1,19 +1,40 @@
+#include "ConnectionSSocket.h"
 #include "ThorsLogging/ThorsLogging.h"
+
+#include <openssl/ssl.h>
 #include <openssl/err.h>
-#include <cstddef>
-#include <iostream>
-#include <utility>
-#include <stdexcept>
+
 
 extern "C"
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 int certificateInfo_PasswdCB(char* buf, int size, int rwflag, void* userdata)
 {
-    return ThorsAnvil::ThorsSocket::ConnectionType::certificateInfo_PasswdCBNormal(buf, size, rwflag, userdata);
+    return ThorsAnvil::ThorsSocket::certificateInfo_PasswdCBNormal(buf, size, rwflag, userdata);
 }
 
+namespace ThorsAnvil::ThorsSocket
+{
 THORS_SOCKET_HEADER_ONLY_INCLUDE
-int ThorsAnvil::ThorsSocket::ConnectionType::certificateInfo_PasswdCBNormal(char* buf, int size, int rwflag, void* userdata)
+std::string buildOpenSSLErrorMessage(bool prefix)
+{
+    bool errorAdded = false;
+    std::stringstream result;
+    if (prefix) {
+        result << "ConnectionType::SSocket: ";
+    }
+    for (long code = ERR_get_error(); code != 0; code = MOCK_FUNC(ERR_get_error)())
+    {
+        errorAdded = true;
+        result << "ErrorCode=" << code << ": msg: " << ERR_error_string(code, nullptr) << ":";
+    }
+    if (!errorAdded) {
+        result << "No error codes found!";
+    }
+    return result.str();
+}
+}
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+int ThorsAnvil::ThorsSocket::certificateInfo_PasswdCBNormal(char* buf, int size, int rwflag, void* userdata)
 {
     CertificateInfo& certificateInfo = *static_cast<CertificateInfo*>(userdata);
     std::string&& password = certificateInfo.getPassword(rwflag);
@@ -29,7 +50,7 @@ int ThorsAnvil::ThorsSocket::ConnectionType::certificateInfo_PasswdCBNormal(char
     return password.size();
 }
 
-namespace ThorsAnvil::ThorsSocket::ConnectionType
+namespace ThorsAnvil::ThorsSocket
 {
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
@@ -355,5 +376,35 @@ void ClientCAListInfo::apply(SSL* ssl) const
         SSL_set_client_CA_list(ssl, list);
     }
 };
+
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+SSL_METHOD const* SSLctx::createClient()            {return TLS_client_method();}
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+SSL_METHOD const* SSLctx::createServer()            {return TLS_server_method();}
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+SSL_CTX* SSLctx::newCtx(SSL_METHOD const* method)   {return SSL_CTX_new(method);}
+
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+SSLUtil::SSLUtil()
+{
+    SSL_load_error_strings();
+    SSL_library_init();
+    //OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS, nullptr);
+}
+
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+SSLUtil& SSLUtil::getInstance()
+{
+    static SSLUtil  instance;
+    return instance;
+}
+
+THORS_SOCKET_HEADER_ONLY_INCLUDE
+SSLctx::~SSLctx()
+{
+    if (ctx) {
+        SSL_CTX_free(ctx);
+    }
+}
 }
 

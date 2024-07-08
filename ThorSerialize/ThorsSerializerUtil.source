@@ -21,6 +21,7 @@ void ParserInterface::ignoreValue()
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void ParserInterface::ignoreTheMap()
 {
+    ignoreDataMap(true);
     for (ParserToken token = getNextToken(); token != ParserToken::MapEnd; token = getNextToken())
     {
         ignoreDataValue();
@@ -32,11 +33,13 @@ void ParserInterface::ignoreTheMap()
         }
         ignoreTheValue();
     }
+    ignoreDataMap(false);
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void ParserInterface::ignoreTheArray()
 {
+    ignoreDataArray(true);
     ParserToken token = getNextToken();
     while (token != ParserToken::ArrayEnd)
     {
@@ -72,6 +75,7 @@ void ParserInterface::ignoreTheArray()
         }
         token = getNextToken();
     }
+    ignoreDataArray(false);
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE

@@ -11,7 +11,7 @@ class Pipe: public FileDescriptor
 {
     int fd[2];
     public:
-        Pipe(Blocking blocking);
+        Pipe(PipeInfo const& pipeInfo, Blocking blocking);
         Pipe(int fd[]);
         virtual ~Pipe();
 
@@ -21,6 +21,7 @@ class Pipe: public FileDescriptor
 
         virtual int getReadFD()                             const   override;
         virtual int getWriteFD()                            const   override;
+        virtual void release()                                      override;
 };
 
 }

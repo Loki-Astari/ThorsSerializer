@@ -25,7 +25,7 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
-template<typename T, TraitType trait = Traits<T>::type>
+template<typename T, TraitType trait = Traits<std::remove_cv_t<T>>::type>
 struct BsonBaseTypeGetter
 {
     static constexpr BsonContainer value = BsonContainer::Value;
@@ -120,7 +120,7 @@ std::size_t bsonGetPrintSize(T const& value, PrinterInterface::PrinterConfig con
 
     std::stringstream         fakeStream;
     typename Bson::Printer    printer(fakeStream, config);
-    return Traits<T>::getPrintSize(printer, value, false);
+    return Traits<std::remove_cv_t<T>>::getPrintSize(printer, value, false);
 }
     }
 }

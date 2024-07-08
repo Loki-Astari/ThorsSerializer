@@ -100,20 +100,16 @@ namespace ThorsAnvil
 }
 
 #if defined(THORS_LOGGING_HEADER_ONLY) && THORS_LOGGING_HEADER_ONLY == 1
-#define ThorsLogAndThrowAction(Level, Exception, Scope, Function, ...)  \
+
+#define ThorsLogOutput(Level, message)                                  \
 do                                                                      \
 {                                                                       \
-    std::string message_ThorsLogAndThrowAction =                        \
-                          ThorsAnvil::Utility::buildErrorMessage(       \
-                                            Scope,                      \
-                                            Function,                   \
-                                            __VA_ARGS__);               \
     if ((loguru::Verbosity_ ## Level) <= THOR_LOGGING_DEFAULT_LOG_LEVEL) {      \
-        std::cerr << message_ThorsLogAndThrowAction;                    \
+        std::cerr << message;                                           \
     }                                                                   \
-    throw Exception(message_ThorsLogAndThrowAction);                    \
 }                                                                       \
 while (false)
+
 #define ThorsMessage(Level, ...)                                        \
 do                                                                      \
 {                                                                       \
@@ -122,8 +118,15 @@ do                                                                      \
     }                                                                   \
 }                                                                       \
 while (false)
+
 #else
-#define ThorsLogAndThrowAction(Level, Exception, Scope, Function, ...)  \
+
+#define ThorsLogOutput(Level, message)  LOG_F(Level, "%s", message_ThorsLogAndThrowAction.c_str())
+#define ThorsMessage(Level, ...)        VLOG_S(loguru::Verbosity_ ## Level) << ThorsAnvil::Utility::buildErrorMessage(__VA_ARGS__)
+
+#endif
+
+#define ThorsLogActionWithPotetialThrow(hasExcept, Exception, Level, Scope, Function, ...)          \
 do                                                                      \
 {                                                                       \
     std::string message_ThorsLogAndThrowAction =                        \
@@ -131,19 +134,24 @@ do                                                                      \
                                             Scope,                      \
                                             Function,                   \
                                             __VA_ARGS__);               \
-    LOG_F(Level, "%s", message_ThorsLogAndThrowAction.c_str());         \
-    throw Exception(message_ThorsLogAndThrowAction);                    \
+    ThorsLogOutput(Level, message_ThorsLogAndThrowAction);              \
+    if constexpr (hasExcept) {                                          \
+        throw Exception(message_ThorsLogAndThrowAction);                \
+    }                                                                   \
 }                                                                       \
 while (false)
 
-#define ThorsMessage(Level, ...)        VLOG_S(loguru::Verbosity_ ## Level) << ThorsAnvil::Utility::buildErrorMessage(__VA_ARGS__)
-#endif
+#define ThorsLogAndThrowAction(...)     ThorsLogActionWithPotetialThrow(true, __VA_ARGS__)
+#define ThorsLogAction(...)             ThorsLogActionWithPotetialThrow(false, std::runtime_error, __VA_ARGS__)
 
-
-#define ThorsLogAndThrowFatal(...)      ThorsLogAndThrowAction(FATAL,   ThorsAnvil::Logging::FatalException, __VA_ARGS__)
-#define ThorsLogAndThrowCritical(...)   ThorsLogAndThrowAction(ERROR,   ThorsAnvil::Logging::CriticalException, __VA_ARGS__)
-#define ThorsLogAndThrowLogical(...)    ThorsLogAndThrowAction(WARNING, ThorsAnvil::Logging::LogicalException, __VA_ARGS__)
-#define ThorsLogAndThrow(...)           ThorsLogAndThrowAction(2, std::runtime_error, __VA_ARGS__)
+#define ThorsLogAndThrowFatal(...)      ThorsLogAndThrowAction(ThorsAnvil::Logging::FatalException,    FATAL,   __VA_ARGS__)
+#define ThorsLogAndThrowCritical(...)   ThorsLogAndThrowAction(ThorsAnvil::Logging::CriticalException, ERROR,   __VA_ARGS__)
+#define ThorsLogAndThrowLogical(...)    ThorsLogAndThrowAction(ThorsAnvil::Logging::LogicalException,  WARNING, __VA_ARGS__)
+#define ThorsLogAndThrow(...)           ThorsLogAndThrowAction(std::runtime_error,                     2,       __VA_ARGS__)
+#define ThorsLogFatal(...)              ThorsLogAction(FATAL,   __VA_ARGS__)
+#define ThorsLogCritical(...)           ThorsLogAction(ERROR,   __VA_ARGS__)
+#define ThorsLogLogical(...)            ThorsLogAction(WARNING, __VA_ARGS__)
+#define ThorsLog(...)                   ThorsLogAction(2,       __VA_ARGS__)
 
 #define ThorsCatchMessage(S, F, e)      ThorsMessage(2, S, F, "Caught Exception: ", e)
 #define ThorsRethrowMessage(S, F, e)    ThorsMessage(2, S, F, "ReThrow Exception: ",e)
