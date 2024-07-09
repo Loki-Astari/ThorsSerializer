@@ -2,6 +2,8 @@
 #define THORSANVIL_THORSSOCKET_CONNECTION_WRAPPER_H
 
 #include "ThorsSocketConfig.h"
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 #include <fcntl.h>
 
 #ifdef  __WINNT__
@@ -51,6 +53,10 @@ inline bool thorErrorIsTryAgain(int error)  {return error == TRY_AGAIN;}
 // Used in both Win and Unix versions
 char const* getErrNoStrUnix(int error);
 char const* getErrMsgUnix(int error);
+
+inline STACK_OF(X509_NAME)* sk_X509_NAME_new_null_wrapper()                            {return sk_X509_NAME_new_null();}
+inline void                 sk_X509_NAME_free_wrapper(STACK_OF(X509_NAME)* list)       {sk_X509_NAME_free(list);}
+inline void                 sk_X509_NAME_pop_free_wrapper(STACK_OF(X509_NAME)* list)   {sk_X509_NAME_pop_free(list, X509_NAME_free);}
 
 #if THORS_SOCKET_HEADER_ONLY
 #include "ConnectionUtil.source"

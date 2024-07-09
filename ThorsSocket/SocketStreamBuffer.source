@@ -4,6 +4,7 @@ namespace ThorsAnvil::ThorsSocket
 {
 
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 SocketStreamBuffer::SocketStreamBuffer(PipeInfo const& info)
     : std::streambuf{}
     , socket(info, Blocking::No)
@@ -16,6 +17,7 @@ SocketStreamBuffer::SocketStreamBuffer(PipeInfo const& info)
     setp(&inputBuffer[0], &inputBuffer[0] + inputBuffer.size() - 1);
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 SocketStreamBuffer::SocketStreamBuffer(FileInfo const& info)
     : std::streambuf{}
     , socket(info, Blocking::No)
@@ -28,6 +30,7 @@ SocketStreamBuffer::SocketStreamBuffer(FileInfo const& info)
     setp(&inputBuffer[0], &inputBuffer[0] + inputBuffer.size() - 1);
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 SocketStreamBuffer::SocketStreamBuffer(SocketInfo const& info)
     : std::streambuf{}
     , socket(info, Blocking::No)
@@ -40,6 +43,7 @@ SocketStreamBuffer::SocketStreamBuffer(SocketInfo const& info)
     setp(&inputBuffer[0], &inputBuffer[0] + inputBuffer.size() - 1);
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 SocketStreamBuffer::SocketStreamBuffer(SSocketInfo const& info)
     : std::streambuf{}
     , socket(info, Blocking::No)
@@ -52,6 +56,7 @@ SocketStreamBuffer::SocketStreamBuffer(SSocketInfo const& info)
     setp(&inputBuffer[0], &inputBuffer[0] + inputBuffer.size() - 1);
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 SocketStreamBuffer::SocketStreamBuffer(SocketStreamBuffer&& move) noexcept
     : std::streambuf{std::move(move)}
     , socket(std::move(move.socket))
@@ -65,6 +70,7 @@ SocketStreamBuffer::SocketStreamBuffer(SocketStreamBuffer&& move) noexcept
     pbump(move.pptr() - move.pbase());
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 SocketStreamBuffer::~SocketStreamBuffer()
 {
     if (pbase() == nullptr)
@@ -289,6 +295,7 @@ std::streampos SocketStreamBuffer::seekoff(std::streamoff off, std::ios_base::se
                 : inCount  + (gptr() - eback());
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 void SocketStreamBuffer::reserveInputSize(std::size_t size)
 {
     char_type* begin    = eback();
@@ -303,6 +310,7 @@ void SocketStreamBuffer::reserveInputSize(std::size_t size)
     }
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 void SocketStreamBuffer::reserveOutputSize(std::size_t size)
 {
     char_type* begin    = pbase();
@@ -318,6 +326,7 @@ void SocketStreamBuffer::reserveOutputSize(std::size_t size)
     }
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 std::streamsize SocketStreamBuffer::writeToStream(char const* data, std::size_t size)
 {
     IOData result = socket.putMessageData(data, size);
@@ -325,6 +334,7 @@ std::streamsize SocketStreamBuffer::writeToStream(char const* data, std::size_t 
     return result.dataSize;
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 std::streamsize SocketStreamBuffer::readFromStream(char* data, std::size_t size)
 {
     IOData result = socket.getMessageData(data, size);

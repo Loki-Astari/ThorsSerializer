@@ -1,6 +1,7 @@
 #ifndef THORSANVIL_THORSSOCKET_SOCKET_UTIL_H
 #define THORSANVIL_THORSSOCKET_SOCKET_UTIL_H
 
+#include "ThorsSocketConfig.h"
 #include "SecureSocketUtil.h"
 
 #include <cstddef>

@@ -65,6 +65,7 @@ Socket::Socket(Socket&& move) noexcept
     , writeYield(std::exchange(move.writeYield, [](){return false;}))
 {}
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 Socket::~Socket()
 {}
 

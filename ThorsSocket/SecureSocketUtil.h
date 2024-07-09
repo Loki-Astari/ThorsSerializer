@@ -210,7 +210,7 @@ SSLctx::SSLctx(SSLMethodType methodType, Args&&... args)
 }
 
 #if THORS_SOCKET_HEADER_ONLY
-#include "ConnectionSSocketUtil.source"
+#include "SecureSocketUtil.source"
 #endif
 
 #endif

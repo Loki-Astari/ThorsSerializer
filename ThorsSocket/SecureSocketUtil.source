@@ -1,4 +1,4 @@
-#include "ConnectionSSocket.h"
+#include "ConnectionUtil.h"
 #include "ThorsLogging/ThorsLogging.h"
 
 #include <openssl/ssl.h>
@@ -33,6 +33,7 @@ std::string buildOpenSSLErrorMessage(bool prefix)
     return result.str();
 }
 }
+
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 int ThorsAnvil::ThorsSocket::certificateInfo_PasswdCBNormal(char* buf, int size, int rwflag, void* userdata)
 {
@@ -229,6 +230,7 @@ void CertificateInfo::apply(SSL* ssl) const
 }
 
 template<AuthorityType A>
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 void CertifcateAuthorityDataInfo<A>::apply(SSL_CTX* ctx) const
 {
     if (loadDefault)

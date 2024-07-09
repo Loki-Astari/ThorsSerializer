@@ -21,6 +21,7 @@ SSocketBase::SSocketBase(OpenSSocketInfo const& ssocketInfo)
     initSSocket(ssocketInfo.ctx, std::move(ssocketInfo.certificate));
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 void SSocketBase::initSSocket(SSLctx const& ctx, CertificateInfo&& certificate)
 {
     ssl = MOCK_FUNC(SSL_new)(ctx.ctx);
@@ -53,18 +54,21 @@ void SSocketBase::initSSocket(SSLctx const& ctx, CertificateInfo&& certificate)
     }
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 SSocketClient::SSocketClient(SSocketInfo const& ssocketInfo, Blocking blocking)
     : SSocketBase(ssocketInfo, blocking)
 {
     initSSocketClient();
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 SSocketClient::SSocketClient(OpenSSocketInfo const& ssocketInfo)
     : SSocketBase(ssocketInfo)
 {
     initSSocketClient();
 }
 
+THORS_SOCKET_HEADER_ONLY_INCLUDE
 void SSocketClient::initSSocketClient()
 {
     int ret;
