@@ -91,11 +91,6 @@
 /* Version number of package */
 #define VERSION "3.0"
 
-#if !defined(THOR_COVERAGE)
-#define MOCK_FUNC(func)     func
-#deine  MOCK_TFUNC(func)    func
-#endif
-
 
 
 #endif
