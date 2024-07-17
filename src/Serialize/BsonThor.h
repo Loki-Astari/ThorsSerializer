@@ -113,7 +113,7 @@ Importer<Bson, T> bsonImporter(T& value, ParserInterface::ParserConfig config = 
 // @param config.catchExceptions    'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
 // @return                          The size of the object that would be put on the stream in bytes.
 template<typename T>
-std::size_t bsonGetPrintSize(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{})
+std::size_t bsonGetPrintSize(T const& value, BsonPrinterConfig config = PrinterInterface::PrinterConfig{})
 {
     config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
     BsonBaseTypeGetter<T>::validate(value);
