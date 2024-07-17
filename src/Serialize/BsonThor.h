@@ -84,12 +84,12 @@ struct Bson
 // @param config.catchExceptions    'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
 // @return                          Object that can be passed to operator<< for serialization.
 template<typename T>
-Exporter<Bson, T> bsonExporter(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{})
+Exporter<Bson, T, BsonPrinterConfig> bsonExporter(T const& value, BsonPrinterConfig config = PrinterInterface::PrinterConfig{})
 {
     config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
     BsonBaseTypeGetter<T>::validate(value);
 
-    return Exporter<Bson, T>(value, config);
+    return Exporter<Bson, T, BsonPrinterConfig>(value, config);
 }
 
 // @function-api
