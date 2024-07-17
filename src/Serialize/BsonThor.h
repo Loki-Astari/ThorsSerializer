@@ -84,12 +84,12 @@ struct Bson
 // @param config.catchExceptions    'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
 // @return                          Object that can be passed to operator<< for serialization.
 template<typename T>
-Exporter<Bson, T> bsonExporter(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{})
+Exporter<Bson, T, BsonPrinterConfig> bsonExporter(T const& value, BsonPrinterConfig config = PrinterInterface::PrinterConfig{})
 {
     config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
     BsonBaseTypeGetter<T>::validate(value);
 
-    return Exporter<Bson, T>(value, config);
+    return Exporter<Bson, T, BsonPrinterConfig>(value, config);
 }
 
 // @function-api
@@ -113,7 +113,7 @@ Importer<Bson, T> bsonImporter(T& value, ParserInterface::ParserConfig config = 
 // @param config.catchExceptions    'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
 // @return                          The size of the object that would be put on the stream in bytes.
 template<typename T>
-std::size_t bsonGetPrintSize(T const& value, PrinterInterface::PrinterConfig config = PrinterInterface::PrinterConfig{})
+std::size_t bsonGetPrintSize(T const& value, BsonPrinterConfig config = PrinterInterface::PrinterConfig{})
 {
     config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
     BsonBaseTypeGetter<T>::validate(value);

@@ -74,20 +74,12 @@
  *
  *      To get this to work you need to define the type SerializableType:
  *
- *              SerializableType::write(Printer, object)
- *              SerializableType::read(Parser, object)
- *
- *
- *      "object" is the object you want to serialize.
- *      Printer/Parser will be derived from
- *          PrinterInterface
- *          ParserInterface
- *
- *      You can write versions that use these generic types or you can
- *      have implementations for specific version.
- *          eg. BsonParser/BsonPrinter
- *
- *      The code will link with the most appropriate version:
+ *          struct SerializableType
+ *          {
+ *              static std::size_t getPrintSizeBson(BsonPrinter& printer, Type const& object);
+ *              static void writeCustom(PrinterInterface& printer, Type const& object);
+ *              static void readCustom(ParserInterface& parser, Type& object);
+ *          };
  *
  * Sometimes you can not use the key names you want (they are reserved words or contain
  * symbols that are not valid in identifiers in C++). So we provide a way to override
@@ -599,7 +591,9 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
                                                                         \
         static std::size_t getPrintSizeTotal(PrinterInterface& printer, MyType const& object, std::size_t& count, std::size_t& memberSize)\
         {                                                               \
+            printer.pushLevel(true);                                    \
             auto r = addSizeEachMember(printer, object, std::make_index_sequence<std::tuple_size_v<Members>>());\
+            printer.popLevel();                                         \
             memberSize  += r.first;                                     \
             count       += r.second;                                    \
                                                                         \

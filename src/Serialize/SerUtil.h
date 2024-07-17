@@ -75,11 +75,13 @@ struct MapLike
     static std::size_t getPrintSize(PrinterInterface& printer, C const& object, bool)
     {
         std::size_t result = printer.getSizeMap(std::size(object));
+        printer.pushLevel(true);
         for (auto const& value: object)
         {
             result += std::size(value.first);
             result += Traits<std::remove_cv_t<T>>::getPrintSize(printer, value.second, false);
         }
+        printer.popLevel();
         return result;
     }
 };
@@ -90,10 +92,12 @@ struct ArrayLike
     static std::size_t getPrintSize(PrinterInterface& printer, C const& object, bool)
     {
         std::size_t result = printer.getSizeArray(std::size(object));
+        printer.pushLevel(false);
         for (auto const& val: object)
         {
             result += Traits<std::remove_cv_t<T>>::getPrintSize(printer, val, false);
         }
+        printer.popLevel();
         return result;
     }
 };
@@ -253,11 +257,15 @@ class Traits<std::pair<F, S>>
         }
         static std::size_t getPrintSize(PrinterInterface& printer, std::pair<F, S> const& object, bool)
         {
-            return printer.getSizeMap(2)
+            std::size_t result = printer.getSizeMap(2);
+            printer.pushLevel(true);
+            result = result
                  + std::strlen("first")
                  + std::strlen("second")
                  + Traits<std::remove_cv_t<std::decay_t<F>>>::getPrintSize(printer, object.first, false)
                  + Traits<std::remove_cv_t<std::decay_t<S>>>::getPrintSize(printer, object.second, false);
+            printer.popLevel();
+            return result;
         }
 };
 
@@ -877,7 +885,9 @@ class Traits<std::tuple<Args...>>
         static std::size_t getPrintSize(PrinterInterface& printer, std::tuple<Args...> const& object, bool)
         {
             std::size_t result = printer.getSizeArray(sizeof...(Args));
+            printer.pushLevel(false);
             result += getPrintSizeAllElement(printer, object, std::make_index_sequence<sizeof...(Args)>());
+            printer.popLevel();
             return result;
         }
 };

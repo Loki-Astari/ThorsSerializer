@@ -1,4 +1,5 @@
 #include "BsonPrinter.h"
+#include "MongoUtility.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
 #include <iomanip>
@@ -7,9 +8,34 @@
 using namespace ThorsAnvil::Serialize;
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-BsonPrinter::BsonPrinter(std::ostream& output, PrinterConfig config)
+BsonPrinter::BsonPrinter(std::ostream& output, BsonPrinterConfig config)
     : PrinterInterface(output, config)
+    , idStore(config.idStore)
 {}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void BsonPrinter::pushLevel(bool isMap)
+{
+    currentContainer.emplace_back(isMap ? BsonContainer::Map : BsonContainer::Array);
+}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void BsonPrinter::popLevel()
+{
+    currentContainer.pop_back();
+}
+
+bool BsonPrinter::needToInsertId() const
+{
+    // We will add the _id field on the following condition.
+    // 1: The user has requested this by proving the idStore so we can output the new ObjectID.
+    // 2: We are in an array of objects.
+    // 3: The array is inside a map
+    // The array being inside a amp mirrors the pattern used by Mongo.
+    // See: https://www.mongodb.com/docs/manual/reference/command/insert/
+    // The "Insert" command is the Map which contains the field "documents" which is an array
+    // of documents that will be inserted.
+    return idStore.has_value() && currentContainer.size() == 2 && currentContainer[0] == BsonContainer::Map && currentContainer[1] == BsonContainer::Array;
+}
 
 // MAP
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
@@ -17,11 +43,21 @@ std::size_t BsonPrinter::getSizeMap(std::size_t count)
 {
     /*
      * A map is a document:
-     *      <size 4bytes> <Element-List> <Terminator 1byte>
+     *      <size 4 bytes> <Element-List> <Terminator 1 byte>
      * Each element int the <Element-List> consists of:
-     *      <type 1byte> <e-name (size accounted for) + '\0' 1byte> <object (size accounted for)>
+     *      <type 1 byte> <e-name (size accounted for) + '\0' 1 byte> <object (size accounted for)>
+     * If AddId is true then we will insert and _id member into the map.
+     *      <type 1byte(0x07) <e_name _id\x00>  <Object ID 12-byte>
      */
-    return 4 + (count * (1 + 1)) + 1;
+    std::size_t addIdSize = 0;
+    if (needToInsertId()) {
+        addIdSize = 17;
+    }
+
+    return 4                            // Size
+           + (count * (1 + 1))          // Type plus '\0' for each item
+           + addIdSize                  // Size from extra ID field being inserted.
+           + 1;                         // Terminator
 }
 
 // ARRAY
@@ -53,7 +89,10 @@ std::size_t BsonPrinter::getSizeArray(std::size_t count)
     }
     indexTotalStringLen += (count - accountedFor) * numberOfDigitsThisLevel;
 
-    return getSizeMap(count) + indexTotalStringLen;
+    return 4                            // Size
+           + (count * (1 + 1))          // Type plus '\0' for each item
+           + indexTotalStringLen        // The string lengths.
+           + 1;                         // Terminator
 }
 
 // Add a new Key
@@ -122,7 +161,17 @@ void BsonPrinter::openMap(std::size_t size)
 {
     writeKey('\x03', -1);
     writeSize<4, std::int32_t>(static_cast<std::int32_t>(size));
+
+    bool shouldAddID = needToInsertId();
     currentContainer.emplace_back(BsonContainer::Map);
+
+    if (shouldAddID)
+    {
+        addKey("_id");
+        writeKey('\x07', 12);
+        idStore->get().emplace_back();
+        (*this) << idStore->get().back();
+    }
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE

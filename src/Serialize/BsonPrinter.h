@@ -12,6 +12,7 @@
 #include <boost/endian/conversion.hpp>
 #include <vector>
 #include <iostream>
+#include <functional>
 
 namespace ThorsAnvil
 {
@@ -20,21 +21,35 @@ namespace ThorsAnvil
         class BsonPrinter;
         namespace MongoUtility
         {
+            class ObjectID;
             class UTCDateTime;
             BsonPrinter& operator<<(BsonPrinter& printer, MongoUtility::UTCDateTime const& data);
         }
 
-using IntTypes = std::tuple<std::int32_t, std::int64_t>;
+using IntTypes  = std::tuple<std::int32_t, std::int64_t>;
+using IdStore   = std::optional<std::reference_wrapper<std::vector<MongoUtility::ObjectID>>>;
+
+struct BsonPrinterConfig: public PrinterInterface::PrinterConfig
+{
+    IdStore    idStore;
+    public:
+        using PrinterInterface::PrinterConfig::PrinterConfig;
+        BsonPrinterConfig(PrinterInterface::PrinterConfig val, IdStore idStore = {})
+            : PrinterInterface::PrinterConfig(std::move(val))
+            , idStore(idStore)
+        {}
+};
 
 class BsonPrinter: public PrinterInterface
 {
     friend BsonPrinter& MongoUtility::operator<<(BsonPrinter& printer, MongoUtility::UTCDateTime const& data);
 
-    std::string currentKey;
+    std::string                 currentKey;
     std::vector<BsonContainer>  currentContainer;
     std::vector<std::size_t>    arrayIndex;
+    IdStore                     idStore;
     public:
-        BsonPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
+        BsonPrinter(std::ostream& output, BsonPrinterConfig config = BsonPrinterConfig{});
         virtual FormatType formatType()                             override {return FormatType::Bson;}
         virtual void openDoc()                                      override;
         virtual void closeDoc()                                     override;
@@ -73,8 +88,10 @@ class BsonPrinter: public PrinterInterface
     protected:
         // Protected to allow unit tests
         virtual bool        printerUsesSize()                       override    {return true;}
-        virtual std::size_t getSizeMap(std::size_t /*count*/)       override;
-        virtual std::size_t getSizeArray(std::size_t /*count*/)     override;
+        virtual void        pushLevel(bool isMap)                   override;
+        virtual void        popLevel()                              override;
+        virtual std::size_t getSizeMap(std::size_t count)           override;
+        virtual std::size_t getSizeArray(std::size_t count)         override;
         virtual std::size_t getSizeNull()                           override    {return 0;}
         virtual std::size_t getSizeValue(short int)                 override    {return MaxTemplate<sizeof(short int), 4>::value;}
         virtual std::size_t getSizeValue(int)                       override    {return sizeof(int);}
@@ -119,6 +136,7 @@ class BsonPrinter: public PrinterInterface
         void writeNull();
         void writeBinary(std::string const& value);
 
+        bool needToInsertId() const;
 };
 
 template<std::size_t size, typename Int>
