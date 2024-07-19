@@ -136,6 +136,7 @@ class BsonPrinter: public PrinterInterface
         void writeNull();
         void writeBinary(std::string const& value);
 
+        bool needToInsertId() const;
 };
 
 template<std::size_t size, typename Int>

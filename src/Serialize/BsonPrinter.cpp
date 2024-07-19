@@ -24,6 +24,19 @@ void BsonPrinter::popLevel()
     currentContainer.pop_back();
 }
 
+bool BsonPrinter::needToInsertId() const
+{
+    // We will add the _id field on the following condition.
+    // 1: The user has requested this by proving the idStore so we can output the new ObjectID.
+    // 2: We are in an array of objects.
+    // 3: The array is inside a map
+    // The array being inside a amp mirrors the pattern used by Mongo.
+    // See: https://www.mongodb.com/docs/manual/reference/command/insert/
+    // The "Insert" command is the Map which contains the field "documents" which is an array
+    // of documents that will be inserted.
+    return idStore.has_value() && currentContainer.size() == 2 && currentContainer[0] == BsonContainer::Map && currentContainer[1] == BsonContainer::Array;
+}
+
 // MAP
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::size_t BsonPrinter::getSizeMap(std::size_t count)
@@ -37,7 +50,7 @@ std::size_t BsonPrinter::getSizeMap(std::size_t count)
      *      <type 1byte(0x07) <e_name _id\x00>  <Object ID 12-byte>
      */
     std::size_t addIdSize = 0;
-    if (idStore.has_value() && currentContainer.size() == 1 && currentContainer[0] == BsonContainer::Array) {
+    if (needToInsertId()) {
         addIdSize = 17;
     }
 
@@ -149,7 +162,7 @@ void BsonPrinter::openMap(std::size_t size)
     writeKey('\x03', -1);
     writeSize<4, std::int32_t>(static_cast<std::int32_t>(size));
 
-    bool shouldAddID = idStore.has_value() && currentContainer.size() == 1 && currentContainer[0] == BsonContainer::Array;
+    bool shouldAddID = needToInsertId();
     currentContainer.emplace_back(BsonContainer::Map);
 
     if (shouldAddID)
