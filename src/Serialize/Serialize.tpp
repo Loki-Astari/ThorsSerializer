@@ -17,6 +17,34 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+template<typename T>
+struct GetRefOutputValue;
+
+template<typename T>
+struct GetRefOutputValue<std::reference_wrapper<T>>
+{
+    static T const& getValue(std::reference_wrapper<T> const& input) {return input.get();}
+};
+template<typename T>
+struct GetRefOutputValue<std::optional<T>>
+{
+    static T const& getValue(std::optional<T> const& input) {return input.value();}
+};
+
+template<typename T>
+struct GetRefInputValue;
+
+template<typename T>
+struct GetRefInputValue<std::reference_wrapper<T>>
+{
+    static T& getValue(std::reference_wrapper<T>& input) {return input.get();}
+};
+template<typename T>
+struct GetRefInputValue<std::optional<T>>
+{
+    static T& getValue(std::optional<T>& input) {if (!input.has_value()){input.emplace();}return input.value();}
+};
+
 /* ------------ ApplyActionToParent ------------------------- */
 template<typename P, typename T, typename I>
 class ApplyActionToAllParent
@@ -449,7 +477,9 @@ class DeSerializationForBlock<TraitType::Reference, T>
         {
             using RefType = typename Traits<std::remove_cv_t<T>>::RefType;
             DeSerializationForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>    deserializer(parent, parser);
-            deserializer.scanObject(object.get());
+            // TODO
+            deserializer.scanObject(GetRefInputValue<T>::getValue(object));
+            //deserializer.scanObject(object.get());
         }
 };
 /*
@@ -825,19 +855,6 @@ class SerializerForBlock<TraitType::Pointer, T>
             }
         }
 };
-template<typename T>
-struct GetRefValue;
-
-template<typename T>
-struct GetRefValue<std::reference_wrapper<T>>
-{
-    static T const& getValue(std::reference_wrapper<T> const& input) {return input.get();}
-};
-template<typename T>
-struct GetRefValue<std::optional<T>>
-{
-    static T const& getValue(std::optional<T> const& input) {return input.value();}
-};
 
 template<typename T>
 class SerializerForBlock<TraitType::Reference, T>
@@ -855,7 +872,7 @@ class SerializerForBlock<TraitType::Reference, T>
         void printMembers()
         {
             using RefType = typename Traits<std::remove_cv_t<T>>::RefType;
-            SerializerForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>        serializer(parent, printer, GetRefValue<T>::getValue(object));
+            SerializerForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>        serializer(parent, printer, GetRefOutputValue<T>::getValue(object));
             serializer.printMembers();
         }
 };
