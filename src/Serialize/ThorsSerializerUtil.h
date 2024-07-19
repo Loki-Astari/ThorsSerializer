@@ -470,6 +470,7 @@ THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(long double);
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(bool);
 
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(std::string);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(std::string_view);
 
 #if 0
 template<> class Traits<short int>              {public: THORSANVIL_TRAITS_FOR_VALUE(short int)};
