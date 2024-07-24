@@ -48,6 +48,10 @@ class BsonPrinter: public PrinterInterface
     std::vector<BsonContainer>  currentContainer;
     std::vector<std::size_t>    arrayIndex;
     IdStore                     idStore;
+    bool                        projection;
+    private:
+        std::size_t getSize(std::size_t expected) const             {return projection ? sizeof(int) : expected;}
+        bool        writeProjection()                               {if (projection){writeInt<sizeof(int)>(1);}return projection;}
     public:
         BsonPrinter(std::ostream& output, BsonPrinterConfig config = BsonPrinterConfig{});
         virtual FormatType formatType()                             override {return FormatType::Bson;}
@@ -61,30 +65,30 @@ class BsonPrinter: public PrinterInterface
 
         virtual void addKey(std::string const& key)                 override;
 
-        virtual void addValue(short int value)                      override    {writeInt<MaxTemplate<sizeof(short int), 4>::value>(value);}
-        virtual void addValue(int value)                            override    {writeInt<sizeof(int)>(value);}
-        virtual void addValue(long int value)                       override    {writeInt<sizeof(long int)>(value);}
-        virtual void addValue(long long int value)                  override    {writeInt<sizeof(long long int)>(value);}
-        virtual void addValue(unsigned short int value)             override    {writeInt<MaxTemplate<sizeof(unsigned short int), 4>::value>(value);}
-        virtual void addValue(unsigned int value)                   override    {writeInt<sizeof(unsigned int)>(value);}
-        virtual void addValue(unsigned long int value)              override    {writeInt<sizeof(unsigned long int)>(value);}
-        virtual void addValue(unsigned long long int value)         override    {writeInt<sizeof(unsigned long long int)>(value);}
+        virtual void addValue(short int value)                      override    {if (writeProjection()){return;}writeInt<MaxTemplate<sizeof(short int), 4>::value>(value);}
+        virtual void addValue(int value)                            override    {if (writeProjection()){return;}writeInt<sizeof(int)>(value);}
+        virtual void addValue(long int value)                       override    {if (writeProjection()){return;}writeInt<sizeof(long int)>(value);}
+        virtual void addValue(long long int value)                  override    {if (writeProjection()){return;}writeInt<sizeof(long long int)>(value);}
+        virtual void addValue(unsigned short int value)             override    {if (writeProjection()){return;}writeInt<MaxTemplate<sizeof(unsigned short int), 4>::value>(value);}
+        virtual void addValue(unsigned int value)                   override    {if (writeProjection()){return;}writeInt<sizeof(unsigned int)>(value);}
+        virtual void addValue(unsigned long int value)              override    {if (writeProjection()){return;}writeInt<sizeof(unsigned long int)>(value);}
+        virtual void addValue(unsigned long long int value)         override    {if (writeProjection()){return;}writeInt<sizeof(unsigned long long int)>(value);}
 
-        virtual void addValue(float value)                          override    {writeFloat<MaxTemplate<sizeof(float), 8>::value>(value);}
-        virtual void addValue(double value)                         override    {writeFloat<sizeof(double)>(value);}
+        virtual void addValue(float value)                          override    {if (writeProjection()){return;}writeFloat<MaxTemplate<sizeof(float), 8>::value>(value);}
+        virtual void addValue(double value)                         override    {if (writeProjection()){return;}writeFloat<sizeof(double)>(value);}
 // Work here
 // Currently long double is saved as ieee64 double precision.
 // We need to work out how to use ieee128 quad precision where appropriate.
-        virtual void addValue(long double value)                    override    {writeFloat<8>(value);}
+        virtual void addValue(long double value)                    override    {if (writeProjection()){return;}writeFloat<8>(value);}
 
-        virtual void addValue(bool value)                           override    {writeBool(value);}
+        virtual void addValue(bool value)                           override    {if (writeProjection()){return;}writeBool(value);}
 
-        virtual void addValue(std::string const& value)             override    {writeString(value);}
-        virtual void addValue(std::string_view const& value)        override    {writeString(std::string(value));}
+        virtual void addValue(std::string const& value)             override    {if (writeProjection()){return;}writeString(value);}
+        virtual void addValue(std::string_view const& value)        override    {if (writeProjection()){return;}writeString(std::string(value));}
 
-        virtual void addRawValue(std::string const& value)          override    {writeBinary(value);}
+        virtual void addRawValue(std::string const& value)          override    {if (writeProjection()){return;}writeBinary(value);}
 
-        virtual void addNull()                                      override    {writeNull();}
+        virtual void addNull()                                      override    {if (writeProjection()){return;}writeNull();}
     protected:
         // Protected to allow unit tests
         virtual bool        printerUsesSize()                       override    {return true;}
@@ -92,24 +96,26 @@ class BsonPrinter: public PrinterInterface
         virtual void        popLevel()                              override;
         virtual std::size_t getSizeMap(std::size_t count)           override;
         virtual std::size_t getSizeArray(std::size_t count)         override;
-        virtual std::size_t getSizeNull()                           override    {return 0;}
-        virtual std::size_t getSizeValue(short int)                 override    {return MaxTemplate<sizeof(short int), 4>::value;}
-        virtual std::size_t getSizeValue(int)                       override    {return sizeof(int);}
-        virtual std::size_t getSizeValue(long int)                  override    {return sizeof(long int);}
-        virtual std::size_t getSizeValue(long long int)             override    {return sizeof(long long int);}
-        virtual std::size_t getSizeValue(unsigned short int)        override    {return MaxTemplate<sizeof(unsigned short int), 4>::value;}
-        virtual std::size_t getSizeValue(unsigned int)              override    {return sizeof(unsigned int);}
-        virtual std::size_t getSizeValue(unsigned long int)         override    {return sizeof(unsigned long int);}
-        virtual std::size_t getSizeValue(unsigned long long int)    override    {return sizeof(unsigned long long int);}
-        virtual std::size_t getSizeValue(float)                     override    {return 8;}
-        virtual std::size_t getSizeValue(double)                    override    {return 8;}
-        virtual std::size_t getSizeValue(long double)               override    {return 8;}
-        virtual std::size_t getSizeValue(bool)                      override    {return 1;}
-        virtual std::size_t getSizeValue(std::string const& value)  override    {return 4 + value.size() + 1;}
-        virtual std::size_t getSizeValue(std::string_view const& v) override    {return 4 + std::size(v) + 1;}
-        virtual std::size_t getSizeRaw(std::size_t size)            override    {return 4 + 1 + size;}
+        virtual std::size_t getSizeNull()                           override    {return getSize(0);}
+        virtual std::size_t getSizeValue(short int)                 override    {return getSize(MaxTemplate<sizeof(short int), 4>::value);}
+        virtual std::size_t getSizeValue(int)                       override    {return getSize(sizeof(int));}
+        virtual std::size_t getSizeValue(long int)                  override    {return getSize(sizeof(long int));}
+        virtual std::size_t getSizeValue(long long int)             override    {return getSize(sizeof(long long int));}
+        virtual std::size_t getSizeValue(unsigned short int)        override    {return getSize(MaxTemplate<sizeof(unsigned short int), 4>::value);}
+        virtual std::size_t getSizeValue(unsigned int)              override    {return getSize(sizeof(unsigned int));}
+        virtual std::size_t getSizeValue(unsigned long int)         override    {return getSize(sizeof(unsigned long int));}
+        virtual std::size_t getSizeValue(unsigned long long int)    override    {return getSize(sizeof(unsigned long long int));}
+        virtual std::size_t getSizeValue(float)                     override    {return getSize(8);}
+        virtual std::size_t getSizeValue(double)                    override    {return getSize(8);}
+        virtual std::size_t getSizeValue(long double)               override    {return getSize(8);}
+        virtual std::size_t getSizeValue(bool)                      override    {return getSize(1);}
+        virtual std::size_t getSizeValue(std::string const& value)  override    {return getSize(4 + value.size() + 1);}
+        virtual std::size_t getSizeValue(std::string_view const& v) override    {return getSize(4 + std::size(v) + 1);}
+        virtual std::size_t getSizeRaw(std::size_t size)            override    {return getSize(4 + 1 + size);}
 
     public:
+        bool        setProjection(bool newValue)                                {return std::exchange(projection, newValue);}
+
         void writeKey(char value, std::size_t size);
         template<std::size_t size, typename Int> void writeLE(Int value)
         {

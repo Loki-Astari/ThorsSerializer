@@ -11,6 +11,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 BsonPrinter::BsonPrinter(std::ostream& output, BsonPrinterConfig config)
     : PrinterInterface(output, config)
     , idStore(config.idStore)
+    , projection(false)
 {}
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE

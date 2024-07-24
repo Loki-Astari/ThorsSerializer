@@ -1,6 +1,7 @@
 #include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "BsonPrinter.h"
+#include "BsonThor.h"
 #include <algorithm>
 
 class BsonTestPrinter: public ThorsAnvil::Serialize::BsonPrinter
@@ -466,5 +467,55 @@ TEST(BsonPrinterTest, AddRawValueTest)
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
     EXPECT_EQ(expected, result);
     //NOTE OUTPUT (result, R"({"K1":12})");
+}
+
+struct Inner
+{
+    int     value       = 34;
+    bool    hasValue    = false;
+};
+struct Outer
+{
+    std::string data    = "Data Value";
+    Inner       inner;
+};
+
+ThorsAnvil_MakeTrait(Inner, value, hasValue);
+ThorsAnvil_MakeTrait(Outer, data, inner);
+
+TEST(BsonPrinterTest, TypeProjection)
+{
+    std::stringstream   stream1;
+    Outer               data;
+    stream1 << ThorsAnvil::Serialize::bsonExporter(data);
+
+    std::stringstream                           stream2; 
+    ThorsAnvil::Serialize::Projection<Outer>    projection;
+    stream2 << ThorsAnvil::Serialize::bsonExporter(projection);
+
+    std::string         output1(stream1.str());
+    std::string         output2(stream2.str());
+
+    using namespace std::string_literals;
+    EXPECT_EQ("\x3c\x00\x00\x00"
+                "\x02"      "data\x00"  "\x0B\x00\x00\x00" "Data Value\x00"
+                "\x03"      "inner\x00"
+                    "\x1B\x00\x00\x00"
+                        "\x10"  "value\x00"     "\x22\x00\x00\x00"
+                        "\x08"  "hasValue\x00"  "\x00"
+                        "\x00"
+                "\x00"s,
+                output1);
+
+    using namespace std::string_literals;
+    EXPECT_EQ("\x34\x00\x00\x00"
+                "\x10"      "data\x00"  "\x01\x00\x00\x00"
+                "\x03"      "inner\x00"
+                    "\x1E\x00\x00\x00"
+                        "\x10"  "value\x00"     "\x01\x00\x00\x00"
+                        "\x10"  "hasValue\x00"  "\x01\x00\x00\x00"
+                        "\x00"
+                "\x00"s,
+                output2);
 }
 
