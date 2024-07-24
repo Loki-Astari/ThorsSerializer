@@ -944,6 +944,13 @@ class Traits<std::reference_wrapper<T>>
 {
     public:
         using RefType = T;
+        struct ValueGetter
+        {
+            ValueGetter(PrinterInterface&)   {}
+            ValueGetter(ParserInterface&)    {}
+            T const&    getOutputValue(std::reference_wrapper<T> const& output) const {return output.get();}
+            T&          getInputValue(std::reference_wrapper<T>& input)         const {return input.get();}
+        };
         static constexpr TraitType type = TraitType::Reference;
         static std::size_t getPrintSize(PrinterInterface& printer, std::reference_wrapper<T> const& object, bool p)
         {
@@ -956,6 +963,13 @@ class Traits<std::optional<T>>
 {
     public:
         using RefType = T;
+        struct ValueGetter
+        {
+            ValueGetter(PrinterInterface&)  {}
+            ValueGetter(ParserInterface&)   {}
+            T const&    getOutputValue(std::optional<T> const& output) const    {return output.value();}
+            T&          getInputValue(std::optional<T>& input)         const    {if (!input.has_value()){input.emplace();}return input.value();}
+        };
         static constexpr TraitType type = TraitType::Reference;
         static std::size_t getPrintSize(PrinterInterface& printer, std::optional<T> const& object, bool p)
         {

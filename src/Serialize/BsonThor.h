@@ -122,6 +122,47 @@ std::size_t bsonGetPrintSize(T const& value, BsonPrinterConfig config = PrinterI
     typename Bson::Printer    printer(fakeStream, config);
     return Traits<std::remove_cv_t<T>>::getPrintSize(printer, value, false);
 }
+
+/*
+ * BSON has the concept of a projection.
+ * We specify what fields we want to retrieve.
+ * The projection object achieves this.
+ */
+template<typename T>
+struct Projection
+{
+    T                   projection;
+};
+
+template<typename T>
+class Traits<Projection<T>>
+{
+    public:
+        using RefType = T;
+        struct ValueGetter
+        {
+            BsonPrinter&    printer;
+            bool            originalValue;
+
+            ValueGetter(PrinterInterface& p)
+                : printer(dynamic_cast<BsonPrinter&>(p))
+                , originalValue(printer.setProjection(true))
+
+            {}
+            ~ValueGetter()
+            {
+                printer.setProjection(originalValue);
+            }
+
+            T const&    getOutputValue(Projection<T> const& output) const   {return output.projection;}
+        };
+        static constexpr TraitType type = TraitType::Reference;
+        static std::size_t getPrintSize(PrinterInterface& printer, Projection<T> const& object, bool p)
+        {
+            return Traits<std::remove_cv_t<T>>::getPrintSize(printer, object.projection, p);
+        }
+};
+
     }
 }
 
