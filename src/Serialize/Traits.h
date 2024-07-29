@@ -427,15 +427,62 @@
 #define THOR_UNIQUE_LABEL(Line)                 THOR_MERGE_LABEL_NAME(thorUniqueName, Line)
 #define THOR_UNIQUE_NAME                        THOR_UNIQUE_LABEL(__COUNTER__)
 
+// I have disabled the check: DO_ASSERT_WITH_TEMPLATE() where there are any template parameters.
+// I may put it back.
+//
+// There is an issue if there are concepts/requires constraints on the types
+// used by the template.
+//
+// This is because these macros insert here by DO_ASSERT_WITH_TEMPLATE => Fake1, Fake2, Fake3 etc
+// probably does not hold to these constraints and thus we will get an error in the code if you
+// try and serialize a template type that has constraints on the input parameter.
+// Note: This is false fail as we are just doing this to get a better error message.
+//
+// I may come back and removed the disabled at some point.
+// TODO
+#define DO_ASSERT_WITH_TEMPLATE(DataType, TF, Count)            EXPAND(DO_ASSERT_WITH_TEMPLATE_CHECK_ ## Count, DataType, TF, Count)
+
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_00(DataType, TF, Count)   DO_ASSERT_WITH_TEMPLATE_WORKING(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_1(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_2(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_3(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_4(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_5(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_6(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_7(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_8(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_9(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_10(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_11(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_12(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_13(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_14(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_15(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_16(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_17(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_18(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_19(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_20(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_21(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_22(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_23(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_24(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_25(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_26(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_27(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_28(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_CHECK_29(DataType, TF, Count)
+// You have more than 20 template parameters!
+
 /*
  * Defines a trait for a user defined type.
  * Lists the members of the type that can be serialized.
  */
 #define DO_ASSERT(DataType)             DO_ASSERT_WITH_TEMPLATE(DataType, , 00)
 #if defined(NEOVIM)
-#define DO_ASSERT_WITH_TEMPLATE(DataType, TF, Count)
+#define DO_ASSERT_WITH_TEMPLATE_WORKING(DataType, TF, Count)
 #else
-#define DO_ASSERT_WITH_TEMPLATE(DataType, TF, Count)                    \
+#define DO_ASSERT_WITH_TEMPLATE_WORKING(DataType, TF, Count)            \
 static_assert(                                                          \
     ::ThorsAnvil::Serialize::Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPE_INT_VALUE, TF, Count) >::type != ThorsAnvil::Serialize::TraitType::Invalid,   \
     "The macro ThorsAnvil_MakeTrait must be used outside all namespace."\
