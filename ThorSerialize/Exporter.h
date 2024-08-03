@@ -14,14 +14,13 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
-template<typename Format, typename T>
+template<typename Format, typename T, typename Config = PrinterInterface::PrinterConfig>
 class Exporter
 {
-    using PrinterConfig = PrinterInterface::PrinterConfig;
     T const&        value;
-    PrinterConfig   config;
+    Config          config;
     public:
-        Exporter(T const& value, PrinterConfig config)
+        Exporter(T const& value, Config config)
             : value(value)
             , config(config)
         {}

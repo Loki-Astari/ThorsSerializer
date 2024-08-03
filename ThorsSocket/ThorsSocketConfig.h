@@ -85,6 +85,9 @@
 /* For header only convert to inline */
 #define THORS_SOCKET_HEADER_ONLY_INCLUDE inline
 
+/* Disable integration tests */
+#define THOR_DISABLE_TEST_WITH_INTEGRATION 1
+
 /* Name of package for header files */
 #define THOR_PACKAGE_NAME ThorsSocket
 

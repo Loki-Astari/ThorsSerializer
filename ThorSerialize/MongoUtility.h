@@ -91,6 +91,7 @@ class DataInterface
     public:
         std::size_t getSize() const             = 0;
         void        resize(std::size_t size)    = 0;
+        char const* getBuffer() const           = 0;
         char*       getBuffer()                 = 0;
 };
 class RegExInterface
@@ -218,6 +219,9 @@ class ObjectID
 class UTCDateTime
 {
     // Time in ms since the epoch
+    // See:  https://bsonspec.org/spec.html
+    //          signed_byte(9) e_name int64 UTC datetime
+    //              UTC datetime - The int64 is UTC milliseconds since the Unix epoch.
     std::int64_t    datetime;
     public:
         UTCDateTime(std::int64_t datetime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
@@ -229,14 +233,19 @@ class UTCDateTime
         friend BsonParser& operator>>(BsonParser& parser, UTCDateTime& data);
         friend JsonParser& operator>>(JsonParser& parser, UTCDateTime& data);
         friend std::istream& operator>>(std::istream& stream, UTCDateTime& data);
+
+        std::int64_t getMillSecSinceEpoch() const {return datetime;}
 };
 
 class BsonTimeStamp
 {
     // First 4 bytes are an increment
     // Second 4 are a timestamp (seconds since the epoch)
-    std::int32_t    increment;
-    std::int32_t    timestamp;
+    // See:  https://bsonspec.org/spec.html
+    //          signed_byte(17) e_name uint64               Timestamp
+    //              Timestamp - Special internal type used by MongoDB replication and sharding. First 4 bytes are an increment, second 4 are a timestamp.
+    std::uint32_t   increment;
+    std::uint32_t   timestamp;
     public:
         BsonTimeStamp(std::time_t timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), int inc = 0);
         bool operator==(BsonTimeStamp const& rhs) const {return std::tie(increment, timestamp) == std::tie(rhs.increment, rhs.timestamp);}
@@ -248,6 +257,9 @@ class BsonTimeStamp
         friend BsonParser& operator>>(BsonParser& parser, BsonTimeStamp& data);
         friend JsonParser& operator>>(JsonParser& parser, BsonTimeStamp& data);
         friend std::istream& operator>>(std::istream& stream, BsonTimeStamp& data);
+
+        std::uint32_t getSecSinceEpoch() const {return timestamp;}
+        std::uint32_t getIncrement()     const {return increment;}
 };
         }
     }

@@ -362,6 +362,8 @@ class PrinterInterface
         void addValue(void const*)  = delete;
 
         virtual bool        printerUsesSize()                       {return false;}
+        virtual void        pushLevel(bool)                         {}
+        virtual void        popLevel()                              {}
         virtual std::size_t getSizeMap(std::size_t /*count*/)       {return 0;}
         virtual std::size_t getSizeArray(std::size_t /*count*/)     {return 0;}
         virtual std::size_t getSizeNull()                           {return 0;}
@@ -470,6 +472,7 @@ THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(long double);
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(bool);
 
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(std::string);
+THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(std::string_view);
 
 #if 0
 template<> class Traits<short int>              {public: THORSANVIL_TRAITS_FOR_VALUE(short int)};
