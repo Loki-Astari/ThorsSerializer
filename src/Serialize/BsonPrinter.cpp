@@ -25,6 +25,7 @@ void BsonPrinter::popLevel()
     currentContainer.pop_back();
 }
 
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 bool BsonPrinter::needToInsertId() const
 {
     // We will add the _id field on the following condition.

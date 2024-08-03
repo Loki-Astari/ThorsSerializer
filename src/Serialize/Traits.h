@@ -393,6 +393,54 @@
 #define ALT_REP_OF_1(Act, E, P, S)     P ALT_EXPAND(Act, E, 1) S
 #define ALT_REP_OF_00(Act, E, P, S)     LAST_ ## Act(E, 00)
 
+#define REP_CMD_N(Act, TC, P1, ...)             REP_CMD_OF_N(Act, TC, P1, NUM_ARGS(__VA_ARGS__), __VA_ARGS__)
+#define REP_CMD_OF_N(Act, TC, P1, Count, ...)   REP_CMD_OF_N_(Act, TC, P1, Count, __VA_ARGS__)
+#define REP_CMD_OF_N_(Act, TC, P1, Count, ...)  REP_CMD_OF_ ## Count(Act, TC, P1, __VA_ARGS__)
+
+#define REP_CMD_OF_43(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_42(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_42(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_41(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_41(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_40(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_40(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_39(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_39(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_38(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_38(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_37(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_37(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_36(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_36(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_35(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_35(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_34(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_34(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_33(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_33(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_32(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_32(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_31(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_31(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_30(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_30(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_29(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_29(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_28(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_28(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_27(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_27(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_26(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_26(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_25(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_25(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_24(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_24(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_23(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_23(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_22(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_22(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_21(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_21(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_20(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_20(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_19(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_19(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_18(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_18(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_17(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_17(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_16(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_16(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_15(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_15(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_14(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_14(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_13(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_13(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_12(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_12(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_11(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_11(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_10(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_10(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_9(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_9(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_8(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_8(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_7(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_7(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_6(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_6(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_5(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_5(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_4(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_4(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_3(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_3(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1 ,P2)  REP_CMD_OF_2(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_2(Act, TC, P1, P2, ...)     EXPAND(Act, TC, P1, P2)  REP_CMD_OF_1(Act, TC, P1, __VA_ARGS__)
+#define REP_CMD_OF_1(Act, TC, P1, P2, One)     EXPAND(Act, TC, P1, P2)
+#define REP_CMD_OF_00(Act, TC, P1, One)         LAST_ ## Act(TC, P1)
 /*
  * The actions we apply with REP_*
  *
@@ -421,6 +469,10 @@
 #define LAST_THOR_TYPENAMEVALUEACTION(Ex, Id)
 #define LAST_THOR_TYPE_INT_VALUE(Ex, Id)
 #define LAST_THOR_CHECK_ASSERT(Ex, Id)          DO_ASSERT(Ex)
+
+#define THOR_BUILD_NAME(Pre, Name)              EXPAND_(Pre ## Name)
+#define THOR_DECLARE_MEMBER_TYPE(TC, DataType, Member)      using THOR_BUILD_NAME(Type, Member) = std::remove_cv_t<decltype(DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , TC) ::Member)>;
+#define LAST_THOR_DECLARE_MEMBER_TYPE(TC, DataType)
 
 
 #define THOR_MERGE_LABEL_NAME(Pre, Post)        Pre ## Post
@@ -565,7 +617,6 @@ class Filter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) 
 }}                                                                      \
 static_assert(true, "")
 
-
 #define ThorsAnvil_MakeTrait_Base(ParentType, TType, TF, TT, Count, DataType, ...)  \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<TT BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>    \
@@ -575,6 +626,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) 
         static constexpr TraitType type = TraitType::TType;             \
         ParentType                                                      \
         using MyType = DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count); \
+        REP_CMD_N(THOR_DECLARE_MEMBER_TYPE, Count, DataType, __VA_ARGS__)  \
                                                                         \
         using Members = std::tuple<                                     \
                         REP_N(THOR_TYPEACTION, Count, DataType, __VA_ARGS__)        \
@@ -735,6 +787,10 @@ DO_ASSERT(DataType)
 
 #define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
     ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType, __VA_ARGS__, 1), Parent, , , Count, __VA_ARGS__, 1); \
+    static_assert(true, "")
+
+#define ThorsAnvil_TTemplate_ExpandTrait(Count, ParentType, ...)        \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType, __VA_ARGS__, 1), Parent, Template, template<typename>, Count, __VA_ARGS__, 1); \
     static_assert(true, "")
 
 #define ThorsAnvil_Template_ExpandTemplate(Count, ParentCount, ParentType, ...)         \
