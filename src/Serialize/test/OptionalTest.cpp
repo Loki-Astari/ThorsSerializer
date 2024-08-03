@@ -48,3 +48,14 @@ TEST(OptionalTest, ImportOptional)
     EXPECT_EQ(5, data.normal);
     EXPECT_EQ(6, data.optional);
 }
+TEST(OptionalTest, ImportWithNoOptional)
+{
+    std::stringstream stream;
+    stream << R"({"normal": 5})";
+
+    OptionalTest    data;
+    stream >> jsonImporter(data);
+
+    EXPECT_EQ(5, data.normal);
+    EXPECT_FALSE(data.optional.has_value());
+}

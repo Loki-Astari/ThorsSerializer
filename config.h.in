@@ -4,6 +4,8 @@
 
 #ifndef  THORS_SERIALIZER_CONFIG_H
 #define  THORS_SERIALIZER_CONFIG_H
+#ifndef  THORS_PACKAGE_INFO_CONFIG_H
+#define  THORS_PACKAGE_INFO_CONFIG_H
 
     
 
@@ -76,10 +78,8 @@
 #undef STDC_HEADERS
 
 /* Enable to use header only libraries */
-#undef THORS_SERIALIZER_HEADER_ONLY
 
 /* For header only convert to inline */
-#undef THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 
 /* Disable test that require files to be locked */
 #undef THOR_DISABLE_TEST_WITH_LOCKED_FILES
@@ -92,6 +92,16 @@
 
 
 
-#endif
 
     
+#endif
+
+
+/* Enable to use header only libraries */
+#undef THORS_SERIALIZER_HEADER_ONLY
+
+/* For header only convert to inline */
+#undef THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+
+
+#endif
