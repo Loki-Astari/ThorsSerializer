@@ -51,6 +51,9 @@
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #undef LT_OBJDIR
 
+/* "Get mongosh version into #define. That way we can turn off some tests" */
+#undef MONGO_MAJOR_VERSION
+
 /* Name of package */
 #undef PACKAGE
 
@@ -84,8 +87,24 @@
 /* Disable test that require files to be locked */
 #undef THOR_DISABLE_TEST_WITH_LOCKED_FILES
 
+/* Disable test that require the Mongo server to support the OP_QUERY command
+   */
+#undef THOR_DISABLE_TEST_WITH_MONGO_QUERY
+
 /* Name of package for header files */
 #undef THOR_PACKAGE_NAME
+
+/* mongosh DB for testing */
+#undef THOR_TESTING_MONGO_DB
+
+/* mongosh DB host for testing */
+#undef THOR_TESTING_MONGO_HOST
+
+/* mongosh DB password for testing */
+#undef THOR_TESTING_MONGO_PASS
+
+/* mongosh DB user for testing */
+#undef THOR_TESTING_MONGO_USER
 
 /* Version number of package */
 #undef VERSION
