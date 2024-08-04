@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <chrono>
 #include <tuple>
+#include <iostream>
 
 namespace ThorsAnvil
 {

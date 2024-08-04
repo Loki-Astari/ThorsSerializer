@@ -448,8 +448,8 @@ class DeSerializationForBlock<TraitType::Reference, T>
         void scanObject(T& object)
         {
             using Trait         = Traits<std::remove_cv_t<T>>;
-            using RefType       = Trait::RefType;
-            using ValueGetter   = Trait::ValueGetter;
+            using RefType       = typename Trait::RefType;
+            using ValueGetter   = typename Trait::ValueGetter;
             ValueGetter         getter(parser);
             DeSerializationForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>   deserializer(parent, parser);
             deserializer.scanObject(getter.getInputValue(object));
@@ -845,8 +845,8 @@ class SerializerForBlock<TraitType::Reference, T>
         void printMembers()
         {
             using Trait         = Traits<std::remove_cv_t<T>>;
-            using RefType       = Trait::RefType;
-            using ValueGetter   = Trait::ValueGetter;
+            using RefType       = typename Trait::RefType;
+            using ValueGetter   = typename Trait::ValueGetter;
             ValueGetter         getter(printer);
             SerializerForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>    serializer(parent, printer, getter.getOutputValue(object));
             serializer.printMembers();
