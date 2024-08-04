@@ -5,6 +5,8 @@
 
 #ifndef  THORS_SOCKET_CONFIG_H
 #define  THORS_SOCKET_CONFIG_H
+#ifndef  THORS_PACKAGE_INFO_CONFIG_H
+#define  THORS_PACKAGE_INFO_CONFIG_H
 
     
 
@@ -80,13 +82,11 @@
 #define STDC_HEADERS 1
 
 /* Enable to use header only libraries */
-#define THORS_SOCKET_HEADER_ONLY 1
 
 /* For header only convert to inline */
-#define THORS_SOCKET_HEADER_ONLY_INCLUDE inline
 
 /* Disable integration tests */
-#define THOR_DISABLE_TEST_WITH_INTEGRATION 1
+#define THOR_DISABLE_TEST_WITH_INTEGRATION 0
 
 /* Name of package for header files */
 #define THOR_PACKAGE_NAME ThorsSocket
@@ -96,6 +96,16 @@
 
 
 
-#endif
 
     
+#endif
+
+
+/* Enable to use header only libraries */
+#define THORS_SOCKET_HEADER_ONLY 1
+
+/* For header only convert to inline */
+#define THORS_SOCKET_HEADER_ONLY_INCLUDE inline
+
+
+#endif

@@ -9,7 +9,7 @@ namespace ThorsAnvil::ThorsSocket::ConnectionType
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 Pipe::Pipe(PipeInfo const&, Blocking blocking)
 {
-    int result = MOCK_FUNC(thorCreatePipe)(fd);
+    int result = ::thorCreatePipe(fd);
     if (result == -1)
     {
         ThorsLogAndThrow(
@@ -22,9 +22,9 @@ Pipe::Pipe(PipeInfo const&, Blocking blocking)
     }
     if (blocking == Blocking::No)
     {
-        int result = MOCK_FUNC(thorSetFDNonBlocking)(fd[0]);
+        int result = ::thorSetFDNonBlocking(fd[0]);
         if (result == 0) {
-            result = MOCK_FUNC(thorSetFDNonBlocking)(fd[1]);
+            result = ::thorSetFDNonBlocking(fd[1]);
         }
         if (result != 0)
         {
@@ -70,8 +70,8 @@ int Pipe::socketId(Mode rw) const
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 void Pipe::close()
 {
-    MOCK_FUNC(close)(fd[0]);
-    MOCK_FUNC(close)(fd[1]);
+    ::close(fd[0]);
+    ::close(fd[1]);
     fd[0] = -1;
     fd[1] = -1;
 }

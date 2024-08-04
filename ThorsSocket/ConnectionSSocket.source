@@ -24,7 +24,7 @@ SSocketBase::SSocketBase(OpenSSocketInfo const& ssocketInfo)
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 void SSocketBase::initSSocket(SSLctx const& ctx, CertificateInfo&& certificate)
 {
-    ssl = MOCK_FUNC(SSL_new)(ctx.ctx);
+    ssl = ::SSL_new(ctx.ctx);
     if (!ssl)
     {
         int saveErrno = ERR_get_error();
@@ -40,10 +40,10 @@ void SSocketBase::initSSocket(SSLctx const& ctx, CertificateInfo&& certificate)
     certificate.apply(ssl);
 
     int ret;
-    if ((ret = MOCK_FUNC(SSL_set_fd)(ssl, socketId(Mode::Read))) != 1)
+    if ((ret = ::SSL_set_fd(ssl, socketId(Mode::Read))) != 1)
     {
-        int saveErrno = MOCK_FUNC(SSL_get_error)(ssl, ret);
-        MOCK_FUNC(SSL_free)(ssl);
+        int saveErrno = ::SSL_get_error(ssl, ret);
+        ::SSL_free(ssl);
         ThorsLogAndThrow(
             "ThorsAnvil::ThorsSocket::ConnectionType::SSocketBase",
             "SSocketBase",
@@ -74,7 +74,7 @@ void SSocketClient::initSSocketClient()
     int ret;
     do
     {
-        ret = MOCK_FUNC(SSL_connect)(ssl);
+        ret = ::SSL_connect(ssl);
         if (ret != 1)
         {
             // If you open a non blocking connection.
@@ -82,7 +82,7 @@ void SSocketClient::initSSocketClient()
             // If you are simply waiting then you have to keep going.
             //
             // TODO: Opportunity for yield()?
-            int error = MOCK_FUNC(SSL_get_error)(ssl, ret);
+            int error = ::SSL_get_error(ssl, ret);
             if (error == SSL_ERROR_WANT_CONNECT || error == SSL_ERROR_WANT_READ || error == SSL_ERROR_WANT_WRITE) {
                 continue;
             }
@@ -93,8 +93,8 @@ void SSocketClient::initSSocketClient()
 
     if (ret != 1)
     {
-        int saveErrno = MOCK_FUNC(SSL_get_error)(ssl, ret);
-        MOCK_FUNC(SSL_free)(ssl);
+        int saveErrno = ::SSL_get_error(ssl, ret);
+        ::SSL_free(ssl);
         ssl = nullptr;
         ThorsLogAndThrow(
             "ThorsAnvil::ThorsSocket::ConnectionType::SSocketBase",
@@ -106,10 +106,10 @@ void SSocketClient::initSSocketClient()
     }
 
 
-    X509* cert = MOCK_FUNC(SSL_get1_peer_certificate)(ssl);
+    X509* cert = ::SSL_get1_peer_certificate(ssl);
     if (cert == nullptr)
     {
-        int saveErrno = MOCK_FUNC(SSL_get_error)(ssl, ret);
+        int saveErrno = ::SSL_get_error(ssl, ret);
         ThorsLogAndThrow(
             "ThorsAnvil::ThorsSocket::ConnectionType::SSocketBase",
             "SSocketBase",
@@ -118,7 +118,7 @@ void SSocketClient::initSSocketClient()
             " msg >", ERR_error_string(saveErrno, nullptr), "<"
         );
     }
-    MOCK_FUNC(X509_free)(cert);
+    ::X509_free(cert);
 }
 
 THORS_SOCKET_HEADER_ONLY_INCLUDE
@@ -135,10 +135,10 @@ void SSocketBase::tryFlushBuffer()
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 IOData SSocketBase::readFromStream(char* buffer, std::size_t size)
 {
-    int ret = MOCK_FUNC(SSL_read)(ssl, buffer, size);
+    int ret = ::SSL_read(ssl, buffer, size);
     if (ret <= 0)
     {
-        int errorCode = MOCK_FUNC(SSL_get_error)(ssl, ret);
+        int errorCode = ::SSL_get_error(ssl, ret);
         switch (errorCode)
         {
             case SSL_ERROR_NONE:                return {0, true, false};
@@ -180,10 +180,10 @@ IOData SSocketBase::readFromStream(char* buffer, std::size_t size)
 THORS_SOCKET_HEADER_ONLY_INCLUDE
 IOData SSocketBase::writeToStream(char const* buffer, std::size_t size)
 {
-    int ret = MOCK_FUNC(SSL_write)(ssl, buffer, size);
+    int ret = ::SSL_write(ssl, buffer, size);
     if (ret <= 0)
     {
-        int errorCode = MOCK_FUNC(SSL_get_error)(ssl, ret);
+        int errorCode = ::SSL_get_error(ssl, ret);
         switch (errorCode)
         {
             case SSL_ERROR_NONE:                return {0, true, false};
@@ -228,8 +228,8 @@ void SSocketBase::close()
     if (ssl)
     {
         // Close the file descriptor
-        MOCK_FUNC(SSL_shutdown)(ssl);
-        MOCK_FUNC(SSL_free)(ssl);
+        ::SSL_shutdown(ssl);
+        ::SSL_free(ssl);
         ssl = nullptr;
     }
     Socket::close();

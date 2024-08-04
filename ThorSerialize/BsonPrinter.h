@@ -7,6 +7,7 @@
 
 #include "SerializeConfig.h"
 #include "Serialize.h"
+#include "MongoUtilityObjectId.h"
 #include "BsonUtil.h"
 #include "GitUtility/ieee754_types.h"
 #include <boost/endian/conversion.hpp>
