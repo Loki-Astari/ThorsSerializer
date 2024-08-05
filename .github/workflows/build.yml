@@ -106,6 +106,6 @@ jobs:
               with:
                 submodules: recursive
                 token: ${{ secrets.GITHUB_TOKEN }}
-            - run: ./configure --disable-colour
+            - run: ./configure --disable-colour --disable-test-with-mongo-query --disable-Mongo-Service
             - run: make header-only
 
