@@ -172,12 +172,9 @@ class CursorData: public CmdReplyBase
             , killCursorConfig(killCursorConfig)
             , index(0)
         {}
-        ~CursorData()
-        {
-            if (cursor.getId() != 0) {
-                owner.get().killCursor(dbName, colName, cursor.getId(), killCursorConfig);
-            }
-        }
+        ~CursorData();
+        // Destructor:  See ThorsMongo.h for definition.
+        //                  Need to placed after ThorsMongo class declaration.
         friend void swap(CursorData<T>& lhs, GetMoreResult<T>& rhs) noexcept
         {
             using std::swap;
@@ -191,16 +188,9 @@ class CursorData: public CmdReplyBase
         friend class CursorIterator<FindResult<T>>;
         friend class CursorIterator<ListCollectionResult>;
         // These functions are for the CursorIterator.
-        bool increment()
-        {
-            ++index;
-            if (cursor.data().size() == index)
-            {
-                index = 0;
-                owner.get().getMore(*this, dbName, colName, cursor.getId(), getMoreConfig);
-            }
-            return index != cursor.data().size();
-        }
+        bool increment();
+        // increment: See ThorsMongo.h for definition.
+        //               Need to placed after ThorsMongo class declaration.
         T& current()
         {
             return cursor.firstBatch[index];

@@ -1,5 +1,5 @@
 #ifndef THORSANVIL_DB_MONGO_THORSMONGO_H_TEMPLATE
-#error "This should not be included directly: Include "ThorsMongo.h"
+#error 'This should not be included directly: Include "ThorsMongo.h"'
 #endif
 
 #include <string_view>

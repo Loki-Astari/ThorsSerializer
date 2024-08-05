@@ -7,6 +7,8 @@
 #include "BinaryData.h"
 #include "MessageHandler.h"
 
+#include <algorithm>
+
 #if 0
     // Helper rename to make things easier to read.
     using Cref
