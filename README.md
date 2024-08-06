@@ -14,7 +14,6 @@ This code is the basis for [ThorsMongo](https://github.com/Loki-Astari/ThorsMong
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7567)](http://codereview.stackexchange.com/q/7567/507)
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7536)](http://codereview.stackexchange.com/q/7536/507)
 
-[![Conan package](https://img.shields.io/badge/Conan-package-blueviolet)](https://conan.io/center/thors-serializer)
 [![Brew package](https://img.shields.io/badge/Brew-package-blueviolet)](https://formulae.brew.sh/formula/thors-serializer)
 
 
