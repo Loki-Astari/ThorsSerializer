@@ -4,17 +4,16 @@
 
 * [Json](https://www.json.org/json-en.html)
 * [Yaml](https://yaml.org/)
-* [Bson](http://bsonspec.org/) **NEW**
+* [Bson](http://bsonspec.org/)
+
+This code is the basis for [ThorsMongo](https://github.com/Loki-Astari/ThorsMongo) a C++ API for streaming objects to Mongo with zero client overhead.  
 
 
-[![Build Status](https://travis-ci.com/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.com/Loki-Astari/ThorsSerializer)
-[![codecov.io](http://codecov.io/github/Loki-Astari/ThorsSerializer/coverage.svg?branch=master)](http://codecov.io/github/Loki-Astari/ThorsSerializer?branch=master)   
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=81920)](http://codereview.stackexchange.com/q/81920/507)
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=79281)](http://codereview.stackexchange.com/q/79281/507)
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7567)](http://codereview.stackexchange.com/q/7567/507)
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7536)](http://codereview.stackexchange.com/q/7536/507)
 
-[![Conan package](https://img.shields.io/badge/Conan-package-blueviolet)](https://conan.io/center/thors-serializer)
 [![Brew package](https://img.shields.io/badge/Brew-package-blueviolet)](https://formulae.brew.sh/formula/thors-serializer)
 
 
