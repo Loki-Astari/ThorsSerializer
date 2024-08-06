@@ -8,9 +8,13 @@
 #include <string_view>
 
 #ifdef  __WINNT__
+#include <winsock2.h>
+#include <windows.h>
 #define SOCKET_TYPE             SOCKET
+#define THOR_BINARY             _O_BINARY
 #else
 #define SOCKET_TYPE             int
+#define THOR_BINARY             0
 #endif
 
 namespace ThorsAnvil::ThorsSocket
