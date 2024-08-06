@@ -102,6 +102,7 @@ jobs:
             - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install vera++
             - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install boost
             - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install magic_enum
+            - run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install snappy
             - uses: actions/checkout@master
               with:
                 submodules: recursive
