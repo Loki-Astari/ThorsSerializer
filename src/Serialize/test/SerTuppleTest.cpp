@@ -55,7 +55,7 @@ TEST(SerTuppleTest, BsondeSerialize)
                   "\x10" "0\x00"    "\x3B\x00\x00\x00"
                   "\x01" "1\x00"    "\x93\x18\x04\x56\x0e\xcd\x36\x40"
                   "\x00";
-    std::string input(std::begin(inputRaw), std::end(inputRaw) + 1);
+    std::string input(std::begin(inputRaw), std::end(inputRaw));
     std::stringstream stream(input);
     std::tuple<int, double>  data {56, 78.925};
 

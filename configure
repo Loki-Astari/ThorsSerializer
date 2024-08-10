@@ -696,6 +696,10 @@ ac_ct_CC
 CFLAGS
 CC
 LIBTOOL
+crypto_ROOT_LIB
+crypto_ROOT_DIR
+snappy_ROOT_LIB
+snappy_ROOT_DIR
 yaml_ROOT_LIB
 yaml_ROOT_DIR
 MagicEnumHeaderOnly_ROOT_DIR
@@ -797,6 +801,8 @@ with_boost
 with_boost_libdir
 with_magicenum_header_only_root
 with_yaml_root
+with_snappy_root
+with_crypto_root
 enable_test_with_locked_file
 enable_test_with_mongo_query
 enable_Mongo_Service
@@ -1514,6 +1520,12 @@ Optional Packages:
 
   --with-yaml-root=<location>
                           Define the root directory of package YAML
+
+  --with-snappy-root=<location>
+                          Define the root directory of package SNAPPY
+
+  --with-crypto-root=<location>
+                          Define the root directory of package CRYPTO
 
   --with-TestMongoHost=<Host>
                           Use an alternative mongosh host for testing with
@@ -5422,6 +5434,289 @@ You can solve this by installing libyaml
 
 Alternately specify install location with:
     --with-yaml-root=<location of yaml installation>
+
+
+    " "$LINENO" 5
+                            echo "FAIL DONE"
+
+                     ;;
+esac
+fi
+
+
+             ;;
+esac
+fi
+            echo "Checking DONE"
+
+            LDFLAGS="${ORIG_LDFLAGS}"
+
+
+fi
+
+
+
+
+
+# Check whether --with-snappy-root was given.
+if test ${with_snappy_root+y}
+then :
+  withval=$with_snappy_root;
+fi
+
+
+    LIBRARY_DIR="-L ${with_snappy_root}/lib"
+    if test "x${with_snappy_root}" == "x"
+then :
+  LIBRARY_DIR="-L ${DefaultLinkDir}/lib"
+
+fi
+
+    if test "x${snappy_header_only_defined}" == "x"
+then :
+
+            ORIG_LDFLAGS="${LDFLAGS}"
+            LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
+
+            echo "Building: NotThor"
+            echo "Mark:     $BUILDING_NotThor"
+            echo "Checking"
+            if test "x$BUILDING_NotThor" == "x1"
+then :
+
+
+    if test "x${with_snappy_root}" != "x"
+then :
+
+
+printf "%s\n" "#define HAVE_SNAPPY 1" >>confdefs.h
+
+            snappy_ROOT_DIR=${with_snappy_root}
+
+            subconfigure="${subconfigure} --with-snappy-root=${with_snappy_root}"
+
+
+fi
+    echo "Setting: snappy_ROOT_LIB TO snappy"
+    snappy_ROOT_LIB="snappy"
+
+
+
+else case e in #(
+  e)
+                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for snappy_compress in -lsnappy" >&5
+printf %s "checking for snappy_compress in -lsnappy... " >&6; }
+if test ${ac_cv_lib_snappy_snappy_compress+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsnappy  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+namespace conftest {
+  extern "C" int snappy_compress ();
+}
+int
+main (void)
+{
+return conftest::snappy_compress ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"
+then :
+  ac_cv_lib_snappy_snappy_compress=yes
+else case e in #(
+  e) ac_cv_lib_snappy_snappy_compress=no ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_snappy_snappy_compress" >&5
+printf "%s\n" "$ac_cv_lib_snappy_snappy_compress" >&6; }
+if test "x$ac_cv_lib_snappy_snappy_compress" = xyes
+then :
+
+
+    if test "x${with_snappy_root}" != "x"
+then :
+
+
+printf "%s\n" "#define HAVE_SNAPPY 1" >>confdefs.h
+
+            snappy_ROOT_DIR=${with_snappy_root}
+
+            subconfigure="${subconfigure} --with-snappy-root=${with_snappy_root}"
+
+
+fi
+    echo "Setting: snappy_ROOT_LIB TO snappy"
+    snappy_ROOT_LIB="snappy"
+
+
+
+else case e in #(
+  e)
+                            echo "FAIL: Using: >${with_snappy_root}<"
+                            as_fn_error $? "
+Error: Could not find libsnappy
+
+You can solve this by installing libsnappy
+    brew install snappy
+
+Alternately specify install location with:
+    --with-snappy-root=<location of snappy installation>
+
+
+    " "$LINENO" 5
+                            echo "FAIL DONE"
+
+                     ;;
+esac
+fi
+
+
+             ;;
+esac
+fi
+            echo "Checking DONE"
+
+            LDFLAGS="${ORIG_LDFLAGS}"
+
+
+fi
+
+
+
+
+
+# Check whether --with-crypto-root was given.
+if test ${with_crypto_root+y}
+then :
+  withval=$with_crypto_root;
+fi
+
+
+    LIBRARY_DIR="-L ${with_crypto_root}/lib"
+    if test "x${with_crypto_root}" == "x"
+then :
+  LIBRARY_DIR="-L ${DefaultLinkDir}/lib"
+
+fi
+
+    if test "x${crypto_header_only_defined}" == "x"
+then :
+
+            ORIG_LDFLAGS="${LDFLAGS}"
+            LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
+
+            echo "Building: NotThor"
+            echo "Mark:     $BUILDING_NotThor"
+            echo "Checking"
+            if test "x$BUILDING_NotThor" == "x1"
+then :
+
+
+    if test "x${with_crypto_root}" != "x"
+then :
+
+
+printf "%s\n" "#define HAVE_CRYPTO 1" >>confdefs.h
+
+            crypto_ROOT_DIR=${with_crypto_root}
+
+            subconfigure="${subconfigure} --with-crypto-root=${with_crypto_root}"
+
+
+fi
+    echo "Setting: crypto_ROOT_LIB TO ssl crypto"
+    crypto_ROOT_LIB="ssl crypto"
+
+
+
+else case e in #(
+  e)
+                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SHA1_Init in -lcrypto" >&5
+printf %s "checking for SHA1_Init in -lcrypto... " >&6; }
+if test ${ac_cv_lib_crypto_SHA1_Init+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcrypto  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+namespace conftest {
+  extern "C" int SHA1_Init ();
+}
+int
+main (void)
+{
+return conftest::SHA1_Init ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"
+then :
+  ac_cv_lib_crypto_SHA1_Init=yes
+else case e in #(
+  e) ac_cv_lib_crypto_SHA1_Init=no ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_SHA1_Init" >&5
+printf "%s\n" "$ac_cv_lib_crypto_SHA1_Init" >&6; }
+if test "x$ac_cv_lib_crypto_SHA1_Init" = xyes
+then :
+
+
+    if test "x${with_crypto_root}" != "x"
+then :
+
+
+printf "%s\n" "#define HAVE_CRYPTO 1" >>confdefs.h
+
+            crypto_ROOT_DIR=${with_crypto_root}
+
+            subconfigure="${subconfigure} --with-crypto-root=${with_crypto_root}"
+
+
+fi
+    echo "Setting: crypto_ROOT_LIB TO ssl crypto"
+    crypto_ROOT_LIB="ssl crypto"
+
+
+
+else case e in #(
+  e)
+                            echo "FAIL: Using: >${with_crypto_root}<"
+                            as_fn_error $? "
+
+Error: Could not find libcrypto
+
+        On a mac you will need to install openssl
+        and define the crypto root directory to configuration.
+
+            brew install openssl
+            ./configure --with-crypto-root=/usr/local/Cellar/openssl/1.0.2j/
+
+        On Linux you will need to install openssl
+
+            sudo apt-get install openssl
+            sudo apt-get install libssl-dev
+
 
 
     " "$LINENO" 5
