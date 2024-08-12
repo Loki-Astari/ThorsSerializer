@@ -12,9 +12,6 @@
 /* define if the Boost library is available */
 #undef HAVE_BOOST
 
-/* We have found package CRYPTO */
-#undef HAVE_CRYPTO
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -23,9 +20,6 @@
 
 /* We have found MagicEnumHeaderOnly package */
 #undef HAVE_MagicEnumHeaderOnly
-
-/* We have found package SNAPPY */
-#undef HAVE_SNAPPY
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -48,6 +42,9 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
+/* We have found package Thors Serializer */
+#undef HAVE_THORSSERIALIZER
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
@@ -56,9 +53,6 @@
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #undef LT_OBJDIR
-
-/* "Get mongosh version into #define. That way we can turn off some tests" */
-#undef MONGO_MAJOR_VERSION
 
 /* Name of package */
 #undef PACKAGE
@@ -90,27 +84,11 @@
 
 /* For header only convert to inline */
 
-/* Disable test that require files to be locked */
-#undef THOR_DISABLE_TEST_WITH_LOCKED_FILES
-
-/* Disable test that require the Mongo server to support the OP_QUERY command
-   */
-#undef THOR_DISABLE_TEST_WITH_MONGO_QUERY
+/* Set up to build on Conan */
+#undef THOR_CONAN
 
 /* Name of package for header files */
 #undef THOR_PACKAGE_NAME
-
-/* mongosh DB for testing */
-#undef THOR_TESTING_MONGO_DB
-
-/* mongosh DB host for testing */
-#undef THOR_TESTING_MONGO_HOST
-
-/* mongosh DB password for testing */
-#undef THOR_TESTING_MONGO_PASS
-
-/* mongosh DB user for testing */
-#undef THOR_TESTING_MONGO_USER
 
 /* Version number of package */
 #undef VERSION

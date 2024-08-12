@@ -4,21 +4,3 @@
 [submodule ".build"]
 	path = build
 	url = ../ThorMaker.git
-[submodule "third/ThorsStorage"]
-	path = third/ThorsStorage
-	url = ../ThorsStorage.git
-[submodule "third/ThorsCrypto"]
-	path = third/ThorsCrypto
-	url = ../ThorsCrypto.git
-[submodule "third/ThorsSocket"]
-	path = third/ThorsSocket
-	url = ../ThorsSocket.git
-[submodule "third/ThorsLogging"]
-	path = third/ThorsLogging
-	url = ../ThorsLogging.git
-[submodule "third/ThorsIOUtil"]
-	path = third/ThorsIOUtil
-	url = ../ThorsIOUtil.git
-[submodule "third/ThorsMongo"]
-	path = third/ThorsMongo
-	url = ../ThorsMongo.git

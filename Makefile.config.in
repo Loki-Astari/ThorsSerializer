@@ -1,4 +1,6 @@
 
+THOR_CONAN_ENABLE=@THOR_CONAN_ENABLE@
+
 MagicEnumHeaderOnly_ROOT_DIR=@MagicEnumHeaderOnly_ROOT_DIR@
 
 BOOST_CPPFLAGS=@BOOST_CPPFLAGS@
@@ -7,11 +9,7 @@ BOOST_LDFLAGS=@BOOST_LDFLAGS@
 yaml_ROOT_DIR=@yaml_ROOT_DIR@
 yaml_ROOT_LIB=@yaml_ROOT_LIB@
 
-crypto_ROOT_DIR=$(THORSANVIL_ROOT)/build
-crypto_ROOT_LIB=ssl crypto
-
-ThorSerialize_ROOT_DIR=$(THORSANVIL_ROOT)/build
-ThorSerialize_ROOT_LIB=ThorSerialize ThorsLogging
+ThorSerialize_ROOT_DIR=@ThorSerialize_ROOT_DIR@
 ThorSerializeHeaderOnly_ROOT_DIR=
 
 

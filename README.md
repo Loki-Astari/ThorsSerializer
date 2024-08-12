@@ -19,7 +19,7 @@ This code is the basis for [ThorsMongo](https://github.com/Loki-Astari/ThorsMong
 
 ## Benchmark Results
 Conformance [mac](https://LokiAstari.com/Json/Conformance.osx.html) [linux](https://LokiAstari.com/Json/Conformance.linux.html)  
-Performance [max](https://LokiAstari.com/Json/Performance.osx.html) [linux](https://LokiAstari.com/Json/Performance.linux.html)  
+Performance [mac](https://LokiAstari.com/Json/Performance.osx.html) [linux](https://LokiAstari.com/Json/Performance.linux.html)  
 For details see: [JsonBenchmark](https://github.com/Loki-Astari/JsonBenchmark)  
 
 ![ThorStream](img/stream.jpg)
@@ -51,7 +51,7 @@ Can be installed via brew on Mac and Linux
 
 To install header only version
 
-    git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsSerializer.git
+    git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsMongo.git
 
 Some dependencies:
 

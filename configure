@@ -696,10 +696,8 @@ ac_ct_CC
 CFLAGS
 CC
 LIBTOOL
-crypto_ROOT_LIB
-crypto_ROOT_DIR
-snappy_ROOT_LIB
-snappy_ROOT_DIR
+ThorSerialize_ROOT_LIB
+ThorSerialize_ROOT_DIR
 yaml_ROOT_LIB
 yaml_ROOT_DIR
 MagicEnumHeaderOnly_ROOT_DIR
@@ -713,6 +711,7 @@ build_os
 build_vendor
 build_cpu
 build
+THOR_CONAN_ENABLE
 UNZIP
 CXX_STD_FLAG
 CXXSTDVER
@@ -797,20 +796,12 @@ enable_vera
 enable_colour
 enable_dark_mode
 with_standard_version
+enable_test_with_conan
 with_boost
 with_boost_libdir
 with_magicenum_header_only_root
 with_yaml_root
-with_snappy_root
-with_crypto_root
-enable_test_with_locked_file
-enable_test_with_mongo_query
-enable_Mongo_Service
-with_TestMongoHost
-with_TestMongoUser
-with_TestMongoPass
-with_TestMongoDatabase
-with_mongosh_tool
+with_thorserialize_root
 enable_shared
 enable_static
 with_pic
@@ -1469,22 +1460,9 @@ Optional Features:
   --enable-dark-mode      If your background is black some text that was grey
                           is turned yellow
 
-  --disable-test-with-locked-file
-                          Windows does not provide the same locking
-                          capabilities as Linux. Thus during testing when we
-                          try and lock files, it does not work, so that an
-                          attempt to open them would fail. Unfortunately we
-                          can't lock the files and thus the test pass. Don't
-                          run these tests on Windows.
-
-  --disable-test-with-mongo-query
-                          There are three versions of the mongo wire protocol.
-                          Newer versions of Mongo do not support the older
-                          protocols. This flags disables tests that use the
-                          older wire protocol and only performs tests that use
-                          the now standard OP_MSG protocol.
-
-  --disable-Mongo-Service Disable Mongo Service Test
+  --enable-test-with-conan
+                          Set the Makefile variable "THOR_ENABLE_CONAN". This
+                          is used by the standard Makefiles to add.
 
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -1521,27 +1499,9 @@ Optional Packages:
   --with-yaml-root=<location>
                           Define the root directory of package YAML
 
-  --with-snappy-root=<location>
-                          Define the root directory of package SNAPPY
-
-  --with-crypto-root=<location>
-                          Define the root directory of package CRYPTO
-
-  --with-TestMongoHost=<Host>
-                          Use an alternative mongosh host for testing with
-                          Default(127.0.0.1)
-  --with-TestMongoUser=<User>
-                          Use an alternative mongosh user for testing with
-                          (test)
-  --with-TestMongoPass=<Pass>
-                          Use an alternative mongosh password for testing with
-                          (testPassword)
-  --with-TestMongoDatabase=<DB>
-                          Use an alternative mongosh database for testing with
-                          (test)
-  --with-mongosh-tool=<alternative cli>
-                          The default tool name is mongosh. But this can be
-                          overridden with this flag
+  --with-thorserialize-root=<location>
+                          Define the root directory of package Thors
+                          Serializer
 
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
@@ -4792,6 +4752,38 @@ test -n "$UNZIP" || UNZIP=":"
 
 
 
+    # Check whether --enable-test-with-conan was given.
+if test ${enable_test_with_conan+y}
+then :
+  enableval=$enable_test_with_conan;
+fi
+
+
+    if test "x${enable_test_with_conan}" == "xyes"
+then :
+
+
+printf "%s\n" "#define THOR_CONAN 1" >>confdefs.h
+
+            THOR_CONAN_ENABLE=CONAN
+
+            subconfigure="${subconfigure} --enable-test-with-conan";
+
+else case e in #(
+  e)
+
+printf "%s\n" "#define THOR_CONAN 0" >>confdefs.h
+
+
+
+     ;;
+esac
+fi
+
+
+
+
+
 
 
   # Make sure we can run config.sub.
@@ -5456,81 +5448,86 @@ fi
 
 
 
+    remove="Serialize"
+    libs="ThorSerialize ThorsSocket ThorsStorage ThorsLogging"
+    libs=${libs//"${remove}"/}
+    echo "Libs: ${libs}"
 
 
-# Check whether --with-snappy-root was given.
-if test ${with_snappy_root+y}
+# Check whether --with-thorserialize-root was given.
+if test ${with_thorserialize_root+y}
 then :
-  withval=$with_snappy_root;
+  withval=$with_thorserialize_root;
 fi
 
 
-    LIBRARY_DIR="-L ${with_snappy_root}/lib"
-    if test "x${with_snappy_root}" == "x"
+    LIBRARY_DIR="-L ${with_thorserialize_root}/lib"
+    if test "x${with_thorserialize_root}" == "x"
 then :
   LIBRARY_DIR="-L ${DefaultLinkDir}/lib"
 
 fi
 
-    if test "x${snappy_header_only_defined}" == "x"
+    if test "x${thorserialize_header_only_defined}" == "x"
 then :
 
             ORIG_LDFLAGS="${LDFLAGS}"
             LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
 
-            echo "Building: NotThor"
-            echo "Mark:     $BUILDING_NotThor"
+            echo "Building: ThorsSerializer"
+            echo "Mark:     $BUILDING_ThorsSerializer"
             echo "Checking"
-            if test "x$BUILDING_NotThor" == "x1"
+            if test "x$BUILDING_ThorsSerializer" == "x1"
 then :
 
 
-    if test "x${with_snappy_root}" != "x"
+    if test "x${with_thorserialize_root}" != "x"
 then :
 
 
-printf "%s\n" "#define HAVE_SNAPPY 1" >>confdefs.h
+printf "%s\n" "#define HAVE_THORSSERIALIZER 1" >>confdefs.h
 
-            snappy_ROOT_DIR=${with_snappy_root}
+            ThorSerialize_ROOT_DIR=${with_thorserialize_root}
 
-            subconfigure="${subconfigure} --with-snappy-root=${with_snappy_root}"
+            subconfigure="${subconfigure} --with-thorserialize-root=${with_thorserialize_root}"
 
 
 fi
-    echo "Setting: snappy_ROOT_LIB TO snappy"
-    snappy_ROOT_LIB="snappy"
+    echo "Setting: ThorSerialize_ROOT_LIB TO ${libs}"
+    ThorSerialize_ROOT_LIB="${libs}"
 
 
 
 else case e in #(
   e)
-                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for snappy_compress in -lsnappy" >&5
-printf %s "checking for snappy_compress in -lsnappy... " >&6; }
-if test ${ac_cv_lib_snappy_snappy_compress+y}
+                    as_ac_Lib=`printf "%s\n" "ac_cv_lib_ThorSerialize${askedLangFeature}""__ZN10ThorsAnvil9Serialize10JsonParser12getNextTokenEv" | sed "$as_sed_sh"`
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for _ZN10ThorsAnvil9Serialize10JsonParser12getNextTokenEv in -lThorSerialize${askedLangFeature}" >&5
+printf %s "checking for _ZN10ThorsAnvil9Serialize10JsonParser12getNextTokenEv in -lThorSerialize${askedLangFeature}... " >&6; }
+if eval test \${$as_ac_Lib+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
   e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lsnappy  $LIBS"
+LIBS="-lThorSerialize${askedLangFeature}  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 namespace conftest {
-  extern "C" int snappy_compress ();
+  extern "C" int _ZN10ThorsAnvil9Serialize10JsonParser12getNextTokenEv ();
 }
 int
 main (void)
 {
-return conftest::snappy_compress ();
+return conftest::_ZN10ThorsAnvil9Serialize10JsonParser12getNextTokenEv ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_cxx_try_link "$LINENO"
 then :
-  ac_cv_lib_snappy_snappy_compress=yes
+  eval "$as_ac_Lib=yes"
 else case e in #(
-  e) ac_cv_lib_snappy_snappy_compress=no ;;
+  e) eval "$as_ac_Lib=no" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -5538,40 +5535,41 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 LIBS=$ac_check_lib_save_LIBS ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_snappy_snappy_compress" >&5
-printf "%s\n" "$ac_cv_lib_snappy_snappy_compress" >&6; }
-if test "x$ac_cv_lib_snappy_snappy_compress" = xyes
+eval ac_res=\$$as_ac_Lib
+	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+printf "%s\n" "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"
 then :
 
 
-    if test "x${with_snappy_root}" != "x"
+    if test "x${with_thorserialize_root}" != "x"
 then :
 
 
-printf "%s\n" "#define HAVE_SNAPPY 1" >>confdefs.h
+printf "%s\n" "#define HAVE_THORSSERIALIZER 1" >>confdefs.h
 
-            snappy_ROOT_DIR=${with_snappy_root}
+            ThorSerialize_ROOT_DIR=${with_thorserialize_root}
 
-            subconfigure="${subconfigure} --with-snappy-root=${with_snappy_root}"
+            subconfigure="${subconfigure} --with-thorserialize-root=${with_thorserialize_root}"
 
 
 fi
-    echo "Setting: snappy_ROOT_LIB TO snappy"
-    snappy_ROOT_LIB="snappy"
+    echo "Setting: ThorSerialize_ROOT_LIB TO ${libs}"
+    ThorSerialize_ROOT_LIB="${libs}"
 
 
 
 else case e in #(
   e)
-                            echo "FAIL: Using: >${with_snappy_root}<"
+                            echo "FAIL: Using: >${with_thorserialize_root}<"
                             as_fn_error $? "
-Error: Could not find libsnappy
+Error: Could not find libThorSerialize${askedLangFeature}
 
-You can solve this by installing libsnappy
-    brew install snappy
+You can solve this by installing Thors Serializer
+    brew install thors-serializer
 
 Alternately specify install location with:
-    --with-snappy-root=<location of snappy installation>
+    --with-thorserialize-root=<location of ThorsDB installation>
 
 
     " "$LINENO" 5
@@ -5590,343 +5588,6 @@ fi
             LDFLAGS="${ORIG_LDFLAGS}"
 
 
-fi
-
-
-
-
-
-# Check whether --with-crypto-root was given.
-if test ${with_crypto_root+y}
-then :
-  withval=$with_crypto_root;
-fi
-
-
-    LIBRARY_DIR="-L ${with_crypto_root}/lib"
-    if test "x${with_crypto_root}" == "x"
-then :
-  LIBRARY_DIR="-L ${DefaultLinkDir}/lib"
-
-fi
-
-    if test "x${crypto_header_only_defined}" == "x"
-then :
-
-            ORIG_LDFLAGS="${LDFLAGS}"
-            LDFLAGS="$LDFLAGS ${LIBRARY_DIR}"
-
-            echo "Building: NotThor"
-            echo "Mark:     $BUILDING_NotThor"
-            echo "Checking"
-            if test "x$BUILDING_NotThor" == "x1"
-then :
-
-
-    if test "x${with_crypto_root}" != "x"
-then :
-
-
-printf "%s\n" "#define HAVE_CRYPTO 1" >>confdefs.h
-
-            crypto_ROOT_DIR=${with_crypto_root}
-
-            subconfigure="${subconfigure} --with-crypto-root=${with_crypto_root}"
-
-
-fi
-    echo "Setting: crypto_ROOT_LIB TO ssl crypto"
-    crypto_ROOT_LIB="ssl crypto"
-
-
-
-else case e in #(
-  e)
-                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SHA1_Init in -lcrypto" >&5
-printf %s "checking for SHA1_Init in -lcrypto... " >&6; }
-if test ${ac_cv_lib_crypto_SHA1_Init+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcrypto  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-namespace conftest {
-  extern "C" int SHA1_Init ();
-}
-int
-main (void)
-{
-return conftest::SHA1_Init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"
-then :
-  ac_cv_lib_crypto_SHA1_Init=yes
-else case e in #(
-  e) ac_cv_lib_crypto_SHA1_Init=no ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS ;;
-esac
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_SHA1_Init" >&5
-printf "%s\n" "$ac_cv_lib_crypto_SHA1_Init" >&6; }
-if test "x$ac_cv_lib_crypto_SHA1_Init" = xyes
-then :
-
-
-    if test "x${with_crypto_root}" != "x"
-then :
-
-
-printf "%s\n" "#define HAVE_CRYPTO 1" >>confdefs.h
-
-            crypto_ROOT_DIR=${with_crypto_root}
-
-            subconfigure="${subconfigure} --with-crypto-root=${with_crypto_root}"
-
-
-fi
-    echo "Setting: crypto_ROOT_LIB TO ssl crypto"
-    crypto_ROOT_LIB="ssl crypto"
-
-
-
-else case e in #(
-  e)
-                            echo "FAIL: Using: >${with_crypto_root}<"
-                            as_fn_error $? "
-
-Error: Could not find libcrypto
-
-        On a mac you will need to install openssl
-        and define the crypto root directory to configuration.
-
-            brew install openssl
-            ./configure --with-crypto-root=/usr/local/Cellar/openssl/1.0.2j/
-
-        On Linux you will need to install openssl
-
-            sudo apt-get install openssl
-            sudo apt-get install libssl-dev
-
-
-
-    " "$LINENO" 5
-                            echo "FAIL DONE"
-
-                     ;;
-esac
-fi
-
-
-             ;;
-esac
-fi
-            echo "Checking DONE"
-
-            LDFLAGS="${ORIG_LDFLAGS}"
-
-
-fi
-
-
-
-
-
-    # Check whether --enable-test-with-locked-file was given.
-if test ${enable_test_with_locked_file+y}
-then :
-  enableval=$enable_test_with_locked_file;
-fi
-
-
-    if test "x${enable_test_with_locked_file}" == "xno"
-then :
-
-
-printf "%s\n" "#define THOR_DISABLE_TEST_WITH_LOCKED_FILES 1" >>confdefs.h
-
-            subconfigure="${subconfigure} --disable-test-with-locked-file";
-
-else case e in #(
-  e)
-
-printf "%s\n" "#define THOR_DISABLE_TEST_WITH_LOCKED_FILES 0" >>confdefs.h
-
-
-     ;;
-esac
-fi
-
-
-
-
-    # Check whether --enable-test-with-mongo-query was given.
-if test ${enable_test_with_mongo_query+y}
-then :
-  enableval=$enable_test_with_mongo_query;
-fi
-
-
-    if test "x${enable_test_with_mongo_query}" == "xno"
-then :
-
-
-printf "%s\n" "#define THOR_DISABLE_TEST_WITH_MONGO_QUERY 1" >>confdefs.h
-
-            subconfigure="${subconfigure} --disable-test-with-mongo-query";
-
-else case e in #(
-  e)
-
-printf "%s\n" "#define THOR_DISABLE_TEST_WITH_MONGO_QUERY 0" >>confdefs.h
-
-
-     ;;
-esac
-fi
-
-
-
-
-
-
-    # Check whether --enable-Mongo_Service was given.
-if test ${enable_Mongo_Service+y}
-then :
-  enableval=$enable_Mongo_Service;
-fi
-
-
-
-# Check whether --with-TestMongoHost was given.
-if test ${with_TestMongoHost+y}
-then :
-  withval=$with_TestMongoHost;
-fi
-
-
-# Check whether --with-TestMongoUser was given.
-if test ${with_TestMongoUser+y}
-then :
-  withval=$with_TestMongoUser;
-fi
-
-
-# Check whether --with-TestMongoPass was given.
-if test ${with_TestMongoPass+y}
-then :
-  withval=$with_TestMongoPass;
-fi
-
-
-# Check whether --with-TestMongoDatabase was given.
-if test ${with_TestMongoDatabase+y}
-then :
-  withval=$with_TestMongoDatabase;
-fi
-
-
-    mongosh_test_host="127.0.0.1"
-    mongosh_test_user="test"
-    mongosh_test_pw="testPassword"
-    mongosh_test_db="test"
-
-    if test "x$have_TestMongoHost" = "xyes"
-then :
-  mongosh_test_host=$with_TestMongoHost
-fi
-    if test "x$have_TestMongoUser" = "xyes"
-then :
-  mongosh_test_user=$with_TestMongoUser
-fi
-    if test "x$have_TestMongoPass" = "xyes"
-then :
-  mongosh_test_pw=$with_TestMongoPass
-fi
-    if test "x$have_TestMongoDatabase" = "xyes"
-then :
-  mongosh_test_db=$with_TestMongoDatabase
-fi
-
-
-printf "%s\n" "#define THOR_TESTING_MONGO_HOST \"$mongosh_test_host\"" >>confdefs.h
-
-
-printf "%s\n" "#define THOR_TESTING_MONGO_USER \"$mongosh_test_user\"" >>confdefs.h
-
-
-printf "%s\n" "#define THOR_TESTING_MONGO_PASS \"$mongosh_test_pw\"" >>confdefs.h
-
-
-printf "%s\n" "#define THOR_TESTING_MONGO_DB \"$mongosh_test_db\"" >>confdefs.h
-
-
-    cli_tool=mongosh
-
-
-# Check whether --with-mongosh-tool was given.
-if test ${with_mongosh_tool+y}
-then :
-  withval=$with_mongosh_tool;
-fi
-
-
-    if test "x${with_mongosh_tool}" != "x"
-then :
-  cli_tool=${with_mongosh_tool}
-
-fi
-
-    if test "x$enable_Mongo_Service" == "xno"
-then :
-
-            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: \"You have disabled the check for Mongo Service\"" >&5
-printf "%s\n" "$as_me: WARNING: \"You have disabled the check for Mongo Service\"" >&2;}
-            subconfigure="${subconfigure} --disable-Mongo-Service"
-
-else case e in #(
-  e)
-
-    echo "COMMAND: >db.Blob.stats().nindexes<"
-    echo "DB LINK: >${cli_tool} --host $mongosh_test_host --username $mongosh_test_user --password $mongosh_test_pw $mongosh_test_db<" | sed -e 's/Ppass/aasp/g'
-    echo "db.Blob.stats().nindexes" |  ${cli_tool} --host $mongosh_test_host --username $mongosh_test_user --password $mongosh_test_pw $mongosh_test_db
-    test_connect=`echo "db.Blob.stats().nindexes" |  ${cli_tool} --host $mongosh_test_host --username $mongosh_test_user --password $mongosh_test_pw $mongosh_test_db 2> /dev/null | tail -2 | head -1 | sed -e 's/test>//' | xargs`
-    echo "RESULT:  >${test_connect}<"
-    if test "x$test_connect" != "x1"
-then :
-
-            as_fn_error $? "
-
-    Error: Can not connect to server(MONGO) using ${cli_tool} (Note: Default mongosh).
-
-            This may be because the mongosh server is not running or the test data has not been created.
-
-            1: Install Mongo server
-            2: Make sure Mongo is running
-            3: Install the test data and users.
-                    cat ./src/Mongo/test/data/init.mongo | ${cli_tool} --host $mongosh_test_host --username root --password
-                    cat ./src/Mongo/test/data/data.mongo | ${cli_tool} --host $mongosh_test_host --username $mongosh_test_user --password $mongosh_test_pw $mongosh_test_db
-
-            " "$LINENO" 5
-
-fi
-
-    version=` ${cli_tool} --host $mongosh_test_host --username $mongosh_test_user --password $mongosh_test_pw --eval 'db.version()' $mongosh_test_db | tail -1 | awk '{print $1}' | awk -F\. '{print $1}'`
-
-printf "%s\n" "#define MONGO_MAJOR_VERSION ${version}" >>confdefs.h
-
-
-     ;;
-esac
 fi
 
 
