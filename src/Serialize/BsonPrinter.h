@@ -10,10 +10,15 @@
 #include "MongoUtilityObjectId.h"
 #include "BsonUtil.h"
 #include "GitUtility/ieee754_types.h"
-#include <boost/endian/conversion.hpp>
 #include <vector>
 #include <iostream>
 #include <functional>
+#include <bit>
+
+static_assert(
+    std::endian::little == std::endian::native,
+    "Don't want to support big endian unless I can do some good testing. Don't have a system for that so currently not suppoorted, but should be a relatively easy change"
+);
 
 namespace ThorsAnvil
 {
@@ -120,14 +125,18 @@ class BsonPrinter: public PrinterInterface
         void writeKey(char value, std::size_t size);
         template<std::size_t size, typename Int> void writeLE(Int value)
         {
-            Int docValue = boost::endian::native_to_little(value);
+            Int docValue = value;
             output.write(reinterpret_cast<char*>(&docValue), size);
         }
 
         template<std::size_t size, typename Int> void writeBE(Int value)
         {
-            Int docValue = boost::endian::native_to_big(value);
-            output.write(reinterpret_cast<char*>(&docValue) + (sizeof(docValue) - size), size);
+            Int     docValue = value;
+            char*   docData  = reinterpret_cast<char*>(&docValue);
+            for (std::size_t loop = 0; loop < sizeof(docValue)/2; ++loop) {
+                std::swap(docData[loop], docData[sizeof(docValue) - loop - 1]);
+            }
+            output.write(docData + sizeof(docValue) - size, size);
         }
 
 

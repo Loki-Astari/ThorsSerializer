@@ -23,10 +23,16 @@
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
 #include <GitUtility/ieee754_types.h>
-#include <boost/endian/conversion.hpp>
 #include <istream>
 #include <string>
 #include <vector>
+#include <bit>
+
+static_assert(
+    std::endian::little == std::endian::native,
+    "Don't want to support big endian unless I can do some good testing. Don't have a system for that so currently not suppoorted, but should be a relatively easy change"
+);
+
 
 namespace ThorsAnvil
 {
@@ -92,14 +98,18 @@ class BsonParser: public ParserInterface
         {
             Int docSize;
             input.read(reinterpret_cast<char*>(&docSize), size);
-            return boost::endian::little_to_native(docSize);
+            return docSize;
         }
 
         template<std::size_t size, typename Int> Int readBE()
         {
-            Int docSize = 0;
-            input.read(reinterpret_cast<char*>(&docSize) + (sizeof(docSize) - size), size);
-            return boost::endian::big_to_native(docSize);
+            Int     docSize = 0;
+            char*   docData = reinterpret_cast<char*>(&docSize);
+            input.read(docData + sizeof(docSize) - size, size);
+            for (std::size_t loop = 0; loop < sizeof(docSize)/2; ++loop) {
+                std::swap(docData[loop], docData[sizeof(docSize) - loop - 1]);
+            }
+            return docSize;
         }
 
 
