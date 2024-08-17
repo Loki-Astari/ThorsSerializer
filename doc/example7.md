@@ -1,9 +1,7 @@
-[![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
-
 ![ThorStream](../img/stream.jpg)
 
 ## Example-1 [See doc/example1.cpp](example1.cpp)
-````c++
+```C++
     #include <iostream>
     #include <fstream>
     #include <vector>
@@ -53,11 +51,11 @@
             std::cout << "Object Read FAIL\n";
         }
     }
-````
+```
 
 ### Build and run
-````bash
-    > g++ -std=c++17 example7.cpp -lThorSerialize17 -lThorsLogging17
+```bash
+    > g++ -std=c++20 example7.cpp -lThorSerialize -lThorsLogging
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./a.out
 Object Read OK
@@ -71,4 +69,4 @@ Object Read OK
     }
 Object Read FAIL
 
-````
+```

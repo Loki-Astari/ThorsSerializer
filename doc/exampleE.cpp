@@ -11,6 +11,10 @@ struct MyStruct {
     std::string s;
 };
 
+// ThorsAnvil_MakeEnum is still supported for backwards compatibility.
+// But this functionality has been replaces by magic_enum
+// Please see: https://github.com/Neargye/magic_enum
+
 ThorsAnvil_MakeEnum(EnumType, A, B, C);
 ThorsAnvil_MakeTrait(MyStruct, e, s);
 

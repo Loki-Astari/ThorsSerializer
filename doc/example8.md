@@ -1,11 +1,9 @@
-[![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
-
 ![ThorStream](../img/stream.jpg)
 
 ## Example-1 [See doc/example1.cpp](example1.cpp)
 Input File: **file.json**
 
-````json
+```json
 [
     {
         "operation": "test",
@@ -22,11 +20,11 @@ Input File: **file.json**
         }
     }
 ]
-````
+```
 
 Source file: **example8.cpp**
 
-````c++
+```C++
 #include "ThorSerialize/Traits.h"
 #include "ThorSerialize/JsonThor.h"
 
@@ -76,13 +74,13 @@ int main()
         std::cout << jsonExporter(objects);
     }
 }
-````
+```
 
 ### Build and run
-````bash
+```bash
     > # Assume you have installed ThorsAnvil from Brew
     > # brew install ThorsSerializer
-    > g++ -std=c++17 example8.cpp -lThorSerialize17 -lThorsLogging17
+    > g++ -std=c++20 example8.cpp -lThorSerialize -lThorsLogging
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./a.out
 Object Read OK
@@ -106,14 +104,14 @@ Object Read OK
                 }
             }]
 
-````
+```
 
 Alternative Build using header only library:
-````bash
+```bash
     > git clone https://github.com/Neargye/magic_enum.git ~/MyHeaders/MagicEnum
     > git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsSerializer.git ~/MyHeaders/ThorsSerializer
     > 
-    > g++ -std=c++17 example8.cpp -I ~/MyHeaders/MagicEnum/include/magic_enum -I ~/MyHeaders/ThorsSerializer
+    > g++ -std=c++20 example8.cpp -I ~/MyHeaders/MagicEnum/include/magic_enum -I ~/MyHeaders/ThorsSerializer
     > ./a.out
 Object Read OK
 
@@ -136,4 +134,4 @@ Object Read OK
                 }
             }]
 
-````
+```

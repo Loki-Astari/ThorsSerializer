@@ -5121,7 +5121,7 @@ else case e in #(
 Error: Could not find libThorSerialize${askedLangFeature}
 
 You can solve this by installing Thors Serializer
-    brew install thors-serializer
+    brew install thors-mongo
 
 Alternately specify install location with:
     --with-thorserialize-root=<location of ThorsDB installation>

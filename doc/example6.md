@@ -1,9 +1,7 @@
-[![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
-
 ![ThorStream](../img/stream.jpg)
 
 ## Example-6: [see doc/example6.cpp](example6.cpp)
-````c++
+```C++
 #include <string>
 #include "ThorSerialize/Traits.h"
 #include "ThorSerialize/SerUtil.h"
@@ -36,9 +34,9 @@ class MyClass
  */
 ThorsAnvil_MakeTrait(MyClass, H, N, D1, D2);
 
-````
+```
 This allows us to import and export object of the above class really easily.
-````c++
+```C++
 int main()
 {
     using ThorsAnvil::Serialize::jsonExporter;
@@ -48,20 +46,20 @@ int main()
     MyClass   data {"1"s, 3, 3, 150};
 
 
-    // This generates a simple Json Object (wordy)
+    // This generates a simple JSON Object (wordy)
     std::cout << "Version 1\n";
     std::cout << jsonExporter(data) << "\n\n\n";
 
-    // This generates a compact Json 
+    // This generates a compact JSON 
     std::cout << "Version 2 (Stream)\n";
     std::cout << jsonExporter(data, PrinterInterface::OutputType::Stream) << "\n\n\n";
 }
-````
+```
 
 This generates:
 
-````bash
-    > g++ -std=c++17 -o example6 example6.cpp -lThorSerialize17 -lThorsLogging17
+```bash
+    > g++ -std=c++20 -o example6 example6.cpp -lThorSerialize -lThorsLogging
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./example6
 Version 1
@@ -76,4 +74,4 @@ Version 1
 
 Version 2 (Stream)
 {"H":"1","N":3,"D1":3,"D2":150}
-````
+```

@@ -1,9 +1,7 @@
-[![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
-
 ![ThorStream](../img/stream.jpg)
 
 
-## Marking your class Serializeable/Deserializable
+## Marking your class Serializable/Deserializable
 * Include the header file: `ThorSerialize/Traits.h`
 * Use one of these macros to declare your type as serializable
  *      ThorsAnvil_MakeTrait(DataType, members...)
@@ -19,7 +17,7 @@
  *
  *      ThorsAnvil_MakeTraitCustomSerialize(Type, SerializableType)
 
-````bash
+```bash
     DataType:           The name of a class (includeing namespace) of the type
                         you want to be able to serialize at some point.
     ParentType:         The name of a class that has previously been declared
@@ -36,9 +34,9 @@
     SerializableType:   A type used to serialize non standard (or complex types).
                         This is specialized for each format type.
                         See the documentation in Traits.h for details.
-````
+```
 The two macros above build a template specialization of the class `ThorsAnvil::Serialize::Traits<Type>` specific to your class. As a consequence these macros should not be placed inside any namespace blocks.
-````c++
+```C++
     #include "ThorSerialize/Traits.h"
 
     namespace MyNameSpace
@@ -54,11 +52,11 @@ The two macros above build a template specialization of the class `ThorsAnvil::S
 
     // The correct location to use the macro is here
     ThorsAnvil_MakeTrait(MyNameSpace::MyClass, x);
-````
+```
 
 ## Private Members
 If any members of the class that need to be serialized are private you must define a friendship to allow the `Traits<X>` class to have access to the private members.
-````c++
+```C++
     #include "ThorSerialize/Traits.h"
 
     namespace MyNameSpace
@@ -75,11 +73,11 @@ If any members of the class that need to be serialized are private you must defi
     }
 
     ThorsAnvil_MakeTrait(MyNameSpace::MyClass, x, y);
-````
+```
 
 ## Standard containers
 The appropriate declarations for all the standard containers are provided. You simply need to include "ThorSerialize/SerUtil.h" to include these declarations.
-````c++
+```C++
     #include "ThorSerialize/SerUtil.h"
     #include "ThorSerialize/JsonThor.h"
     #include <vector>
@@ -92,53 +90,53 @@ The appropriate declarations for all the standard containers are provided. You s
         std::vector<int>    data {1,2,3,4,5};
         std::cout << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
     }
-````
+```
 
 ## Serialization
-### Json
+### JSON
 * Include the header file "ThorSerialize/JsonThor.h".
 * There are two functions in the namespace `ThorsAnvil::Serialize`.
  * `jsonExporter(<YourObject>, characteristics = Default);`
  * `jsonImporter(<YourObject>);`
 
-Both these methods return an object that simply contains a reference to `YourObject` (no actual serialization happens). When this object is serialized to a stream using `operator<<` or `operator>>` respectively then the code will read/write the appropriate members and serialize/deserialzie them to/from the stream. Because the returned object contains a reference to the object that needs to be serialized; the lifespan should be shorted than `YourObject` to avoid a dangling reference. Therefore it is usually best to just use them directly in the stream operation.
+Both these methods return an object that simply contains a reference to `YourObject` (no actual serialization happens). When this object is serialized to a stream using `operator<<` or `operator>>` respectively then the code will read/write the appropriate members and serialize/de-serialize them to/from the stream. Because the returned object contains a reference to the object that needs to be serialized; the lifespan should be shorted than `YourObject` to avoid a dangling reference. Therefore it is usually best to just use them directly in the stream operation.
 
-````c++
+```C++
     std::vector<int>        data{1,2,3,4,5,6};
 
     std::cout << jsonExporter(data);
     std::cin  >> jsonImporter(data);
-````
+```
 
 On export there is a second parameter `characteristics` that allows some simple control on serialization (it basically affects white space to make debugging easier). Values are:
-````bash
+```bash
      Default:     What ever the implementation likes.
                   Currently this means `Config` but I have plans for an
                   application level setting that is checked.
      Stream:      Compressed for over the wire protocol.            ie. No Space.
      Config:      Human readable                                    Potentially config file like.
-````
+```
 
-### Yaml
-The description above is for Json Serialization/Deserialization. But the exact same description can be used for Yaml. Simply replace Json with Yaml and replace json with yaml.
+### YAML
+The description above is for JSON Serialization/De-serialization. But the exact same description can be used for YAML. Simply replace JSON with YAML and replace JSON with YAML.
 
-The export parameter `characteristics` has slightly different meaning for printing yaml. See the [libyaml documentation](http://libyaml.sourcearchive.com/documentation/0.1.1/group__styles_g1efef592e2e3df6f00432c04ef77d98f.html) for the meaning of these flags.
-````bash
+The export parameter `characteristics` has slightly different meaning for printing YAML. See the [libyaml documentation](http://libyaml.sourcearchive.com/documentation/0.1.1/group__styles_g1efef592e2e3df6f00432c04ef77d98f.html) for the meaning of these flags.
+```bash
      Default:     What ever the implementation likes.
                   Currently this means YAML_BLOCK_MAPPING_STYLE but I have plans for an
                   application level setting that is checked.
      Stream:      YAML_FLOW_MAPPING_STYLE
      Config:      YAML_BLOCK_MAPPING_STYLE
-````
+```
 
-### Bson
-The description above is for Json Serialization/Deserialization. But the exact same description can be used for Bson versions. Simply replace Json with Bson and replace json with bson.
+### BSON
+The description above is for JSON Serialization/De-serialization. But the exact same description can be used for BSON versions. Simply replace JSON with BSON and replace JSON with BSON.
 
 The export parameter `characteristics` has no affect on binary.
 
-## Notes on std::map (Json)
-The JSON "Object" is a set of "name"/"value" pairs. But the name part is always a "String". If you use a `std::map<Key, Value>` where the "Key" is a `std::string` then the `std::map<>` will be represented by a JSON "Object". If any other type is used as the "Key" then `std::map<>` will be represented as a Json "Array" where each member of the array is `std::pair<Key,Value>`.
-````c++
+## Notes on std::map (JSON)
+The JSON "Object" is a set of "name"/"value" pairs. But the name part is always a "String". If you use a `std::map<Key, Value>` where the "Key" is a `std::string` then the `std::map<>` will be represented by a JSON "Object". If any other type is used as the "Key" then `std::map<>` will be represented as a JSON "Array" where each member of the array is `std::pair<Key,Value>`.
+```C++
     // Example:
     int main()
     {
@@ -148,14 +146,14 @@ The JSON "Object" is a set of "name"/"value" pairs. But the name part is always 
         std::map<int,int>               data2{{15,2}};
         std::cout << jsonExporter(data2) << "\n";             // [{"first":15, "second":2}]
     }
-````
+```
 
 ## Strict Vs Weak Parsing.
 
-By defaul the parser is linient.  
+By default the parser is lenient.  
 If it finds a "Key" that it does not recognize (or know how to decode) then it will ignore the "Value". This is controlled via the second parameter passed to the parser which defaults to "Weak"
 
-````c++
+```C++
         using TS = ThorsAnvil::Serializer;
         using PT = TS::ParserInterface::ParseType;
 
@@ -170,13 +168,13 @@ If it finds a "Key" that it does not recognize (or know how to decode) then it w
 
         T object;
         stream >> TS::jsonImporter(object, PT::Strict);
-````
+```
 
 ## Strict Vs Exact Parsing.
 
-Strict parsing does not allow extra parameters in the Json input. Exact parsing takes one further step in that all members in the object must be present in the Json. If not all members are available then an exception is thrown.
+Strict parsing does not allow extra parameters in the JSON input. Exact parsing takes one further step in that all members in the object must be present in the JSON. If not all members are available then an exception is thrown.
 
-````c++
+```C++
         using TS = ThorsAnvil::Serializer;
         using PT = TS::ParserInterface::ParseType;
 
@@ -191,4 +189,4 @@ Strict parsing does not allow extra parameters in the Json input. Exact parsing 
 
         T object;
         stream >> TS::jsonImporter(object, PT::Exact);    // 
-````
+```

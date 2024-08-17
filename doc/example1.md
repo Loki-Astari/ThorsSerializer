@@ -1,9 +1,7 @@
-[![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
-
 ![ThorStream](../img/stream.jpg)
 
 ## Example-1 [See doc/example1.cpp](example1.cpp)
-````c++
+```C++
     #include <iostream>
     #include <sstream>
     #include "ThorSerialize/Traits.h"
@@ -52,11 +50,11 @@
         input >> jsonImporter(john);
         std::cout << jsonExporter(john) << "\n";
     }
-````
+```
 
 ### Build and run
-````bash
-    > g++ -std=c++17 example1.cpp -lThorSerialize17 -lThorsLogging17
+```bash
+    > g++ -std=c++20 example1.cpp -lThorSerialize -lThorsLogging
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./a.out
         { 
@@ -81,4 +79,4 @@
                 "blue": 255
             }
         }
-````
+```
