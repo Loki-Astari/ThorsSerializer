@@ -192,7 +192,7 @@ TEST(JsonPrinterTest, ArrayWithArrayValues)
 TEST(JsonPrinterTest, CheckStreeamIsCompressed)
 {
     std::stringstream                   stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray(-1);
@@ -218,7 +218,7 @@ TEST(JsonPrinterTest, CheckStreeamIsCompressed)
 TEST(JsonPrinterTest, CloseMapWithArray)
 {
     std::stringstream                   stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openMap(-1);
@@ -229,7 +229,7 @@ TEST(JsonPrinterTest, CloseMapWithArray)
 TEST(JsonPrinterTest, CloseArrayWithMap)
 {
     std::stringstream                   stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray(-1);
@@ -240,7 +240,7 @@ TEST(JsonPrinterTest, CloseArrayWithMap)
 TEST(JsonPrinterTest, PuttingKeyInArray)
 {
     std::stringstream                   stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray(-1);
@@ -251,7 +251,7 @@ TEST(JsonPrinterTest, PuttingKeyInArray)
 TEST(JsonPrinterTest, AddRawValueTest)
 {
     std::stringstream                   stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openMap(-1);
@@ -267,7 +267,7 @@ TEST(JsonPrinterTest, AddRawValueTest)
 TEST(JsonPrinterTest, DoubleZeroNeedsDot)
 {
     std::stringstream                   stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    ThorsAnvil::Serialize::JsonPrinter  printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray(-1);

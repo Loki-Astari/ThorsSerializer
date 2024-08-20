@@ -6,6 +6,8 @@
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserInterface;
+using TA::ParserToken;
+using TA::ParseType;
 using TA::DeSerializer;
 using TA::FormatType;
 
@@ -65,15 +67,15 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedKey)
     std::stringstream           stream;
     std::vector<std::string>    keys    {"Ignore"};
     std::vector<std::string>    values;
-    std::vector<ParserInterface::ParserToken>    tokens
-    {   ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,  // Key
-                    ParserInterface::ParserToken::ArrayStart,
-                        ParserInterface::ParserToken::Key,   /* Don't expect a Key in Array */
-                    ParserInterface::ParserToken::ArrayEnd,
-            ParserInterface::ParserToken::MapEnd,
-        ParserInterface::ParserToken::DocEnd
+    std::vector<ParserToken>    tokens
+    {   ParserToken::DocStart,
+            ParserToken::MapStart,
+                ParserToken::Key,  // Key
+                    ParserToken::ArrayStart,
+                        ParserToken::Key,   /* Don't expect a Key in Array */
+                    ParserToken::ArrayEnd,
+            ParserToken::MapEnd,
+        ParserToken::DocEnd
     };
     CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
@@ -90,15 +92,15 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedMapEnd)
     std::stringstream           stream;
     std::vector<std::string>    keys    {"Ignore"};
     std::vector<std::string>    values;
-    std::vector<ParserInterface::ParserToken>    tokens
-    {   ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,  // Key
-                    ParserInterface::ParserToken::ArrayStart,
-                        ParserInterface::ParserToken::MapEnd,   /* Don't expect a MapEnd in Array */
-                    ParserInterface::ParserToken::ArrayEnd,
-            ParserInterface::ParserToken::MapEnd,
-        ParserInterface::ParserToken::DocEnd
+    std::vector<ParserToken>    tokens
+    {   ParserToken::DocStart,
+            ParserToken::MapStart,
+                ParserToken::Key,  // Key
+                    ParserToken::ArrayStart,
+                        ParserToken::MapEnd,   /* Don't expect a MapEnd in Array */
+                    ParserToken::ArrayEnd,
+            ParserToken::MapEnd,
+        ParserToken::DocEnd
     };
     CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
@@ -115,15 +117,15 @@ TEST(CornerCaseTest, IgnoreTheArrayUnexpectedInvalidValue)
     std::stringstream           stream;
     std::vector<std::string>    keys    {"Ignore"};
     std::vector<std::string>    values;
-    std::vector<ParserInterface::ParserToken>    tokens
-    {   ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,  // Key
-                    ParserInterface::ParserToken::ArrayStart,
-                        ((ParserInterface::ParserToken)32762),   /* Don't expect a Invalid in Array */
-                    ParserInterface::ParserToken::ArrayEnd,
-            ParserInterface::ParserToken::MapEnd,
-        ParserInterface::ParserToken::DocEnd
+    std::vector<ParserToken>    tokens
+    {   ParserToken::DocStart,
+            ParserToken::MapStart,
+                ParserToken::Key,  // Key
+                    ParserToken::ArrayStart,
+                        ((ParserToken)32762),   /* Don't expect a Invalid in Array */
+                    ParserToken::ArrayEnd,
+            ParserToken::MapEnd,
+        ParserToken::DocEnd
     };
     CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
@@ -140,13 +142,13 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedKey)
     std::stringstream           stream;
     std::vector<std::string>    keys    {"Ignore"};
     std::vector<std::string>    values;
-    std::vector<ParserInterface::ParserToken>    tokens
-    {   ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,  // Key
-                ParserInterface::ParserToken::Key,  /* Don't expect a key after a key */
-            ParserInterface::ParserToken::MapEnd,
-        ParserInterface::ParserToken::DocEnd
+    std::vector<ParserToken>    tokens
+    {   ParserToken::DocStart,
+            ParserToken::MapStart,
+                ParserToken::Key,  // Key
+                ParserToken::Key,  /* Don't expect a key after a key */
+            ParserToken::MapEnd,
+        ParserToken::DocEnd
     };
     CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
@@ -163,13 +165,13 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedMapEnd)
     std::stringstream           stream;
     std::vector<std::string>    keys    {"Ignore"};
     std::vector<std::string>    values;
-    std::vector<ParserInterface::ParserToken>    tokens
-    {   ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,  // Key
-                ParserInterface::ParserToken::MapEnd,  /* Don't expect a MapEnd after a key */
-            ParserInterface::ParserToken::MapEnd,
-        ParserInterface::ParserToken::DocEnd
+    std::vector<ParserToken>    tokens
+    {   ParserToken::DocStart,
+            ParserToken::MapStart,
+                ParserToken::Key,  // Key
+                ParserToken::MapEnd,  /* Don't expect a MapEnd after a key */
+            ParserToken::MapEnd,
+        ParserToken::DocEnd
     };
     CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
@@ -186,13 +188,13 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedArrayEnd)
     std::stringstream           stream;
     std::vector<std::string>    keys    {"Ignore"};
     std::vector<std::string>    values;
-    std::vector<ParserInterface::ParserToken>    tokens
-    {   ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,  // Key
-                ParserInterface::ParserToken::ArrayEnd,  /* Don't expect an ArrayEnd after a key */
-            ParserInterface::ParserToken::MapEnd,
-        ParserInterface::ParserToken::DocEnd
+    std::vector<ParserToken>    tokens
+    {   ParserToken::DocStart,
+            ParserToken::MapStart,
+                ParserToken::Key,  // Key
+                ParserToken::ArrayEnd,  /* Don't expect an ArrayEnd after a key */
+            ParserToken::MapEnd,
+        ParserToken::DocEnd
     };
     CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
@@ -209,13 +211,13 @@ TEST(CornerCaseTest, IgnoreTheValueUnexpectedInvalidValue)
     std::stringstream           stream;
     std::vector<std::string>    keys    {"Ignore"};
     std::vector<std::string>    values;
-    std::vector<ParserInterface::ParserToken>    tokens
-    {   ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-                ParserInterface::ParserToken::Key,  // Key
-                ((ParserInterface::ParserToken)32762),   /* Don't expect a Invalid after a Key */
-            ParserInterface::ParserToken::MapEnd,
-        ParserInterface::ParserToken::DocEnd
+    std::vector<ParserToken>    tokens
+    {   ParserToken::DocStart,
+            ParserToken::MapStart,
+                ParserToken::Key,  // Key
+                ((ParserToken)32762),   /* Don't expect a Invalid after a Key */
+            ParserToken::MapEnd,
+        ParserToken::DocEnd
     };
     CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
     DeSerializer    deSerializer(parser);
@@ -234,12 +236,12 @@ TEST(CornerCaseTest, DeSerializerNoDocStart)
         std::stringstream           stream;
         std::vector<std::string>    keys;
         std::vector<std::string>    values;
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
             // Missing DocStart
-            ParserInterface::ParserToken::MapStart,
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd
+            ParserToken::MapStart,
+            ParserToken::MapEnd,
+            ParserToken::DocEnd
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -259,11 +261,11 @@ TEST(CornerCaseTest, DeSerializerNoDocEnd)
         std::stringstream           stream;
         std::vector<std::string>    keys;
         std::vector<std::string>    values;
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-            ParserInterface::ParserToken::MapEnd,
+            ParserToken::DocStart,
+            ParserToken::MapStart,
+            ParserToken::MapEnd,
             // Missing Doc End
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
@@ -283,12 +285,12 @@ TEST(CornerCaseTest, DeSerializationForBlock_Struct_Constructor)
         std::stringstream           stream;
         std::vector<std::string>    keys;
         std::vector<std::string>    values;
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
+            ParserToken::DocStart,
             // Missing MapStart
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -307,13 +309,13 @@ TEST(CornerCaseTest, DeSerializationForBlock_Struct_HasMoreValue)
         std::stringstream           stream;
         std::vector<std::string>    keys;
         std::vector<std::string>    values;
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-            ParserInterface::ParserToken::Value,    // Not a key
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            ParserToken::MapStart,
+            ParserToken::Value,    // Not a key
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -332,15 +334,15 @@ TEST(CornerCaseTest, DeSerializationForBlock_Value_ScanObject)
         std::stringstream           stream;
         std::vector<std::string>    keys{"value"};
         std::vector<std::string>    values;
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-            ParserInterface::ParserToken::Key,      // Key -> "value" Expecting an ParserToken::Value next
-            ParserInterface::ParserToken::MapStart,
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            ParserToken::MapStart,
+            ParserToken::Key,      // Key -> "value" Expecting an ParserToken::Value next
+            ParserToken::MapStart,
+            ParserToken::MapEnd,
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -359,16 +361,16 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_NotMap)
         std::stringstream           stream;
         std::vector<std::string>    keys{"__type", "Type"};
         std::vector<std::string>    values{"CornerCaseClass", "15"};
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            // ParserInterface::ParserToken::MapStart,  // Missing Map Start
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            // ParserToken::MapStart,  // Missing Map Start
+            ParserToken::Key,
+            ParserToken::Value,
+            ParserToken::Key,
+            ParserToken::Value,
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -387,16 +389,16 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapNoKey)
         std::stringstream           stream;
         std::vector<std::string>    keys{"__type", "Type"};
         std::vector<std::string>    values{"CornerCaseClass", "15"};
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-            // ParserInterface::ParserToken::Key,   // Missing Key
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            ParserToken::MapStart,
+            // ParserToken::Key,   // Missing Key
+            ParserToken::Value,
+            ParserToken::Key,
+            ParserToken::Value,
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -415,16 +417,16 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyNot_Type)
         std::stringstream           stream;
         std::vector<std::string>    keys{"__typeXX", "Type"};   // Type incorrect
         std::vector<std::string>    values{"CornerCaseClass", "15"};
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            ParserToken::MapStart,
+            ParserToken::Key,
+            ParserToken::Value,
+            ParserToken::Key,
+            ParserToken::Value,
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -443,17 +445,17 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyNotValue)
         std::stringstream           stream;
         std::vector<std::string>    keys{"__type", "Type"};
         std::vector<std::string>    values{"CornerCaseClass", "15"};
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::MapStart, // Needs to be a value (to get string and type name)
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            ParserToken::MapStart,
+            ParserToken::Key,
+            ParserToken::MapStart, // Needs to be a value (to get string and type name)
+            ParserToken::MapEnd,
+            ParserToken::Key,
+            ParserToken::Value,
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -472,16 +474,16 @@ TEST(CornerCaseTest, TryParsePolyMorphicObject_MapKeyValueBadType)
         std::stringstream           stream;
         std::vector<std::string>    keys{"__type", "Type"};
         std::vector<std::string>    values{"CornerCaseClass_XX", "15"}; // Bad Class Name
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart,
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::Key,
-            ParserInterface::ParserToken::Value,
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            ParserToken::MapStart,
+            ParserToken::Key,
+            ParserToken::Value,
+            ParserToken::Key,
+            ParserToken::Value,
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -506,12 +508,12 @@ TEST(CornerCaseTest, DeSerializationForBlock_Enum_Constructor)
         std::stringstream           stream;
         std::vector<std::string>    keys;
         std::vector<std::string>    values;
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::MapStart, // Should be Value for enum
-            ParserInterface::ParserToken::MapEnd,
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            ParserToken::MapStart, // Should be Value for enum
+            ParserToken::MapEnd,
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);
@@ -531,11 +533,11 @@ TEST(CornerCaseTest, DeSerializationForBlock_Array_Constructor)
         std::stringstream           stream;
         std::vector<std::string>    keys;
         std::vector<std::string>    values;
-        std::vector<ParserInterface::ParserToken>    tokens
+        std::vector<ParserToken>    tokens
         {
-            ParserInterface::ParserToken::DocStart,
-            ParserInterface::ParserToken::Value, // Should be ArrayStart for Array
-            ParserInterface::ParserToken::DocEnd,
+            ParserToken::DocStart,
+            ParserToken::Value, // Should be ArrayStart for Array
+            ParserToken::DocEnd,
         };
         CornerCaseTest::ParserMock      parser(stream, tokens, keys, values);
         DeSerializer    deSerializer(parser);

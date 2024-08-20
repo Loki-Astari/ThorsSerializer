@@ -60,7 +60,7 @@ TEST(ReferenceWrapperTest, YamlnSimpleWrapperRead)
     ReferenceWrapperTest<int>   wrapper(value);
     std::stringstream           stream("---\ndata: 12\n...\n");
 
-    if (stream >> ThorsAnvil::Serialize::yamlImporter(wrapper, ThorsAnvil::Serialize::ParserInterface::ParserConfig{false}))
+    if (stream >> ThorsAnvil::Serialize::yamlImporter(wrapper, ThorsAnvil::Serialize::ParserConfig{false}))
     {
         import = true;
     }
@@ -74,7 +74,7 @@ TEST(ReferenceWrapperTest, YamlnComplexWrapperRead)
     ReferenceWrapperTest<Marker>    wrapper(value);
     std::stringstream               stream("---\ndata:\n  value: 13\n  data: A string\n...\n");
 
-    if (stream >> ThorsAnvil::Serialize::yamlImporter(wrapper, ThorsAnvil::Serialize::ParserInterface::ParserConfig{false}))
+    if (stream >> ThorsAnvil::Serialize::yamlImporter(wrapper, ThorsAnvil::Serialize::ParserConfig{false}))
     {
         import = true;
     }
@@ -132,7 +132,7 @@ TEST(ReferenceWrapperTest, JsonSimpleWrapperWrite)
     ReferenceWrapperTest<int>   wrapper(value);
 
     std::stringstream   stream;
-    if (stream << ThorsAnvil::Serialize::jsonExporter(wrapper, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::jsonExporter(wrapper, ThorsAnvil::Serialize::OutputType::Stream))
     {
         import = true;
     }
@@ -146,7 +146,7 @@ TEST(ReferenceWrapperTest, JsonComplexWrapperWrite)
     ReferenceWrapperTest<Marker>   wrapper(value);
 
     std::stringstream   stream;
-    if (stream << ThorsAnvil::Serialize::jsonExporter(wrapper, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::jsonExporter(wrapper, ThorsAnvil::Serialize::OutputType::Stream))
     {
         import = true;
     }
@@ -190,7 +190,7 @@ TEST(ReferenceWrapperTest, BsonSimpleWrapperWrite)
     ReferenceWrapperTest<int>   wrapper(value);
 
     std::stringstream   stream;
-    if (stream << ThorsAnvil::Serialize::bsonExporter(wrapper, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::bsonExporter(wrapper, ThorsAnvil::Serialize::OutputType::Stream))
     {
         import = true;
     }
@@ -208,7 +208,7 @@ TEST(ReferenceWrapperTest, BsonComplexWrapperWrite)
     ReferenceWrapperTest<Marker>   wrapper(value);
 
     std::stringstream   stream;
-    if (stream << ThorsAnvil::Serialize::bsonExporter(wrapper, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::bsonExporter(wrapper, ThorsAnvil::Serialize::OutputType::Stream))
     {
         import = true;
     }

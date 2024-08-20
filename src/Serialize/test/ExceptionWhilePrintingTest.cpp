@@ -30,14 +30,14 @@ TEST(ExceptionWhilePrintingTest, JsonNormalPrint)
 
 TEST(ExceptionWhilePrintingTest, JsonNormalPrintCatchEnabled)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::stringstream   stream;
     ExceptionTest::ThrowablePrint      obj(false, 16);
     bool                thrown = false;
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExporter(obj, PrinterInterface::OutputType::Default);
+        stream << ThorsAnvil::Serialize::jsonExporter(obj, OutputType::Default);
     }
     catch(...)
     {
@@ -73,14 +73,14 @@ TEST(ExceptionWhilePrintingTest, JsonThrowPrint)
 
 TEST(ExceptionWhilePrintingTest, JsonThrowPrintCatchEnabled)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::stringstream   stream;
     ExceptionTest::ThrowablePrint      obj(true, 18);
     bool                thrown = false;
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExporter(obj, PrinterInterface::OutputType::Default);
+        stream << ThorsAnvil::Serialize::jsonExporter(obj, OutputType::Default);
     }
     catch(...)
     {
@@ -117,14 +117,14 @@ TEST(ExceptionWhilePrintingTest, JsonNormalStream)
 
 TEST(ExceptionWhilePrintingTest, JsonNormalStreamCatchEnabled)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     std::stringstream   stream(R"(20 "Data")");
     ExceptionTest::ThrowablePrint      obj(false, 2);
     bool                thrown = false;
 
     try
     {
-        stream >> ThorsAnvil::Serialize::jsonImporter(obj, ParserInterface::ParseType::Weak);
+        stream >> ThorsAnvil::Serialize::jsonImporter(obj, ParseType::Weak);
     }
     catch(...)
     {
@@ -160,14 +160,14 @@ TEST(ExceptionWhilePrintingTest, JsonThrowStream)
 
 TEST(ExceptionWhilePrintingTest, JsonThrowStreamCatchEnabled)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     std::stringstream   stream("22");
     ExceptionTest::ThrowablePrint      obj(true, 4);
     bool                thrown = false;
 
     try
     {
-        stream >> ThorsAnvil::Serialize::jsonImporter(obj, ParserInterface::ParseType::Weak);
+        stream >> ThorsAnvil::Serialize::jsonImporter(obj, ParseType::Weak);
     }
     catch(...)
     {
@@ -210,14 +210,14 @@ TEST(ExceptionWhilePrintingTest, BsonNormalPrint)
 
 TEST(ExceptionWhilePrintingTest, BsonNormalPrintCatchEnabled)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::stringstream   stream;
     ExceptionTest::ThrowablePrint      obj(false, 16);
     bool                thrown = false;
 
     try
     {
-        stream << ThorsAnvil::Serialize::bsonExporter(obj, PrinterInterface::OutputType::Default);
+        stream << ThorsAnvil::Serialize::bsonExporter(obj, OutputType::Default);
     }
     catch(...)
     {
@@ -258,14 +258,14 @@ TEST(ExceptionWhilePrintingTest, BsonThrowPrint)
 
 TEST(ExceptionWhilePrintingTest, BsonThrowPrintCatchEnabled)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::stringstream   stream;
     ExceptionTest::ThrowablePrint      obj(true, 18);
     bool                thrown = false;
 
     try
     {
-        stream << ThorsAnvil::Serialize::bsonExporter(obj, PrinterInterface::OutputType::Default);
+        stream << ThorsAnvil::Serialize::bsonExporter(obj, OutputType::Default);
     }
     catch(...)
     {
@@ -307,7 +307,7 @@ TEST(ExceptionWhilePrintingTest, BsonNormalStream)
 
 TEST(ExceptionWhilePrintingTest, BsonNormalStreamCatchEnabled)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     static const char inputRaw[]
                 = "\x16\x00\x00\x00"
                   "\x05"  "0\x00"  "\x09\x00\x00\x00" "\x80" "20 \"Done\""
@@ -319,7 +319,7 @@ TEST(ExceptionWhilePrintingTest, BsonNormalStreamCatchEnabled)
 
     try
     {
-        stream >> ThorsAnvil::Serialize::bsonImporter(obj, ParserInterface::ParseType::Weak);
+        stream >> ThorsAnvil::Serialize::bsonImporter(obj, ParseType::Weak);
     }
     catch(...)
     {
@@ -360,7 +360,7 @@ TEST(ExceptionWhilePrintingTest, BsonThrowStream)
 
 TEST(ExceptionWhilePrintingTest, BsonThrowStreamCatchEnabled)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     static const char inputRaw[]
                 = "\x0F\x00\x00\x00"
                   "\x05"  "0\x00"  "\x02\x00\x00\x00" "\x80" "22"
@@ -372,7 +372,7 @@ TEST(ExceptionWhilePrintingTest, BsonThrowStreamCatchEnabled)
 
     try
     {
-        stream >> ThorsAnvil::Serialize::bsonImporter(obj, ParserInterface::ParseType::Weak);
+        stream >> ThorsAnvil::Serialize::bsonImporter(obj, ParseType::Weak);
     }
     catch(...)
     {

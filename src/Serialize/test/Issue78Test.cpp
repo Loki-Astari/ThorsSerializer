@@ -23,7 +23,7 @@ TEST(Issue78Test, ThorwOnInvalidEnumDeSerializationOriginalEnum)
     using ThorsAnvil::Serialize::jsonExporter;
 
     auto action = []() {
-        ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
+        ThorsAnvil::Serialize::PrinterConfig config;
         config.catchExceptions = false;
 
         CLASS a;
@@ -54,7 +54,7 @@ TEST(Issue78Test, ThorwOnInvalidEnumDeSerializationMagicEnum)
     using ThorsAnvil::Serialize::jsonExporter;
 
     auto action = []() {
-        ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
+        ThorsAnvil::Serialize::PrinterConfig config;
         config.catchExceptions = false;
 
         CLASSWithMagic a;
@@ -76,8 +76,8 @@ TEST(Issue78Test, EnumDeSerializationMagicEnum)
 {
     using ThorsAnvil::Serialize::jsonExporter;
 
-    ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
-    config.characteristics = ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream;
+    ThorsAnvil::Serialize::PrinterConfig config;
+    config.characteristics = ThorsAnvil::Serialize::OutputType::Stream;
     config.catchExceptions = false;
 
     CLASSWithMagic a;

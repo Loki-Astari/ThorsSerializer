@@ -416,7 +416,7 @@ TEST(BsonPrinterTest, ArrayWithArrayValues)
 TEST(BsonPrinterTest, CloseMapWithArray)
 {
     std::stringstream                   stream;
-    BsonTestPrinter                     printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    BsonTestPrinter                     printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openMap(printer.getSizeMapTest(0));
@@ -427,7 +427,7 @@ TEST(BsonPrinterTest, CloseMapWithArray)
 TEST(BsonPrinterTest, CloseArrayWithMap)
 {
     std::stringstream                   stream;
-    BsonTestPrinter                     printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    BsonTestPrinter                     printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray(printer.getSizeArrayTest(0));
@@ -438,7 +438,7 @@ TEST(BsonPrinterTest, CloseArrayWithMap)
 TEST(BsonPrinterTest, PuttingKeyInArray)
 {
     std::stringstream                   stream;
-    BsonTestPrinter                     printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    BsonTestPrinter                     printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openArray(printer.getSizeArrayTest(0));
@@ -449,7 +449,7 @@ TEST(BsonPrinterTest, PuttingKeyInArray)
 TEST(BsonPrinterTest, AddRawValueTest)
 {
     std::stringstream                   stream;
-    BsonTestPrinter                     printer(stream, ThorsAnvil::Serialize::PrinterInterface::OutputType::Stream);
+    BsonTestPrinter                     printer(stream, ThorsAnvil::Serialize::OutputType::Stream);
 
     printer.openDoc();
     printer.openMap(printer.getSizeMapTest(1)

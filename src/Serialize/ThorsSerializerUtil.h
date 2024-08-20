@@ -237,9 +237,6 @@ struct ParserConfig
 class ParserInterface
 {
     public:
-        using ParseType     = ::ThorsAnvil::Serialize::ParseType;
-        using ParserToken   = ::ThorsAnvil::Serialize::ParserToken;
-        using ParserConfig  = ::ThorsAnvil::Serialize::ParserConfig;
         std::istream&   input;
         ParserToken     pushBack;
         ParserConfig    config;
@@ -355,8 +352,6 @@ struct PrinterConfig
 class PrinterInterface
 {
     public:
-        using OutputType = ::ThorsAnvil::Serialize::OutputType;
-        using PrinterConfig = ::ThorsAnvil::Serialize::PrinterConfig;
         std::ostream&   output;
         PrinterConfig   config;
 

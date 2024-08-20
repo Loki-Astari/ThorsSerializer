@@ -6,23 +6,24 @@
 namespace TA=ThorsAnvil::Serialize;
 using TA::JsonParser;
 using TA::BsonParser;
-using TA::ParserInterface;
+using TA::ParserConfig;
+using TA::ParserToken;
 
 TEST(ParserInterfaceTest, JsonNormalNoPushBack)
 {
     std::stringstream   stream("[10,11,12]");
     JsonParser          parser(stream);
 
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::DocStart, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::DocEnd, parser.getToken());
 }
 
 TEST(ParserInterfaceTest, JsonPushBackValue)
@@ -30,20 +31,20 @@ TEST(ParserInterfaceTest, JsonPushBackValue)
     std::stringstream   stream("[10,11,12]");
     JsonParser          parser(stream);
 
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::DocStart, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
 
-    parser.pushBackToken(ParserInterface::ParserToken::Value);
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.pushBackToken(ParserToken::Value);
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
 
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::DocEnd, parser.getToken());
 }
 
 TEST(ParserInterfaceTest, JsonPushBackTwoValue)
@@ -51,17 +52,17 @@ TEST(ParserInterfaceTest, JsonPushBackTwoValue)
     std::stringstream   stream("[10,11,12]");
     JsonParser          parser(stream);
 
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::DocStart, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
 
-    parser.pushBackToken(ParserInterface::ParserToken::Value);
+    parser.pushBackToken(ParserToken::Value);
     ASSERT_ANY_THROW(
-        parser.pushBackToken(ParserInterface::ParserToken::Value)
+        parser.pushBackToken(ParserToken::Value)
     );
 }
 
@@ -70,29 +71,28 @@ TEST(ParserInterfaceTest, JsonPushBackTwoValueWithReads)
     std::stringstream   stream("[10,11,12]");
     JsonParser          parser(stream);
 
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::DocStart, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
 
-    parser.pushBackToken(ParserInterface::ParserToken::Value);
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.pushBackToken(ParserToken::Value);
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
 
-    parser.pushBackToken(ParserInterface::ParserToken::Value);
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.pushBackToken(ParserToken::Value);
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
 
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::DocEnd, parser.getToken());
 }
 
 TEST(ParserInterfaceTest, BsonNormalNoPushBack)
 {
     //NOTE INPUT ("[10,11,12]");
-    using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"
                   "\x10"  "0\x00"  "\x0A\x00\x00\x00"
@@ -105,22 +105,21 @@ TEST(ParserInterfaceTest, BsonNormalNoPushBack)
     config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
     BsonParser          parser(stream, config);
 
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::DocStart, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::DocEnd, parser.getToken());
 }
 
 TEST(ParserInterfaceTest, BsonPushBackValue)
 {
     //NOTE INPUT ("[10,11,12]");
-    using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"
                   "\x10"  "0\x00"  "\x0A\x00\x00\x00"
@@ -133,26 +132,25 @@ TEST(ParserInterfaceTest, BsonPushBackValue)
     config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
     BsonParser          parser(stream, config);
 
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::DocStart, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
 
-    parser.pushBackToken(ParserInterface::ParserToken::Value);
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.pushBackToken(ParserToken::Value);
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
 
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::DocEnd, parser.getToken());
 }
 
 TEST(ParserInterfaceTest, BsonPushBackTwoValue)
 {
     //NOTE INPUT ("[10,11,12]");
-    using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"
                   "\x10"  "0\x00"  "\x0A\x00\x00\x00"
@@ -165,24 +163,23 @@ TEST(ParserInterfaceTest, BsonPushBackTwoValue)
     config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
     BsonParser          parser(stream, config);
 
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::DocStart, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
 
-    parser.pushBackToken(ParserInterface::ParserToken::Value);
+    parser.pushBackToken(ParserToken::Value);
     ASSERT_ANY_THROW(
-        parser.pushBackToken(ParserInterface::ParserToken::Value)
+        parser.pushBackToken(ParserToken::Value)
     );
 }
 
 TEST(ParserInterfaceTest, BsonPushBackTwoValueWithReads)
 {
     //NOTE INPUT ("[10,11,12]");
-    using ParserConfig = ParserInterface::ParserConfig;
     static const char inputRaw[]
                 = "\x1A\x00\x00\x00"
                   "\x10"  "0\x00"  "\x0A\x00\x00\x00"
@@ -195,23 +192,23 @@ TEST(ParserInterfaceTest, BsonPushBackTwoValueWithReads)
     config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
     BsonParser          parser(stream, config);
 
-    EXPECT_EQ(ParserInterface::ParserToken::DocStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayStart, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::DocStart, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
 
-    parser.pushBackToken(ParserInterface::ParserToken::Value);
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.pushBackToken(ParserToken::Value);
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
     parser.ignoreDataValue();
 
-    parser.pushBackToken(ParserInterface::ParserToken::Value);
-    EXPECT_EQ(ParserInterface::ParserToken::Value, parser.getToken());
+    parser.pushBackToken(ParserToken::Value);
+    EXPECT_EQ(ParserToken::Value, parser.getToken());
 
-    EXPECT_EQ(ParserInterface::ParserToken::ArrayEnd, parser.getToken());
-    EXPECT_EQ(ParserInterface::ParserToken::DocEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::ArrayEnd, parser.getToken());
+    EXPECT_EQ(ParserToken::DocEnd, parser.getToken());
 }
 
 
