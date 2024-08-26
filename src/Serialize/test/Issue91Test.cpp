@@ -39,3 +39,11 @@ TEST(Issue91Test, TestOfDerived)
 
     EXPECT_EQ("{}", str.str());
 }
+TEST(Issue91Test, TestOfDerivedPtr)
+{
+    std::unique_ptr<AbstractTask>     sort  = std::make_unique<Sorting>();
+    std::stringstream   str;
+    str << ThorsAnvil::Serialize::jsonExporter(sort, ThorsAnvil::Serialize::PrinterConfig{}.setOutputType(ThorsAnvil::Serialize::OutputType::Stream));
+
+    EXPECT_EQ(R"({"__type":"Sorting"})", str.str());
+}
