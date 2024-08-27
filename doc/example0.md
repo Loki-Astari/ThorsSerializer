@@ -22,6 +22,6 @@
     > g++ -std=c++20 example0.cpp -lThorSerialize -lThorsLogging
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > echo "[1,2,3,4,5]" | ./a.out
-        [ 1, 2, 3, 4, 5]
+    [1, 2, 3, 4, 5]
     > 
 ```

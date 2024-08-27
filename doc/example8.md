@@ -47,7 +47,7 @@ class Properties
     std::string     shouldRetry;
     std::string     Id;
 };
-class Data
+class Data1
 {
     public:
     std::string     operation;
@@ -57,14 +57,14 @@ class Data
 
 ThorsAnvil_MakeTrait(Identifier, name, bar, foo);
 ThorsAnvil_MakeTrait(Properties, category, time, shouldRetry, Id);
-ThorsAnvil_MakeTrait(Data, operation, identifier, properties);
+ThorsAnvil_MakeTrait(Data1, operation, identifier, properties);
 
 int main()
 {
     using ThorsAnvil::Serialize::jsonImporter;
     using ThorsAnvil::Serialize::jsonExporter;
 
-    std::vector<Data>   objects;
+    std::vector<Data1>   objects;
 
     std::ifstream       file("file.json");
 
@@ -83,26 +83,27 @@ int main()
     > g++ -std=c++20 example8.cpp -lThorSerialize -lThorsLogging
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./a.out
-Object Read OK
+    Object Read OK
 
     Read Worked
-     [
+    [
+        {
+            "operation": "test",
+            "identifier":
             {
-                "operation": "test",
-                "identifier":
-                {
-                    "name": "1",
-                    "bar": "sandbox",
-                    "foo": "foo"
-                },
-                "properties":
-                {
-                    "category": "xxx",
-                    "time": "yyy",
-                    "shouldRetry": "False",
-                    "Id": "vvvv"
-                }
-            }]
+                "name": "1",
+                "bar": "sandbox",
+                "foo": "foo"
+            },
+            "properties":
+            {
+                "category": "xxx",
+                "time": "yyy",
+                "shouldRetry": "False",
+                "Id": "vvvv"
+            }
+        }
+    ]
 
 ```
 
@@ -113,25 +114,25 @@ Alternative Build using header only library:
     > 
     > g++ -std=c++20 example8.cpp -I ~/MyHeaders/MagicEnum/include/magic_enum -I ~/MyHeaders/ThorsSerializer
     > ./a.out
-Object Read OK
+    Object Read OK
 
     Read Worked
-     [
+    [
+        {
+            "operation": "test",
+            "identifier":
             {
-                "operation": "test",
-                "identifier":
-                {
-                    "name": "1",
-                    "bar": "sandbox",
-                    "foo": "foo"
-                },
-                "properties":
-                {
-                    "category": "xxx",
-                    "time": "yyy",
-                    "shouldRetry": "False",
-                    "Id": "vvvv"
-                }
-            }]
-
+                "name": "1",
+                "bar": "sandbox",
+                "foo": "foo"
+            },
+            "properties":
+            {
+                "category": "xxx",
+                "time": "yyy",
+                "shouldRetry": "False",
+                "Id": "vvvv"
+            }
+        }
+    ]
 ```

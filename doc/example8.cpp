@@ -21,7 +21,7 @@ class Properties
     std::string     shouldRetry;
     std::string     Id;
 };
-class Data
+class Data1
 {
     public:
     std::string     operation;
@@ -31,14 +31,14 @@ class Data
 
 ThorsAnvil_MakeTrait(Identifier, name, bar, foo);
 ThorsAnvil_MakeTrait(Properties, category, time, shouldRetry, Id);
-ThorsAnvil_MakeTrait(Data, operation, identifier, properties);
+ThorsAnvil_MakeTrait(Data1, operation, identifier, properties);
 
 int main()
 {
     using ThorsAnvil::Serialize::jsonImporter;
     using ThorsAnvil::Serialize::jsonExporter;
 
-    std::vector<Data>   objects;
+    std::vector<Data1>   objects;
 
     std::ifstream       file("file.json");
 
