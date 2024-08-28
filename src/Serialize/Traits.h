@@ -553,7 +553,7 @@ static_assert(                                                          \
 
 
 #define ThorsAnvil_MakeOverride_Base(Count, TT, DataType, ...)          \
-namespace ThorsAnvil { namespace Serialize {                            \
+namespace ThorsAnvil::Serialize {                                       \
 template<TT BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>    \
 class Override<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) > \
 {                                                                       \
@@ -584,7 +584,7 @@ class Override<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count
             return find->second;                                        \
         }                                                               \
 };                                                                      \
-}}                                                                      \
+}                                                                       \
 static_assert(true, "")
 
 
@@ -595,7 +595,7 @@ static_assert(true, "")
 
 
 #define ThorsAnvil_MakeFilter_Base(Count, DataType, member)             \
-namespace ThorsAnvil { namespace Serialize {                            \
+namespace ThorsAnvil::Serialize {                                       \
 template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
 class Filter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) > \
 {                                                                       \
@@ -607,7 +607,7 @@ class Filter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) 
             return find == object.member.end() ? true : find->second;   \
         }                                                               \
 };                                                                      \
-}}                                                                      \
+}                                                                       \
 static_assert(true, "")
 
 
@@ -655,7 +655,7 @@ static_assert(true, "")
 
 
 #define ThorsAnvil_MakeTrait_Base(ParentType, TType, TF, TT, Count, DataType, ...)  \
-namespace ThorsAnvil { namespace Serialize {                            \
+namespace ThorsAnvil::Serialize {                                       \
 template<TT BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>    \
 class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) >   \
 {                                                                       \
@@ -686,11 +686,11 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) 
             return TraitsSizeCalculator::getPrintSize<MyType>(printer, object, poly);\
         }                                                               \
 };                                                                      \
-}}                                                                      \
+}                                                                       \
 DO_ASSERT_WITH_TEMPLATE(DataType, TF, Count)
 
 #define ThorsAnvil_MakeTraitCustom(DataType)                            \
-namespace ThorsAnvil { namespace Serialize {                            \
+namespace ThorsAnvil::Serialize {                                       \
 template<>                                                              \
 class Traits<DataType>                                                  \
 {                                                                       \
@@ -701,11 +701,11 @@ class Traits<DataType>                                                  \
         return tryGetSizeFromSerializeType(printer, value, 0);          \
     }                                                                   \
 };                                                                      \
-}}                                                                      \
+}                                                                       \
 DO_ASSERT(DataType)
 
 #define ThorsAnvil_MakeTraitCustomSerialize(DataType, SerializeType)    \
-namespace ThorsAnvil { namespace Serialize {                            \
+namespace ThorsAnvil::Serialize {                                       \
 template<>                                                              \
 class Traits<DataType>                                                  \
 {                                                                       \
@@ -729,11 +729,11 @@ class Traits<DataType>                                                  \
         }                                                               \
     }                                                                   \
 };                                                                      \
-}}                                                                      \
+}                                                                       \
 DO_ASSERT(DataType)
 
 #define ThorsAnvil_MakeEnum(EnumName, ...)                              \
-namespace ThorsAnvil { namespace Serialize {                            \
+namespace ThorsAnvil::Serialize {                                       \
 template<>                                                              \
 class Traits<EnumName>                                                  \
 {                                                                       \
@@ -782,7 +782,7 @@ class Traits<EnumName>                                                  \
             printer.addValue(getValues().find(object)->second);         \
         }                                                               \
 };                                                                      \
-}}                                                                      \
+}                                                                       \
 DO_ASSERT(EnumName)
 
 // This type is not useful for JSON or other serialization
@@ -828,7 +828,7 @@ inline std::ostream& operator<<(std::ostream& stream, EnumName const& value)    
 static_assert(true)
 
 #define ThorsAnvil_PointerAllocator(DataType, ActionObj)                \
-namespace ThorsAnvil { namespace Serialize {                            \
+namespace ThorsAnvil::Serialize {                                       \
 template<>                                                              \
 class Traits<DataType*>                                                 \
 {                                                                       \
@@ -837,7 +837,7 @@ class Traits<DataType*>                                                 \
         static DataType* alloc()    {return ActionObj::alloc();}        \
         static void release(T* p)   {ActionObj::release(p);}            \
 };                                                                      \
-}}
+}
 
 #define ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, ...)      \
     ThorsAnvil_RegisterPolyMorphicType(DataType)
@@ -846,12 +846,12 @@ class Traits<DataType*>                                                 \
 #define ThorsAnvil_RegisterPolyMorphicType(DataType)
 #else
 #define ThorsAnvil_RegisterPolyMorphicType(DataType)                    \
-namespace ThorsAnvil { namespace Serialize {                            \
+namespace ThorsAnvil::Serialize {                                       \
 namespace                                                               \
 {                                                                       \
     ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME ( # DataType); \
 }                                                                       \
-}}
+}
 #endif
 
 /*
@@ -884,10 +884,8 @@ namespace                                                               \
     }
 
 
-namespace ThorsAnvil
+namespace ThorsAnvil::Serialize
 {
-    namespace Serialize
-    {
 
 template<typename T>
 class Override
@@ -1249,8 +1247,6 @@ struct Fake53{};
 struct Fake54{};
 struct Fake55{};
 
-
-    }
 }
 
 #endif

@@ -12,10 +12,8 @@
 #include <unordered_map>
 
 
-namespace ThorsAnvil
+namespace ThorsAnvil::Serialize
 {
-    namespace Serialize
-    {
 
 /* ------------ ApplyActionToParent ------------------------- */
 template<typename P, typename T, typename I>
@@ -1028,7 +1026,6 @@ inline void Serializer::printObjectMembers(T const& object)
     parentPrinter.printParentMembers(*this, object);
 }
 
-    }
 }
 
 #endif

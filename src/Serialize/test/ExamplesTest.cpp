@@ -115,7 +115,7 @@ class MyClass
         {}
 
     // This is only required if the members are private.
-    friend struct ThorsAnvil::Serialize::Traits<MyClass>;
+    friend class ThorsAnvil::Serialize::Traits<MyClass>;
 };
 
 
@@ -318,7 +318,7 @@ class MyClass1
     int             N;
     int             D1;
     int             D2;
-    friend struct ThorsAnvil::Serialize::Traits<MyClass1>;
+    friend class ThorsAnvil::Serialize::Traits<MyClass1>;
 
     public:
         MyClass1(std::string const& h, int n, int d1, int d2)

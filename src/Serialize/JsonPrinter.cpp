@@ -1,4 +1,5 @@
 #include "JsonPrinter.h"
+#include "JsonThor.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
 #include <iomanip>
@@ -124,7 +125,6 @@ char const*  Prefix::space[]   = {"",  "",  ""};
 char const*  Prefix::comma[]   = {",", ",", ","};
 char const*  Prefix::colon[]   = {":", ":", ":"};
 
-#include "JsonThor.h"
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 JsonPrinter::JsonPrinter(std::ostream& output, PrinterConfig config)
