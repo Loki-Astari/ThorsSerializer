@@ -317,14 +317,6 @@ struct ConvertPointer<std::unique_ptr<T>>
     }
 };
 
-#ifdef  SCGRROT_SHARED_PTR_SUPPRT
-/*
- * This will work for shared pointers at a very basic level.
- *
- * But is conditionally included as it does not support one object used by multiple shared pointer
- * in the same object. Serializing and de-serializing will result in multiple versions of the
- * object in the new object.
- */
 template<typename T>
 struct ConvertPointer<std::shared_ptr<T>>
 {
@@ -333,7 +325,7 @@ struct ConvertPointer<std::shared_ptr<T>>
         return std::shared_ptr<T>{result};
     }
 };
-#endif
+
 template<class T>
 auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, int) -> decltype(object->parsePolyMorphicObject(parent, parser), void())
 {
@@ -823,6 +815,44 @@ class SerializerForBlock<TraitType::Pointer, T>
             {
                 // Use SFINAE to call one of two versions of the function.
                 tryPrintPolyMorphicObject(parent, printer, object, 0);
+            }
+        }
+};
+
+template<typename T>
+class SerializerForBlock<TraitType::Pointer, std::shared_ptr<T>>
+{
+    Serializer&                 parent;
+    PrinterInterface&           printer;
+    std::shared_ptr<T> const&   object;
+    public:
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer, std::shared_ptr<T> const& object, bool /*poly*/ = false)
+            : parent(parent)
+            , printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()   {}
+        void printMembers()
+        {
+            if (object == nullptr)
+            {
+                printer.addNull();
+            }
+            else
+            {
+                SharedInfo      info;
+                if (!printer.addShared(&object, object.get(), info))
+                {
+                    // This shared pointer was already printed.
+                    // So we save a reference to an existing value.
+                    SerializerForBlock<Traits<SharedInfo>::type, SharedInfo>  block(parent, printer, info);
+                    block.printMembers();
+                }
+                else
+                {
+                    // Use SFINAE to call one of two versions of the function.
+                    tryPrintPolyMorphicObject(parent, printer, object, 0);
+                }
             }
         }
 };

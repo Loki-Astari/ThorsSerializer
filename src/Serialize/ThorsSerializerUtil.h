@@ -6,6 +6,7 @@
 #include "ThorsLogging/ThorsLogging.h"
 #include <type_traits>
 #include <string>
+#include <map>
 #include <iostream>
 #include <iomanip>
 #include <cstddef>
@@ -28,6 +29,11 @@ std::string const& getDefaultPolymorphicMarker()
     return defaultPolymorphicMarker;
 }
         }
+
+struct SharedInfo
+{
+    std::intmax_t   sharedPtrName;
+};
 
 struct EscapeString
 {
@@ -419,6 +425,19 @@ class PrinterInterface
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 
         std::ostream& stream() {return output;}
+
+        bool addShared(void const* shared, void const* pointer, SharedInfo& info)
+        {
+            void const*&  save = savedSharedPtr[pointer];
+            if (save == nullptr)
+            {
+                save = shared;
+            }
+            info.sharedPtrName = reinterpret_cast<std::intmax_t>(pointer);
+            return save == shared;
+        }
+    private:
+        std::map<void const*, void const*>     savedSharedPtr;
 };
 
 template<typename T, bool = HasParent<T>::value>
