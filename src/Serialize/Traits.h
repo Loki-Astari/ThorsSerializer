@@ -857,41 +857,21 @@ namespace                                                               \
 /*
  * Defined the virtual function needed by tryPrintPolyMorphicObject()
  */
-#define ThorsAnvil_PolyMorphicSerializer(Type)                                              \
-    virtual void printPolyMorphicObject(ThorsAnvil::Serialize::Serializer&         parent,  \
-                                       ThorsAnvil::Serialize::PrinterInterface&    printer) \
-    {                                                                                       \
-        ThorsAnvil::Serialize::printPolyMorphicObject<Type>(parent, printer, *this);        \
-    }                                                                                       \
-    virtual void parsePolyMorphicObject(ThorsAnvil::Serialize::DeSerializer&       parent,  \
-                                       ThorsAnvil::Serialize::ParserInterface&     parser)  \
-    {                                                                                       \
-        ThorsAnvil::Serialize::parsePolyMorphicObject<Type>(parent, parser, *this);         \
-    }                                                                                       \
-    virtual std::size_t getPolyMorphicPrintSize(ThorsAnvil::Serialize::PrinterInterface& printer) const \
-    {                                                                                       \
-        std::size_t count = 1;                                                              \
-        std::size_t memberSize = (printer.config.polymorphicMarker.size() + printer.getSizeValue(std::string(polyMorphicSerializerName())));\
-                                                                                            \
-        return getNormalPrintSize(printer, *this, count, memberSize);                       \
-    }                                                                                       \
-    static constexpr char const* polyMorphicSerializerName()                                \
-    {                                                                                       \
-        return #Type;                                                                       \
-    }
+#define ThorsAnvil_PolyMorphicSerializer(Type)              ThorsAnvil_PolyMorphicSerializer_Internal(Type,)
+#define ThorsAnvil_PolyMorphicSerializerWithOverride(Type)  ThorsAnvil_PolyMorphicSerializer_Internal(Type, override)
 
-#define ThorsAnvil_PolyMorphicSerializerWithOverride(Type)                                  \
+#define ThorsAnvil_PolyMorphicSerializer_Internal(Type, OVERRIDE)                           \
     virtual void printPolyMorphicObject(ThorsAnvil::Serialize::Serializer&         parent,  \
-                                       ThorsAnvil::Serialize::PrinterInterface&    printer) override \
+                                       ThorsAnvil::Serialize::PrinterInterface&    printer) OVERRIDE \
     {                                                                                       \
         ThorsAnvil::Serialize::printPolyMorphicObject<Type>(parent, printer, *this);        \
     }                                                                                       \
     virtual void parsePolyMorphicObject(ThorsAnvil::Serialize::DeSerializer&       parent,  \
-                                       ThorsAnvil::Serialize::ParserInterface&     parser)  override \
+                                       ThorsAnvil::Serialize::ParserInterface&     parser)  OVERRIDE \
     {                                                                                       \
         ThorsAnvil::Serialize::parsePolyMorphicObject<Type>(parent, parser, *this);         \
     }                                                                                       \
-    virtual std::size_t getPolyMorphicPrintSize(ThorsAnvil::Serialize::PrinterInterface& printer) const override \
+    virtual std::size_t getPolyMorphicPrintSize(ThorsAnvil::Serialize::PrinterInterface& printer) const OVERRIDE \
     {                                                                                       \
         std::size_t count = 1;                                                              \
         std::size_t memberSize = (printer.config.polymorphicMarker.size() + printer.getSizeValue(std::string(polyMorphicSerializerName())));\
