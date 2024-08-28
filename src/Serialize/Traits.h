@@ -611,7 +611,7 @@ class Filter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) 
 static_assert(true, "")
 
 
-#define ThorsAnvil_Parent(Count, ParentType, DataType, ...)             \
+#define ThorsAnvil_Parent(Count, ParentType)                            \
         using Parent = ParentType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count); \
         using Root   = typename GetRootType<ParentType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) >::Root;
 
@@ -637,20 +637,20 @@ static_assert(true, "")
         ::ThorsAnvil::Serialize::Traits<std::remove_cv_t<ParentType>>::type != ThorsAnvil::Serialize::TraitType::Invalid, \
         "Parent type must have Serialization Traits defined"            \
     );                                                                  \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType, DataType, __VA_ARGS__), Parent, , , 00, DataType, __VA_ARGS__); \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType), Parent, , , 00, DataType, __VA_ARGS__); \
     ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, 1)            \
     static_assert(true, "")
 
 #define ThorsAnvil_Template_ExpandTrait(Count, ParentType, ...)         \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType, __VA_ARGS__, 1), Parent, , , Count, __VA_ARGS__, 1); \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType), Parent, , , Count, __VA_ARGS__, 1); \
     static_assert(true, "")
 
 #define ThorsAnvil_TTemplate_ExpandTrait(Count, ParentType, ...)        \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType, __VA_ARGS__, 1), Parent, Template, template<typename>, Count, __VA_ARGS__, 1); \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(00, ParentType), Parent, Template, template<typename>, Count, __VA_ARGS__, 1); \
     static_assert(true, "")
 
 #define ThorsAnvil_Template_ExpandTemplate(Count, ParentCount, ParentType, ...)         \
-    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(ParentCount, ParentType, __VA_ARGS__, 1), Parent, , , Count, __VA_ARGS__, 1); \
+    ThorsAnvil_MakeTrait_Base(ThorsAnvil_Parent(ParentCount, ParentType), Parent, , , Count, __VA_ARGS__, 1); \
     static_assert(true, "")
 
 
