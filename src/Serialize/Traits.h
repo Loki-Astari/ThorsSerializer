@@ -657,7 +657,7 @@ static_assert(true, "")
 #define ThorsAnvil_MakeTrait_Base(ParentType, TType, TF, TT, Count, DataType, ...)  \
 namespace ThorsAnvil { namespace Serialize {                            \
 template<TT BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>    \
-class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) > \
+class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) >   \
 {                                                                       \
     public:                                                             \
         static constexpr TraitType type = TraitType::TType;             \
@@ -677,71 +677,13 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) 
             return members;                                             \
         }                                                               \
                                                                         \
-        template<typename M>                                            \
-        static std::size_t addSizeOneMember(PrinterInterface& printer, MyType const& /*object*/, M* staticObjPtr) \
-        {                                                               \
-            using MemberType    = std::decay_t<M>;                      \
-            if (staticObjPtr)                                           \
-            {                                                           \
-                return Traits<std::remove_cv_t<MemberType>>::getPrintSize(printer, *staticObjPtr, false);\
-            }                                                           \
-            return printer.getSizeNull();                               \
-        }                                                               \
-        template<typename M>                                            \
-        static std::size_t addSizeOneMember(PrinterInterface& printer, MyType const& object, M MyType::* memPtr) \
-        {                                                               \
-            using MemberTypeDec = decltype(object.*memPtr);             \
-            using MemberType    = std::decay_t<MemberTypeDec>;          \
-            return Traits<std::remove_cv_t<MemberType>>::getPrintSize(printer, object.*memPtr, false);\
-        }                                                               \
-                                                                        \
-        template<typename M, typename C>                                            \
-        static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, std::pair<C, M*> const& item) \
-        {                                                               \
-            if (!Filter<MyType>::filter(object, item.first, *(item.second))) {          \
-                return std::make_pair(0UL,0UL);                         \
-            }                                                           \
-            auto partSize   = addSizeOneMember(printer, object, item.second);           \
-            auto nameSize   = std::strlen(Override<MyType>::nameOverride(item.first));  \
-            return std::make_pair(partSize + nameSize, 1);              \
-        }                                                               \
-        template<typename M, typename C>                                            \
-        static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, std::pair<C, M MyType::*> const& item) \
-        {                                                               \
-            if (!Filter<MyType>::filter(object, item.first, object.*(item.second))) {          \
-                return std::make_pair(0UL,0UL);                         \
-            }                                                           \
-            auto partSize   = addSizeOneMember(printer, object, item.second);           \
-            auto nameSize   = std::strlen(Override<MyType>::nameOverride(item.first));  \
-            return std::make_pair(partSize + nameSize, 1);              \
-        }                                                               \
-        template<std::size_t... Seq>                                    \
-        static std::pair<std::size_t, std::size_t> addSizeEachMember(PrinterInterface& printer, MyType const& object, std::index_sequence<Seq...> const&) \
-        {                                                               \
-            Members const& members = getMembers();                      \
-            std::initializer_list<std::pair<std::size_t, std::size_t>>  sizeData = {    \
-                std::make_pair(std::size_t{0}, std::size_t{0}),                         \
-                addSizeEachMemberItem(printer, object, std::get<Seq>(members))...       \
-            };                                                          \
-            return std::accumulate(std::begin(sizeData), std::end(sizeData), std::make_pair(std::size_t{0}, std::size_t{0}),                                  \
-                                   [](auto lhs, auto rhs){return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);});     \
-        }                                                               \
-                                                                        \
         static std::size_t getPrintSizeTotal(PrinterInterface& printer, MyType const& object, std::size_t& count, std::size_t& memberSize)\
         {                                                               \
-            printer.pushLevel(true);                                    \
-            auto r = addSizeEachMember(printer, object, std::make_index_sequence<std::tuple_size_v<Members>>());\
-            printer.popLevel();                                         \
-            memberSize  += r.first;                                     \
-            count       += r.second;                                    \
-                                                                        \
-            CalcSizeHelper<MyType>  calcHelper;                         \
-            return calcHelper.getPrintSize(printer, object, count, memberSize);\
+            return TraitsSizeCalculator::getPrintSizeTotal<MyType, Members>(printer, object, count, memberSize, getMembers());  \
         }                                                               \
-                                                                        \
         static std::size_t getPrintSize(PrinterInterface& printer, MyType const& object, bool poly)\
         {                                                               \
-            return tryGetPolyMorphicPrintSize(printer, object, poly, 0);\
+            return TraitsSizeCalculator::getPrintSize<MyType>(printer, object, poly);\
         }                                                               \
 };                                                                      \
 }}                                                                      \
@@ -967,6 +909,40 @@ namespace ThorsAnvil
     namespace Serialize
     {
 
+template<typename T>
+class Override
+{
+    public:
+        static char const* nameOverride(char const* name) {return name;}
+};
+
+template<typename T>
+struct IsOptional
+{
+    static constexpr bool value = false;
+};
+template<typename M>
+struct IsOptional<std::optional<M>>
+{
+    static constexpr bool value = true;
+};
+template<typename T>
+inline constexpr bool isOptional_v = IsOptional<T>::value;
+
+template<typename T>
+class Filter
+{
+    public:
+        template<typename M>
+        static constexpr bool filter(T const& /*object*/, char const* /*name*/, M const& value)
+        {
+            if constexpr (isOptional_v<M>) {
+                return value.has_value();
+            }
+            return true;
+        }
+};
+
 /*
  * The traits type.
  * Specialized for each type we want to serialize
@@ -994,6 +970,79 @@ class Traits
         // So I use a static member function with a static variable
         // which can be defined in-line within the traits class and
         // does not need a separate declaration in a compilation unit.
+};
+
+class TraitsSizeCalculator
+{
+    private:
+        template<typename MyType, typename M>
+        static std::size_t addSizeOneMember(PrinterInterface& printer, MyType const& /*object*/, M* staticObjPtr)
+        {
+            using MemberType    = std::decay_t<M>;
+            if (staticObjPtr)
+            {
+                return Traits<std::remove_cv_t<MemberType>>::getPrintSize(printer, *staticObjPtr, false);
+            }
+            return printer.getSizeNull();
+        }
+        template<typename MyType, typename M>
+        static std::size_t addSizeOneMember(PrinterInterface& printer, MyType const& object, M MyType::* memPtr)
+        {
+            using MemberTypeDec = decltype(object.*memPtr);
+            using MemberType    = std::decay_t<MemberTypeDec>;
+            return Traits<std::remove_cv_t<MemberType>>::getPrintSize(printer, object.*memPtr, false);
+        }
+
+        template<typename MyType, typename M, typename C>
+        static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, std::pair<C, M*> const& item)
+        {
+            if (!Filter<MyType>::filter(object, item.first, *(item.second))) {
+                return std::make_pair(0UL,0UL);
+            }
+            auto partSize   = addSizeOneMember(printer, object, item.second);
+            auto nameSize   = std::strlen(Override<MyType>::nameOverride(item.first));
+            return std::make_pair(partSize + nameSize, 1);
+        }
+        template<typename MyType, typename M, typename C>
+        static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, std::pair<C, M MyType::*> const& item)
+        {
+            if (!Filter<MyType>::filter(object, item.first, object.*(item.second))) {
+                return std::make_pair(0UL,0UL);
+            }
+            auto partSize   = addSizeOneMember(printer, object, item.second);
+            auto nameSize   = std::strlen(Override<MyType>::nameOverride(item.first));
+            return std::make_pair(partSize + nameSize, 1);
+        }
+        template<typename MyType, typename Members, std::size_t... Seq>
+        static std::pair<std::size_t, std::size_t> addSizeEachMember(PrinterInterface& printer, MyType const& object, Members const& members, std::index_sequence<Seq...> const&)
+        {
+            // Members const& members = getMembers();
+            std::initializer_list<std::pair<std::size_t, std::size_t>>  sizeData =
+            {
+                std::make_pair(std::size_t{0}, std::size_t{0}),
+                addSizeEachMemberItem(printer, object, std::get<Seq>(members))...
+            };
+            return std::accumulate(std::begin(sizeData), std::end(sizeData), std::make_pair(std::size_t{0}, std::size_t{0}),
+                                   [](auto lhs, auto rhs){return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);});
+        }
+    public:
+        template<typename MyType, typename Members>
+        static std::size_t getPrintSizeTotal(PrinterInterface& printer, MyType const& object, std::size_t& count, std::size_t& memberSize, Members const& members)
+        {
+            printer.pushLevel(true);
+            auto r = addSizeEachMember(printer, object, members, std::make_index_sequence<std::tuple_size_v<Members>>());
+            printer.popLevel();
+            memberSize  += r.first;
+            count       += r.second;
+
+            CalcSizeHelper<MyType>  calcHelper;
+            return calcHelper.getPrintSize(printer, object, count, memberSize);
+        }
+        template<typename MyType>
+        static std::size_t getPrintSize(PrinterInterface& printer, MyType const& object, bool poly)
+        {
+            return tryGetPolyMorphicPrintSize(printer, object, poly, 0);
+        }
 };
 
 template<typename EnumName>
@@ -1031,40 +1080,6 @@ class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
                                  "Invalid Enum Value");
             }
             printer.addValue(magic_enum::enum_name(object));
-        }
-};
-
-template<typename T>
-class Override
-{
-    public:
-        static char const* nameOverride(char const* name) {return name;}
-};
-
-template<typename T>
-struct IsOptional
-{
-    static constexpr bool value = false;
-};
-template<typename M>
-struct IsOptional<std::optional<M>>
-{
-    static constexpr bool value = true;
-};
-template<typename T>
-inline constexpr bool isOptional_v = IsOptional<T>::value;
-
-template<typename T>
-class Filter
-{
-    public:
-        template<typename M>
-        static constexpr bool filter(T const& /*object*/, char const* /*name*/, M const& value)
-        {
-            if constexpr (isOptional_v<M>) {
-                return value.has_value();
-            }
-            return true;
         }
 };
 
