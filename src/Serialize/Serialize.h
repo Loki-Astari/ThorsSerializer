@@ -40,7 +40,7 @@
 
 // SharedInfo is declared in ThorsSerializerUtil.h
 // This is included via Traits.h above.
-ThorsAnvil_MakeTrait(ThorsAnvil::Serialize::SharedInfo, sharedPtrName);
+ThorsAnvil_Template_MakeTrait(1, ThorsAnvil::Serialize::SharedInfo, sharedPtrName, data);
 
 namespace ThorsAnvil::Serialize
 {

@@ -377,7 +377,10 @@ TEST(PolymorphicTest, UsingSharedPtr)
 
     std::string result = data.str();
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x) {return std::isspace(x);}), std::end(result));
-    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
+    auto findS = result.find("sharedPtrName");
+    auto findD = result.find("data");
+    result.erase(findS + 15, findD - 1 - (findS + 15));
+    EXPECT_EQ(result, R"({"age":10,"transport":{"sharedPtrName":"data":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}}})");
   }
 
   { // Import

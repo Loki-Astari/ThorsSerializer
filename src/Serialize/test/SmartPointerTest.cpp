@@ -97,7 +97,7 @@ TEST(SmartPointerTest, JsonCreateSharedPtrObject)
     using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
-    std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
+    std::stringstream           stream(R"({"sharedPtrName":1,"data":{"id": 456, "name": "This is a test"}})");
     UniObject                   data;
     bool                        import = false;
 
@@ -329,9 +329,13 @@ TEST(SmartPointerTest, BsonCreateSharedPtrObject)
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
-    std::string                 input = "\x26\x00\x00\x00"
-                                        "\x10" "id\x00"      "\xc8\x01\x00\x00"
-                                        "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
+    std::string                 input = "\x48\x00\x00\x00"
+                                        "\x12" "sharedPtrName\x00"  "\x00\x00\x00\x00\x04\x03\x02\x01"
+                                        "\x03" "data\x00"
+                                                "\x26\x00\x00\x00"
+                                                "\x10" "id\x00"      "\xc8\x01\x00\x00"
+                                                "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
+                                                "\x00"
                                         "\x00"s;
     std::stringstream           stream(input);
     UniObject                   data;

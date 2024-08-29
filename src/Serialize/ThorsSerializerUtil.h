@@ -7,6 +7,7 @@
 #include <type_traits>
 #include <string>
 #include <map>
+#include <any>
 #include <iostream>
 #include <iomanip>
 #include <cstddef>
@@ -30,9 +31,11 @@ std::string const& getDefaultPolymorphicMarker()
 }
         }
 
+template<typename T>
 struct SharedInfo
 {
-    std::intmax_t   sharedPtrName;
+    std::intmax_t       sharedPtrName;
+    std::optional<T*>   data;
 };
 
 struct EscapeString
@@ -288,7 +291,23 @@ class ParserInterface
         void    ignoreValue();
 
         std::istream& stream() {return input;}
+
+        template<typename T>
+        void getShared(SharedInfo<T> const& info, std::shared_ptr<T>& object)
+        {
+            std::intmax_t index = info.sharedPtrName;
+            if (info.data.has_value())
+            {
+                object.reset(info.data.value());
+                savedSharedPtr[index] = object;
+                return;
+            }
+            std::shared_ptr<T>  sharedPtr = std::any_cast<std::shared_ptr<T>>(savedSharedPtr[index]);
+            object = sharedPtr;
+        }
+
     private:
+        std::map<std::intmax_t, std::any>     savedSharedPtr;
         void    ignoreTheValue();
         void    ignoreTheMap();
         void    ignoreTheArray();
@@ -426,18 +445,24 @@ class PrinterInterface
 
         std::ostream& stream() {return output;}
 
-        bool addShared(void const* shared, void const* pointer, SharedInfo& info)
+        template<typename T>
+        SharedInfo<T> addShared(std::shared_ptr<T> const& shared)
         {
-            void const*&  save = savedSharedPtr[pointer];
+            std::intmax_t index = reinterpret_cast<std::intmax_t>(shared.get());
+            void const*&  save = savedSharedPtr[index];
             if (save == nullptr)
             {
-                save = shared;
+                save = &shared;
             }
-            info.sharedPtrName = reinterpret_cast<std::intmax_t>(pointer);
-            return save == shared;
+            SharedInfo<T>   result;
+            result.sharedPtrName = index;
+            if (save == &shared) {
+                result.data     = shared.get();
+            }
+            return result;
         }
     private:
-        std::map<void const*, void const*>     savedSharedPtr;
+        std::map<std::intmax_t, void const*>     savedSharedPtr;
 };
 
 template<typename T, bool = HasParent<T>::value>

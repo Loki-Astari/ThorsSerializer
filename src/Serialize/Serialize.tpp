@@ -426,6 +426,35 @@ class DeSerializationForBlock<TraitType::Pointer, T>
         }
 };
 template<typename T>
+class DeSerializationForBlock<TraitType::Pointer, std::shared_ptr<T>>
+{
+    DeSerializer&       parent;
+    ParserInterface&    parser;
+    public:
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
+        {}
+        void scanObject(std::shared_ptr<T>& object)
+        {
+            object.reset();
+            ParserToken    tokenType = parser.getToken();
+            if (tokenType == ParserToken::Value && parser.isValueNull())
+            {
+                parser.ignoreDataValue();
+                return;
+            }
+
+            parser.pushBackToken(tokenType);
+
+            SharedInfo<T> info;
+            DeSerializationForBlock<Traits<SharedInfo<T>>::type, SharedInfo<T>> deserializer(parent, parser);
+            deserializer.scanObject(info);
+
+            parser.getShared(info, object);
+        }
+};
+template<typename T>
 class DeSerializationForBlock<TraitType::Reference, T>
 {
     DeSerializer&       parent;
@@ -840,19 +869,9 @@ class SerializerForBlock<TraitType::Pointer, std::shared_ptr<T>>
             }
             else
             {
-                SharedInfo      info;
-                if (!printer.addShared(&object, object.get(), info))
-                {
-                    // This shared pointer was already printed.
-                    // So we save a reference to an existing value.
-                    SerializerForBlock<Traits<SharedInfo>::type, SharedInfo>  block(parent, printer, info);
-                    block.printMembers();
-                }
-                else
-                {
-                    // Use SFINAE to call one of two versions of the function.
-                    tryPrintPolyMorphicObject(parent, printer, object, 0);
-                }
+                SharedInfo<T> info = printer.addShared(object);
+                SerializerForBlock<Traits<SharedInfo<T>>::type, SharedInfo<T>>  block(parent, printer, info);
+                block.printMembers();
             }
         }
 };

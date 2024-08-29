@@ -932,13 +932,8 @@ class Traits<std::shared_ptr<T>>
             if (object == nullptr) {
                 return printer.getSizeNull();
             }
-            SharedInfo      info;
-            if (!printer.addShared(&object, object.get(), info)) {
-                // Shared Pointer that has already been output.
-                // We will serialize a SharedInfo object instead.
-                return Traits<SharedInfo>::getPrintSize(printer, info, true);
-            }
-            return Traits<std::remove_cv_t<T>>::getPrintSize(printer, *object, true);
+            SharedInfo<T>      info = printer.addShared(object);
+            return Traits<SharedInfo<T>>::getPrintSize(printer, info, true);
         }
 };
 
