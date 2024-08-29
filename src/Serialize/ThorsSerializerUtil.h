@@ -199,6 +199,7 @@ struct ParserConfig
         , catchExceptions(catchExceptions)
         , parserInfo(0)
         , ignoreCallBack(std::move(cb))
+        , useOldSharedPtr(false)
     {}
     ParserConfig(ParseType parseStrictness,
                  std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
@@ -207,24 +208,28 @@ struct ParserConfig
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     ParserConfig(std::string const& polymorphicMarker, bool catchExceptions = true)
         : parseStrictness(ParseType::Weak)
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     ParserConfig(bool catchExceptions)
         : parseStrictness(ParseType::Weak)
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     ParserConfig(ParseType parseStrictness, bool catchExceptions)
         : parseStrictness(parseStrictness)
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     // Use this constructor.
     ParserConfig()
@@ -232,15 +237,18 @@ struct ParserConfig
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(true)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     ParserConfig& setParseStrictness(ParseType p_parseStrictness)               {parseStrictness = p_parseStrictness;       return *this;}
     ParserConfig& setPolymorphicMarker(std::string const& p_polymorphicMarker)  {polymorphicMarker = p_polymorphicMarker;   return *this;}
     ParserConfig& setCatchExceptions(bool p_catchExceptions)                    {catchExceptions = p_catchExceptions;       return *this;}
+    ParserConfig& setUseOldSharedPtr()                                          {useOldSharedPtr = true;                    return *this;}
     ParseType       parseStrictness;
     std::string     polymorphicMarker;
     bool            catchExceptions;
     long            parserInfo;
     IgnoreCallBack  ignoreCallBack;
+    bool            useOldSharedPtr;
 };
 
 class ParserInterface
@@ -334,6 +342,7 @@ struct PrinterConfig
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     PrinterConfig(std::string const& polymorphicMarker,
                   bool catchExceptions = true)
@@ -341,18 +350,21 @@ struct PrinterConfig
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     PrinterConfig(bool catchExceptions)
         : characteristics(OutputType::Default)
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     PrinterConfig(OutputType characteristic, bool catchExceptions)
         : characteristics(characteristic)
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
 
     /* Please use the default constructor
@@ -363,15 +375,18 @@ struct PrinterConfig
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(true)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     PrinterConfig& setOutputType(OutputType p_characteristics)                  {characteristics = p_characteristics;      return *this;}
     PrinterConfig& setPolymorphicMarker(std::string const& p_polymorphicMarker) {polymorphicMarker = p_polymorphicMarker;  return *this;}
     PrinterConfig& setCatchExceptions(bool p_catchExceptions)                   {catchExceptions = p_catchExceptions;      return *this;}
+    PrinterConfig& setUseOldSharedPtr()                                         {useOldSharedPtr = true;                   return *this;}
 
     OutputType      characteristics;
     std::string     polymorphicMarker;
     bool            catchExceptions;
     long            parserInfo;
+    bool            useOldSharedPtr;
 };
 
 class PrinterInterface

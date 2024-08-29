@@ -367,6 +367,29 @@ TEST(PolymorphicTest, UsingUniquePtr)
   }
 }
 
+TEST(PolymorphicTest, UsingSharedPtrOldVersion)
+{
+  std::stringstream data;
+
+  { // Export
+    PolymorphicTest::UserSharedPtr user1 { 10, std::make_shared<PolymorphicTest::Bike>(18, 7) };
+    data << ThorsAnvil::Serialize::jsonExporter(user1, ThorsAnvil::Serialize::PrinterConfig{}.setUseOldSharedPtr());
+
+    std::string result = data.str();
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x) {return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
+  }
+
+  { // Import
+    PolymorphicTest::UserSharedPtr user2;
+    data >> ThorsAnvil::Serialize::jsonImporter(user2, ThorsAnvil::Serialize::ParserConfig{}.setUseOldSharedPtr());
+
+    EXPECT_EQ(user2.age, 10);
+    PolymorphicTest::Bike& bike = dynamic_cast<PolymorphicTest::Bike&>(*user2.transport);
+    EXPECT_EQ(bike.speed, 18);
+    EXPECT_EQ(bike.stroke, 7);
+  }
+}
 TEST(PolymorphicTest, UsingSharedPtr)
 {
   std::stringstream data;
