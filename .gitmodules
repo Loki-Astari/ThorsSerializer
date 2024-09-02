@@ -3,4 +3,4 @@
 	url = ../andvari-theme-documentation.git
 [submodule ".build"]
 	path = build
-	url = ../ThorMaker.git
+	url = ../../Loki-Astari/ThorMaker.git
