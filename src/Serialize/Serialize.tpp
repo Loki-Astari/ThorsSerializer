@@ -557,48 +557,31 @@ class DeSerializationForBlock<TraitType::Array, T>
 /* ------------ DeSerializeMember ------------------------- */
 
 template<typename T, typename M>
-DeSerializeMemberContainer<T, M>::DeSerializeMemberContainer(DeSerializer&, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+DeSerializeMemberContainer<T, M>::DeSerializeMemberContainer(DeSerializer&, ParserInterface& parser, T& object, M T::* memberInfo)
 {
-    if (key.compare(ThorsAnvil::Serialize::Override<T>::nameOverride(memberInfo.first)) == 0)
-    {
-        used = true;
-        DeSerializer    deSerializer(parser, false);
-        deSerializer.parse(object.*(memberInfo.second));
-    }
+    DeSerializer    deSerializer(parser, false);
+    deSerializer.parse(object.*(memberInfo));
 }
 
 template<typename T, typename M>
-DeSerializeMemberContainer<T, M>::DeSerializeMemberContainer(DeSerializer&, ParserInterface& parser, std::string const& key, T& /*object*/, std::pair<char const*, M*> const& memberInfo)
+DeSerializeMemberContainer<T, M>::DeSerializeMemberContainer(DeSerializer&, ParserInterface& parser, T& /*object*/, M* memberInfo)
 {
-    if (key.compare(ThorsAnvil::Serialize::Override<T>::nameOverride(memberInfo.first)) == 0)
-    {
-        used = true;
-        DeSerializer    deSerializer(parser, false);
-        deSerializer.parse(*(memberInfo.second));
-    }
+    DeSerializer    deSerializer(parser, false);
+    deSerializer.parse(*memberInfo);
 }
 
 template<typename T, typename M, TraitType Type>
-DeSerializeMemberValue<T, M, Type>::DeSerializeMemberValue(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+DeSerializeMemberValue<T, M, Type>::DeSerializeMemberValue(DeSerializer& parent, ParserInterface& parser, T& object, M T::* memberInfo)
 {
-    init(parent, parser, key, memberInfo.first, object.*(memberInfo.second));
+    DeSerializationForBlock<Type, M>    deserializer(parent, parser);
+    deserializer.scanObject(object.*(memberInfo));
 }
 
 template<typename T, typename M, TraitType Type>
-DeSerializeMemberValue<T, M, Type>::DeSerializeMemberValue(DeSerializer& parent, ParserInterface& parser, std::string const& key, T&, std::pair<char const*, M*> const& memberInfo)
+DeSerializeMemberValue<T, M, Type>::DeSerializeMemberValue(DeSerializer& parent, ParserInterface& parser, T&, M* memberInfo)
 {
-    init(parent, parser, key, memberInfo.first, *(memberInfo.second));
-}
-
-template<typename T, typename M, TraitType Type>
-void DeSerializeMemberValue<T, M, Type>::init(DeSerializer& parent, ParserInterface& parser, std::string const& key, char const* name, M& object)
-{
-    if (key.compare(ThorsAnvil::Serialize::Override<T>::nameOverride(name)) == 0)
-    {
-        used = true;
-        DeSerializationForBlock<Type, M>    deserializer(parent, parser);
-        deserializer.scanObject(object);
-    }
+    DeSerializationForBlock<Type, M>    deserializer(parent, parser);
+    deserializer.scanObject(*memberInfo);
 }
 
 template<typename T, typename M, TraitType Type = Traits<std::remove_cv_t<M>>::type>
@@ -610,22 +593,30 @@ class DeSerializeMember: public TraitsInfo<T, M, Type>::DeSerializeMember
 };
 
 template<typename T, typename M>
-DeSerializeMember<T, M> make_DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M*> const& memberInfo)
+bool make_DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M*> const& memberInfo)
 {
-    return DeSerializeMember<T, M>(parent, parser, key, object, memberInfo);
+    if (key.compare(ThorsAnvil::Serialize::Override<T>::nameOverride(memberInfo.first)) != 0) {
+        return false;
+    }
+    DeSerializeMember<T, M>     deSerializer(parent, parser, object, memberInfo.second);
+    return true;
 }
 
 template<typename T, typename M>
-DeSerializeMember<T, M> make_DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
+bool make_DeSerializeMember(DeSerializer& parent, ParserInterface& parser, std::string const& key, T& object, std::pair<char const*, M T::*> const& memberInfo)
 {
-    return DeSerializeMember<T, M>(parent, parser, key, object, memberInfo);
+    if (key.compare(ThorsAnvil::Serialize::Override<T>::nameOverride(memberInfo.first)) != 0) {
+        return false;
+    }
+    DeSerializeMember<T, M>     deSerializer(parent, parser, object, memberInfo.second);
+    return true;
 }
 
 /* ------------ DeSerializer ------------------------- */
 template<typename T, typename Members, std::size_t... Seq>
 inline bool DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    bool result = (static_cast<bool>(make_DeSerializeMember(*this, parser, key, object, std::get<Seq>(member))) || ...);
+    bool result = (make_DeSerializeMember(*this, parser, key, object, std::get<Seq>(member)) || ...);
     return result;
 }
 
