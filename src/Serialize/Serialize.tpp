@@ -35,18 +35,15 @@ class ApplyActionToAllParent<Parents<Args...>, T, I>
     public:
         void printParentMembers(Serializer& serializer, T const& object)
         {
-            bool ignore[] {true, (serializer.printObjectMembers(static_cast<Args const&>(object)), true)...};
-            (void)ignore;
+            (serializer.printObjectMembers(static_cast<Args const&>(object)), ...);
         }
         bool scanParentMember(DeSerializer& deSerializer, I const& key, T& object)
         {
             /*
              * See if the key is valid in one parent
-             * Note: If it is valid in multiple parents we will probably get an exception
-             *       as each parent will try and read the value.
              */
-            bool result[] = {false, deSerializer.scanObjectMembers(key, static_cast<Args&>(object))...};
-            return std::find(std::begin(result) , std::end(result), true) != std::end(result);
+            bool result = (deSerializer.scanObjectMembers(key, static_cast<Args&>(object)) || ...);
+            return result;
         }
 };
 
@@ -99,8 +96,7 @@ struct HeedAllValues
     template<typename Tuple, std::size_t... Index>
     void checkEachMember(std::map<std::string, bool> const& membersFound, Tuple const& tuple, std::index_sequence<Index...> const&)
     {
-        std::initializer_list<int> ignore{1, checkAMember(membersFound, std::get<Index>(tuple))...};
-        (void)ignore;
+        (checkAMember(membersFound, std::get<Index>(tuple)), ...);
         heedAllParentMembers<T>(membersFound);
     }
 
@@ -121,8 +117,7 @@ struct HeedAllValues<Parents<P...>>
     template<typename ParentTupple, std::size_t... Index>
     void checkEachParent(ParentTupple& parentsToHeed, std::map<std::string, bool> const& membersFound, std::index_sequence<Index...> const&)
     {
-        bool ignore[] = {true, (std::get<Index>(parentsToHeed)(membersFound), true)...};
-        (void)ignore;
+        (std::get<Index>(parentsToHeed)(membersFound), ...);
     }
     void operator()(std::map<std::string, bool> const& membersFound)
     {
@@ -630,9 +625,8 @@ DeSerializeMember<T, M> make_DeSerializeMember(DeSerializer& parent, ParserInter
 template<typename T, typename Members, std::size_t... Seq>
 inline bool DeSerializer::scanEachMember(std::string const& key, T& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    using CheckMembers = std::initializer_list<bool>;
-    CheckMembers memberCheck = {static_cast<bool>(make_DeSerializeMember(*this, parser, key, object, std::get<Seq>(member)))...};
-    return std::find(std::begin(memberCheck), std::end(memberCheck), true) != std::end(memberCheck);
+    bool result = (static_cast<bool>(make_DeSerializeMember(*this, parser, key, object, std::get<Seq>(member))) || ...);
+    return result;
 }
 
 template<typename T, typename... Members>
@@ -1032,8 +1026,7 @@ SerializeMember<T, M> make_SerializeMember(Serializer& ser, PrinterInterface& pr
 template<typename T, typename Members, std::size_t... Seq>
 inline void Serializer::printEachMember(T const& object, Members const& member, std::index_sequence<Seq...> const&)
 {
-    auto discard = {1, (make_SerializeMember(*this, printer, object, std::get<Seq>(member)),1)...};
-    (void)discard;
+    (make_SerializeMember(*this, printer, object, std::get<Seq>(member)), ...);
 }
 
 template<typename T, typename... Members>
