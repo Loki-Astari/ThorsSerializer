@@ -194,7 +194,8 @@ void JsonParser::getValue(bool& value)
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonParser::getValue(std::string& value)
 {
-    value = getString();
+    //value = getString();
+    lexer.getStringInto(value);
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE

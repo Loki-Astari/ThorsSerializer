@@ -174,6 +174,7 @@ namespace ThorsAnvil::Serializer::Unicode
 
     void checkBuffer(std::istream& i, std::string& reply)
     {
+        reply.clear();
         while (i)
         {
             unsigned char result = i.get();
@@ -183,7 +184,7 @@ namespace ThorsAnvil::Serializer::Unicode
             if (result < 0x20)
             {
                 ThorsLogAndThrow("ThorsAnvil::Serialize::UnicodeWrapperIterator",
-                                 "checkBuffer",
+                                 "heckBuffer",
                                  "input character can not be smaller than 0x20");
             }
             if (result != '\\')
@@ -299,17 +300,23 @@ namespace ThorsAnvil::Serializer::Unicode
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonManualLexer::getString()
+void JsonManualLexer::getStringInto(std::string& value)
 {
     //return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator<char>(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator<char>(str)));
-    std::string result;
-    while (str) {
-        char next = str.get();
-        if (next == '"') {
-            break;
-        }
+    char next = str.get();
+    if (next != '"')
+    {
+        ThorsLogAndThrow("ThorsAnvil::Serialize::UnicodeWrapperIterator",
+                         "UnicodeWrapperIterator",
+                         "String does not start with a \" character");
     }
-    ThorsAnvil::Serializer::Unicode::checkBuffer(str, result);
+    ThorsAnvil::Serializer::Unicode::checkBuffer(str, value);
+}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+std::string JsonManualLexer::getString()
+{
+    std::string result;
+    getStringInto(result);
     return result;
 }
 

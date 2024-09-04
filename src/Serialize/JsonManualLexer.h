@@ -24,6 +24,7 @@ class JsonManualLexer
         void        ignoreRawValue();
         std::string getRawString();
         std::string getString();
+        void        getStringInto(std::string&);
         bool        getLastBool();
         bool        isLastNull();
         template<typename T>
