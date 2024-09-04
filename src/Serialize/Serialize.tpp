@@ -67,12 +67,12 @@ struct HeedAllValues;
 
 template<typename T>
 typename std::enable_if_t<! HasParent<T>::value>
-heedAllParentMembers(std::map<std::string, bool> const& /*membersound*/)
+heedAllParentMembers(std::set<std::string> const& /*membersound*/)
 {}
 
 template<typename T>
 std::enable_if_t<HasParent<T>::value>
-heedAllParentMembers(std::map<std::string, bool> const& membersFound)
+heedAllParentMembers(std::set<std::string> const& membersFound)
 {
     HeedAllValues<typename Traits<std::remove_cv_t<T>>::Parent>   heedParent;
     heedParent(membersFound);
@@ -82,7 +82,7 @@ template<typename T>
 struct HeedAllValues
 {
     template<typename X>
-    int checkAMember(std::map<std::string, bool> const& membersFound, std::pair<char const*, X> const& member)
+    int checkAMember(std::set<std::string> const& membersFound, std::pair<char const*, X> const& member)
     {
         if (membersFound.find(member.first) == std::end(membersFound))
         {
@@ -94,19 +94,19 @@ struct HeedAllValues
     }
 
     template<typename Tuple, std::size_t... Index>
-    void checkEachMember(std::map<std::string, bool> const& membersFound, Tuple const& tuple, std::index_sequence<Index...> const&)
+    void checkEachMember(std::set<std::string> const& membersFound, Tuple const& tuple, std::index_sequence<Index...> const&)
     {
         (checkAMember(membersFound, std::get<Index>(tuple)), ...);
         heedAllParentMembers<T>(membersFound);
     }
 
     template<typename... Args>
-    void checkMemberFound(std::map<std::string, bool> const& membersFound, std::tuple<Args...> const& args)
+    void checkMemberFound(std::set<std::string> const& membersFound, std::tuple<Args...> const& args)
     {
         checkEachMember(membersFound, args, std::index_sequence_for<Args...>{});
     }
 
-    void operator()(std::map<std::string, bool> const& membersFound)
+    void operator()(std::set<std::string> const& membersFound)
     {
         checkMemberFound(membersFound, Traits<std::remove_cv_t<T>>::getMembers());
     }
@@ -115,11 +115,11 @@ template<typename... P>
 struct HeedAllValues<Parents<P...>>
 {
     template<typename ParentTupple, std::size_t... Index>
-    void checkEachParent(ParentTupple& parentsToHeed, std::map<std::string, bool> const& membersFound, std::index_sequence<Index...> const&)
+    void checkEachParent(ParentTupple& parentsToHeed, std::set<std::string> const& membersFound, std::index_sequence<Index...> const&)
     {
         (std::get<Index>(parentsToHeed)(membersFound), ...);
     }
-    void operator()(std::map<std::string, bool> const& membersFound)
+    void operator()(std::set<std::string> const& membersFound)
     {
         std::tuple<HeedAllValues<P>...>     parentsToHeed;
         checkEachParent(parentsToHeed, membersFound, std::index_sequence_for<P...>{});
@@ -129,22 +129,22 @@ struct HeedAllValues<Parents<P...>>
 template<typename K, typename V>
 struct HeedAllValues<std::map<K, V>>
 {
-    void operator()(std::map<std::string, bool> const& /*members*/) {}
+    void operator()(std::set<std::string> const& /*members*/) {}
 };
 template<typename K, typename V>
 struct HeedAllValues<std::multimap<K, V>>
 {
-    void operator()(std::map<std::string, bool> const& /*members*/) {}
+    void operator()(std::set<std::string> const& /*members*/) {}
 };
 template<typename K, typename V>
 struct HeedAllValues<std::unordered_map<K, V>>
 {
-    void operator()(std::map<std::string, bool> const& /*members*/) {}
+    void operator()(std::set<std::string> const& /*members*/) {}
 };
 template<typename K, typename V>
 struct HeedAllValues<std::unordered_multimap<K, V>>
 {
-    void operator()(std::map<std::string, bool> const& /*members*/) {}
+    void operator()(std::set<std::string> const& /*members*/) {}
 };
 
 /* ------------ DeSerializationForBlock ------------------------- */
@@ -180,7 +180,7 @@ class DeSerializationForBlock
 
         void scanObject(T& object)
         {
-            std::map<std::string, bool>     memberFound;
+            std::set<std::string>     memberFound;
             while (hasMoreValue())
             {
                 if (!parent.scanObjectMembers(key, object))
@@ -189,7 +189,9 @@ class DeSerializationForBlock
                 }
                 else
                 {
-                    memberFound[key] = true;
+                    if (parser.config.parseStrictness == ParseType::Exact) {
+                        memberFound.insert(key);
+                    }
                 }
             }
             if (parser.config.parseStrictness == ParseType::Exact)
