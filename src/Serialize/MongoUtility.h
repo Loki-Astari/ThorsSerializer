@@ -139,8 +139,8 @@ class BinarySerializer: public DefaultCustomSerializer<T>
             std::int32_t    size    = parser.readLE<4, std::int32_t>();
             char            type;
             object.resize(size);
-            parser.stream().read(&type, 1);
-            parser.stream().read(object.getBuffer(), size);
+            parser.read(&type, 1);
+            parser.read(object.getBuffer(), size);
         }
 };
 
@@ -162,7 +162,7 @@ class JavascriptSerializer: public DefaultCustomSerializer<T>
         {
             std::int32_t    size = parser.readLE<4, std::int32_t>();
             object.resize(size);
-            parser.stream().read(object.getBuffer(), size);
+            parser.read(object.getBuffer(), size);
             object.resize(size - 1);
         }
 };
@@ -183,8 +183,8 @@ class RegExSerializer: public DefaultCustomSerializer<T>
         }
         virtual void readBson(BsonParser& parser, char /*byteMarker*/, T& object) const override
         {
-            std::getline(parser.stream(), object.pattern(), '\0');
-            std::getline(parser.stream(), object.options(), '\0');
+            parser.readTo(object.pattern(), '\0');
+            parser.readTo(object.options(), '\0');
         }
 };
 
@@ -277,7 +277,11 @@ BsonParser& operator>>(BsonParser& parser, ObjectID& data)
 inline
 JsonParser& operator>>(JsonParser& parser, ObjectID& data)
 {
-    parser.stream() >> data;
+    std::string value;
+    parser.getValue(value);
+
+    std::stringstream ss(std::move(value));
+    ss >> data;
     return parser;
 }
 
@@ -321,7 +325,7 @@ BsonParser& operator>>(BsonParser& parser, UTCDateTime& data)
 inline
 JsonParser& operator>>(JsonParser& parser, UTCDateTime& data)
 {
-    parser.stream() >> data;
+    parser.getValue(data.datetime);
     return parser;
 }
 
@@ -369,7 +373,11 @@ BsonParser& operator>>(BsonParser& parser, BsonTimeStamp& data)
 inline
 JsonParser& operator>>(JsonParser& parser, BsonTimeStamp& data)
 {
-    parser.stream() >> data;
+    std::string value;
+    parser.getValue(value);
+
+    std::stringstream   ss(std::move(value));
+    ss >> data;
     return parser;
 }
 

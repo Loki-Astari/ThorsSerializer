@@ -254,14 +254,12 @@ struct ParserConfig
 class ParserInterface
 {
     public:
-        std::istream&   input;
-        ParserToken     pushBack;
-        ParserConfig    config;
+        ParserConfig const config;
 
         ParserInterface(std::istream& input, ParserConfig  config = ParserConfig{})
-            : input(input)
+            : config(config)
+            , input(input)
             , pushBack(ParserToken::Error)
-            , config(config)
         {}
         virtual ~ParserInterface() {}
         virtual FormatType formatType()                 = 0;
@@ -298,7 +296,18 @@ class ParserInterface
 
         void    ignoreValue();
 
-        std::istream& stream() {return input;}
+        //std::istream& stream() {return input;}
+        bool            read(char* dst, std::size_t size)           {return static_cast<bool>(input.read(dst, size));}
+        bool            readTo(std::string& dst, char delim)        {return static_cast<bool>(std::getline(input, dst, delim));}
+        std::size_t     lastReadCount()                     const   {return input.gcount();}
+        std::streampos  getPos()                            const   {return input.tellg();}
+        int             get()                                       {return input.get();}
+        void            ignore(std::size_t size)                    {input.ignore(size);}
+        void            clear()                                     {input.clear();}
+        void            unget()                                     {input.unget();}
+        bool            ok()                                const   {return !input.fail();}
+        template<typename T>
+        void readValue(T& value)                                    {input >> value;}
 
         template<typename T>
         void getShared(SharedInfo<T> const& info, std::shared_ptr<T>& object)
@@ -315,6 +324,8 @@ class ParserInterface
         }
 
     private:
+        std::istream&   input;
+        ParserToken     pushBack;
         std::map<std::intmax_t, std::any>     savedSharedPtr;
         void    ignoreTheValue();
         void    ignoreTheMap();

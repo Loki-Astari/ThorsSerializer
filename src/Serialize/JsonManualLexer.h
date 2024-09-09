@@ -13,13 +13,13 @@ namespace ThorsAnvil::Serialize
 class ParserInterface;
 class JsonManualLexer
 {
-    std::istream&       str;
+    ParserInterface&    parser;
     std::string         buffer;
     int                 lastToken;
     bool                lastBool;
     bool                lastNull;
     public:
-        JsonManualLexer(std::istream& str);
+        JsonManualLexer(ParserInterface& parser);
         int yylex();
 
         void        ignoreRawValue();

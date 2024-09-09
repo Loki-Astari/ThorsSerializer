@@ -34,7 +34,7 @@ namespace OnLineBank
         }
         virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object) const override
         {
-            parser.stream() >> object.id;
+            parser.getValue(object.id);
         }
 
         //virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& printer, ID const& object)   override 
@@ -54,8 +54,8 @@ namespace OnLineBank
         }
         virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, char /*byteMarker*/, ID& object) const override
         {
-            parser.stream().read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
-            parser.stream().ignore(sizeOfID - sizeof(object.id));
+            parser.read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
+            parser.ignore(sizeOfID - sizeof(object.id));
         }
     };
 
