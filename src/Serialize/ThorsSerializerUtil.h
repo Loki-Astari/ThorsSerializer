@@ -38,98 +38,6 @@ struct SharedInfo
     std::optional<T*>   data;
 };
 
-struct EscapeString
-{
-    std::string_view    value;
-    EscapeString(std::string const& value)
-        : value(value)
-    {}
-    EscapeString(std::string_view const& value)
-        : value(value)
-    {}
-    friend std::ostream& operator<<(std::ostream& stream, EscapeString const& data)
-    {
-        std::string_view const& value = data.value;
-
-        static auto isEscape = [](char c)
-        {
-            return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
-        };
-
-        auto begin  = std::begin(value);
-        auto end    = std::end(value);
-        auto next = std::find_if(begin, end, isEscape);
-        if (next == end)
-        {
-            stream << value;
-        }
-        else
-        {
-            while (next != end)
-            {
-                stream << std::string(begin, next);
-                if (*next == '"')
-                {
-                    stream << R"(\")";
-                    ++next;
-                }
-                else if (*next == '\\')
-                {
-                    stream << R"(\\)";
-                    ++next;
-                }
-                else if (*next == 0x08)
-                {
-                    stream << R"(\b)";
-                    ++next;
-                }
-                else if (*next == 0x0C)
-                {
-                    stream << R"(\f)";
-                    ++next;
-                }
-                else if (*next == 0x0A)
-                {
-                    stream << R"(\n)";
-                    ++next;
-                }
-                else if (*next == 0x0D)
-                {
-                    stream << R"(\r)";
-                    ++next;
-                }
-                else if (*next == 0x09)
-                {
-                    stream << R"(\t)";
-                    ++next;
-                }
-                else
-                {
-                    stream << R"(\u)"
-                           << std::setw(4)
-                           << std::setfill('0')
-                           << std::hex
-                           << static_cast<unsigned int>(static_cast<unsigned char>(*next))
-                           << std::dec;
-                    ++next;
-                }
-                /*
-                else
-                {
-                    110xxxxx
-
-                    stream << R("\u") << std::setw(4) << std::setfill('0') << std::hex << codepoint;
-                }
-                */
-                begin = next;
-                next = std::find_if(begin, end, isEscape);
-            }
-            stream << std::string(begin, end);
-        }
-        return stream;
-    }
-};
-
 /*
  * Defines the generic type that all serialization types can expand on
  */
@@ -403,12 +311,11 @@ struct PrinterConfig
 class PrinterInterface
 {
     public:
-        std::ostream&   output;
-        PrinterConfig   config;
+        PrinterConfig const  config;
 
         PrinterInterface(std::ostream& output, PrinterConfig config = PrinterConfig{})
-            : output(output)
-            , config(config)
+            : config(config)
+            , output(output)
         {}
         virtual ~PrinterInterface() {}
         virtual FormatType formatType()                 = 0;
@@ -469,7 +376,15 @@ class PrinterInterface
         virtual std::size_t getSizeValue(std::string_view const&)   {return 0;}
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 
-        std::ostream& stream() {return output;}
+        //std::ostream& stream() {return output;}
+        bool write(char const* src, std::size_t size)               {return static_cast<bool>(output.write(src, size));}
+        bool write(std::string const& src)                          {return static_cast<bool>(output.write(src.c_str(), src.size()));}
+        bool            ok()                                const   {return !output.fail();}
+        template<typename T>
+        void writeValue(T const& src)
+        {
+            output << src;
+        }
 
         template<typename T>
         SharedInfo<T> addShared(std::shared_ptr<T> const& shared)
@@ -488,6 +403,7 @@ class PrinterInterface
             return result;
         }
     private:
+        std::ostream&   output;
         std::map<std::intmax_t, void const*>     savedSharedPtr;
 };
 
@@ -748,6 +664,89 @@ auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size
     // Which will make the code more stable.
     //
     // Please look at test/ExceptionTest.h for a simple example.
+}
+
+inline void escapeString(PrinterInterface& printer, std::string const& value)
+{
+    using namespace std::string_literals;
+
+    static auto isEscape = [](char c)
+    {
+        return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
+    };
+
+    auto begin  = std::begin(value);
+    auto end    = std::end(value);
+    auto next = std::find_if(begin, end, isEscape);
+    if (next == end)
+    {
+        printer.write(value);
+    }
+    else
+    {
+        while (next != end)
+        {
+            printer.write(&*begin, (next - begin));
+            if (*next == '"')
+            {
+                printer.write(R"(\")"s);
+                ++next;
+            }
+            else if (*next == '\\')
+            {
+                printer.write(R"(\\)"s);
+                ++next;
+            }
+            else if (*next == 0x08)
+            {
+                printer.write(R"(\b)"s);
+                ++next;
+            }
+            else if (*next == 0x0C)
+            {
+                printer.write(R"(\f)"s);
+                ++next;
+            }
+            else if (*next == 0x0A)
+            {
+                printer.write(R"(\n)"s);
+                ++next;
+            }
+            else if (*next == 0x0D)
+            {
+                printer.write(R"(\r)"s);
+                ++next;
+            }
+            else if (*next == 0x09)
+            {
+                printer.write(R"(\t)"s);
+                ++next;
+            }
+            else
+            {
+                std::stringstream ss;
+                ss     << R"(\u)"
+                       << std::setw(4)
+                       << std::setfill('0')
+                       << std::hex
+                       << static_cast<unsigned int>(static_cast<unsigned char>(*next))
+                       << std::dec;
+                printer.write(ss.str());
+                ++next;
+            }
+            /*
+            else
+            {
+                110xxxxx
+
+                stream << R("\u") << std::setw(4) << std::setfill('0') << std::hex << codepoint;
+            }
+            */
+            begin = next;
+            next = std::find_if(begin, end, isEscape);
+        }
+        printer.write(&*begin, (end - begin));
+    }
 }
 
 

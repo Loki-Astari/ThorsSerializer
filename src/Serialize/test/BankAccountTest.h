@@ -30,11 +30,11 @@ namespace OnLineBank
     {
         virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& printer, ID const& object) const override
         {
-            printer.stream() << object.id;
+            printer.writeValue(object.id);
         }
         virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object) const override
         {
-            parser.getValue(object.id);
+            parser.readValue(object.id);
         }
 
         //virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& printer, ID const& object)   override 
@@ -49,8 +49,8 @@ namespace OnLineBank
         virtual char getBsonByteMark() const override   {return '\x07';}
         virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& object) const override
         {
-            printer.stream().write(reinterpret_cast<char const*>(&object.id), sizeof(object.id));
-            printer.stream().write("            ", sizeOfID - sizeof(object.id));
+            printer.write(reinterpret_cast<char const*>(&object.id), sizeof(object.id));
+            printer.write("            ", sizeOfID - sizeof(object.id));
         }
         virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, char /*byteMarker*/, ID& object) const override
         {

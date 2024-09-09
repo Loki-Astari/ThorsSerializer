@@ -14,8 +14,8 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size)
 {
     YamlPrinter*     owner = reinterpret_cast<YamlPrinter*>(data);
-    owner->output.write(reinterpret_cast<char*>(buffer), size);
-    bool result      = static_cast<bool>(owner->output);
+    owner->write(reinterpret_cast<char*>(buffer), size);
+    bool result      = owner->ok();
 
     return result ? 1 : 0;
 }

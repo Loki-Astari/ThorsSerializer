@@ -53,6 +53,8 @@ class JsonPrinter: public PrinterInterface
         virtual void addNull()                              override;
 
         void addPrefix();
+    private:
+        void addIndent();
 };
 
 }
