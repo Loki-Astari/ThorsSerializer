@@ -37,7 +37,7 @@ YamlParser::YamlParser(std::istream& input, ParserConfig config)
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-YamlParser::YamlParser(std::string const& input, ParserConfig config)
+YamlParser::YamlParser(std::string_view const& input, ParserConfig config)
     : ParserInterface(input, config)
     , first(true)
     , error(false)

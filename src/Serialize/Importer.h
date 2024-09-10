@@ -22,7 +22,7 @@ class Importer
             , config(config)
         {}
         template<typename I>
-        bool extract(I& stream) const
+        bool extract(I&& stream) const
         {
             typename Format::Parser     parser(stream, config);
             try
@@ -69,6 +69,10 @@ class Importer
             return stream;
         }
         friend bool operator>>(std::string const& stream, Importer const& data)
+        {
+            return data.extract(std::string_view(stream.c_str(), stream.size()));
+        }
+        friend bool operator>>(std::string_view const& stream, Importer const& data)
         {
             return data.extract(stream);
         }

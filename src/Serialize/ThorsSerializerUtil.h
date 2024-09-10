@@ -36,12 +36,12 @@ std::string const& getDefaultPolymorphicMarker()
 
 struct StringInput
 {
-    StringInput(std::string const& data)
-        : data(data)
+    StringInput(std::string_view const& view)
+        : data(view)
         , position(0)
         , lastRead(0)
     {}
-    std::string const&  data;
+    std::string_view    data;
     std::size_t         position;
     std::size_t         lastRead;
 
@@ -255,7 +255,7 @@ class ParserInterface
     public:
         ParserConfig const config;
 
-        ParserInterface(std::string const& str, ParserConfig  config = ParserConfig{})
+        ParserInterface(std::string_view const& str, ParserConfig  config = ParserConfig{})
             : config(config)
             , input(str)
             , pushBack(ParserToken::Error)

@@ -23,7 +23,7 @@ BsonParser::BsonParser(std::istream& stream, ParserConfig config)
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-BsonParser::BsonParser(std::string const& stream, ParserConfig config)
+BsonParser::BsonParser(std::string_view const& stream, ParserConfig config)
     : ParserInterface(stream, config)
     , nextToken(ParserToken::DocStart)
     , nextType('\x00')
