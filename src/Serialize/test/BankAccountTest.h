@@ -144,5 +144,9 @@ ThorsAnvil_MakeTrait(OnLineBank::BankAccount, id, balance, details, valid);
 ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::CurrentAccount, actions);
 ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::DepositAccount, withdrawlLimit);
 
+ThorsAnvil_RegisterPolyMorphicType(OnLineBank::CurrentAccount);
+ThorsAnvil_RegisterPolyMorphicType(OnLineBank::DepositAccount);
+
+
 #endif
 

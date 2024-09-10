@@ -21,14 +21,15 @@ class Importer
             : value(value)
             , config(config)
         {}
-        friend std::istream& operator>>(std::istream& stream, Importer const& data)
+        template<typename I>
+        bool extract(I& stream) const
         {
+            typename Format::Parser     parser(stream, config);
             try
             {
-                typename Format::Parser     parser(stream, data.config);
                 DeSerializer                deSerializer(parser);
 
-                deSerializer.parse(data.value);
+                deSerializer.parse(value);
             }
             catch (ThorsAnvil::Logging::CriticalException const& e)
             {
@@ -43,8 +44,8 @@ class Importer
             catch (std::exception const& e)
             {
                 ThorsCatchMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
-                stream.setstate(std::ios::failbit);
-                if (!data.config.catchExceptions)
+                parser.setFail();
+                if (!config.catchExceptions)
                 {
                     ThorsRethrowMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
                     throw;
@@ -53,14 +54,23 @@ class Importer
             catch (...)
             {
                 ThorsCatchMessage("ThorsAnvil::Serialize::Importer", "operator>>", "UNKNOWN");
-                stream.setstate(std::ios::failbit);
-                if (!data.config.catchExceptions)
+                parser.setFail();
+                if (!config.catchExceptions)
                 {
                     ThorsRethrowMessage("ThorsAnvil::Serialize::Importer", "operator>>", "UNKNOWN");
                     throw;
                 }
             }
+            return parser.ok();
+        }
+        friend std::istream& operator>>(std::istream& stream, Importer const& data)
+        {
+            data.extract(stream);
             return stream;
+        }
+        friend bool operator>>(std::string const& stream, Importer const& data)
+        {
+            return data.extract(stream);
         }
 };
 

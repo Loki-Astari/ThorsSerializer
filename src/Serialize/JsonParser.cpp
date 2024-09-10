@@ -20,6 +20,15 @@ JsonParser::JsonParser(std::istream& stream, ParserConfig config)
 {}
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+JsonParser::JsonParser(std::string const& stream, ParserConfig config)
+    : ParserInterface(stream, config)
+    , lexer(*this)
+    , currentEnd(Done)
+    , currentState(Init)
+    , started(false)
+{}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 ParserToken JsonParser::getNextToken()
 {
     /* Handle States were we are not going to read any more */

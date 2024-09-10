@@ -59,6 +59,7 @@ class BsonParser: public ParserInterface
 
     public:
         BsonParser(std::istream& stream, ParserConfig config = ParserConfig{});
+        BsonParser(std::string const& stream, ParserConfig config = ParserConfig{});
         virtual FormatType formatType()                         override {return FormatType::Bson;}
         virtual ParserToken getNextToken()                      override;
         virtual std::string getKey()                            override;

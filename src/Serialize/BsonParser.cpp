@@ -23,6 +23,16 @@ BsonParser::BsonParser(std::istream& stream, ParserConfig config)
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+BsonParser::BsonParser(std::string const& stream, ParserConfig config)
+    : ParserInterface(stream, config)
+    , nextToken(ParserToken::DocStart)
+    , nextType('\x00')
+    , skipOverValue(false)
+{
+    currentContainer.emplace_back(static_cast<BsonContainer>(config.parserInfo));
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 ParserToken BsonParser::getNextToken()
 {
     if (skipOverValue)
