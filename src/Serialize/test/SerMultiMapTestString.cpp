@@ -13,12 +13,12 @@ TEST(SerMultiMapTestString, Jsonserialize)
     data.insert(std::make_pair(56, 78.901));
     data.insert(std::make_pair(56, 901));
 
-    std::stringstream       stream;
+    std::string                 stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"([{"first":56,"second":78.901},{"first":56,"second":901}])");
+    EXPECT_EQ(result, R"([{"first":56,"second":78.901000},{"first":56,"second":901.000000}])");
 }
 
 TEST(SerMultiMapTestString, JsondeSerialize)
@@ -40,12 +40,12 @@ TEST(SerMultiMapTestString, JsonserializeStringKey)
     data.insert(std::make_pair("TestValue",  22.903));
     data.insert(std::make_pair("TestValue",  903));
 
-    std::stringstream       stream;
+    std::string                 stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"({"AStringKey":78.902,"TestValue":22.903,"TestValue":903})");
+    EXPECT_EQ(result, R"({"AStringKey":78.902000,"TestValue":22.903000,"TestValue":903.000000})");
 }
 
 TEST(SerMultiMapTestString, JsondeSerializeStringKey)
@@ -68,9 +68,9 @@ TEST(SerMultiMapTestString, Bsonserialize)
     data.insert(std::make_pair(56, 78.901));
     data.insert(std::make_pair(56, 901));
 
-    std::stringstream       stream;
+    std::string                 stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x4b\x00\x00\x00"
@@ -129,9 +129,9 @@ TEST(SerMultiMapTestString, BsonserializeStringKey)
     data.insert(std::make_pair("TestValue",  22.903));
     data.insert(std::make_pair("TestValue",  903));
 
-    std::stringstream       stream;
+    std::string                 stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x3F\x00\x00\x00"

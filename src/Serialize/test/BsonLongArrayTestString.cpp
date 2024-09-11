@@ -9,11 +9,11 @@ TEST(BsonLongArrayTestString, ArrayWith110Elements)
         data.emplace_back(56234 + loop);
     }
 
-    std::stringstream stream;
+    std::string stream;
     stream << ThorsAnvil::Serialize::bsonExporter(data);
 
     std::vector<int>    output;
-    stream.str() >> ThorsAnvil::Serialize::bsonImporter(output);
+    stream >> ThorsAnvil::Serialize::bsonImporter(output);
 
     EXPECT_EQ(data, output);
 }

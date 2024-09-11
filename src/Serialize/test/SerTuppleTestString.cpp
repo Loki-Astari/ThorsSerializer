@@ -11,12 +11,12 @@ TEST(SerTuppleTestString, Jsonserialize)
 {
     std::tuple<int, double>  data {56, 78.901};
 
-    std::stringstream       stream;
+    std::string              stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"([56,78.901])");
+    EXPECT_EQ(result, R"([56,78.901000])");
 }
 
 TEST(SerTuppleTestString, JsondeSerialize)
@@ -33,9 +33,9 @@ TEST(SerTuppleTestString, Bsonserialize)
 {
     std::tuple<int, double>  data {56, 78.901};
 
-    std::stringstream       stream;
+    std::string              stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x17\x00\x00\x00"

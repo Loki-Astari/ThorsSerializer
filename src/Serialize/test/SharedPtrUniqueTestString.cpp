@@ -16,8 +16,8 @@ TEST(SharedPtrUniqueTestString, MultipleCopiesOfSameSharedPtrJson)
     data.emplace_back(value);
     data.emplace_back(value);
 
-	std::stringstream	expected;
-	expected << R"(
+    std::stringstream   expected;
+    expected << R"(
 [
 	{
 		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(,
@@ -34,10 +34,10 @@ TEST(SharedPtrUniqueTestString, MultipleCopiesOfSameSharedPtrJson)
 	}
 ])";
 
-    std::stringstream   ss;
+    std::string   ss;
     ss << ThorsAnvil::Serialize::jsonExporter(data);
 
-    EXPECT_EQ(expected.str(), ss.str());
+    EXPECT_EQ(expected.str(), ss);
 }
 
 TEST(SharedPtrUniqueTestString, MultipleCopiesOfSameSharedPtrBson)
@@ -78,10 +78,10 @@ TEST(SharedPtrUniqueTestString, MultipleCopiesOfSameSharedPtrBson)
     std::copy(reinterpret_cast<char*>(&ptr), reinterpret_cast<char*>(&ptr) + sizeof(ptr), &expected[98]);
     std::copy(reinterpret_cast<char*>(&ptr), reinterpret_cast<char*>(&ptr) + sizeof(ptr), &expected[129]);
 
-    std::stringstream   ss;
+    std::string   ss;
     ss << ThorsAnvil::Serialize::bsonExporter(data);
 
-    EXPECT_EQ(expected, ss.str());
+    EXPECT_EQ(expected, ss);
 }
 
 TEST(SharedPtrUniqueTestString, ReadMultipleCopiesOfSameSharedPtrJson)
@@ -90,19 +90,19 @@ TEST(SharedPtrUniqueTestString, ReadMultipleCopiesOfSameSharedPtrJson)
 
     std::string     ss(R"(
 [
-	{
-		"sharedPtrName": 123456,
-		"data": 5
-	},
-	{
-		"sharedPtrName": 123456
-	},
-	{
-		"sharedPtrName": 123456
-	},
-	{
-		"sharedPtrName": 123456
-	}
+    {
+        "sharedPtrName": 123456,
+        "data": 5
+    },
+    {
+        "sharedPtrName": 123456
+    },
+    {
+        "sharedPtrName": 123456
+    },
+    {
+        "sharedPtrName": 123456
+    }
 ])");
 
     std::vector<std::shared_ptr<int>>   data;

@@ -58,6 +58,7 @@ class BsonPrinter: public PrinterInterface
         bool        writeProjection()                               {if (projection){writeInt<sizeof(int)>(1);}return projection;}
     public:
         BsonPrinter(std::ostream& output, BsonPrinterConfig config = BsonPrinterConfig{});
+        BsonPrinter(std::string& output, BsonPrinterConfig config = BsonPrinterConfig{});
         virtual FormatType formatType()                             override {return FormatType::Bson;}
         virtual void openDoc()                                      override;
         virtual void closeDoc()                                     override;

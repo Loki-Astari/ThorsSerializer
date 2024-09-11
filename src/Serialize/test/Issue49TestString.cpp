@@ -21,48 +21,48 @@ namespace Issue49
 
 TEST(Issue49TestString, JsonStreamScientific)
 {
-    std::stringstream stream;
+    std::string   stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::scientific;
     stream << ThorsAnvil::Serialize::jsonExporter(testData, false);
 
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ("\"scientific\"", result);
 }
 TEST(Issue49TestString, JsonStreamFixed)
 {
-    std::stringstream stream;
+    std::string   stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::fixed;
     stream << ThorsAnvil::Serialize::jsonExporter(testData, false);
 
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ("\"fixed\"", result);
 }
 TEST(Issue49TestString, JsonStreamHex)
 {
-    std::stringstream stream;
+    std::string   stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::hex;
     stream << ThorsAnvil::Serialize::jsonExporter(testData, false);
 
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ("\"hex\"", result);
 }
 TEST(Issue49TestString, JsonStreamGeneral)
 {
-    std::stringstream stream;
+    std::string   stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
     stream << ThorsAnvil::Serialize::jsonExporter(testData, false);
 
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ("\"general\"", result);
@@ -106,12 +106,12 @@ TEST(Issue49TestString, JsonImportGeneral)
 
 TEST(Issue49TestString, BsonStreamScientific)
 {
-    std::stringstream stream;
+    std::string   stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::scientific;
     stream << ThorsAnvil::Serialize::bsonExporter(testData, false);
 
-    std::string result = stream.str();
+    std::string result = stream;
 
     EXPECT_EQ(result, "\x17\x00\x00\x00"
                       "\x02" "0\x00" "\x0B\x00\x00\x00" "scientific\x00"
@@ -120,12 +120,12 @@ TEST(Issue49TestString, BsonStreamScientific)
 }
 TEST(Issue49TestString, BsonStreamFixed)
 {
-    std::stringstream stream;
+    std::string   stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::fixed;
     stream << ThorsAnvil::Serialize::bsonExporter(testData, false);
 
-    std::string result = stream.str();
+    std::string result = stream;
 
     EXPECT_EQ(result, "\x12\x00\x00\x00"
                       "\x02" "0\x00" "\x06\x00\x00\x00" "fixed\x00"
@@ -134,12 +134,12 @@ TEST(Issue49TestString, BsonStreamFixed)
 }
 TEST(Issue49TestString, BsonStreamHex)
 {
-    std::stringstream stream;
+    std::string   stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::hex;
     stream << ThorsAnvil::Serialize::bsonExporter(testData, false);
 
-    std::string result = stream.str();
+    std::string result = stream;
 
     EXPECT_EQ(result, "\x10\x00\x00\x00"
                       "\x02" "0\x00" "\x04\x00\x00\x00" "hex\x00"
@@ -148,12 +148,12 @@ TEST(Issue49TestString, BsonStreamHex)
 }
 TEST(Issue49TestString, BsonStreamGeneral)
 {
-    std::stringstream stream;
+    std::string   stream;
 
     Issue49::FloatFormat    testData = Issue49::FloatFormat::general;
     stream << ThorsAnvil::Serialize::bsonExporter(testData, false);
 
-    std::string result = stream.str();
+    std::string result = stream;
 
     EXPECT_EQ(result, "\x14\x00\x00\x00"
                       "\x02" "0\x00" "\x08\x00\x00\x00" "general\x00"

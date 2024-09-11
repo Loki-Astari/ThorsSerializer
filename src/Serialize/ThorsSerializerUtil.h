@@ -120,7 +120,20 @@ struct StringInput
     void readValue(double& value)                   {value = readDouble();}
     void readValue(long double& value)              {value = readLongDouble();}
 };
-using DataStream = std::variant<std::istream*, StringInput>;
+
+struct StringOutput
+{
+    std::string&    data;
+    bool            ok;
+    public:
+        StringOutput(std::string& output)
+            : data(output)
+            , ok(true)
+        {}
+};
+
+using DataInputStream = std::variant<std::istream*, StringInput>;
+using DataOutputStream = std::variant<std::ostream*, StringOutput>;
 
 template<typename T>
 struct SharedInfo
@@ -447,7 +460,7 @@ class ParserInterface
         }
 
     private:
-        DataStream      input;
+        DataInputStream input;
         ParserToken     pushBack;
         std::map<std::intmax_t, std::any>     savedSharedPtr;
         void    ignoreTheValue();
@@ -530,6 +543,10 @@ class PrinterInterface
 
         PrinterInterface(std::ostream& output, PrinterConfig config = PrinterConfig{})
             : config(config)
+            , output(&output)
+        {}
+        PrinterInterface(std::string& output, PrinterConfig config = PrinterConfig{})
+            : config(config)
             , output(output)
         {}
         virtual ~PrinterInterface() {}
@@ -592,13 +609,52 @@ class PrinterInterface
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 
         //std::ostream& stream() {return output;}
-        bool write(char const* src, std::size_t size)               {return static_cast<bool>(output.write(src, size));}
-        bool write(std::string const& src)                          {return static_cast<bool>(output.write(src.c_str(), src.size()));}
-        bool            ok()                                const   {return !output.fail();}
+        bool write(char const* src, std::size_t size)
+        {
+            struct Write
+            {
+                char const* src;
+                std::size_t size;
+                Write(char const* src, std::size_t size): src(src), size(size) {}
+
+                bool operator()(std::ostream* output)       {return static_cast<bool>(output->write(src, size));}
+                bool operator()(StringOutput& output)       {output.data += std::string_view(src, size);return true;}
+            };
+            return std::visit(Write{src, size}, output);
+        }
+        bool write(std::string const& src)
+        {
+            return write(src.c_str(), src.size());
+        }
+        bool ok() const
+        {
+            struct OK
+            {
+                bool operator()(std::ostream* output)       {return !output->fail();}
+                bool operator()(StringOutput const& output) {return output.ok;}
+            };
+            return std::visit(OK{}, output);
+        }
+        void setFail()
+        {
+            struct SetFail
+            {
+                void operator()(std::ostream* output)       {output->setstate(std::ios::failbit);}
+                void operator()(StringOutput& output)       {output.ok = false;}
+            };
+            std::visit(SetFail{}, output);
+        }
         template<typename T>
         void writeValue(T const& src)
         {
-            output << src;
+            struct WriteValue
+            {
+                T const& src;
+                WriteValue(T const& src): src(src) {}
+                void operator()(std::ostream* output)       {(*output) << src;}
+                void operator()(StringOutput& output)       {using std::to_string; output.data += to_string(src);}
+            };
+            std::visit(WriteValue{src}, output);
         }
 
         template<typename T>
@@ -618,7 +674,7 @@ class PrinterInterface
             return result;
         }
     private:
-        std::ostream&   output;
+        DataOutputStream   output;
         std::map<std::intmax_t, void const*>     savedSharedPtr;
 };
 

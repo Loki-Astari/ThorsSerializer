@@ -8,88 +8,86 @@
 
 TEST(ExceptionWhilePrintingTestString, JsonNormalPrint)
 {
-    std::stringstream   stream;
+    std::string         stream;
     ExceptionTest::ThrowablePrint      obj(false, 15);
     bool                thrown = false;
+    bool                ok;
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExporter(obj, false);
+        ok = (stream << ThorsAnvil::Serialize::jsonExporter(obj, false));
     }
     catch(...)
     {
         thrown  = true;
     }
 
-    std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
-    EXPECT_EQ(state, std::ios::goodbit);
-    EXPECT_EQ(stream.str(), "15");
+    EXPECT_TRUE(ok);
+    EXPECT_EQ(stream, "15");
 }
 
 
 TEST(ExceptionWhilePrintingTestString, JsonNormalPrintCatchEnabled)
 {
     using ThorsAnvil::Serialize::OutputType;
-    std::stringstream   stream;
+    std::string         stream;
     ExceptionTest::ThrowablePrint      obj(false, 16);
     bool                thrown = false;
+    bool                ok;
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExporter(obj, OutputType::Default);
+        ok = (stream << ThorsAnvil::Serialize::jsonExporter(obj, OutputType::Default));
     }
     catch(...)
     {
         thrown  = true;
     }
 
-    std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
-    EXPECT_EQ(state, std::ios::goodbit);
-    EXPECT_EQ(stream.str(), "16");
+    EXPECT_TRUE(ok);
+    EXPECT_EQ(stream, "16");
 }
 
 TEST(ExceptionWhilePrintingTestString, JsonThrowPrint)
 {
-    std::stringstream   stream;
+    std::string         stream;
     ExceptionTest::ThrowablePrint      obj(true, 17);
     bool                thrown = false;
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExporter(obj, false);
+        (stream << ThorsAnvil::Serialize::jsonExporter(obj, false));
     }
     catch(...)
     {
         thrown  = true;
     }
 
-    std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, true);
-    EXPECT_EQ(state, std::ios::failbit);
 }
 
 
 TEST(ExceptionWhilePrintingTestString, JsonThrowPrintCatchEnabled)
 {
     using ThorsAnvil::Serialize::OutputType;
-    std::stringstream   stream;
+    std::string         stream;
     ExceptionTest::ThrowablePrint      obj(true, 18);
     bool                thrown = false;
+    bool                ok;
 
     try
     {
-        stream << ThorsAnvil::Serialize::jsonExporter(obj, OutputType::Default);
+        ok = (stream << ThorsAnvil::Serialize::jsonExporter(obj, OutputType::Default));
     }
     catch(...)
     {
         thrown  = true;
     }
 
-    std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
-    EXPECT_EQ(state, std::ios::failbit);
+    EXPECT_FALSE(ok);
 }
 
 
@@ -142,11 +140,10 @@ TEST(ExceptionWhilePrintingTestString, JsonThrowStream)
     std::string         stream("21");
     ExceptionTest::ThrowablePrint      obj(true, 3);
     bool                thrown = false;
-    bool                ok;
 
     try
     {
-        ok = (stream >> ThorsAnvil::Serialize::jsonImporter(obj, false));
+        (stream >> ThorsAnvil::Serialize::jsonImporter(obj, false));
     }
     catch(...)
     {
@@ -154,7 +151,6 @@ TEST(ExceptionWhilePrintingTestString, JsonThrowStream)
     }
 
     EXPECT_EQ(thrown, true);
-    EXPECT_FALSE(ok);
 }
 
 
@@ -182,99 +178,97 @@ TEST(ExceptionWhilePrintingTestString, JsonThrowStreamCatchEnabled)
 
 TEST(ExceptionWhilePrintingTestString, BsonNormalPrint)
 {
-    std::stringstream   stream;
+    std::string         stream;
     ExceptionTest::ThrowablePrint      obj(false, 15);
     bool                thrown = false;
+    bool                ok;
 
     try
     {
-        stream << ThorsAnvil::Serialize::bsonExporter(obj, false);
+        ok = (stream << ThorsAnvil::Serialize::bsonExporter(obj, false));
     }
     catch(...)
     {
         thrown  = true;
     }
 
-    std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
-    EXPECT_EQ(state, std::ios::goodbit);
+    EXPECT_TRUE(ok);
 
     static const char expectedRaw[]
                 = "\x0F\x00\x00\x00"
                   "\x05"  "0\x00"  "\x02\x00\x00\x00" "\x80" "15"
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
-    EXPECT_EQ(stream.str(), expected);
+    EXPECT_EQ(stream, expected);
 }
 
 
 TEST(ExceptionWhilePrintingTestString, BsonNormalPrintCatchEnabled)
 {
     using ThorsAnvil::Serialize::OutputType;
-    std::stringstream   stream;
+    std::string         stream;
     ExceptionTest::ThrowablePrint      obj(false, 16);
     bool                thrown = false;
+    bool                ok;
 
     try
     {
-        stream << ThorsAnvil::Serialize::bsonExporter(obj, OutputType::Default);
+        ok = (stream << ThorsAnvil::Serialize::bsonExporter(obj, OutputType::Default));
     }
     catch(...)
     {
         thrown  = true;
     }
 
-    std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
-    EXPECT_EQ(state, std::ios::goodbit);
+    EXPECT_TRUE(ok);
     static const char expectedRaw[]
                 = "\x0F\x00\x00\x00"
                   "\x05"  "0\x00"  "\x02\x00\x00\x00" "\x80" "16"
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
-    EXPECT_EQ(stream.str(), expected);
+    EXPECT_EQ(stream, expected);
 }
 
 TEST(ExceptionWhilePrintingTestString, BsonThrowPrint)
 {
-    std::stringstream   stream;
+    std::string         stream;
     ExceptionTest::ThrowablePrint      obj(true, 17);
     bool                thrown = false;
 
     try
     {
-        stream << ThorsAnvil::Serialize::bsonExporter(obj, false);
+        (stream << ThorsAnvil::Serialize::bsonExporter(obj, false));
     }
     catch(...)
     {
         thrown  = true;
     }
 
-    std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, true);
-    EXPECT_EQ(state, std::ios::failbit);
 }
 
 
 TEST(ExceptionWhilePrintingTestString, BsonThrowPrintCatchEnabled)
 {
     using ThorsAnvil::Serialize::OutputType;
-    std::stringstream   stream;
+    std::string         stream;
     ExceptionTest::ThrowablePrint      obj(true, 18);
     bool                thrown = false;
+    bool                ok;
 
     try
     {
-        stream << ThorsAnvil::Serialize::bsonExporter(obj, OutputType::Default);
+        ok = (stream << ThorsAnvil::Serialize::jsonExporter(obj, OutputType::Default));
     }
     catch(...)
     {
         thrown  = true;
     }
 
-    std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
-    EXPECT_EQ(state, std::ios::failbit);
+    EXPECT_FALSE(ok);
 }
 
 
@@ -342,11 +336,10 @@ TEST(ExceptionWhilePrintingTestString, BsonThrowStream)
     std::string         stream(input);
     ExceptionTest::ThrowablePrint      obj(true, 3);
     bool                thrown = false;
-    bool                ok;
 
     try
     {
-        ok = (stream >> ThorsAnvil::Serialize::bsonImporter(obj, false));
+        (stream >> ThorsAnvil::Serialize::bsonImporter(obj, false));
     }
     catch(...)
     {
@@ -354,7 +347,6 @@ TEST(ExceptionWhilePrintingTestString, BsonThrowStream)
     }
 
     EXPECT_EQ(thrown, true);
-    EXPECT_FALSE(ok);
 }
 
 

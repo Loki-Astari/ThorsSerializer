@@ -62,9 +62,9 @@ TEST(Issue50TestString, JsonNullPointer)
 
     Issue50Test::User    user1{10, nullptr};
 
-    std::stringstream   data;
+    std::string         data;
     data << ThorsAnvil::Serialize::jsonExporter(user1, "$type"s);
-    std::string result = data.str();
+    std::string result = data;
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":null})");
@@ -75,9 +75,9 @@ TEST(Issue50TestString, JsonVehiclePointer)
 
     Issue50Test::User    user1{10, new Issue50Test::Vehicle(12)};
 
-    std::stringstream   data;
+    std::string         data;
     data << ThorsAnvil::Serialize::jsonExporter(user1, "$type"s);
-    std::string result = data.str();
+    std::string result = data;
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Vehicle","speed":12}})");
@@ -88,9 +88,9 @@ TEST(Issue50TestString, JsonCarPointer)
 
     Issue50Test::User    user1{10, new Issue50Test::Car(16, "Turbo")};
 
-    std::stringstream   data;
+    std::string         data;
     data << ThorsAnvil::Serialize::jsonExporter(user1, "$type"s);
-    std::string result = data.str();
+    std::string result = data;
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Car","make":"Turbo","speed":16}})");
@@ -102,9 +102,9 @@ TEST(Issue50TestString, JsonBikePointer)
 
     Issue50Test::User    user1{10, new Issue50Test::Bike(18, 7)};
 
-    std::stringstream   data;
+    std::string         data;
     data << ThorsAnvil::Serialize::jsonExporter(user1, "$type"s);
-    std::string result = data.str();
+    std::string result = data;
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"$type":"Issue50Test::Bike","stroke":7,"speed":18}})");
@@ -174,9 +174,9 @@ TEST(Issue50TestString, BsonNullPointer)
 
     Issue50Test::User    user1{10, nullptr};
 
-    std::stringstream   data;
+    std::string         data;
     data << ThorsAnvil::Serialize::bsonExporter(user1, "$type"s);
-    std::string result = data.str();
+    std::string result = data;
 
     EXPECT_EQ(result, "\x19\x00\x00\x00"
                       "\x10" "age\x00"  "\x0A\x00\x00\x00"
@@ -190,9 +190,9 @@ TEST(Issue50TestString, BsonVehiclePointer)
 
     Issue50Test::User    user1{10, new Issue50Test::Vehicle(12)};
 
-    std::stringstream   data;
+    std::string         data;
     data << ThorsAnvil::Serialize::bsonExporter(user1, "$type"s);
-    std::string result = data.str();
+    std::string result = data;
 
     EXPECT_EQ(result, "\x49\x00\x00\x00"
                       "\x10" "age\x00"   "\x0A\x00\x00\x00"
@@ -210,9 +210,9 @@ TEST(Issue50TestString, BsonCarPointer)
 
     Issue50Test::User    user1{10, new Issue50Test::Car(16, "Turbo")};
 
-    std::stringstream   data;
+    std::string         data;
     data << ThorsAnvil::Serialize::bsonExporter(user1, "$type"s);
-    std::string result = data.str();
+    std::string result = data;
 
     EXPECT_EQ(result, "\x55\x00\x00\x00"
                       "\x10" "age\x00"  "\x0A\x00\x00\x00"
@@ -232,9 +232,9 @@ TEST(Issue50TestString, BsonBikePointer)
 
     Issue50Test::User    user1{10, new Issue50Test::Bike(18, 7)};
 
-    std::stringstream   data;
+    std::string         data;
     data << ThorsAnvil::Serialize::bsonExporter(user1, "$type"s);
-    std::string result = data.str();
+    std::string result = data;
 
     EXPECT_EQ(result, "\x52\x00\x00\x00"
                       "\x10" "age\x00"  "\x0A\x00\x00\x00"

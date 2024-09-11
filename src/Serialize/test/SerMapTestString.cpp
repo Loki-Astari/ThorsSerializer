@@ -12,12 +12,12 @@ TEST(SerMapTestString, Jsonserialize)
     std::map<int, double>  data;
     data[56]    = 78.901;
 
-    std::stringstream       stream;
+    std::string            stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"([{"first":56,"second":78.901}])");
+    EXPECT_EQ(result, R"([{"first":56,"second":78.901000}])");
 }
 
 TEST(SerMapTestString, JsondeSerialize)
@@ -37,12 +37,12 @@ TEST(SerMapTestString, JsonserializeStringKey)
     data["AStringKey"]      = 78.902;
     data["TestValue"]       = 22.903;
 
-    std::stringstream       stream;
+    std::string            stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"({"AStringKey":78.902,"TestValue":22.903})");
+    EXPECT_EQ(result, R"({"AStringKey":78.902000,"TestValue":22.903000})");
 }
 
 TEST(SerMapTestString, JsondeSerializeStringKey)
@@ -62,9 +62,9 @@ TEST(SerMapTestString, Bsonserialize)
     std::map<int, double>  data;
     data[56]    = 78.901;
 
-    std::stringstream       stream;
+    std::string            stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x28\x00\x00\x00"
@@ -112,9 +112,9 @@ TEST(SerMapTestString, BsonserializeStringKey)
     data["AStringKey"]      = 78.902;
     data["TestValue"]       = 22.903;
 
-    std::stringstream       stream;
+    std::string            stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x2C\x00\x00\x00"

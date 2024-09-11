@@ -33,9 +33,9 @@ TEST(OverrideIdentiferToKeyMapTestString, JsonExportCheckNormalOverrideWorks)
 {
     OverrideTest    object{34, "The Stuff to Delete"};
 
-    std::stringstream stream;
+    std::string          stream;
     stream << ThorsAnvil::Serialize::jsonExporter(object);
-    std::string output = stream.str();
+    std::string output = stream;
 
     auto findPercent =output.find(R"("%")");
     EXPECT_NE(std::string::npos, findPercent);
@@ -60,9 +60,9 @@ TEST(OverrideIdentiferToKeyMapTestString, YamlExportCheckNormalOverrideWorks)
 {
     OverrideTest    object{34, "The Stuff to Delete"};
 
-    std::stringstream stream;
+    std::string          stream;
     stream << ThorsAnvil::Serialize::yamlExporter(object);
-    std::string output = stream.str();
+    std::string output = stream;
 
     auto findPercent =output.find("%");
     EXPECT_NE(std::string::npos, findPercent);
@@ -92,9 +92,9 @@ TEST(OverrideIdentiferToKeyMapTestString, BsonExportCheckNormalOverrideWorks)
 {
     OverrideTest    object{34, "The Stuff to Delete"};
 
-    std::stringstream stream;
+    std::string          stream;
     stream << ThorsAnvil::Serialize::bsonExporter(object);
-    std::string output = stream.str();
+    std::string output = stream;
 
     auto findPercent =output.find("\x10" "%\x00"s);
     EXPECT_NE(std::string::npos, findPercent);
@@ -122,9 +122,9 @@ TEST(OverrideIdentiferToKeyMapTestString, JsonExportCheckTemplateOverrideWorks)
 {
     OverrideTemplate<double>    object{12.23, "The Stuff to Delete"};
 
-    std::stringstream stream;
+    std::string          stream;
     stream << ThorsAnvil::Serialize::jsonExporter(object);
-    std::string output = stream.str();
+    std::string output = stream;
 
     auto findPercent =output.find(R"("%")");
     EXPECT_NE(std::string::npos, findPercent);
@@ -149,9 +149,9 @@ TEST(OverrideIdentiferToKeyMapTestString, YamlExportCheckTemplateOverrideWorks)
 {
     OverrideTemplate<double>    object{12.23, "The Stuff to Delete"};
 
-    std::stringstream stream;
+    std::string          stream;
     stream << ThorsAnvil::Serialize::yamlExporter(object);
-    std::string output = stream.str();
+    std::string output = stream;
 
     auto findPercent =output.find("%");
     EXPECT_NE(std::string::npos, findPercent);
@@ -181,9 +181,9 @@ TEST(OverrideIdentiferToKeyMapTestString, BsonExportCheckTemplateOverrideWorks)
 {
     OverrideTemplate<double>    object{12.23, "The Stuff to Delete"};
 
-    std::stringstream stream;
+    std::string          stream;
     stream << ThorsAnvil::Serialize::bsonExporter(object);
-    std::string output = stream.str();
+    std::string output = stream;
 
     auto findPercent =output.find("\x01" "%\x00"s);
     EXPECT_NE(std::string::npos, findPercent);

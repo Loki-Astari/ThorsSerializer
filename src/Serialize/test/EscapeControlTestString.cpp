@@ -83,81 +83,81 @@ TEST(EscapeControlTestString, JsonOutputContainsTab)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\t A string with A tab");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::jsonExporter(value, OutputType::Default)) {
         exportDone = true;
     }
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(output.find('\t'), std::string::npos);
+    auto find = output.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 't');
+    EXPECT_EQ(output[find+1], 't');
 }
 TEST(EscapeControlTestString, JsonOutputContainsBS)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\b A string with A Back Space");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::jsonExporter(value, OutputType::Default)) {
         exportDone = true;
     }
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(output.find('\t'), std::string::npos);
+    auto find = output.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 'b');
+    EXPECT_EQ(output[find+1], 'b');
 }
 TEST(EscapeControlTestString, JsonOutputContainsNL)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\n A string with A New Line");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::jsonExporter(value, OutputType::Default)) {
         exportDone = true;
     }
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(output.find('\t'), std::string::npos);
+    auto find = output.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 'n');
+    EXPECT_EQ(output[find+1], 'n');
 }
 TEST(EscapeControlTestString, JsonOutputContainsFF)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\f A string with A Form Feed");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::jsonExporter(value, OutputType::Default)) {
         exportDone = true;
     }
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(output.find('\t'), std::string::npos);
+    auto find = output.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 'f');
+    EXPECT_EQ(output[find+1], 'f');
 }
 TEST(EscapeControlTestString, JsonOutputContainsCR)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\r A string with A Carridge Return");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::jsonExporter(value, OutputType::Default)) {
         exportDone = true;
     }
     EXPECT_EQ(exportDone, true);
-    EXPECT_EQ(output.str().find('\t'), std::string::npos);
-    auto find = output.str().find('\\');
+    EXPECT_EQ(output.find('\t'), std::string::npos);
+    auto find = output.find('\\');
     ASSERT_NE(find, std::string::npos);
-    EXPECT_EQ(output.str()[find+1], 'r');
+    EXPECT_EQ(output[find+1], 'r');
 }
 
 TEST(EscapeControlTestString, BsonNormalInput)
@@ -182,7 +182,7 @@ TEST(EscapeControlTestString, BsonOutputContainsTab)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\t A string with A tab");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::bsonExporter(value, OutputType::Default)) {
@@ -190,7 +190,7 @@ TEST(EscapeControlTestString, BsonOutputContainsTab)
     }
     EXPECT_EQ(exportDone, true);
 
-    std::string outputString(output.str());
+    std::string outputString(output);
     std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
@@ -201,7 +201,7 @@ TEST(EscapeControlTestString, BsonOutputContainsBS)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\b A string with A Back Space");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::bsonExporter(value, OutputType::Default)) {
@@ -209,7 +209,7 @@ TEST(EscapeControlTestString, BsonOutputContainsBS)
     }
     EXPECT_EQ(exportDone, true);
 
-    std::string outputString(output.str());
+    std::string outputString(output);
     std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
@@ -220,7 +220,7 @@ TEST(EscapeControlTestString, BsonOutputContainsNL)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\n A string with A New Line");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::bsonExporter(value, OutputType::Default)) {
@@ -228,7 +228,7 @@ TEST(EscapeControlTestString, BsonOutputContainsNL)
     }
     EXPECT_EQ(exportDone, true);
 
-    std::string outputString(output.str());
+    std::string outputString(output);
     std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
@@ -239,7 +239,7 @@ TEST(EscapeControlTestString, BsonOutputContainsFF)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\f A string with A Form Feed");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::bsonExporter(value, OutputType::Default)) {
@@ -247,7 +247,7 @@ TEST(EscapeControlTestString, BsonOutputContainsFF)
     }
     EXPECT_EQ(exportDone, true);
 
-    std::string outputString(output.str());
+    std::string outputString(output);
     std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');
@@ -258,7 +258,7 @@ TEST(EscapeControlTestString, BsonOutputContainsCR)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         value("\r A string with A Carridge Return");
-    std::stringstream   output;
+    std::string         output;
     bool                exportDone = false;
 
     if (output << ThorsAnvil::Serialize::bsonExporter(value, OutputType::Default)) {
@@ -266,7 +266,7 @@ TEST(EscapeControlTestString, BsonOutputContainsCR)
     }
     EXPECT_EQ(exportDone, true);
 
-    std::string outputString(output.str());
+    std::string outputString(output);
     std::string_view outputView((&*outputString.begin()) + 11 , std::size(value));
     EXPECT_EQ(outputView.find('\t'), std::string::npos);
     auto find = outputView.find('\\');

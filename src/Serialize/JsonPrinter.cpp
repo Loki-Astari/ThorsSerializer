@@ -139,6 +139,13 @@ JsonPrinter::JsonPrinter(std::ostream& output, PrinterConfig config)
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+JsonPrinter::JsonPrinter(std::string& output, PrinterConfig config)
+    : PrinterInterface(output, config)
+{
+    state.emplace_back(0, TraitType::Value, false);
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::openDoc()
 {}
 
@@ -255,6 +262,19 @@ struct BoolFormatter
         return str << std::boolalpha << formatter.value;
     }
 };
+
+template<typename T>
+inline std::string to_string(FormatDouble<T> const& value)
+{
+    if (value.value == 0) {
+        return "0.0";
+    }
+    return std::to_string(value.value);
+}
+inline std::string to_string(BoolFormatter const& value)
+{
+    return value.value ? "true" : "false";
+}
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addValue(short int value)             {addIndent(); writeValue(value);}
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addValue(int value)                   {addIndent(); writeValue(value);}

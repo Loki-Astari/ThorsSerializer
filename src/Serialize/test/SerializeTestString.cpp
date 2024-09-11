@@ -10,31 +10,31 @@
 #include <algorithm>
 
 
-std::string const testData1 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done"})";
-std::string const testData2 = R"({"data1":1,"data2":2,"theInteger":456,"aNonRealValue":89.101,"test":false,"normalString":"Akinkthatisnotstraight"})";
-std::string const testData3 = R"({"member1":{"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide"})"
-                              R"(,"member2":{"data1":67,"data2":11,"theInteger":234567,"aNonRealValue":123.45,"test":true,"normalString":"NotASquareAndOnlyOneSide"}})";
+std::string const testData1 = R"({"theInteger":34,"aNonRealValue":56.780000,"test":true,"normalString":"Done"})";
+std::string const testData2 = R"({"data1":1,"data2":2,"theInteger":456,"aNonRealValue":89.101000,"test":false,"normalString":"Akinkthatisnotstraight"})";
+std::string const testData3 = R"({"member1":{"theInteger":234567,"aNonRealValue":123.450000,"test":true,"normalString":"NotASquareAndOnlyOneSide"})"
+                              R"(,"member2":{"data1":67,"data2":11,"theInteger":234567,"aNonRealValue":123.450000,"test":true,"normalString":"NotASquareAndOnlyOneSide"}})";
 // testData4 is identical to testData1 but with several ignored fields added.
-std::string const testData4 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","ShouldIgnore":true, "ignoreMap": {"Plop":true}, "ignoreArray":[true, false, [1,2,34], {"key":"value"}]})";
-std::string const testData5 = R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","anotherValue":14})";
+std::string const testData4 = R"({"theInteger":34,"aNonRealValue":56.780000,"test":true,"normalString":"Done","ShouldIgnore":true, "ignoreMap": {"Plop":true}, "ignoreArray":[true, false, [1,2,34], {"key":"value"}]})";
+std::string const testData5 = R"({"theInteger":34,"aNonRealValue":56.780000,"test":true,"normalString":"Done","anotherValue":14})";
 std::string const testDataE1 = R"({"ignoreMap": {"Plop":true, ]}})";
 std::string const testDataE2 = R"({"ignoreArray": [}]})";
 std::string const testDataE3 = R"({"ignoreArray": [)";
 std::string const testDataE4 = R"({"ignoreArray": )";
 std::string const testDataE5 = R"({"ignoreArray": ])";
 std::string const testDataE6 = R"({"ignoreArray": })";
-std::string const testDataE7 = R"({"aNonRealValue":56.78,"test":true,"normalString":"Done", "anotherValue":13})";
+std::string const testDataE7 = R"({"aNonRealValue":56.780000,"test":true,"normalString":"Done", "anotherValue":13})";
 
 TEST(SerializeTestString, JsonSerializeStructureOfValue)
 {
     SerializeTest::SerializeTestExtra        data(34,56.78, true, "Done");
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ(testData1, result);
@@ -60,12 +60,12 @@ TEST(SerializeTestString, JsonSerializeStructureOfValueAndParents)
 {
     SerializeTest::SerializeTestChild     data(1, 2, 456, 89.101, false, "Akinkthatisnotstraight");
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ(testData2, result);
@@ -93,12 +93,12 @@ TEST(SerializeTestString, JsonSerializeStructureMemberOfValue)
 {
     SerializeTest::SerializeTestMembers        data(67, 11, 234567, 123.45, true, "NotASquareAndOnlyOneSide");
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ(testData3, result);
@@ -289,12 +289,12 @@ TEST(SerializeTestString, JsonDerivedTypeNoNewMembers)
 {
     SerializeTest::SerializeExactNoMembers        data(34,56.78, true, "Done");
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ(testData1, result);
@@ -303,12 +303,12 @@ TEST(SerializeTestString, JsonDerivedTypeNoNewMembersPolyMorphic)
 {
     SerializeTest::SerializeExactNoMembersPoly        data(34,56.78, true, "Done");
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::JsonPrinter  printer(stream);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ(testData1, result);
@@ -391,7 +391,7 @@ TEST(SerializeTestString, BsonSerializeStructureOfValue)
 {
     SerializeTest::SerializeTestExtra        data(34,56.78, true, "Done");
 
-    std::stringstream                    stream;
+    std::string      stream;
     ThorsAnvil::Serialize::PrinterConfig config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
@@ -399,7 +399,7 @@ TEST(SerializeTestString, BsonSerializeStructureOfValue)
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
 
     EXPECT_EQ(testData1Bson, result);
 }
@@ -428,12 +428,12 @@ TEST(SerializeTestString, BsonSerializeStructureOfValueAndParents)
     ThorsAnvil::Serialize::PrinterConfig  config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::BsonPrinter  printer(stream, config);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
 
     EXPECT_EQ(testData2Bson, result);
 }
@@ -462,12 +462,12 @@ TEST(SerializeTestString, BsonSerializeStructureMemberOfValue)
     ThorsAnvil::Serialize::PrinterConfig       config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::BsonPrinter  printer(stream, config);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
 
     EXPECT_EQ(testData3Bson, result);
 }
@@ -578,12 +578,12 @@ TEST(SerializeTestString, BsonDerivedTypeNoNewMembers)
     ThorsAnvil::Serialize::PrinterConfig          config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::BsonPrinter  printer(stream, config);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
 
     EXPECT_EQ(testData1Bson, result);
 }
@@ -593,12 +593,12 @@ TEST(SerializeTestString, BsonDerivedTypeNoNewMembersPolyMorphic)
     ThorsAnvil::Serialize::PrinterConfig              config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
-    std::stringstream   stream;
+    std::string      stream;
     ThorsAnvil::Serialize::BsonPrinter  printer(stream, config);
     ThorsAnvil::Serialize::Serializer   serializer(printer);
 
     serializer.print(data);
-    std::string result  = stream.str();
+    std::string result  = stream;
 
     EXPECT_EQ(testData1Bson, result);
 }

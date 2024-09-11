@@ -131,13 +131,13 @@ TEST(ReferenceWrapperTestString, JsonSimpleWrapperWrite)
     int                         value = 12;
     ReferenceWrapperTest<int>   wrapper(value);
 
-    std::stringstream   stream;
+    std::string     stream;
     if (stream << ThorsAnvil::Serialize::jsonExporter(wrapper, ThorsAnvil::Serialize::OutputType::Stream))
     {
         import = true;
     }
     EXPECT_TRUE(import);
-    EXPECT_EQ(stream.str(), R"({"data":12})");
+    EXPECT_EQ(stream, R"({"data":12})");
 }
 TEST(ReferenceWrapperTestString, JsonComplexWrapperWrite)
 {
@@ -145,13 +145,13 @@ TEST(ReferenceWrapperTestString, JsonComplexWrapperWrite)
     Marker                         value{13, "A string"};
     ReferenceWrapperTest<Marker>   wrapper(value);
 
-    std::stringstream   stream;
+    std::string     stream;
     if (stream << ThorsAnvil::Serialize::jsonExporter(wrapper, ThorsAnvil::Serialize::OutputType::Stream))
     {
         import = true;
     }
     EXPECT_TRUE(import);
-    EXPECT_EQ(stream.str(), R"({"data":{"value":13,"data":"A string"}})");
+    EXPECT_EQ(stream, R"({"data":{"value":13,"data":"A string"}})");
 }
 
 TEST(ReferenceWrapperTestString, YamlnSimpleWrapperWrite)
@@ -160,13 +160,13 @@ TEST(ReferenceWrapperTestString, YamlnSimpleWrapperWrite)
     int                         value = 12;
     ReferenceWrapperTest<int>   wrapper(value);
 
-    std::stringstream   stream;
+    std::string     stream;
     if (stream << ThorsAnvil::Serialize::yamlExporter(wrapper))
     {
         import = true;
     }
     EXPECT_TRUE(import);
-    EXPECT_EQ(stream.str(), "---\ndata: 12\n...\n");
+    EXPECT_EQ(stream, "---\ndata: 12\n...\n");
 }
 TEST(ReferenceWrapperTestString, YamlnComplexWrapperWrite)
 {
@@ -174,13 +174,13 @@ TEST(ReferenceWrapperTestString, YamlnComplexWrapperWrite)
     Marker                         value{13, "A string"};
     ReferenceWrapperTest<Marker>   wrapper(value);
 
-    std::stringstream   stream;
+    std::string     stream;
     if (stream << ThorsAnvil::Serialize::yamlExporter(wrapper))
     {
         import = true;
     }
     EXPECT_TRUE(import);
-    EXPECT_EQ(stream.str(), "---\ndata:\n  value: 13\n  data: A string\n...\n");
+    EXPECT_EQ(stream, "---\ndata:\n  value: 13\n  data: A string\n...\n");
 }
 
 TEST(ReferenceWrapperTestString, BsonSimpleWrapperWrite)
@@ -189,7 +189,7 @@ TEST(ReferenceWrapperTestString, BsonSimpleWrapperWrite)
     int                         value = 12;
     ReferenceWrapperTest<int>   wrapper(value);
 
-    std::stringstream   stream;
+    std::string     stream;
     if (stream << ThorsAnvil::Serialize::bsonExporter(wrapper, ThorsAnvil::Serialize::OutputType::Stream))
     {
         import = true;
@@ -199,7 +199,7 @@ TEST(ReferenceWrapperTestString, BsonSimpleWrapperWrite)
     std::string result  = "\x0F\x00\x00\x00"
                           "\x10" "data\x00"     "\x0C\x00\x00\x00"
                           "\x00"s;
-    EXPECT_EQ(stream.str(), result);
+    EXPECT_EQ(stream, result);
 }
 TEST(ReferenceWrapperTestString, BsonComplexWrapperWrite)
 {
@@ -207,7 +207,7 @@ TEST(ReferenceWrapperTestString, BsonComplexWrapperWrite)
     Marker                         value{13, "A string"};
     ReferenceWrapperTest<Marker>   wrapper(value);
 
-    std::stringstream   stream;
+    std::string     stream;
     if (stream << ThorsAnvil::Serialize::bsonExporter(wrapper, ThorsAnvil::Serialize::OutputType::Stream))
     {
         import = true;
@@ -221,6 +221,6 @@ TEST(ReferenceWrapperTestString, BsonComplexWrapperWrite)
                                 "\x02"  "data\x00"      "\x09\x00\x00\x00"  "A string\x00"
                                 "\x00"
                           "\x00"s;
-    EXPECT_EQ(stream.str(), result);
+    EXPECT_EQ(stream, result);
 }
 

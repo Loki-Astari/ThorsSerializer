@@ -72,9 +72,9 @@ TEST(PolymorphicTestString, JsonNullPointer)
 {
     PolymorphicTest::User    user1{10, nullptr};
 
-    std::stringstream   data;
+    std::string     data;
     data << ThorsAnvil::Serialize::jsonExporter(user1, false);
-    std::string result = data.str();
+    std::string result = data;
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":null})");
@@ -83,9 +83,9 @@ TEST(PolymorphicTestString, JsonVehiclePointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Vehicle(12)};
 
-    std::stringstream   data;
+    std::string     data;
     data << ThorsAnvil::Serialize::jsonExporter(user1, false);
-    std::string result = data.str();
+    std::string result = data;
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Vehicle","speed":12}})");
@@ -94,9 +94,9 @@ TEST(PolymorphicTestString, JsonCarPointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Car(16, "Turbo")};
 
-    std::stringstream   data;
+    std::string     data;
     data << ThorsAnvil::Serialize::jsonExporter(user1, false);
-    std::string result = data.str();
+    std::string result = data;
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Car","make":"Turbo","speed":16}})");
@@ -106,9 +106,9 @@ TEST(PolymorphicTestString, JsonBikePointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Bike(18, 7)};
 
-    std::stringstream   data;
+    std::string     data;
     data << ThorsAnvil::Serialize::jsonExporter(user1, false);
-    std::string result = data.str();
+    std::string result = data;
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
@@ -169,9 +169,9 @@ TEST(PolymorphicTestString, BsonNullPointer)
 {
     PolymorphicTest::User    user1{10, nullptr};
 
-    std::stringstream   data(std::ios_base::out | std::ios_base::binary);;
+    std::string   data;
     data << ThorsAnvil::Serialize::bsonExporter(user1, false);
-    std::string result = data.str();
+    std::string result = data;
 
     static const char expectedRaw[]
                     = "\x19\x00\x00\x00"
@@ -186,9 +186,9 @@ TEST(PolymorphicTestString, BsonVehiclePointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Vehicle(12)};
 
-    std::stringstream   data;
+    std::string     data;
     data << ThorsAnvil::Serialize::bsonExporter(user1, false);
-    std::string result = data.str();
+    std::string result = data;
 
     static const char expectedRaw[]
                     = "\x4E\x00\x00\x00"
@@ -207,9 +207,9 @@ TEST(PolymorphicTestString, BsonCarPointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Car(16, "Turbo")};
 
-    std::stringstream   data;
+    std::string     data;
     data << ThorsAnvil::Serialize::bsonExporter(user1, false);
-    std::string result = data.str();
+    std::string result = data;
 
     static const char expectedRaw[]
                     = "\x5A\x00\x00\x00"
@@ -230,9 +230,9 @@ TEST(PolymorphicTestString, BsonBikePointer)
 {
     PolymorphicTest::User    user1{10, new PolymorphicTest::Bike(18, 7)};
 
-    std::stringstream   data;
+    std::string     data;
     data << ThorsAnvil::Serialize::bsonExporter(user1, false);
-    std::string result = data.str();
+    std::string result = data;
 
     static const char expectedRaw[]
                     = "\x57\x00\x00\x00"
@@ -341,13 +341,13 @@ TEST(PolymorphicTestString, BsonReadBike)
 
 TEST(PolymorphicTestString, UsingUniquePtr)
 {
-  std::stringstream data;
+  std::string     data;
 
   { // Export
     PolymorphicTest::UserUniquePtr user1 { 10, std::make_unique<PolymorphicTest::Bike>(18, 7) };
     data << ThorsAnvil::Serialize::jsonExporter(user1);
 
-    std::string result = data.str();
+    std::string result = data;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x) {return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
   }
@@ -365,13 +365,13 @@ TEST(PolymorphicTestString, UsingUniquePtr)
 
 TEST(PolymorphicTestString, UsingSharedPtrOldVersion)
 {
-  std::stringstream data;
+  std::string     data;
 
   { // Export
     PolymorphicTest::UserSharedPtr user1 { 10, std::make_shared<PolymorphicTest::Bike>(18, 7) };
     data << ThorsAnvil::Serialize::jsonExporter(user1, ThorsAnvil::Serialize::PrinterConfig{}.setUseOldSharedPtr());
 
-    std::string result = data.str();
+    std::string result = data;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x) {return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
   }
@@ -388,13 +388,13 @@ TEST(PolymorphicTestString, UsingSharedPtrOldVersion)
 }
 TEST(PolymorphicTestString, UsingSharedPtr)
 {
-  std::stringstream data;
+  std::string     data;
 
   { // Export
     PolymorphicTest::UserSharedPtr user1 { 10, std::make_shared<PolymorphicTest::Bike>(18, 7) };
     data << ThorsAnvil::Serialize::jsonExporter(user1);
 
-    std::string result = data.str();
+    std::string result = data;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x) {return std::isspace(x);}), std::end(result));
     auto findS = result.find("sharedPtrName");
     auto findD = result.find("data");

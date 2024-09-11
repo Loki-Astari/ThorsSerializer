@@ -133,7 +133,7 @@ TEST(SmartPointerTestString, JsonCreateSharedPtrObject)
 TEST(SmartPointerTestString, JsonSerializeNormalPtrNull)
 {
     using ThorsAnvil::Serialize::OutputType;
-    std::stringstream           stream;
+    std::string      stream;
     SmartPtrTest::Object*       data = nullptr;
     bool                        import = false;
 
@@ -142,13 +142,13 @@ TEST(SmartPointerTestString, JsonSerializeNormalPtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "null");
+    EXPECT_EQ(stream, "null");
 }
 
 TEST(SmartPointerTestString, JsonSerializeNormalPtrObject)
 {
     using ThorsAnvil::Serialize::OutputType;
-    std::stringstream           stream;
+    std::string      stream;
     SmartPtrTest::Object*       data = new SmartPtrTest::Object{456, "This is a test"};
     bool                        import = false;
 
@@ -157,7 +157,7 @@ TEST(SmartPointerTestString, JsonSerializeNormalPtrObject)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+    EXPECT_EQ(stream, R"({"id":456,"name":"This is a test"})");
     delete data;
 }
 
@@ -166,7 +166,7 @@ TEST(SmartPointerTestString, JsonSerializeUniquePtrNull)
     using ThorsAnvil::Serialize::OutputType;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
-    std::stringstream           stream;
+    std::string      stream;
     UniObject                   data;
     bool                        import = false;
 
@@ -175,14 +175,14 @@ TEST(SmartPointerTestString, JsonSerializeUniquePtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "null");
+    EXPECT_EQ(stream, "null");
 }
 
 TEST(SmartPointerTestString, JsonSerializeUniquePtrObject)
 {
     using ThorsAnvil::Serialize::OutputType;
 
-    std::stringstream           stream;
+    std::string      stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
     bool                        import = false;
 
@@ -191,7 +191,7 @@ TEST(SmartPointerTestString, JsonSerializeUniquePtrObject)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+    EXPECT_EQ(stream, R"({"id":456,"name":"This is a test"})");
 }
 
 TEST(SmartPointerTestString, JsonSerializeSharedPtrNull)
@@ -199,7 +199,7 @@ TEST(SmartPointerTestString, JsonSerializeSharedPtrNull)
     using  ThorsAnvil::Serialize::OutputType;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
-    std::stringstream           stream;
+    std::string      stream;
     UniObject                   data;
     bool                        import = false;
 
@@ -208,14 +208,14 @@ TEST(SmartPointerTestString, JsonSerializeSharedPtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "null");
+    EXPECT_EQ(stream, "null");
 }
 
 TEST(SmartPointerTestString, JsonSerializeSharedPtrObject)
 {
     using ThorsAnvil::Serialize::OutputType;
 
-    std::stringstream           stream;
+    std::string      stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
     bool                        import = false;
 
@@ -224,7 +224,7 @@ TEST(SmartPointerTestString, JsonSerializeSharedPtrObject)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), R"({"id":456,"name":"This is a test"})");
+    EXPECT_EQ(stream, R"({"id":456,"name":"This is a test"})");
 }
 
 using namespace std::string_literals;
@@ -396,7 +396,7 @@ TEST(SmartPointerTestString, BsonCreateSharedPtrObject)
 TEST(SmartPointerTestString, BsonSerializeNormalPtrNull)
 {
     using ThorsAnvil::Serialize::OutputType;
-    std::stringstream           stream;
+    std::string      stream;
     Wrapper                     wrap;
     bool                        import = false;
 
@@ -406,16 +406,16 @@ TEST(SmartPointerTestString, BsonSerializeNormalPtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
+    EXPECT_EQ(stream, "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), "null");
+    //NOTE OUTPUT  (stream, "null");
 }
 
 TEST(SmartPointerTestString, BsonSerializeNormalPtrObject)
 {
     using ThorsAnvil::Serialize::OutputType;
-    std::stringstream           stream;
+    std::string      stream;
     SmartPtrTest::Object*       data = new SmartPtrTest::Object{456, "This is a test"};
     bool                        import = false;
 
@@ -424,11 +424,11 @@ TEST(SmartPointerTestString, BsonSerializeNormalPtrObject)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "\x26\x00\x00\x00"
+    EXPECT_EQ(stream, "\x26\x00\x00\x00"
                             "\x10" "id\x00"      "\xc8\x01\x00\x00"
                             "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), R"({"id":456,"name":"This is a test"})");
+    //NOTE OUTPUT  (stream, R"({"id":456,"name":"This is a test"})");
     delete data;
 }
 
@@ -436,7 +436,7 @@ TEST(SmartPointerTestString, BsonSerializeUniquePtrNull)
 {
     using ThorsAnvil::Serialize::OutputType;
 
-    std::stringstream           stream;
+    std::string      stream;
     WrapperUni                  wrap;
     bool                        import = false;
 
@@ -445,17 +445,17 @@ TEST(SmartPointerTestString, BsonSerializeUniquePtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
+    EXPECT_EQ(stream, "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), "null");
+    //NOTE OUTPUT  (stream, "null");
 }
 
 TEST(SmartPointerTestString, BsonSerializeUniquePtrObject)
 {
     using ThorsAnvil::Serialize::OutputType;
 
-    std::stringstream           stream;
+    std::string      stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
     bool                        import = false;
 
@@ -464,18 +464,18 @@ TEST(SmartPointerTestString, BsonSerializeUniquePtrObject)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "\x26\x00\x00\x00"
+    EXPECT_EQ(stream, "\x26\x00\x00\x00"
                             "\x10" "id\x00"      "\xc8\x01\x00\x00"
                             "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), R"({"id":456,"name":"This is a test"})");
+    //NOTE OUTPUT  (stream, R"({"id":456,"name":"This is a test"})");
 }
 
 TEST(SmartPointerTestString, BsonSerializeSharedPtrNull)
 {
     using  ThorsAnvil::Serialize::OutputType;
 
-    std::stringstream           stream;
+    std::string      stream;
     WrapperShared               wrap{nullptr};
     bool                        import = false;
 
@@ -484,17 +484,17 @@ TEST(SmartPointerTestString, BsonSerializeSharedPtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
+    EXPECT_EQ(stream, "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), "null");
+    //NOTE OUTPUT  (stream, "null");
 }
 
 TEST(SmartPointerTestString, BsonSerializeSharedPtrObject)
 {
     using ThorsAnvil::Serialize::OutputType;
 
-    std::stringstream           stream;
+    std::string      stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
     bool                        import = false;
 
@@ -503,11 +503,11 @@ TEST(SmartPointerTestString, BsonSerializeSharedPtrObject)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), "\x26\x00\x00\x00"
+    EXPECT_EQ(stream, "\x26\x00\x00\x00"
                             "\x10" "id\x00"      "\xc8\x01\x00\x00"
                             "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), R"({"id":456,"name":"This is a test"})");
+    //NOTE OUTPUT  (stream, R"({"id":456,"name":"This is a test"})");
 }
 
 

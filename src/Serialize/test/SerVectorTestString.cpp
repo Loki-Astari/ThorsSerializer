@@ -21,10 +21,10 @@ TEST(SerVectorTestString, JsonVectorOfIntSerialize)
 {
     std::vector<int>    data{1,2,3,4,5,6,7,8,101,102,9,10};
 
-    std::stringstream   stream;
+    std::string      stream;
     stream << jsonExporter(data, false);
 
-    std::string result  = stream.str();
+    std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ(result, R"([1,2,3,4,5,6,7,8,101,102,9,10])");
@@ -70,10 +70,10 @@ TEST(SerVectorTestString, BsonVectorOfIntSerialize)
 {
     std::vector<int>    data{1,2,3,4,5,6,7,8,101,102,9,10};
 
-    std::stringstream   stream;
+    std::string      stream;
     stream << bsonExporter(data, false);
 
-    std::string result  = stream.str();
+    std::string result  = stream;
 
     static const char expectedRaw[]
                 = "\x5B\x00\x00\x00"

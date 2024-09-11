@@ -11,9 +11,9 @@ TEST(SerSetTestString, Jsonserialize)
 {
     std::set<int>  data{34,24,8,11,2};
 
-    std::stringstream       stream;
+    std::string    stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     EXPECT_EQ(result, R"([2,8,11,24,34])");
@@ -37,9 +37,9 @@ TEST(SerSetTestString, Bsonserialize)
 {
     std::set<int>  data{34,24,8,11,2};
 
-    std::stringstream       stream;
+    std::string    stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x28\x00\x00\x00"

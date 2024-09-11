@@ -23,9 +23,9 @@ ThorsAnvil_MakeTrait(PointerTest::Tree, value, left, right);
 TEST(PointerTestString, JsonBuildStringFromTree)
 {
     PointerTest::Tree*   root = new PointerTest::Tree{34, new PointerTest::Tree{22, new PointerTest::Tree{10, nullptr, nullptr}, nullptr}, new PointerTest::Tree{50, nullptr, new PointerTest::Tree{70, nullptr, nullptr}}};
-    std::stringstream data;
+    std::string         data;
     data << ThorsAnvil::Serialize::jsonExporter(root, false);
-    std::string result = data.str();
+    std::string result = data;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"value":34,"left":{"value":22,"left":{"value":10,"left":null,"right":null},"right":null},"right":{"value":50,"left":null,"right":{"value":70,"left":null,"right":null}}})");
 }
@@ -33,29 +33,29 @@ TEST(PointerTestString, JsonBuildTreeFromString)
 {
     std::string jsonStream(R"(
 {
-	"value": 34,
-	"left":
-	{
-		"value": 22,
-		"left":
-		{
-			"value": 10,
-			"left": null,
-			"right": null
-		},
-		"right": null
-	},
-	"right":
-	{
-		"value": 50,
-		"left": null,
-		"right":
-		{
-			"value": 70,
-			"left": null,
-			"right": null
-		}
-	}
+    "value": 34,
+    "left":
+    {
+        "value": 22,
+        "left":
+        {
+            "value": 10,
+            "left": null,
+            "right": null
+        },
+        "right": null
+    },
+    "right":
+    {
+        "value": 50,
+        "left": null,
+        "right":
+        {
+            "value": 70,
+            "left": null,
+            "right": null
+        }
+    }
 })");
     PointerTest::Tree* root = nullptr;
 
@@ -81,9 +81,9 @@ TEST(PointerTestString, JsonBuildTreeFromString)
 TEST(PointerTestString, BsonBuildStringFromTree)
 {
     PointerTest::Tree*   root = new PointerTest::Tree{34, new PointerTest::Tree{22, new PointerTest::Tree{10, nullptr, nullptr}, nullptr}, new PointerTest::Tree{50, nullptr, new PointerTest::Tree{70, nullptr, nullptr}}};
-    std::stringstream data(std::ios_base::out | std::ios_base::binary);
+    std::string         data;
     data << ThorsAnvil::Serialize::bsonExporter(root, false);
-    std::string result = data.str();
+    std::string result = data;
 
 
     static const char expectedRaw[]
@@ -122,29 +122,29 @@ TEST(PointerTestString, BsonBuildTreeFromString)
 NOTE INPUT
     std::string bson(R"(
 {
-	"value": 34,
-	"left":
-	{
-		"value": 22,
-		"left":
-		{
-			"value": 10,
-			"left": null,
-			"right": null
-		},
-		"right": null
-	},
-	"right":
-	{
-		"value": 50,
-		"left": null,
-		"right":
-		{
-			"value": 70,
-			"left": null,
-			"right": null
-		}
-	}
+    "value": 34,
+    "left":
+    {
+        "value": 22,
+        "left":
+        {
+            "value": 10,
+            "left": null,
+            "right": null
+        },
+        "right": null
+    },
+    "right":
+    {
+        "value": 50,
+        "left": null,
+        "right":
+        {
+            "value": 70,
+            "left": null,
+            "right": null
+        }
+    }
 })");
 */
     static const char bsonRaw[]

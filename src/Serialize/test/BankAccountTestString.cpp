@@ -18,14 +18,14 @@ TEST(BankAccountTestString, JsonExportCustomField)
     src.addTransaction(1, 32, OnLineBank::Deposit);
     src.addTransaction(2, 12, OnLineBank::Withdraw);
 
-    std::stringstream stream;
+    std::string     stream;
     if (stream << ThorsAnvil::Serialize::jsonExporter(src))
     {
         serializeOK = true;
     }
 
     OnLineBank::CurrentAccount dst;
-    if (stream.str() >>ThorsAnvil::Serialize::jsonImporter(dst))
+    if (stream >>ThorsAnvil::Serialize::jsonImporter(dst))
     {
         deserializeOK = true;
     }
@@ -48,14 +48,14 @@ TEST(BankAccountTestString, BsonExportCustomField)
     src.addTransaction(1, 32, OnLineBank::Deposit);
     src.addTransaction(2, 12, OnLineBank::Withdraw);
 
-    std::stringstream stream;
+    std::string     stream;
     if (stream << ThorsAnvil::Serialize::bsonExporter(src))
     {
         serializeOK = true;
     }
 
     OnLineBank::CurrentAccount dst;
-    if (stream.str() >> ThorsAnvil::Serialize::bsonImporter(dst))
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(dst))
     {
         deserializeOK = true;
     }

@@ -9,11 +9,11 @@ using namespace ThorsAnvil::Serialize;
 
 TEST(BsonUtilitySerializationTestString, ObjectIDSerialize)
 {
-    std::stringstream stream;
+    std::string    stream;
     MongoObjectID  object(0x12345678,0x9ABCDEF053LL,0x1A2B3C);
 
     stream << ThorsAnvil::Serialize::bsonExporter(object);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x15\x00\x00\x00"
@@ -25,7 +25,7 @@ TEST(BsonUtilitySerializationTestString, ObjectIDSerialize)
 }
 TEST(BsonUtilitySerializationTestString, ObjectIDGetSize)
 {
-    std::stringstream stream;
+    std::string        stream;
     MongoObjectID  object(0x12345678,0x9ABCDEF053LL,0x1A2B3C);
 
     std::size_t size = ThorsAnvil::Serialize::bsonGetPrintSize(object);
@@ -34,24 +34,24 @@ TEST(BsonUtilitySerializationTestString, ObjectIDGetSize)
 
 TEST(BsonUtilitySerializationTestString, ObjectIDRoundTrip)
 {
-    std::stringstream stream;
+    std::string        stream;
     MongoObjectID  object(0x12345678,0x9ABCDEF053LL,0x1A2B3C);
 
     stream << ThorsAnvil::Serialize::bsonExporter(object);
 
     MongoObjectID  result(8, 9, 10);
-    stream.str() >> ThorsAnvil::Serialize::bsonImporter(result);
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
     EXPECT_EQ(object, result);
 }
 TEST(BsonUtilitySerializationTestString, UTCDateTimeSerialize)
 {
-    std::stringstream stream;
+    std::string        stream;
     MongoUTCDateTime   object(0x123456789ABCDEF0LL);
 
 
     stream << ThorsAnvil::Serialize::bsonExporter(object);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x11\x00\x00\x00"
@@ -64,24 +64,24 @@ TEST(BsonUtilitySerializationTestString, UTCDateTimeSerialize)
 
 TEST(BsonUtilitySerializationTestString, UTCDateTimeRoundTrip)
 {
-    std::stringstream stream;
+    std::string        stream;
     MongoUTCDateTime    object(0x123456789ABCDEF0LL);
 
     stream << ThorsAnvil::Serialize::bsonExporter(object);
 
     MongoUTCDateTime    result(8);
-    stream.str() >> ThorsAnvil::Serialize::bsonImporter(result);
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
     EXPECT_EQ(object, result);
 }
 TEST(BsonUtilitySerializationTestString, BsonTimeStampSerialize)
 {
-    std::stringstream stream;
+    std::string        stream;
     MongoBsonTimeStamp    object(0x12345678, 0x9ABCDEF0);
 
 
     stream << ThorsAnvil::Serialize::bsonExporter(object);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x11\x00\x00\x00"
@@ -94,13 +94,13 @@ TEST(BsonUtilitySerializationTestString, BsonTimeStampSerialize)
 
 TEST(BsonUtilitySerializationTestString, BsonTimeStampRoundTrip)
 {
-    std::stringstream stream;
+    std::string        stream;
     MongoBsonTimeStamp    object(0x12345678, 0x9ABCDEF0);
 
     stream << ThorsAnvil::Serialize::bsonExporter(object);
 
     MongoBsonTimeStamp    result(8,9);
-    stream.str() >> ThorsAnvil::Serialize::bsonImporter(result);
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
     EXPECT_EQ(object, result);
 }
@@ -108,7 +108,7 @@ TEST(BsonUtilitySerializationTestString, BsonTimeStampRoundTrip)
 TEST(BsonUtilitySerializationTestString, BsonBinarySerializer)
 {
     MongoBsonBinary  data("This is a binary test");
-    std::stringstream stream;
+    std::string        stream;
 
     stream << ThorsAnvil::Serialize::bsonExporter(data);
 
@@ -120,17 +120,17 @@ TEST(BsonUtilitySerializationTestString, BsonBinarySerializer)
                   "\x00";
 
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
-    EXPECT_EQ(expected, stream.str());
+    EXPECT_EQ(expected, stream);
 }
 
 TEST(BsonUtilitySerializationTestString, BsonBinarySerializerRoundTrip)
 {
     MongoBsonBinary  data("This is a binary test");
-    std::stringstream stream;
+    std::string        stream;
 
     stream << ThorsAnvil::Serialize::bsonExporter(data);
     MongoBsonBinary  result("XXXXX");
-    stream.str() >> ThorsAnvil::Serialize::bsonImporter(result);
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
     EXPECT_EQ(data, result);
 }
@@ -138,7 +138,7 @@ TEST(BsonUtilitySerializationTestString, BsonBinarySerializerRoundTrip)
 TEST(BsonUtilitySerializationTestString, BsonJavascriptSerializer)
 {
     MongoBsonJsavScript data("function myrand() {return 4;}");
-    std::stringstream stream;
+    std::string        stream;
 
     stream << ThorsAnvil::Serialize::bsonExporter(data);
 
@@ -149,18 +149,18 @@ TEST(BsonUtilitySerializationTestString, BsonJavascriptSerializer)
                   "\x00";
 
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
-    EXPECT_EQ(expected, stream.str());
+    EXPECT_EQ(expected, stream);
 }
 
 TEST(BsonUtilitySerializationTestString, BsonJavascriptSerializerRoundtrip)
 {
     MongoBsonJsavScript data("function myrand() {return 4;}");
-    std::stringstream stream;
+    std::string        stream;
 
     stream << ThorsAnvil::Serialize::bsonExporter(data);
     MongoBsonJsavScript result("XXXX");
 
-    stream.str() >> ThorsAnvil::Serialize::bsonImporter(result);
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
     EXPECT_EQ(data, result);
 }
@@ -168,7 +168,7 @@ TEST(BsonUtilitySerializationTestString, BsonJavascriptSerializerRoundtrip)
 TEST(BsonUtilitySerializationTestString, BsonRegExSerializer)
 {
     MongoBsonRegExp    data("^[ \\t]*", "g");
-    std::stringstream stream;
+    std::string        stream;
 
     stream << ThorsAnvil::Serialize::bsonExporter(data);
 
@@ -180,17 +180,17 @@ TEST(BsonUtilitySerializationTestString, BsonRegExSerializer)
                   "\x00";
 
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
-    EXPECT_EQ(expected, stream.str());
+    EXPECT_EQ(expected, stream);
 }
 TEST(BsonUtilitySerializationTestString, BsonRegExSerializerRoundtrip)
 {
     MongoBsonRegExp    data("^[ \\t]*", "g");
-    std::stringstream stream;
+    std::string        stream;
 
     stream << ThorsAnvil::Serialize::bsonExporter(data);
     MongoBsonRegExp     result("X", "Y");
 
-    stream.str() >> ThorsAnvil::Serialize::bsonImporter(result);
+    stream >> ThorsAnvil::Serialize::bsonImporter(result);
 
     EXPECT_EQ(data, result);
 }

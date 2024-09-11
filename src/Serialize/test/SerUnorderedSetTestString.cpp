@@ -11,9 +11,9 @@ TEST(SerUnorderedSetTestString, Jsonserialize)
 {
     std::unordered_set<int>  data{24,11,2};
 
-    std::stringstream       stream;
+    std::string      stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     // unordered set can print in any order
@@ -46,9 +46,9 @@ TEST(SerUnorderedSetTestString, Bsonserialize)
 {
     std::unordered_set<int>  data{24,11,2};
 
-    std::stringstream       stream;
+    std::string      stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     // unordered set can print in any order
     // so it should be one of these

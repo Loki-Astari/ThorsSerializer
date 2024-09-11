@@ -13,20 +13,20 @@ TEST(RoundTripTestString, JsonMap)
 {
     using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Base                base    { 10, 1024};
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::jsonExporter(base, OutputType::Stream);
 
     std::string expected(R"({"ace":10,"val":1024})");
 
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     BinaryParserTest::Base    base2 {};
-    stream.str() >> TA::jsonImporter(base2, false);
+    stream >> TA::jsonImporter(base2, false);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
 }
@@ -39,20 +39,17 @@ TEST(RoundTripTestString, JsonParent)
     deri.val    = 1024;
     deri.der    = 56789;
     deri.flt    = 234.875;
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::jsonExporter(deri, OutputType::Stream);
 
-    std::string expected(R"({"der":56789,"flt":234.875,"ace":10,"val":1024})");
+    std::string expected(R"({"der":56789,"flt":234.875000,"ace":10,"val":1024})");
 
-    EXPECT_EQ(expected.size(), stream.str().size());
-    for(std::size_t loop =0;loop < expected.size(); ++loop)
-    {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
-    }
+    EXPECT_EQ(expected.size(), stream.size());
+    EXPECT_EQ(expected, stream);
 
     BinaryParserTest::Derived             deri2 {};
-    stream.str() >> TA::jsonImporter(deri2, false);
+    stream >> TA::jsonImporter(deri2, false);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632
     EXPECT_EQ(56789,    deri2.der);     // 10
@@ -62,20 +59,20 @@ TEST(RoundTripTestString, JsonArray)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::jsonExporter(data, OutputType::Stream);
 
     std::string expected(R"([10,1024,9,367,12,34])");
 
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     std::vector<int>    data2 {};
-    stream.str() >> TA::jsonImporter(data2, false);
+    stream >> TA::jsonImporter(data2, false);
     EXPECT_EQ(10,     data2[0]);
     EXPECT_EQ(1024,   data2[1]);
     EXPECT_EQ(9,      data2[2]);
@@ -87,19 +84,19 @@ TEST(RoundTripTestString, JsonValue)
 {
     using ThorsAnvil::Serialize::OutputType;
     int                 data = 68456231;
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::jsonExporter(data, OutputType::Stream);
 
     std::string expected("68456231");
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     int                 data2;
-    stream.str() >> TA::jsonImporter(data2, false);
+    stream >> TA::jsonImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }
 
@@ -107,20 +104,20 @@ TEST(RoundTripTestString, YamlMap)
 {
     using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Base                base    { 10, 1024};
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::yamlExporter(base, OutputType::Stream);
 
     std::string expected("--- {ace: 10, val: 1024}\n...\n");
 
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     BinaryParserTest::Base    base2 {};
-    stream.str() >> TA::yamlImporter(base2, false);
+    stream >> TA::yamlImporter(base2, false);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
 }
@@ -133,20 +130,20 @@ TEST(RoundTripTestString, YamlParent)
     deri.val    = 1024;
     deri.der    = 56789;
     deri.flt    = 234.875;
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::yamlExporter(deri, OutputType::Stream);
 
     std::string expected("--- {der: 56789, flt: 234.875, ace: 10, val: 1024}\n...\n");
 
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     BinaryParserTest::Derived             deri2 {};
-    stream.str() >> TA::yamlImporter(deri2, false);
+    stream >> TA::yamlImporter(deri2, false);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632
     EXPECT_EQ(56789,    deri2.der);     // 10
@@ -156,20 +153,20 @@ TEST(RoundTripTestString, YamlArray)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::yamlExporter(data, OutputType::Stream);
 
     std::string expected("--- [10, 1024, 9, 367, 12, 34]\n...\n");
 
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     std::vector<int>    data2 {};
-    stream.str() >> TA::yamlImporter(data2, false);
+    stream >> TA::yamlImporter(data2, false);
     EXPECT_EQ(10,     data2[0]);
     EXPECT_EQ(1024,   data2[1]);
     EXPECT_EQ(9,      data2[2]);
@@ -181,19 +178,19 @@ TEST(RoundTripTestString, YamlValue)
 {
     using ThorsAnvil::Serialize::OutputType;
     int                 data = 68456231;
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::yamlExporter(data, OutputType::Stream);
 
     std::string expected("--- 68456231\n...\n");
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     int                 data2;
-    stream.str() >> TA::yamlImporter(data2, false);
+    stream >> TA::yamlImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }
 
@@ -201,7 +198,7 @@ TEST(RoundTripTestString, BsonMap)
 {
     using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Base                base    { 10, 1024};
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::bsonExporter(base, OutputType::Stream);
 
@@ -214,14 +211,14 @@ TEST(RoundTripTestString, BsonMap)
                         ;
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     BinaryParserTest::Base    base2 {};
-    stream.str() >> TA::bsonImporter(base2, false);
+    stream >> TA::bsonImporter(base2, false);
     EXPECT_EQ(10,   base2.ace);
     EXPECT_EQ(1024, base2.val);
 }
@@ -234,7 +231,7 @@ TEST(RoundTripTestString, BsonParent)
     deri.val    = 1024;
     deri.der    = 56789;
     deri.flt    = 234.875;
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::bsonExporter(deri, OutputType::Stream);
 
@@ -248,14 +245,14 @@ TEST(RoundTripTestString, BsonParent)
                   "\x00";                   // Null Terminator
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     BinaryParserTest::Derived             deri2 {};
-    stream.str() >> TA::bsonImporter(deri2, false);
+    stream >> TA::bsonImporter(deri2, false);
     EXPECT_EQ(10,       deri2.ace);     // 56789
     EXPECT_EQ(1024,     deri2.val);     // 1131077632
     EXPECT_EQ(56789,    deri2.der);     // 10
@@ -265,7 +262,7 @@ TEST(RoundTripTestString, BsonArray)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::bsonExporter(data, OutputType::Stream);
 
@@ -282,14 +279,14 @@ TEST(RoundTripTestString, BsonArray)
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
 
 
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     std::vector<int>    data2 {};
-    stream.str() >> TA::bsonImporter(data2, false);
+    stream >> TA::bsonImporter(data2, false);
     EXPECT_EQ(10,     data2[0]);
     EXPECT_EQ(1024,   data2[1]);
     EXPECT_EQ(9,      data2[2]);
@@ -301,7 +298,7 @@ TEST(RoundTripTestString, BsonValue)
 {
     using ThorsAnvil::Serialize::OutputType;
     int                 data = 68456231;
-    std::stringstream   stream;
+    std::string    stream;
 
     stream << TA::bsonExporter(data, OutputType::Stream);
 
@@ -311,13 +308,13 @@ TEST(RoundTripTestString, BsonValue)
                   "\x10" "0\x00" "\x27\x8F\x14\x04" // 0x04148F27
                   "\x00";
     std::string expected(std::begin(expectedRaw), std::end(expectedRaw) - 1);
-    EXPECT_EQ(expected.size(), stream.str().size());
+    EXPECT_EQ(expected.size(), stream.size());
     for(std::size_t loop =0;loop < expected.size(); ++loop)
     {
-        EXPECT_EQ(expected[loop], stream.str()[loop]);
+        EXPECT_EQ(expected[loop], stream[loop]);
     }
 
     int                 data2;
-    stream.str() >> TA::bsonImporter(data2, false);
+    stream >> TA::bsonImporter(data2, false);
     EXPECT_EQ(68456231, data2);
 }

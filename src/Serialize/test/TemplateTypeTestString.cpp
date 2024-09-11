@@ -43,39 +43,39 @@ TEST(TemplateTypeTestString, JsontemplateTest)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         input(R"({"templateMember":[1,2,3,4]})");
-    std::stringstream   output;
+    std::string         output;
     TemplateTypeTest::TemplateType<int>   data;
 
     input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
     output << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream);
 
-    EXPECT_EQ(output.str(), input);
+    EXPECT_EQ(output, input);
 }
 
 TEST(TemplateTypeTestString, JsonnormalInheritingFromtemplateTest)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         input(R"({"normalName":"A name","templateMember":[1,2,3,4]})");
-    std::stringstream   output;
+    std::string         output;
     TemplateTypeTest::NormalInheritFromTemplate   data;
 
     input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
     output << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream);
 
-    EXPECT_EQ(output.str(), input);
+    EXPECT_EQ(output, input);
 }
 
 TEST(TemplateTypeTestString, JsontemplateInheritingFromtemplateTest)
 {
     using ThorsAnvil::Serialize::OutputType;
     std::string         input(R"({"alternative":[5,6,7,8],"templateMember":[1,2,3,4]})");
-    std::stringstream   output;
+    std::string         output;
     TemplateTypeTest::TemplateInheritFromTemplate<int>   data;
 
     input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
     output << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream);
 
-    EXPECT_EQ(output.str(), input);
+    EXPECT_EQ(output, input);
 }
 
 TEST(TemplateTypeTestString, BsontemplateTest)
@@ -91,13 +91,13 @@ TEST(TemplateTypeTestString, BsontemplateTest)
                                         "\x10" "3\x00" "\x04\x00\x00\x00"
                                         "\x00"
                                  "\x00"s);
-    std::stringstream   output;
+    std::string         output;
     TemplateTypeTest::TemplateType<int>   data;
 
     input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
     output << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream);
 
-    EXPECT_EQ(output.str(), input);
+    EXPECT_EQ(output, input);
 }
 
 TEST(TemplateTypeTestString, BsonnormalInheritingFromtemplateTest)
@@ -114,13 +114,13 @@ TEST(TemplateTypeTestString, BsonnormalInheritingFromtemplateTest)
                                         "\x10" "3\x00" "\x04\x00\x00\x00"
                                         "\x00"
                                  "\x00"s);
-    std::stringstream   output;
+    std::string         output;
     TemplateTypeTest::NormalInheritFromTemplate   data;
 
     input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
     output << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream);
 
-    EXPECT_EQ(output.str(), input);
+    EXPECT_EQ(output, input);
 }
 
 TEST(TemplateTypeTestString, BsontemplateInheritingFromtemplateTest)
@@ -143,13 +143,13 @@ TEST(TemplateTypeTestString, BsontemplateInheritingFromtemplateTest)
                                         "\x10" "3\x00" "\x04\x00\x00\x00"
                                         "\x00"
                                  "\x00"s);
-    std::stringstream   output;
+    std::string         output;
     TemplateTypeTest::TemplateInheritFromTemplate<int>   data;
 
     input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
     output << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream);
 
-    EXPECT_EQ(output.str(), input);
+    EXPECT_EQ(output, input);
 }
 
 

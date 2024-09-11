@@ -12,12 +12,12 @@ TEST(SerUnorderedMapTestString, Jsonserialize)
     std::unordered_map<int, double>  data;
     data[56]    = 78.901;
 
-    std::stringstream       stream;
+    std::string                      stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"([{"first":56,"second":78.901}])");
+    EXPECT_EQ(result, R"([{"first":56,"second":78.901000}])");
 }
 
 TEST(SerUnorderedMapTestString, JsondeSerialize)
@@ -37,13 +37,13 @@ TEST(SerUnorderedMapTestString, JsonserializeStringKey)
     data["AStringKey"]      = 78.902;
     data["TestValue"]       = 22.903;
 
-    std::stringstream       stream;
+    std::string                      stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    bool test = result == R"({"AStringKey":78.902,"TestValue":22.903})"
-             || result == R"({"TestValue":22.903,"AStringKey":78.902})";
+    bool test = result == R"({"AStringKey":78.902000,"TestValue":22.903000})"
+             || result == R"({"TestValue":22.903000,"AStringKey":78.902000})";
     EXPECT_TRUE(test);
 }
 
@@ -64,9 +64,9 @@ TEST(SerUnorderedMapTestString, Bsonserialize)
     std::unordered_map<int, double>  data;
     data[56]    = 78.901;
 
-    std::stringstream       stream;
+    std::string                      stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x28\x00\x00\x00"
@@ -113,9 +113,9 @@ TEST(SerUnorderedMapTestString, BsonserializeStringKey)
     data["AStringKey"]      = 78.902;
     data["TestValue"]       = 22.903;
 
-    std::stringstream       stream;
+    std::string                      stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw1[]
                 = "\x2C\x00\x00\x00"

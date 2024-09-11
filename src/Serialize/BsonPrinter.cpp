@@ -15,6 +15,13 @@ BsonPrinter::BsonPrinter(std::ostream& output, BsonPrinterConfig config)
 {}
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+BsonPrinter::BsonPrinter(std::string& output, BsonPrinterConfig config)
+    : PrinterInterface(output, config)
+    , idStore(config.idStore)
+    , projection(false)
+{}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonPrinter::pushLevel(bool isMap)
 {
     currentContainer.emplace_back(isMap ? BsonContainer::Map : BsonContainer::Array);

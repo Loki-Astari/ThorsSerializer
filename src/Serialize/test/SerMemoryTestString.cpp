@@ -11,12 +11,12 @@ TEST(SerMemoryTestString, Jsonserialize)
 {
     std::pair<int, double>  data(56, 78.901);
 
-    std::stringstream       stream;
+    std::string             stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
-    EXPECT_EQ(result, R"({"first":56,"second":78.901})");
+    EXPECT_EQ(result, R"({"first":56,"second":78.901000})");
 }
 
 TEST(SerMemoryTestString, JsondeSerialize)
@@ -34,9 +34,9 @@ TEST(SerMemoryTestString, Bsonserialize)
 {
     std::pair<int, double>  data(56, 78.901);
 
-    std::stringstream       stream;
+    std::string             stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw[]
                 = "\x20\x00\x00\x00"

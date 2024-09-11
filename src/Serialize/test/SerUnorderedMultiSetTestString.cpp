@@ -11,9 +11,9 @@ TEST(SerUnorderedMultiSetTestString, Jsonserialize)
 {
     std::unordered_multiset<int>  data{24,8,11,2,2,2};
 
-    std::stringstream       stream;
+    std::string    stream;
     stream << TS::jsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
     bool test = result == R"([2,2,2,8,11,24])"
@@ -140,9 +140,9 @@ TEST(SerUnorderedMultiSetTestString, Bsonserialize)
 {
     std::unordered_multiset<int>  data{24,8,11};
 
-    std::stringstream       stream;
+    std::string    stream;
     stream << TS::bsonExporter(data, false);
-    std::string result = stream.str();
+    std::string result = stream;
 
     static const char expectedRaw1[]
                 = "\x1A\x00\x00\x00"

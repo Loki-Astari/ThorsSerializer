@@ -19,24 +19,24 @@ using  ThorsAnvil::Serialize::PrinterConfig;
 
 TEST(OptionalTestString, NormalOnly)
 {
-    std::stringstream stream;
+    std::string     stream;
 
     OptionalTest    data;
     data.normal = 5;
 
     stream << jsonExporter(data, PrinterConfig{OutputType::Stream});
-    EXPECT_EQ(R"({"normal":5})", stream.str());
+    EXPECT_EQ(R"({"normal":5})", stream);
 }
 TEST(OptionalTestString, NormalAndOptional)
 {
-    std::stringstream stream;
+    std::string     stream;
 
     OptionalTest    data;
     data.normal = 5;
     data.optional = 6;
 
     stream << jsonExporter(data, PrinterConfig{OutputType::Stream});
-    EXPECT_EQ(R"({"normal":5,"optional":6})", stream.str());
+    EXPECT_EQ(R"({"normal":5,"optional":6})", stream);
 }
 TEST(OptionalTestString, ImportOptional)
 {
