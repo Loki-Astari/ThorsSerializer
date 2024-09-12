@@ -17,6 +17,7 @@ struct StringOutput
     char*           end;
     std::size_t     calcSize;
     bool            ok;
+    bool            preFlight;
 
     public:
         StringOutput(std::string& output)
@@ -25,6 +26,7 @@ struct StringOutput
             , end(nullptr)
             , calcSize(0)
             , ok(true)
+            , preFlight(false)
         {}
         bool write(char const* src, std::size_t size)
         {

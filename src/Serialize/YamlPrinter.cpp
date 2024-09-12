@@ -49,19 +49,25 @@ YamlPrinter::YamlPrinter(std::ostream& output, PrinterConfig config)
     : PrinterInterface(output, config)
     , error(false)
 {
-    checkYamlResultCode(yaml_emitter_initialize(&emitter), "YamlPrinter", "yaml_emitter_initialize");
-    yaml_emitter_set_output(&emitter, thorsanvilYamlStreamWritter, this);
-    checkYamlResultCode(
-            [&](yaml_event_t& event){return yaml_stream_start_event_initialize(&event, YAML_UTF8_ENCODING);},
-            "YamlPrinter",
-            "yaml_stream_start_event_initialize");
-    state.emplace_back(0, TraitType::Value);
+    init();
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 YamlPrinter::YamlPrinter(std::string& output, PrinterConfig config)
     : PrinterInterface(output, config)
     , error(false)
+{
+    init();
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+YamlPrinter::~YamlPrinter()
+{
+    complete();
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void YamlPrinter::init()
 {
     checkYamlResultCode(yaml_emitter_initialize(&emitter), "YamlPrinter", "yaml_emitter_initialize");
     yaml_emitter_set_output(&emitter, thorsanvilYamlStreamWritter, this);
@@ -73,7 +79,7 @@ YamlPrinter::YamlPrinter(std::string& output, PrinterConfig config)
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-YamlPrinter::~YamlPrinter()
+void YamlPrinter::complete()
 {
     if (!error)
     {
@@ -84,6 +90,14 @@ YamlPrinter::~YamlPrinter()
     }
     checkYamlResultCode(yaml_emitter_flush(&emitter), "~YamlPrinter", "yaml_emitter_flush");
     yaml_emitter_delete(&emitter);
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void YamlPrinter::reset()
+{
+    complete();
+    state.clear();
+    init();
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE

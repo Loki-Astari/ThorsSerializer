@@ -1037,6 +1037,17 @@ inline void Serializer::printMembers(T const& object, Action action)
 template<typename T>
 inline void Serializer::print(T const& object)
 {
+    if (root && printer.preflightSize())
+    {
+        {
+            SerializerForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, printer, object);
+            block.printMembers();
+        }
+        printer.closeDoc();
+        printer.reserveSize();
+        printer.reset();
+        printer.openDoc();
+    }
     SerializerForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, printer, object);
     block.printMembers();
 }

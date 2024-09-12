@@ -335,14 +335,19 @@ class PrinterInterface
             : config(config)
             , output(output)
         {}
+
+                bool    preflightSize();
+                void    reserveSize();
+        virtual void    reset()     {}
+
         virtual ~PrinterInterface() {}
         virtual FormatType formatType()                 = 0;
-        virtual void openDoc()                          = 0;
-        virtual void closeDoc()                         = 0;
-        virtual void openMap(std::size_t size)          = 0;
-        virtual void closeMap()                         = 0;
-        virtual void openArray(std::size_t size)        = 0;
-        virtual void closeArray()                       = 0;
+        virtual void    openDoc()                       = 0;
+        virtual void    closeDoc()                      = 0;
+        virtual void    openMap(std::size_t size)       = 0;
+        virtual void    closeMap()                      = 0;
+        virtual void    openArray(std::size_t size)     = 0;
+        virtual void    closeArray()                    = 0;
 
         virtual void    addKey(std::string const& key)  = 0;
 
