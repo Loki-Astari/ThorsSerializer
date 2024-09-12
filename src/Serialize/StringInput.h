@@ -93,10 +93,11 @@ struct StringInput
         void readValue(long double& value)              {value = readLongDouble();}
         void readValue(char& value)
         {
-            while (std::isspace(data[position])) {
+            while (position < data.size() && std::isspace(data[position])) {
                 ++position;
             }
-            value = data[position++];
+            value = (position < data.size()) ? data[position] : -1;
+            ++position;
         }
     private:
         long readInteger()

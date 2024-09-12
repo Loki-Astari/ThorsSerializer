@@ -109,9 +109,7 @@ struct ParserConfig
         : parseStrictness(parseStrictness)
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
-        , parserInfo(0)
         , ignoreCallBack(std::move(cb))
-        , useOldSharedPtr(false)
     {}
     ParserConfig(ParseType parseStrictness,
                  std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
@@ -119,48 +117,33 @@ struct ParserConfig
         : parseStrictness(parseStrictness)
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
     {}
     ParserConfig(std::string const& polymorphicMarker, bool catchExceptions = true)
-        : parseStrictness(ParseType::Weak)
-        , polymorphicMarker(polymorphicMarker)
+        : polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
     {}
     ParserConfig(bool catchExceptions)
-        : parseStrictness(ParseType::Weak)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
+        : catchExceptions(catchExceptions)
     {}
     ParserConfig(ParseType parseStrictness, bool catchExceptions)
         : parseStrictness(parseStrictness)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
     {}
     // Use this constructor.
     ParserConfig()
-        : parseStrictness(ParseType::Weak)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
-        , catchExceptions(true)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
     {}
     ParserConfig& setParseStrictness(ParseType p_parseStrictness)               {parseStrictness = p_parseStrictness;       return *this;}
     ParserConfig& setPolymorphicMarker(std::string const& p_polymorphicMarker)  {polymorphicMarker = p_polymorphicMarker;   return *this;}
     ParserConfig& setCatchExceptions(bool p_catchExceptions)                    {catchExceptions = p_catchExceptions;       return *this;}
     ParserConfig& setUseOldSharedPtr()                                          {useOldSharedPtr = true;                    return *this;}
-    ParseType       parseStrictness;
-    std::string     polymorphicMarker;
-    bool            catchExceptions;
-    long            parserInfo;
+    ParserConfig& setValidateNoTrailingData()                                   {validateNoTrailingData = true;             return *this;}
+    ParseType       parseStrictness         = ParseType::Weak;
+    std::string     polymorphicMarker       = Private::getDefaultPolymorphicMarker();
+    bool            catchExceptions         = true;
+    long            parserInfo              = 0;
     IgnoreCallBack  ignoreCallBack;
-    bool            useOldSharedPtr;
+    bool            useOldSharedPtr         = false;
+    bool            validateNoTrailingData  = false;
 };
 
 class ParserInterface

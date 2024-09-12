@@ -61,6 +61,28 @@ class Importer
                     throw;
                 }
             }
+            if (config.validateNoTrailingData && parser.ok())
+            {
+                // This reads the next non space character.
+                char next;
+                parser.readValue(next);
+
+                // If there is only space left on the stream.
+                // This will result in the stream going bad.
+                // This indicates that we have succeeded.
+                if (!parser.ok())
+                {
+                    // A fail means we are good.
+                    // And we should clear it.
+                    parser.clear();
+                }
+                else
+                {
+                    // If the stream is OK then there was junk on the stream.
+                    // So we have effectively failed.
+                    parser.setFail();
+                }
+            }
             return parser.ok();
         }
         friend std::istream& operator>>(std::istream& stream, Importer const& data)
