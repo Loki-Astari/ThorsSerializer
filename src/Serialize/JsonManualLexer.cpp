@@ -166,137 +166,137 @@ std::string JsonManualLexer::getRawString()
     }
 }
 
-namespace ThorsAnvil::Serializer::Unicode
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void Unicode::checkBuffer(ParserInterface& i, std::string& reply)
 {
-    void decodeUnicode(std::istream& i, std::string& reply);
-    void decodeSurrogatePairs(long unicodeValue, std::istream& i, std::string& reply);
-    long getUnicodeHex(std::istream& i);
-
-    void checkBuffer(std::istream& i, std::string& reply)
+    reply.clear();
+    while (i.ok())
     {
-        reply.clear();
-        while (i)
+        unsigned char result = i.get();
+        if (result == '"') {
+            return;
+        }
+        if (result < 0x20)
         {
-            unsigned char result = i.get();
-            if (result == '"') {
-                return;
-            }
-            if (result < 0x20)
+            ThorsLogAndThrow("ThorsAnvil::Serialize::UnicodeWrapperIterator",
+                             "heckBuffer",
+                             "input character can not be smaller than 0x20");
+        }
+        if (result != '\\')
+        {
+            reply += result;
+            continue;
+        }
+        result = i.get();
+        switch (result)
+        {
+            case '"':   reply += '"';   continue;
+            case '\\':  reply += '\\';  continue;
+            case '/':   reply += '/';   continue;
+            case 'b':   reply += '\b';  continue;
+            case 'f':   reply += '\f';  continue;
+            case 'n':   reply += '\n';  continue;
+            case 'r':   reply += '\r';  continue;
+            case 't':   reply += '\t';  continue;
+            case 'u':
             {
-                ThorsLogAndThrow("ThorsAnvil::Serialize::UnicodeWrapperIterator",
-                                 "heckBuffer",
-                                 "input character can not be smaller than 0x20");
-            }
-            if (result != '\\')
-            {
-                reply += result;
+                decodeUnicode(i, reply);
                 continue;
             }
-            result = i.get();
-            switch (result)
+            default:
             {
-                case '"':   reply += '"';   continue;
-                case '\\':  reply += '\\';  continue;
-                case '/':   reply += '/';   continue;
-                case 'b':   reply += '\b';  continue;
-                case 'f':   reply += '\f';  continue;
-                case 'n':   reply += '\n';  continue;
-                case 'r':   reply += '\r';  continue;
-                case 't':   reply += '\t';  continue;
-                case 'u':
-                {
-                    decodeUnicode(i, reply);
-                    continue;
-                }
-                default:
-                {
-                    ThorsLogAndThrow("ThorsAnvil::Serialize::UnicodeWrapperIterator",
-                                     "checkBuffer",
-                                     "Escaped character must be one of [\"\\/bfnrtvu]");
-                }
+                ThorsLogAndThrow("ThorsAnvil::Serialize::UnicodeWrapperIterator",
+                                 "checkBuffer",
+                                 "Escaped character must be one of [\"\\/bfnrtvu]");
             }
         }
     }
-    void decodeUnicode(std::istream& i, std::string& reply)
-    {
-        long    unicodeValue    = getUnicodeHex(i);
+}
 
-        if (unicodeValue <= 0x7F)
-        {
-            // Encode as single UTF-8 character
-            reply += char(unicodeValue & 0x7F);
-        }
-        else if (unicodeValue <= 0x7FF)
-        {
-            // Encode as two UTF-8 characters
-            reply += char(0xC0 |((unicodeValue >>  6) & 0x1F));
-            reply += char(0x80 |((unicodeValue >>  0) & 0x3F));
-        }
-        else if (unicodeValue <= 0xFFFF)
-        {
-            if ((unicodeValue & 0xFC00) != 0xD800)
-            {
-                // Encode as three UTF-8 characters
-                reply += char(0xE0 |((unicodeValue >> 12) & 0x0F));
-                reply += char(0x80 |((unicodeValue >>  6) & 0x3F));
-                reply += char(0x80 |((unicodeValue >>  0) & 0x3F));
-            }
-            else
-            {
-                // We have a found first part of surrogate pair
-                decodeSurrogatePairs(unicodeValue, i, reply);
-            }
-        }
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void Unicode::decodeUnicode(ParserInterface& i, std::string& reply)
+{
+    long    unicodeValue    = getUnicodeHex(i);
+
+    if (unicodeValue <= 0x7F)
+    {
+        // Encode as single UTF-8 character
+        reply += char(unicodeValue & 0x7F);
     }
-    void decodeSurrogatePairs(long unicodeValue, std::istream& i, std::string& reply)
+    else if (unicodeValue <= 0x7FF)
     {
-        char nextChar  = i.get();
-        if (nextChar != '\\')
-        {
-            ThorsLogAndThrow("ThorsAnvil::Serialize",
-                             "UnicodeIterator",
-                             "Iter->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");
-        }
-        nextChar  = i.get();
-        if (nextChar != 'u')
-        {
-            ThorsLogAndThrow("ThorsAnvil::Serialize",
-                             "UnicodeIterator",
-                             "Iter->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");
-        }
-
-        unicodeValue = (unicodeValue << 16) + getUnicodeHex(i);
-
-        // Surrogate pair
-        if ((unicodeValue & 0xFC00FC00) != 0xD800DC00)
-        {
-            ThorsLogAndThrow("ThorsAnvil::Serialize",
-                             "UnicodeIterator",
-                             "Iter->Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx");
-        }
-
-        // Decode surrogate pair
-        unicodeValue    = 0x00010000 | ((unicodeValue & 0x03FF0000) >> 6) | (unicodeValue & 0x000003FF);
-
-        // Encode as 4 UTF-8 characters
-        reply += char(0xF0 |((unicodeValue >> 18) & 0x0F));
-        reply += char(0x80 |((unicodeValue >> 12) & 0x3F));
-        reply += char(0x80 |((unicodeValue >>  6) & 0x3F));
+        // Encode as two UTF-8 characters
+        reply += char(0xC0 |((unicodeValue >>  6) & 0x1F));
         reply += char(0x80 |((unicodeValue >>  0) & 0x3F));
     }
-    long getUnicodeHex(std::istream& i)
+    else if (unicodeValue <= 0xFFFF)
     {
-        long unicodeValue   = 0;
-
-        for (int loop=0;loop < 4;++loop)
+        if ((unicodeValue & 0xFC00) != 0xD800)
         {
-            char x = i.get();
-
-            unicodeValue <<= 4;
-            unicodeValue    += convertHexToDec(x);
+            // Encode as three UTF-8 characters
+            reply += char(0xE0 |((unicodeValue >> 12) & 0x0F));
+            reply += char(0x80 |((unicodeValue >>  6) & 0x3F));
+            reply += char(0x80 |((unicodeValue >>  0) & 0x3F));
         }
-        return unicodeValue;
+        else
+        {
+            // We have a found first part of surrogate pair
+            decodeSurrogatePairs(unicodeValue, i, reply);
+        }
     }
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void Unicode::decodeSurrogatePairs(long unicodeValue, ParserInterface& i, std::string& reply)
+{
+    char nextChar  = i.get();
+    if (nextChar != '\\')
+    {
+        ThorsLogAndThrow("ThorsAnvil::Serialize",
+                         "UnicodeIterator",
+                         "Iter->Surrogate pair(No Slash): \\uD8xx Must be followed by \\uDCxx");
+    }
+    nextChar  = i.get();
+    if (nextChar != 'u')
+    {
+        ThorsLogAndThrow("ThorsAnvil::Serialize",
+                         "UnicodeIterator",
+                         "Iter->Surrogate pair(No u): \\uD8xx Must be followed by \\uDCxx");
+    }
+
+    unicodeValue = (unicodeValue << 16) + getUnicodeHex(i);
+
+    // Surrogate pair
+    if ((unicodeValue & 0xFC00FC00) != 0xD800DC00)
+    {
+        ThorsLogAndThrow("ThorsAnvil::Serialize",
+                         "UnicodeIterator",
+                         "Iter->Surrogate pair(No DC): \\uD8xx Must be followed by \\uDCxx");
+    }
+
+    // Decode surrogate pair
+    unicodeValue    = 0x00010000 | ((unicodeValue & 0x03FF0000) >> 6) | (unicodeValue & 0x000003FF);
+
+    // Encode as 4 UTF-8 characters
+    reply += char(0xF0 |((unicodeValue >> 18) & 0x0F));
+    reply += char(0x80 |((unicodeValue >> 12) & 0x3F));
+    reply += char(0x80 |((unicodeValue >>  6) & 0x3F));
+    reply += char(0x80 |((unicodeValue >>  0) & 0x3F));
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+long Unicode::getUnicodeHex(ParserInterface& i)
+{
+    long unicodeValue   = 0;
+
+    for (int loop=0;loop < 4;++loop)
+    {
+        char x = i.get();
+
+        unicodeValue <<= 4;
+        unicodeValue    += convertHexToDec(x);
+    }
+    return unicodeValue;
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
@@ -310,7 +310,7 @@ void JsonManualLexer::getStringInto(std::string& value)
                          "UnicodeWrapperIterator",
                          "String does not start with a \" character");
     }
-    ThorsAnvil::Serializer::Unicode::checkBuffer(str, value);
+    Unicode::checkBuffer(parser, value);
 }
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::string JsonManualLexer::getString()
