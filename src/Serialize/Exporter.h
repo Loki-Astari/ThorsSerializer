@@ -22,8 +22,8 @@ class Exporter
             : value(value)
             , config(config)
         {}
-        template<typename O>
-        bool inserter(O& stream) const
+        template<typename F>
+        bool inserter(F& stream) const
         {
             typename Format::Printer    printer(stream, config);
             try

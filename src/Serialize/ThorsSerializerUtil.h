@@ -2,6 +2,8 @@
 #define THORSANVIL_SERIALIZER_THORSSERIALIZERUTIL_H
 
 #include "SerializeConfig.h"
+#include "StringOutput.h"
+#include "StringInput.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
 #include <type_traits>
@@ -32,108 +34,6 @@ std::string const& getDefaultPolymorphicMarker()
     return defaultPolymorphicMarker;
 }
         }
-
-
-struct StringInput
-{
-    StringInput(std::string_view const& view)
-        : data(view)
-        , position(0)
-        , lastRead(0)
-    {}
-    std::string_view    data;
-    std::size_t         position;
-    std::size_t         lastRead;
-
-    long readInteger()
-    {
-        char* end;
-        char const* start = &data[position];
-        long result = std::strtol(start, &end, 10);
-        lastRead = (end - start);
-        position += lastRead;
-        return result;
-    }
-    long long readLongInteger()
-    {
-        char* end;
-        char const* start = &data[position];
-        long long result = std::strtoll(start, &end, 10);
-        lastRead = (end - start);
-        position += lastRead;
-        return result;
-    }
-    unsigned long readUInteger()
-    {
-        char* end;
-        char const* start = &data[position];
-        unsigned long result = std::strtoul(start, &end, 10);
-        lastRead = (end - start);
-        position += lastRead;
-        return result;
-    }
-    unsigned long long readULongInteger()
-    {
-        char* end;
-        char const* start = &data[position];
-        unsigned long long result = std::strtoull(start, &end, 10);
-        lastRead = (end - start);
-        position += lastRead;
-        return result;
-    }
-    double readDouble()
-    {
-        char* end;
-        char const* start = &data[position];
-        double result = std::strtod(start, &end);
-        lastRead = (end - start);
-        position += lastRead;
-        return result;
-    }
-    long double readLongDouble()
-    {
-        char* end;
-        char const* start = &data[position];
-        long double result = std::strtold(start, &end);
-        lastRead = (end - start);
-        position += lastRead;
-        return result;
-    }
-    void readValue(char& value)
-    {
-        while (std::isspace(data[position])) {
-            ++position;
-        }
-        value = data[position++];
-    }
-    void readValue(short int& value)                {value = readInteger();}
-    void readValue(int& value)                      {value = readInteger();}
-    void readValue(long int& value)                 {value = readInteger();}
-    void readValue(long long int& value)            {value = readLongInteger();}
-
-    void readValue(unsigned short int& value)       {value = readUInteger();}
-    void readValue(unsigned int& value)             {value = readUInteger();}
-    void readValue(unsigned long int& value)        {value = readUInteger();}
-    void readValue(unsigned long long int& value)   {value = readULongInteger();}
-
-    void readValue(float& value)                    {value = readDouble();}
-    void readValue(double& value)                   {value = readDouble();}
-    void readValue(long double& value)              {value = readLongDouble();}
-};
-
-struct StringOutput
-{
-    std::string&    data;
-    bool            ok;
-    public:
-        StringOutput(std::string& output)
-            : data(output)
-            , ok(true)
-        {}
-};
-
-using DataInputStream = std::variant<std::istream*, StringInput>;
-using DataOutputStream = std::variant<std::ostream*, StringOutput>;
 
 template<typename T>
 struct SharedInfo
@@ -313,8 +213,6 @@ class ParserInterface
 
         void    ignoreValue();
 
-        //std::istream& stream() {return input;}
-
         bool            read(char* dst, std::size_t size)
         {
             struct Read
@@ -323,14 +221,7 @@ class ParserInterface
                 std::size_t size;
                 Read(char* dst, std::size_t size):dst(dst),size(size){}
                 bool operator()(std::istream* input)    {return static_cast<bool>(input->read(dst, size));}
-                bool operator()(StringInput& input)
-                {
-                    std::size_t copySize = std::min(size, input.data.size() - input.position);
-                    std::copy(&input.data[input.position], &input.data[input.position + copySize], dst);
-                    input.position += copySize;
-                    input.lastRead = copySize;
-                    return input.position <= input.data.size();
-                }
+                bool operator()(StringInput& input)     {return input.read(dst, size);}
             };
             return std::visit(Read{dst, size}, input);
         }
@@ -342,19 +233,7 @@ class ParserInterface
                 char            delim;
                 ReadTo(std::string& dst, char delim):dst(dst),delim(delim){}
                 bool operator()(std::istream* input)    {return static_cast<bool>(std::getline((*input), dst, delim));}
-                bool operator()(StringInput& input)
-                {
-                    auto find = input.data.find(delim, input.position);
-                    if (find == std::string::npos)
-                    {
-                        find = input.data.size();
-                    }
-                    auto size = find - input.position;
-                    dst.resize(size);
-                    std::copy(&input.data[input.position], &input.data[input.position + size], &dst[0]);
-                    input.position += (size + 1);
-                    return input.position <= input.data.size();
-                }
+                bool operator()(StringInput& input)     {return input.readTo(dst, delim);}
             };
             return std::visit(ReadTo(dst, delim), input);
         }
@@ -363,7 +242,7 @@ class ParserInterface
             struct LastReadCount
             {
                 std::size_t operator()(std::istream const* input)    {return input->gcount();}
-                std::size_t operator()(StringInput const& input)     {return input.lastRead;}
+                std::size_t operator()(StringInput const& input)     {return input.getLastReadCount();}
             };
             return std::visit(LastReadCount{}, input);
         }
@@ -372,7 +251,7 @@ class ParserInterface
             struct GetPos
             {
                 std::streampos operator()(std::istream* input)    {return input->tellg();}
-                std::streampos operator()(StringInput& input)     {return input.position;}
+                std::streampos operator()(StringInput& input)     {return input.getPos();}
             };
             return std::visit(GetPos{}, input);
         }
@@ -381,7 +260,7 @@ class ParserInterface
             struct Get
             {
                 int operator()(std::istream* input)    {return input->get();}
-                int operator()(StringInput& input)     {return input.data[input.position++];}
+                int operator()(StringInput& input)     {return input.get();}
             };
             return std::visit(Get{}, input);
         }
@@ -392,7 +271,7 @@ class ParserInterface
                 std::size_t size;
                 Ignore(std::size_t size): size(size) {}
                 void operator()(std::istream* input)    {input->ignore(size);}
-                void operator()(StringInput& input)     {input.position += size;}
+                void operator()(StringInput& input)     {input.ignore(size);}
             };
             std::visit(Ignore{size}, input);
         }
@@ -401,7 +280,7 @@ class ParserInterface
             struct Clear
             {
                 void operator()(std::istream* input)    {input->clear();}
-                void operator()(StringInput& input)     {input.position = 0;}
+                void operator()(StringInput& input)     {input.clear();}
             };
             std::visit(Clear{}, input);
         }
@@ -410,7 +289,7 @@ class ParserInterface
             struct Unget
             {
                 void operator()(std::istream* input)    {input->unget();}
-                void operator()(StringInput& input)     {--input.position;}
+                void operator()(StringInput& input)     {input.unget();}
             };
             std::visit(Unget{}, input);
         }
@@ -419,7 +298,7 @@ class ParserInterface
             struct OK
             {
                 bool operator()(std::istream const* input)    {return !input->fail();}
-                bool operator()(StringInput const& input)     {return input.position <= input.data.size();}
+                bool operator()(StringInput const& input)     {return input.isOk();}
             };
             return std::visit(OK{}, input);
         }
@@ -428,7 +307,7 @@ class ParserInterface
             struct SetFail
             {
                 void operator()(std::istream* input)    {input->setstate(std::ios::failbit);}
-                void operator()(StringInput& input)     {input.position = input.data.size() + 1;}
+                void operator()(StringInput& input)     {input.setFail();}
             };
             std::visit(SetFail{}, input);
         }
@@ -460,6 +339,8 @@ class ParserInterface
         }
 
     private:
+        using DataInputStream = std::variant<std::istream*, StringInput>;
+
         DataInputStream input;
         ParserToken     pushBack;
         std::map<std::intmax_t, std::any>     savedSharedPtr;
@@ -608,7 +489,6 @@ class PrinterInterface
         virtual std::size_t getSizeValue(std::string_view const&)   {return 0;}
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 
-        //std::ostream& stream() {return output;}
         bool write(char const* src, std::size_t size)
         {
             struct Write
@@ -618,7 +498,7 @@ class PrinterInterface
                 Write(char const* src, std::size_t size): src(src), size(size) {}
 
                 bool operator()(std::ostream* output)       {return static_cast<bool>(output->write(src, size));}
-                bool operator()(StringOutput& output)       {output.data += std::string_view(src, size);return true;}
+                bool operator()(StringOutput& output)       {return output.write(src, size);}
             };
             return std::visit(Write{src, size}, output);
         }
@@ -631,7 +511,7 @@ class PrinterInterface
             struct OK
             {
                 bool operator()(std::ostream* output)       {return !output->fail();}
-                bool operator()(StringOutput const& output) {return output.ok;}
+                bool operator()(StringOutput const& output) {return output.isOk();}
             };
             return std::visit(OK{}, output);
         }
@@ -640,7 +520,7 @@ class PrinterInterface
             struct SetFail
             {
                 void operator()(std::ostream* output)       {output->setstate(std::ios::failbit);}
-                void operator()(StringOutput& output)       {output.ok = false;}
+                void operator()(StringOutput& output)       {output.setFail();}
             };
             std::visit(SetFail{}, output);
         }
@@ -652,7 +532,7 @@ class PrinterInterface
                 T const& src;
                 WriteValue(T const& src): src(src) {}
                 void operator()(std::ostream* output)       {(*output) << src;}
-                void operator()(StringOutput& output)       {using std::to_string; output.data += to_string(src);}
+                void operator()(StringOutput& output)       {output.writeValue(src);}
             };
             std::visit(WriteValue{src}, output);
         }
@@ -674,6 +554,8 @@ class PrinterInterface
             return result;
         }
     private:
+        using DataOutputStream = std::variant<std::ostream*, StringOutput>;
+
         DataOutputStream   output;
         std::map<std::intmax_t, void const*>     savedSharedPtr;
 };
