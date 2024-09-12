@@ -269,7 +269,13 @@ inline std::string to_string(FormatDouble<T> const& value)
     if (value.value == 0) {
         return "0.0";
     }
-    return std::to_string(value.value);
+#if defined(HOMEBREW_OLD_VERSION_OF_MAC) && (HOMEBREW_OLD_VERSION_OF_MAC >= 1)
+    std::string v = std::to_string(value.value);
+    first = std::copy(std::begin(v), std::end(v), first);
+    return std::to_chars_result{first, static_cast<std::errc>(0)};
+#else
+    return std::to_chars(first, last, value.value, std::chars_format::fixed, 6);
+#endif
 }
 inline std::string to_string(BoolFormatter const& value)
 {
