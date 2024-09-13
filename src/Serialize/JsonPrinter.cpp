@@ -212,7 +212,7 @@ void JsonPrinter::closeArray()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-void JsonPrinter::addKey(std::string const& key)
+void JsonPrinter::addKey(std::string_view const& key)
 {
     if (std::get<1>(state.back()) != TraitType::Map)
     {
@@ -313,8 +313,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addValue(long double valu
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addValue(bool value)                  {addIndent(); writeValue(BoolFormatter{value});}
 
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addValue(std::string const& value)    {addIndent(); write("\"", 1); escapeString(*this, value); write("\"", 1);}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addValue(std::string_view const&value){addIndent(); write("\"", 1); escapeString(*this, std::string(value)); write("\"", 1);}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addRawValue(std::string const& value) {addIndent(); escapeString(*this, value);}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addValue(std::string_view const&value)     {addIndent(); write("\"", 1); escapeString(*this, value); write("\"", 1);}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addRawValue(std::string_view const& value) {addIndent(); escapeString(*this, value);}
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addNull()                             {addIndent(); write("null", 4);}
