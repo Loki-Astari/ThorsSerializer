@@ -799,7 +799,6 @@ enable_test_with_conan
 with_magicenum_header_only_root
 with_yaml_root
 with_thorserialize_root
-with_homebrewCLT
 enable_shared
 enable_static
 with_pic
@@ -1493,9 +1492,6 @@ Optional Packages:
   --with-thorserialize-root=<location>
                           Define the root directory of package Thors
                           Serializer
-
-  --with-homebrewCLT=<CLT Version>
-                          Define what version of the CLT is being used
 
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
@@ -5173,6 +5169,7 @@ fi
 
 
 
+
     if test "
 #include <utility>
 int main() {
@@ -5202,18 +5199,23 @@ _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"
 then :
 
-                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: good" >&5
+
+            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: good" >&5
 printf "%s\n" "good" >&6; }
+
 
 else case e in #(
   e)
-                    as_fn_error $? "
+
+            as_fn_error $? "
 
 Error: Your compiler does not seem to support the language features required.
        Try updating your compiler to use a more recent version.
 
        Compiler used: ${CXX} ${CXX_STD_FLAG}
-                    " "$LINENO" 5
+            " "$LINENO" 5
+
+
 
              ;;
 esac
@@ -5227,32 +5229,67 @@ fi
 
 
 
-# Check whether --with-homebrewCLT was given.
-if test ${with_homebrewCLT+y}
-then :
-  withval=$with_homebrewCLT;
-fi
 
-if test "x${with_homebrewCLT}" != "x"
-then :
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Have with_homebrewCLT in Mongo => ${with_homebrewCLT}" >&5
-printf "%s\n" "$as_me: Have with_homebrewCLT in Mongo => ${with_homebrewCLT}" >&6;}
-        if test ${with_homebrewCLT} -lt 153
+    if test "
+#include <charconv>
+int main() {
+    char    buffer[100];
+    double  value = 12.345;
+    auto result = std::to_chars(buffer, buffer+100, value, std::chars_format::fixed, 6);
+}" != ""
 then :
 
-                { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Setting HOMEBREW_OLD_VERSION_OF_MAC" >&5
+            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking Checking Compiler Compatibility ${CXX} ${CXX_STD_FLAG}" >&5
+printf %s "checking Checking Compiler Compatibility ${CXX} ${CXX_STD_FLAG}... " >&6; }
+            ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+            CXXFLAGS_SAVE="${CXXFLAGS}"
+            CXXFLAGS=${CXX_STD_FLAG}
+
+            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <charconv>
+int main() {
+    char    buffer[100];
+    double  value = 12.345;
+    auto result = std::to_chars(buffer, buffer+100, value, std::chars_format::fixed, 6);
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+
+
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Supports std::to_chars(beigin, end, 12.4" >&5
+printf "%s\n" "$as_me: Supports std::to_chars(beigin, end, 12.4" >&6;}
+
+
+else case e in #(
+  e)
+
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Setting HOMEBREW_OLD_VERSION_OF_MAC" >&5
 printf "%s\n" "$as_me: Setting HOMEBREW_OLD_VERSION_OF_MAC" >&6;}
 
 printf "%s\n" "#define HOMEBREW_OLD_VERSION_OF_MAC 1" >>confdefs.h
 
-                subconfigure="${subconfigure} --with-homebrewCLT=${with_homebrewCLT}"
+        subconfigure="${subconfigure} --with-homebrewCLT=${with_homebrewCLT}"
+
+
+
+             ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+            CXXFLAGS=${CXXFLAGS_SAVE}
+
 
 
 fi
 
-
-fi
 
 
 
