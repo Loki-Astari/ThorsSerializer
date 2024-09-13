@@ -303,6 +303,7 @@ inline Serializer::~Serializer()
     if (root)
     {
         printer.closeDoc();
+        printer.finalizePrint();
     }
 }
 

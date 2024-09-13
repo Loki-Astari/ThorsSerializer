@@ -1047,9 +1047,14 @@ inline void Serializer::print(T const& object)
         printer.reserveSize();
         printer.reset();
         printer.openDoc();
+        SerializerForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, printer, object);
+        block.printMembers();
     }
-    SerializerForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, printer, object);
-    block.printMembers();
+    else
+    {
+        SerializerForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, printer, object);
+        block.printMembers();
+    }
 }
 
 template<TraitType type>

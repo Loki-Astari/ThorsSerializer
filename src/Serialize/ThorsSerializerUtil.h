@@ -333,11 +333,12 @@ class PrinterInterface
         {}
         PrinterInterface(std::string& output, PrinterConfig config = PrinterConfig{})
             : config(config)
-            , output(output)
+            , output(StringOutput{output, true /*!config.exactPreFlight*/})
         {}
 
                 bool    preflightSize();
                 void    reserveSize();
+                void    finalizePrint();
         virtual void    reset()     {}
 
         virtual ~PrinterInterface() {}

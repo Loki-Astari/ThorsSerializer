@@ -28,6 +28,17 @@ void PrinterInterface::reserveSize()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void PrinterInterface::finalizePrint()
+{
+    struct FinalizePrint
+    {
+        void operator()(std::ostream*)          {}
+        void operator()(StringOutput& output)   {output.finalizePrint();}
+    };
+    std::visit(FinalizePrint{}, output);
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void ParserInterface::ignoreValue()
 {
     if (config.parseStrictness != ParseType::Weak)

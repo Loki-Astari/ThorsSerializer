@@ -30,10 +30,12 @@ TEST(SerializeTestString, JsonSerializeStructureOfValue)
     SerializeTest::SerializeTestExtra        data(34,56.78, true, "Done");
 
     std::string      stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
-    ThorsAnvil::Serialize::Serializer   serializer(printer);
+    {
+        ThorsAnvil::Serialize::JsonPrinter  printer(stream);
+        ThorsAnvil::Serialize::Serializer   serializer(printer);
 
-    serializer.print(data);
+        serializer.print(data);
+    }
     std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
@@ -45,11 +47,12 @@ TEST(SerializeTestString, JsonDeSerializeStructureOfValue)
     SerializeTest::SerializeTestExtra      data;
 
     std::string                         stream(testData1);
-    ThorsAnvil::Serialize::JsonParser   parser(stream);
-    ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
+    {
+        ThorsAnvil::Serialize::JsonParser   parser(stream);
+        ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
 
-    deSerializer.parse(data);
-
+        deSerializer.parse(data);
+    }
     EXPECT_EQ(data.theInteger,      34);
     EXPECT_EQ(data.aNonRealValue,   56.78);
     EXPECT_EQ(data.test,            true);
@@ -61,10 +64,12 @@ TEST(SerializeTestString, JsonSerializeStructureOfValueAndParents)
     SerializeTest::SerializeTestChild     data(1, 2, 456, 89.101, false, "Akinkthatisnotstraight");
 
     std::string      stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
-    ThorsAnvil::Serialize::Serializer   serializer(printer);
+    {
+        ThorsAnvil::Serialize::JsonPrinter  printer(stream);
+        ThorsAnvil::Serialize::Serializer   serializer(printer);
 
-    serializer.print(data);
+        serializer.print(data);
+    }
     std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
@@ -94,10 +99,12 @@ TEST(SerializeTestString, JsonSerializeStructureMemberOfValue)
     SerializeTest::SerializeTestMembers        data(67, 11, 234567, 123.45, true, "NotASquareAndOnlyOneSide");
 
     std::string      stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
-    ThorsAnvil::Serialize::Serializer   serializer(printer);
+    {
+        ThorsAnvil::Serialize::JsonPrinter  printer(stream);
+        ThorsAnvil::Serialize::Serializer   serializer(printer);
 
-    serializer.print(data);
+        serializer.print(data);
+    }
     std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
@@ -290,10 +297,12 @@ TEST(SerializeTestString, JsonDerivedTypeNoNewMembers)
     SerializeTest::SerializeExactNoMembers        data(34,56.78, true, "Done");
 
     std::string      stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
-    ThorsAnvil::Serialize::Serializer   serializer(printer);
+    {
+        ThorsAnvil::Serialize::JsonPrinter  printer(stream);
+        ThorsAnvil::Serialize::Serializer   serializer(printer);
 
-    serializer.print(data);
+        serializer.print(data);
+    }
     std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
@@ -304,10 +313,12 @@ TEST(SerializeTestString, JsonDerivedTypeNoNewMembersPolyMorphic)
     SerializeTest::SerializeExactNoMembersPoly        data(34,56.78, true, "Done");
 
     std::string      stream;
-    ThorsAnvil::Serialize::JsonPrinter  printer(stream);
-    ThorsAnvil::Serialize::Serializer   serializer(printer);
+    {
+        ThorsAnvil::Serialize::JsonPrinter  printer(stream);
+        ThorsAnvil::Serialize::Serializer   serializer(printer);
 
-    serializer.print(data);
+        serializer.print(data);
+    }
     std::string result  = stream;
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){return ::isspace(x);}), std::end(result));
 
