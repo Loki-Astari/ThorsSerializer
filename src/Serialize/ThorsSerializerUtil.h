@@ -236,6 +236,15 @@ class ParserInterface
             };
             return std::visit(Get{}, input);
         }
+        int             peek()
+        {
+            struct Peek
+            {
+                int operator()(std::istream* input)    {return input->peek();}
+                int operator()(StringInput& input)     {return input.peek();}
+            };
+            return std::visit(Peek{}, input);
+        }
         void            ignore(std::size_t size)
         {
             struct Ignore
@@ -284,16 +293,16 @@ class ParserInterface
             std::visit(SetFail{}, input);
         }
         template<typename T>
-        void readValue(T& value)
+        bool readValue(T& value)
         {
             struct ReadValue
             {
                 T& value;
                 ReadValue(T& value) :value(value) {}
-                void operator()(std::istream* input)    {(*input) >> value;}
-                void operator()(StringInput& input)     {input.readValue(value);}
+                bool operator()(std::istream* input)    {return static_cast<bool>((*input) >> value);}
+                bool operator()(StringInput& input)     {input.readValue(value);return true;}
             };
-            std::visit(ReadValue{value}, input);
+            return std::visit(ReadValue{value}, input);
         }
 
         template<typename T>
