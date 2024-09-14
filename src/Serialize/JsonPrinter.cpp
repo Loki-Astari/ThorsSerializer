@@ -37,8 +37,9 @@ namespace
             }
             void printIndent(PrinterInterface& printer)
             {
+                static const    std::string indent(1000, '\t');
                 printer.write("\n", 1);
-                printer.write(std::string(size, '\t'));
+                printer.write(std::string_view(&indent[0], size));
             }
             virtual void write(PrinterInterface& printer) = 0;
     };
