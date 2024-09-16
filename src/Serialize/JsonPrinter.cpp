@@ -281,7 +281,7 @@ inline std::to_chars_result to_chars(char* first, char* last, FormatDouble<T> co
         std::copy(std::begin(doubleZero), std::end(doubleZero), first);
         return std::to_chars_result{first + 3, static_cast<std::errc>(0)};
     }
-#if defined(HOMEBREW_OLD_VERSION_OF_MAC) && (HOMEBREW_OLD_VERSION_OF_MAC >= 1)
+#if defined(NO_STD_SUPPORT_TO_CHAR_DOUBLE) && (NO_STD_SUPPORT_TO_CHAR_DOUBLE >= 1)
     ((void)last);
     std::string v = std::to_string(value.value);
     first = std::copy(std::begin(v), std::end(v), first);
