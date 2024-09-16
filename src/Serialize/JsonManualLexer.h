@@ -23,8 +23,8 @@ class JsonManualLexer
         int yylex();
 
         void        ignoreRawValue();
-        std::string getRawString();
-        std::string getString();
+        std::string_view getRawString();
+        std::string_view getString();
         void        getStringInto(std::string&);
         bool        getLastBool();
         bool        isLastNull();

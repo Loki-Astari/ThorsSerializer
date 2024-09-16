@@ -246,7 +246,7 @@ TEST(JsonParserTest, GetKeyValue)
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
     EXPECT_EQ(ParserToken::Key,        parser.getToken());
 
-    std::string key     = parser.getKey();
+    std::string_view key = parser.getKey();
     EXPECT_EQ("one", key);
 
     EXPECT_EQ(ParserToken::Value,      parser.getToken());

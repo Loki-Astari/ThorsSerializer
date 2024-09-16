@@ -34,8 +34,8 @@ class ParserMock: public ParserInterface
         {}
         virtual FormatType formatType()                  override {return FormatType::Json;}
 
-        virtual ParserToken     getNextToken()           override{return tokens[nextToken++];}
-        virtual std::string     getKey()                 override{return keys[nextKey++];}
+        virtual ParserToken         getNextToken()       override{return tokens[nextToken++];}
+        virtual std::string_view    getKey()             override{return keys[nextKey++];}
 
         virtual void    getValue(short int&)             override{}
         virtual void    getValue(int&)                   override{}
@@ -57,7 +57,7 @@ class ParserMock: public ParserInterface
 
         virtual bool    isValueNull()                    override{return false;}
 
-        virtual std::string getRawValue()                override{return "";}
+        virtual std::string_view getRawValue()           override{return "";}
 };
 
 }

@@ -79,7 +79,7 @@ struct StringVsStringView
         return lhs < rhs;
     }
 };
-using   KeyStore = std::set<std::string, StringVsStringView>;
+using KeyStore = std::set<std::string, StringVsStringView>;
 
 template<typename T>
 struct HeedAllValues;
@@ -285,7 +285,7 @@ DeSerializationForBlock<TraitType::Custom_Depricated, T>
                                  "DeSerializationForBlock",
                                  "Invalid Object");
             }
-            std::stringstream valueStream(parser.getRawValue());
+            std::stringstream valueStream(std::string(parser.getRawValue()));
             valueStream >> object;
         }
 };

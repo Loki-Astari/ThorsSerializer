@@ -151,11 +151,11 @@ class ParserInterface
             , pushBack(ParserToken::Error)
         {}
         virtual ~ParserInterface() {}
-        virtual FormatType formatType()                 = 0;
-                ParserToken     getToken();
-                void            pushBackToken(ParserToken token);
-        virtual ParserToken     getNextToken()          = 0;
-        virtual std::string     getKey()                = 0;
+        virtual FormatType formatType()                  = 0;
+                ParserToken         getToken();
+                void                pushBackToken(ParserToken token);
+        virtual ParserToken         getNextToken()       = 0;
+        virtual std::string_view    getKey()             = 0;
 
         virtual void    ignoreDataValue()               {}
         virtual void    ignoreDataMap(bool)             {}
@@ -181,7 +181,7 @@ class ParserInterface
 
         virtual bool    isValueNull()                    = 0;
 
-        virtual std::string getRawValue()                = 0;
+        virtual std::string_view getRawValue()           = 0;
 
         void    ignoreValue();
 

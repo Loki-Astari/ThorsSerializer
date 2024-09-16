@@ -37,17 +37,17 @@ class JsonParser: public ParserInterface
     State               currentState;
     bool                started;
 
-    std::string getString();
-    std::string getRawString();
+    std::string_view getString();
+    std::string_view getRawString();
 
     template<typename T>
     T scan();
     public:
         JsonParser(std::istream& stream, ParserConfig config = ParserConfig{});
         JsonParser(std::string_view const& stream, ParserConfig config = ParserConfig{});
-        virtual FormatType formatType()                         override {return FormatType::Json;}
-        virtual ParserToken getNextToken()                      override;
-        virtual std::string getKey()                            override;
+        virtual FormatType       formatType()                   override {return FormatType::Json;}
+        virtual ParserToken      getNextToken()                 override;
+        virtual std::string_view getKey()                       override;
 
         virtual void    ignoreDataValue()                       override;
 
@@ -71,7 +71,7 @@ class JsonParser: public ParserInterface
 
         virtual bool    isValueNull()                           override;
 
-        virtual std::string getRawValue()                       override;
+        virtual std::string_view getRawValue()                  override;
 };
 
 }

@@ -111,7 +111,7 @@ void JsonManualLexer::ignoreRawValue()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonManualLexer::getRawString()
+std::string_view JsonManualLexer::getRawString()
 {
     switch (lastToken)
     {
@@ -133,10 +133,9 @@ std::string JsonManualLexer::getRawString()
         }
         case ThorsAnvil::Serialize::JSON_STRING:
         {
-            std::string result;
-
+            buffer.clear();
             char last = parser.get();  // Read the first Quote off the stream
-            result.push_back(last);
+            buffer.push_back(last);
             int next = parser.get();
             while (next != EOF && !(next == '"' && last != '\\'))
             {
@@ -146,7 +145,7 @@ std::string JsonManualLexer::getRawString()
                                      "getRawString",
                                      "Strings should not contain control characters.");
                 }
-                result.push_back(next);
+                buffer.push_back(next);
                 last = next;
                 next = parser.get();
             }
@@ -154,8 +153,8 @@ std::string JsonManualLexer::getRawString()
             {
                 error();
             }
-            result.push_back('"');
-            return result;
+            buffer.push_back('"');
+            return buffer;
         }
         default:
         {
@@ -313,11 +312,10 @@ void JsonManualLexer::getStringInto(std::string& value)
     Unicode::checkBuffer(parser, value);
 }
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonManualLexer::getString()
+std::string_view JsonManualLexer::getString()
 {
-    std::string result;
-    getStringInto(result);
-    return result;
+    getStringInto(buffer);
+    return buffer;
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
