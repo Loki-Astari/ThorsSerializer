@@ -5350,6 +5350,17 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
 
+cat - << 'MAKEDOC' > src/fast_float/Makefile
+
+THORSANVIL_ROOT				?= $(realpath ../../)
+
+TARGET						= fast_float.head
+
+include $(THORSANVIL_ROOT)/build/tools/Makefile
+
+MAKEDOC
+
+
 
 
 

@@ -49,6 +49,17 @@ int main() {
     ]
 )
 
+cat - << 'MAKEDOC' > src/fast_float/Makefile
+
+THORSANVIL_ROOT				?= $(realpath ../../)
+
+TARGET						= fast_float.head
+
+include $(THORSANVIL_ROOT)/build/tools/Makefile
+
+MAKEDOC
+
+
 
 LT_INIT
 
