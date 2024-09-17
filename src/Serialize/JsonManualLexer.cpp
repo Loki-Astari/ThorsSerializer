@@ -20,46 +20,48 @@ int JsonManualLexer::yylex()
 {
     char    next;
     parser.readValue(next);
-    buffer.clear();
+    //buffer.clear();
     lastNull = false;
     switch (next)
     {
-        case '{':
-        case '}':
-        case '[':
-        case ']':
-        case ',':
-        case ':':
-        {
-            return lastToken = next;
-        }
+        case '{':   lastToken = '{';return 1;
+        case '}':   lastToken = '}';return 2;
+        case '[':   lastToken = '[';return 3;
+        case ']':   lastToken = ']';return 4;
+        case ',':   lastToken = ',';return 5;
+        case ':':   lastToken = ':';return 6;
         case 't':
         {
             parser.unget();
             lastBool = true;
-            return lastToken = ThorsAnvil::Serialize::JSON_TRUE;
+            lastToken = ThorsAnvil::Serialize::JSON_TRUE;
+            return 7;
         }
         case 'f':
         {
             parser.unget();
             lastBool = false;
-            return lastToken = ThorsAnvil::Serialize::JSON_FALSE;
+            lastToken = ThorsAnvil::Serialize::JSON_FALSE;
+            return 8;
         }
         case 'n':
         {
             parser.unget();
             lastNull = true;
-            return lastToken = ThorsAnvil::Serialize::JSON_NULL;
+            lastToken = ThorsAnvil::Serialize::JSON_NULL;
+            return 9;
         }
         case '"':
         {
             parser.unget();
-            return lastToken = ThorsAnvil::Serialize::JSON_STRING;
+            lastToken = ThorsAnvil::Serialize::JSON_STRING;
+            return 10;
         }
         default:
         {
             parser.unget();
-            return lastToken = ThorsAnvil::Serialize::JSON_NUMBER;
+            lastToken = ThorsAnvil::Serialize::JSON_NUMBER;
+            return 13;
         }
     }
 }
