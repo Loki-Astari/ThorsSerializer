@@ -18,8 +18,7 @@ JsonManualLexer::JsonManualLexer(ParserInterface& parser)
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 int JsonManualLexer::yylex()
 {
-    char    next;
-    parser.readValue(next);
+    char    next    = parser.peekNextNonSpaceValue();
     //buffer.clear();
     lastNull = false;
     switch (next)
@@ -32,34 +31,29 @@ int JsonManualLexer::yylex()
         case ':':   lastToken = ':';return 6;
         case 't':
         {
-            parser.unget();
             lastBool = true;
             lastToken = ThorsAnvil::Serialize::JSON_TRUE;
             return 7;
         }
         case 'f':
         {
-            parser.unget();
             lastBool = false;
             lastToken = ThorsAnvil::Serialize::JSON_FALSE;
             return 8;
         }
         case 'n':
         {
-            parser.unget();
             lastNull = true;
             lastToken = ThorsAnvil::Serialize::JSON_NULL;
             return 9;
         }
         case '"':
         {
-            parser.unget();
             lastToken = ThorsAnvil::Serialize::JSON_STRING;
             return 10;
         }
         default:
         {
-            parser.unget();
             lastToken = ThorsAnvil::Serialize::JSON_NUMBER;
             return 13;
         }
