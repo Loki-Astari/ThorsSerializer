@@ -565,10 +565,20 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
             return Traits<std::remove_cv_t<MemberType>>::getPrintSize(printer, object.*memPtr, false);\
         }                                                               \
                                                                         \
-        template<typename M>                                            \
-        static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, M item) \
+        template<typename M, typename C>                                            \
+        static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, std::pair<C, M*> const& item) \
         {                                                               \
-            if (!Filter<MyType>::filter(object, item.first, item)) {          \
+            if (!Filter<MyType>::filter(object, item.first, *(item.second))) {          \
+                return std::make_pair(0UL,0UL);                         \
+            }                                                           \
+            auto partSize   = addSizeOneMember(printer, object, item.second);           \
+            auto nameSize   = std::strlen(Override<MyType>::nameOverride(item.first));  \
+            return std::make_pair(partSize + nameSize, 1);              \
+        }                                                               \
+        template<typename M, typename C>                                            \
+        static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, std::pair<C, M MyType::*> const& item) \
+        {                                                               \
+            if (!Filter<MyType>::filter(object, item.first, object.*(item.second))) {          \
                 return std::make_pair(0UL,0UL);                         \
             }                                                           \
             auto partSize   = addSizeOneMember(printer, object, item.second);           \
