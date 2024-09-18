@@ -11,11 +11,11 @@ using TA::ParserInterface;
 
 TEST(RoundTripTest, JsonMap)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
-    stream << TA::jsonExporter(base, PrinterInterface::OutputType::Stream);
+    stream << TA::jsonExporter(base, OutputType::Stream);
 
     std::string expected(R"({"ace":10,"val":1024})");
 
@@ -33,7 +33,7 @@ TEST(RoundTripTest, JsonMap)
 
 TEST(RoundTripTest, JsonParent)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Derived             deri;
     deri.ace    = 10;
     deri.val    = 1024;
@@ -41,7 +41,7 @@ TEST(RoundTripTest, JsonParent)
     deri.flt    = 234.875;
     std::stringstream   stream;
 
-    stream << TA::jsonExporter(deri, PrinterInterface::OutputType::Stream);
+    stream << TA::jsonExporter(deri, OutputType::Stream);
 
     std::string expected(R"({"der":56789,"flt":234.875,"ace":10,"val":1024})");
 
@@ -60,11 +60,11 @@ TEST(RoundTripTest, JsonParent)
 }
 TEST(RoundTripTest, JsonArray)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
     std::stringstream   stream;
 
-    stream << TA::jsonExporter(data, PrinterInterface::OutputType::Stream);
+    stream << TA::jsonExporter(data, OutputType::Stream);
 
     std::string expected(R"([10,1024,9,367,12,34])");
 
@@ -85,11 +85,11 @@ TEST(RoundTripTest, JsonArray)
 }
 TEST(RoundTripTest, JsonValue)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     int                 data = 68456231;
     std::stringstream   stream;
 
-    stream << TA::jsonExporter(data, PrinterInterface::OutputType::Stream);
+    stream << TA::jsonExporter(data, OutputType::Stream);
 
     std::string expected("68456231");
     EXPECT_EQ(expected.size(), stream.str().size());
@@ -105,11 +105,11 @@ TEST(RoundTripTest, JsonValue)
 
 TEST(RoundTripTest, YamlMap)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
-    stream << TA::yamlExporter(base, PrinterInterface::OutputType::Stream);
+    stream << TA::yamlExporter(base, OutputType::Stream);
 
     std::string expected("--- {ace: 10, val: 1024}\n...\n");
 
@@ -127,7 +127,7 @@ TEST(RoundTripTest, YamlMap)
 
 TEST(RoundTripTest, YamlParent)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Derived             deri;
     deri.ace    = 10;
     deri.val    = 1024;
@@ -135,7 +135,7 @@ TEST(RoundTripTest, YamlParent)
     deri.flt    = 234.875;
     std::stringstream   stream;
 
-    stream << TA::yamlExporter(deri, PrinterInterface::OutputType::Stream);
+    stream << TA::yamlExporter(deri, OutputType::Stream);
 
     std::string expected("--- {der: 56789, flt: 234.875, ace: 10, val: 1024}\n...\n");
 
@@ -154,11 +154,11 @@ TEST(RoundTripTest, YamlParent)
 }
 TEST(RoundTripTest, YamlArray)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
     std::stringstream   stream;
 
-    stream << TA::yamlExporter(data, PrinterInterface::OutputType::Stream);
+    stream << TA::yamlExporter(data, OutputType::Stream);
 
     std::string expected("--- [10, 1024, 9, 367, 12, 34]\n...\n");
 
@@ -179,11 +179,11 @@ TEST(RoundTripTest, YamlArray)
 }
 TEST(RoundTripTest, YamlValue)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     int                 data = 68456231;
     std::stringstream   stream;
 
-    stream << TA::yamlExporter(data, PrinterInterface::OutputType::Stream);
+    stream << TA::yamlExporter(data, OutputType::Stream);
 
     std::string expected("--- 68456231\n...\n");
     EXPECT_EQ(expected.size(), stream.str().size());
@@ -199,11 +199,11 @@ TEST(RoundTripTest, YamlValue)
 
 TEST(RoundTripTest, BsonMap)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Base                base    { 10, 1024};
     std::stringstream   stream;
 
-    stream << TA::bsonExporter(base, PrinterInterface::OutputType::Stream);
+    stream << TA::bsonExporter(base, OutputType::Stream);
 
     //NOTE INPUT (R"({"ace":10,"val":1024})");
     static const char expectedRaw[]
@@ -228,7 +228,7 @@ TEST(RoundTripTest, BsonMap)
 
 TEST(RoundTripTest, BsonParent)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     BinaryParserTest::Derived             deri;
     deri.ace    = 10;
     deri.val    = 1024;
@@ -236,7 +236,7 @@ TEST(RoundTripTest, BsonParent)
     deri.flt    = 234.875;
     std::stringstream   stream;
 
-    stream << TA::bsonExporter(deri, PrinterInterface::OutputType::Stream);
+    stream << TA::bsonExporter(deri, OutputType::Stream);
 
     //NOTE INPUT (R"({"ace":10,"val":1024,"der":56789,"flt":234.875})");
     static const char expectedRaw[]
@@ -263,11 +263,11 @@ TEST(RoundTripTest, BsonParent)
 }
 TEST(RoundTripTest, BsonArray)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::vector<int>    data    { 10, 1024, 9, 367, 12, 34};
     std::stringstream   stream;
 
-    stream << TA::bsonExporter(data, PrinterInterface::OutputType::Stream);
+    stream << TA::bsonExporter(data, OutputType::Stream);
 
     //NOTE INPUT (R"([10,1024,9,367,12,34])");
     static const char expectedRaw[]
@@ -299,11 +299,11 @@ TEST(RoundTripTest, BsonArray)
 }
 TEST(RoundTripTest, BsonValue)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     int                 data = 68456231;
     std::stringstream   stream;
 
-    stream << TA::bsonExporter(data, PrinterInterface::OutputType::Stream);
+    stream << TA::bsonExporter(data, OutputType::Stream);
 
     //NOTE INPUT ("68456231");
     static const char expectedRaw[]

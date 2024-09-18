@@ -8,12 +8,12 @@
 
 TEST(SmartPointerTest, JsonCreateNormalPtrNull)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     std::stringstream           stream(R"(null)");
     SmartPtrTest::Object*       data = nullptr;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -23,12 +23,12 @@ TEST(SmartPointerTest, JsonCreateNormalPtrNull)
 
 TEST(SmartPointerTest, JsonCreateNormalPtrObject)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
     SmartPtrTest::Object*       data = nullptr;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -41,14 +41,14 @@ TEST(SmartPointerTest, JsonCreateNormalPtrObject)
 
 TEST(SmartPointerTest, JsonCreateUniquePtrNull)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream(R"(null)");
     UniObject                   data;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -58,14 +58,14 @@ TEST(SmartPointerTest, JsonCreateUniquePtrNull)
 
 TEST(SmartPointerTest, JsonCreateUniquePtrObject)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
     UniObject                   data;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -77,14 +77,14 @@ TEST(SmartPointerTest, JsonCreateUniquePtrObject)
 
 TEST(SmartPointerTest, JsonCreateSharedPtrNull)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream(R"(null)");
     UniObject                   data;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -94,14 +94,14 @@ TEST(SmartPointerTest, JsonCreateSharedPtrNull)
 
 TEST(SmartPointerTest, JsonCreateSharedPtrObject)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
     UniObject                   data;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -113,12 +113,12 @@ TEST(SmartPointerTest, JsonCreateSharedPtrObject)
 
 TEST(SmartPointerTest, JsonSerializeNormalPtrNull)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::stringstream           stream;
     SmartPtrTest::Object*       data = nullptr;
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Default))
+    if (stream << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Default))
     {
         import = true;
     }
@@ -128,12 +128,12 @@ TEST(SmartPointerTest, JsonSerializeNormalPtrNull)
 
 TEST(SmartPointerTest, JsonSerializeNormalPtrObject)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::stringstream           stream;
     SmartPtrTest::Object*       data = new SmartPtrTest::Object{456, "This is a test"};
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream))
     {
         import = true;
     }
@@ -144,14 +144,14 @@ TEST(SmartPointerTest, JsonSerializeNormalPtrObject)
 
 TEST(SmartPointerTest, JsonSerializeUniquePtrNull)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream;
     UniObject                   data;
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Default))
+    if (stream << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Default))
     {
         import = true;
     }
@@ -161,13 +161,13 @@ TEST(SmartPointerTest, JsonSerializeUniquePtrNull)
 
 TEST(SmartPointerTest, JsonSerializeUniquePtrObject)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
 
     std::stringstream           stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream))
     {
         import = true;
     }
@@ -177,14 +177,14 @@ TEST(SmartPointerTest, JsonSerializeUniquePtrObject)
 
 TEST(SmartPointerTest, JsonSerializeSharedPtrNull)
 {
-    using  ThorsAnvil::Serialize::PrinterInterface;
+    using  ThorsAnvil::Serialize::OutputType;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream;
     UniObject                   data;
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Default))
+    if (stream << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Default))
     {
         import = true;
     }
@@ -194,13 +194,13 @@ TEST(SmartPointerTest, JsonSerializeSharedPtrNull)
 
 TEST(SmartPointerTest, JsonSerializeSharedPtrObject)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
 
     std::stringstream           stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream))
     {
         import = true;
     }
@@ -214,8 +214,8 @@ using namespace std::string_literals;
 //      as a member. So wrapping this test.
 TEST(SmartPointerTest, BsonCreateNormalPtrNull)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
-    ThorsAnvil::Serialize::ParserInterface::ParserConfig config(ParserInterface::ParseType::Weak);
+    using ThorsAnvil::Serialize::ParseType;
+    ThorsAnvil::Serialize::ParserConfig config(ParseType::Weak);
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
     //NOTE INPUT (R"(null)");
     std::string input = "\x0B\x00\x00\x00"
@@ -236,7 +236,7 @@ TEST(SmartPointerTest, BsonCreateNormalPtrNull)
 
 TEST(SmartPointerTest, BsonCreateNormalPtrObject)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
     std::string                 input = "\x26\x00\x00\x00"
                                         "\x10" "id\x00"      "\xc8\x01\x00\x00"
@@ -246,7 +246,7 @@ TEST(SmartPointerTest, BsonCreateNormalPtrObject)
     SmartPtrTest::Object*       data = nullptr;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -259,7 +259,7 @@ TEST(SmartPointerTest, BsonCreateNormalPtrObject)
 
 TEST(SmartPointerTest, BsonCreateUniquePtrNull)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
 
     //NOTE INPUT (R"(null)");
     std::string                 input = "\x0B\x00\x00\x00"
@@ -270,7 +270,7 @@ TEST(SmartPointerTest, BsonCreateUniquePtrNull)
     bool                        import = false;
 
     wrap.data = std::make_unique<SmartPtrTest::Object>();
-    if (stream >> ThorsAnvil::Serialize::bsonImporter(wrap, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(wrap, ParseType::Weak))
     {
         import = true;
     }
@@ -280,7 +280,7 @@ TEST(SmartPointerTest, BsonCreateUniquePtrNull)
 
 TEST(SmartPointerTest, BsonCreateUniquePtrObject)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::unique_ptr<SmartPtrTest::Object>;
 
     //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
@@ -292,7 +292,7 @@ TEST(SmartPointerTest, BsonCreateUniquePtrObject)
     UniObject                   data;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -304,7 +304,7 @@ TEST(SmartPointerTest, BsonCreateUniquePtrObject)
 
 TEST(SmartPointerTest, BsonCreateSharedPtrNull)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
 
     //NOTE INPUT (R"(null)");
     std::string                 input = "\x0B\x00\x00\x00"
@@ -315,7 +315,7 @@ TEST(SmartPointerTest, BsonCreateSharedPtrNull)
     bool                        import = false;
 
     wrap.data = std::make_unique<SmartPtrTest::Object>();
-    if (stream >> ThorsAnvil::Serialize::bsonImporter(wrap, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(wrap, ParseType::Weak))
     {
         import = true;
     }
@@ -325,7 +325,7 @@ TEST(SmartPointerTest, BsonCreateSharedPtrNull)
 
 TEST(SmartPointerTest, BsonCreateSharedPtrObject)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
@@ -337,7 +337,7 @@ TEST(SmartPointerTest, BsonCreateSharedPtrObject)
     UniObject                   data;
     bool                        import = false;
 
-    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParserInterface::ParseType::Weak))
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ParseType::Weak))
     {
         import = true;
     }
@@ -349,13 +349,13 @@ TEST(SmartPointerTest, BsonCreateSharedPtrObject)
 
 TEST(SmartPointerTest, BsonSerializeNormalPtrNull)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::stringstream           stream;
     Wrapper                     wrap;
     bool                        import = false;
 
     wrap.data = nullptr;
-    if (stream << ThorsAnvil::Serialize::bsonExporter(wrap, PrinterInterface::OutputType::Default))
+    if (stream << ThorsAnvil::Serialize::bsonExporter(wrap, OutputType::Default))
     {
         import = true;
     }
@@ -368,12 +368,12 @@ TEST(SmartPointerTest, BsonSerializeNormalPtrNull)
 
 TEST(SmartPointerTest, BsonSerializeNormalPtrObject)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::stringstream           stream;
     SmartPtrTest::Object*       data = new SmartPtrTest::Object{456, "This is a test"};
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream))
     {
         import = true;
     }
@@ -388,13 +388,13 @@ TEST(SmartPointerTest, BsonSerializeNormalPtrObject)
 
 TEST(SmartPointerTest, BsonSerializeUniquePtrNull)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
 
     std::stringstream           stream;
     WrapperUni                  wrap;
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::bsonExporter(wrap, PrinterInterface::OutputType::Default))
+    if (stream << ThorsAnvil::Serialize::bsonExporter(wrap, OutputType::Default))
     {
         import = true;
     }
@@ -407,13 +407,13 @@ TEST(SmartPointerTest, BsonSerializeUniquePtrNull)
 
 TEST(SmartPointerTest, BsonSerializeUniquePtrObject)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
 
     std::stringstream           stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream))
     {
         import = true;
     }
@@ -427,13 +427,13 @@ TEST(SmartPointerTest, BsonSerializeUniquePtrObject)
 
 TEST(SmartPointerTest, BsonSerializeSharedPtrNull)
 {
-    using  ThorsAnvil::Serialize::PrinterInterface;
+    using  ThorsAnvil::Serialize::OutputType;
 
     std::stringstream           stream;
     WrapperShared               wrap{nullptr};
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::bsonExporter(wrap, PrinterInterface::OutputType::Default))
+    if (stream << ThorsAnvil::Serialize::bsonExporter(wrap, OutputType::Default))
     {
         import = true;
     }
@@ -446,13 +446,13 @@ TEST(SmartPointerTest, BsonSerializeSharedPtrNull)
 
 TEST(SmartPointerTest, BsonSerializeSharedPtrObject)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
 
     std::stringstream           stream;
     SmartPtrTest::Object*       data(new SmartPtrTest::Object{456, "This is a test"});
     bool                        import = false;
 
-    if (stream << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream))
+    if (stream << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream))
     {
         import = true;
     }

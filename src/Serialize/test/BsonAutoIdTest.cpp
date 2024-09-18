@@ -29,7 +29,7 @@ ThorsAnvil_MakeTrait(Person, name, age, address);
 ThorsAnvil_MakeTrait(Insert, data);
 
 using ThorsAnvil::Serialize::bsonExporter;
-using ThorsAnvil::Serialize::PrinterInterface;
+using ThorsAnvil::Serialize::PrinterConfig;
 using ThorsAnvil::Serialize::BsonPrinterConfig;
 using ThorsAnvil::Serialize::MongoUtility::ObjectID;
 
@@ -41,7 +41,7 @@ TEST(BsonAutoIdTest, JsonExportCustomField)
     std::stringstream       output;
     std::vector<ObjectID>   result;
 
-    output << bsonExporter(people, BsonPrinterConfig{PrinterInterface::PrinterConfig{}, result});
+    output << bsonExporter(people, BsonPrinterConfig{PrinterConfig{}, result});
     EXPECT_EQ(2, result.size());
 
     std::string expected =

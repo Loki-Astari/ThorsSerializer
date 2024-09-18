@@ -6,7 +6,7 @@
 * [Yaml](https://yaml.org/)
 * [Bson](http://bsonspec.org/)
 
-This code is the basis for [ThorsMongo](https://github.com/Loki-Astari/ThorsMongo) a C++ API for streaming objects to Mongo with zero client overhead.  
+This code is the basis for [ThorsMongo](https://github.com/Loki-Astari/ThorsMongo) a C++ API for streaming objects to a MongoDB with zero client overhead.  
 
 
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=81920)](http://codereview.stackexchange.com/q/81920/507)
@@ -14,13 +14,15 @@ This code is the basis for [ThorsMongo](https://github.com/Loki-Astari/ThorsMong
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7567)](http://codereview.stackexchange.com/q/7567/507)
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7536)](http://codereview.stackexchange.com/q/7536/507)
 
-[![Brew package](https://img.shields.io/badge/Brew-package-blueviolet)](https://formulae.brew.sh/formula/thors-serializer)
+[![Brew package](https://img.shields.io/badge/Brew-package-blueviolet)](https://formulae.brew.sh/formula/thors-mongo)
 
 
 ## Benchmark Results
 Conformance [mac](https://LokiAstari.com/Json/Conformance.osx.html) [linux](https://LokiAstari.com/Json/Conformance.linux.html)  
 Performance [mac](https://LokiAstari.com/Json/Performance.osx.html) [linux](https://LokiAstari.com/Json/Performance.linux.html)  
 For details see: [JsonBenchmark](https://github.com/Loki-Astari/JsonBenchmark)  
+
+[## Documentation](doc/api.md)
 
 ![ThorStream](img/stream.jpg)
 
@@ -31,21 +33,19 @@ Unlike other libraries this one does not require you to build DOM of you object 
 * [Objective](doc/objective.md)
 * [Trivial Example](doc/example0.md)
 * [Simple Example](doc/example1.md)
-* [Enum Example](doc/exampleE.md)
 * [Bigger Example](doc/example2.md)
-* [PolyMorphic Example](doc/example3.md)
+* [Polymorphic Example](doc/example3.md)
 * [Installing](doc/building.md)
 * [Documentation Usage](doc/usage.md)
-* [Documentation Internal](https://lokiastari.com/ThorsSerializer/)
 
 ## HomeBrew
 
 Can be installed via brew on Mac and Linux
 
-    brew install thors-serializer
+    brew install thors-mongo
 
-* Mac: https://formulae.brew.sh/formula/thors-serializer
-* Linux: https://formulae.brew.sh/formula-linux/thors-serializer
+* Mac: https://formulae.brew.sh/formula/thors-mongo
+* Linux: https://formulae.brew.sh/formula-linux/thors-mongo
 
 ## Header Only
 
@@ -66,7 +66,7 @@ To build on windows you will need to add the flag: [`/Zc:preprocessor`](https://
 
 ## Contributors
 
-Added the all-contributers bot to generate the table.
+Added the all-contributors bot to generate the table.
 
 
 -----

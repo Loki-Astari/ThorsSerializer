@@ -41,49 +41,49 @@ ThorsAnvil_Template_ExpandTrait(1, TemplateTypeTest::TemplateType<T1>, TemplateT
 
 TEST(TemplateTypeTest, JsontemplateTest)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::string         inputStr(R"({"templateMember":[1,2,3,4]})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::TemplateType<int>   data;
 
     input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
-    output << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
+    output << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }
 
 TEST(TemplateTypeTest, JsonnormalInheritingFromtemplateTest)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::string         inputStr(R"({"normalName":"A name","templateMember":[1,2,3,4]})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::NormalInheritFromTemplate   data;
 
     input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
-    output << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
+    output << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }
 
 TEST(TemplateTypeTest, JsontemplateInheritingFromtemplateTest)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     std::string         inputStr(R"({"alternative":[5,6,7,8],"templateMember":[1,2,3,4]})");
     std::stringstream   input(inputStr);
     std::stringstream   output;
     TemplateTypeTest::TemplateInheritFromTemplate<int>   data;
 
     input  >> ThorsAnvil::Serialize::jsonImporter(data, false);
-    output << ThorsAnvil::Serialize::jsonExporter(data, PrinterInterface::OutputType::Stream);
+    output << ThorsAnvil::Serialize::jsonExporter(data, OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }
 
 TEST(TemplateTypeTest, BsontemplateTest)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     //NOTE INPUT (R"({"templateMember":[1,2,3,4]})");
     std::string         inputStr("\x36\x00\x00\x00"
                                  "\x04" "templateMember\x00"
@@ -99,14 +99,14 @@ TEST(TemplateTypeTest, BsontemplateTest)
     TemplateTypeTest::TemplateType<int>   data;
 
     input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
-    output << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream);
+    output << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }
 
 TEST(TemplateTypeTest, BsonnormalInheritingFromtemplateTest)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     //NOTE INPUT (R"({"templateMember":[1,2,3,4],"normalName":"A name"})");
     std::string         inputStr("\x4D\x00\x00\x00"
                                  "\x02" "normalName\x00"    "\x07\x00\x00\x00" "A name\x00"
@@ -123,14 +123,14 @@ TEST(TemplateTypeTest, BsonnormalInheritingFromtemplateTest)
     TemplateTypeTest::NormalInheritFromTemplate   data;
 
     input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
-    output << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream);
+    output << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }
 
 TEST(TemplateTypeTest, BsontemplateInheritingFromtemplateTest)
 {
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
     //NOTE INPUT (R"({"templateMember":[1,2,3,4],"alternative":[5,6,7,8]})");
     std::string         inputStr("\x64\x00\x00\x00"
                                  "\x04" "alternative\x00"
@@ -153,7 +153,7 @@ TEST(TemplateTypeTest, BsontemplateInheritingFromtemplateTest)
     TemplateTypeTest::TemplateInheritFromTemplate<int>   data;
 
     input  >> ThorsAnvil::Serialize::bsonImporter(data, false);
-    output << ThorsAnvil::Serialize::bsonExporter(data, PrinterInterface::OutputType::Stream);
+    output << ThorsAnvil::Serialize::bsonExporter(data, OutputType::Stream);
 
     EXPECT_EQ(output.str(), inputStr);
 }

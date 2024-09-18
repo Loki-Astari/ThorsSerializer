@@ -8,7 +8,6 @@
 #include <cstring>
 
 using namespace ThorsAnvil::Serialize;
-using ParserToken = ParserInterface::ParserToken;
 
 
 char const* getTokenTypeAsString(ParserToken result);

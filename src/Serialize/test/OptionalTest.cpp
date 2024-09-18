@@ -14,7 +14,8 @@ ThorsAnvil_MakeTrait(OptionalTest,  normal, optional);
 
 using  ThorsAnvil::Serialize::jsonExporter;
 using  ThorsAnvil::Serialize::jsonImporter;
-using  ThorsAnvil::Serialize::PrinterInterface;
+using  ThorsAnvil::Serialize::OutputType;
+using  ThorsAnvil::Serialize::PrinterConfig;
 
 TEST(OptionalTest, NormalOnly)
 {
@@ -23,7 +24,7 @@ TEST(OptionalTest, NormalOnly)
     OptionalTest    data;
     data.normal = 5;
 
-    stream << jsonExporter(data, PrinterInterface::PrinterConfig{PrinterInterface::OutputType::Stream});
+    stream << jsonExporter(data, PrinterConfig{OutputType::Stream});
     EXPECT_EQ(R"({"normal":5})", stream.str());
 }
 TEST(OptionalTest, NormalAndOptional)
@@ -34,7 +35,7 @@ TEST(OptionalTest, NormalAndOptional)
     data.normal = 5;
     data.optional = 6;
 
-    stream << jsonExporter(data, PrinterInterface::PrinterConfig{PrinterInterface::OutputType::Stream});
+    stream << jsonExporter(data, PrinterConfig{OutputType::Stream});
     EXPECT_EQ(R"({"normal":5,"optional":6})", stream.str());
 }
 TEST(OptionalTest, ImportOptional)

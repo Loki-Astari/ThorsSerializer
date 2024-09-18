@@ -7,12 +7,12 @@
 
 TEST(TwitterTest, ReadTwitterObject)
 {
-    using ThorsAnvil::Serialize::ParserInterface;
+    using ThorsAnvil::Serialize::ParseType;
     std::ifstream           input("test/data/twitter.json");
     TwitterTest::Twitter    value;
     bool                    importDone = false;
 
-    if (input >> ThorsAnvil::Serialize::jsonImporter(value, ParserInterface::ParseType::Weak)) {
+    if (input >> ThorsAnvil::Serialize::jsonImporter(value, ParseType::Weak)) {
         importDone = true;
     }
     EXPECT_EQ(importDone, true);

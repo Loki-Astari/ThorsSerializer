@@ -131,7 +131,7 @@ TEST(SerializeTest, JsonStrictParserDoesNotIgnoreData)
     SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testData4);
-    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Strict);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParseType::Strict);
     ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
 
     EXPECT_THROW(
@@ -144,7 +144,7 @@ TEST(SerializeTest, JsonExactParserDoesNotIgnoreData)
     SerializeTest::SerializeTestExtra      data;
 
     std::stringstream                   stream(testData4);
-    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParseType::Exact);
     ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
 
     EXPECT_THROW(
@@ -159,7 +159,7 @@ TEST(SerializeTest, JsonExactParserNeedsAllMembersFail)
     // testData1 has all the members of SerializeTestExtra (parent of SerializeExact)
     // but does not have anotherValue so should throw an exception
     std::stringstream                   stream(testData1);
-    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParseType::Exact);
     ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
 
     EXPECT_THROW(
@@ -174,7 +174,7 @@ TEST(SerializeTest, JsonExactParserNeedsAllMembersAndParentFail)
     // testData1 has all the members of SerializeTestExtra (parent of SerializeExact)
     // but does not have anotherValue so should throw an exception
     std::stringstream                   stream(testDataE7);
-    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParseType::Exact);
     ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
 
     EXPECT_THROW(
@@ -187,7 +187,7 @@ TEST(SerializeTest, JsonExactParserNeedsAllMembersGood)
     SerializeTest::SerializeExact      data;
 
     std::stringstream                   stream(testData5);
-    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::JsonParser   parser(stream, ThorsAnvil::Serialize::ParseType::Exact);
     ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
 
     deSerializer.parse(data);
@@ -391,8 +391,8 @@ TEST(SerializeTest, BsonSerializeStructureOfValue)
 {
     SerializeTest::SerializeTestExtra        data(34,56.78, true, "Done");
 
-    std::stringstream   stream;
-    ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
+    std::stringstream                    stream;
+    ThorsAnvil::Serialize::PrinterConfig config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     ThorsAnvil::Serialize::BsonPrinter  printer(stream, config);
@@ -407,7 +407,7 @@ TEST(SerializeTest, BsonSerializeStructureOfValue)
 TEST(SerializeTest, BsonDeSerializeStructureOfValue)
 {
     SerializeTest::SerializeTestExtra      data;
-    ThorsAnvil::Serialize::ParserInterface::ParserConfig config;
+    ThorsAnvil::Serialize::ParserConfig    config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream                   stream(testData1Bson);
@@ -425,7 +425,7 @@ TEST(SerializeTest, BsonDeSerializeStructureOfValue)
 TEST(SerializeTest, BsonSerializeStructureOfValueAndParents)
 {
     SerializeTest::SerializeTestChild     data(1, 2, 456, 89.101, false, "Akinkthatisnotstraight");
-    ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
+    ThorsAnvil::Serialize::PrinterConfig  config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream   stream;
@@ -459,7 +459,7 @@ TEST(SerializeTest, BsonDeSerializeStructureOfValueAndParent)
 TEST(SerializeTest, BsonSerializeStructureMemberOfValue)
 {
     SerializeTest::SerializeTestMembers        data(67, 11, 234567, 123.45, true, "NotASquareAndOnlyOneSide");
-    ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
+    ThorsAnvil::Serialize::PrinterConfig       config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream   stream;
@@ -475,7 +475,7 @@ TEST(SerializeTest, BsonSerializeStructureMemberOfValue)
 TEST(SerializeTest, BsonDeSerializeStructureMemberOfValue)
 {
     SerializeTest::SerializeTestMembers        data;
-    ThorsAnvil::Serialize::ParserInterface::ParserConfig config;
+    ThorsAnvil::Serialize::ParserConfig        config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream                   stream(testData3Bson);
@@ -499,7 +499,7 @@ TEST(SerializeTest, BsonDeSerializeStructureMemberOfValue)
 TEST(SerializeTest, BsonStrictParserDoesNotIgnoreData)
 {
     SerializeTest::SerializeTestExtra      data;
-    ThorsAnvil::Serialize::ParserInterface::ParserConfig config(ThorsAnvil::Serialize::ParserInterface::ParseType::Strict);
+    ThorsAnvil::Serialize::ParserConfig    config(ThorsAnvil::Serialize::ParseType::Strict);
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream                   stream(testData4Bson);
@@ -514,7 +514,7 @@ TEST(SerializeTest, BsonStrictParserDoesNotIgnoreData)
 TEST(SerializeTest, BsonExactParserDoesNotIgnoreData)
 {
     SerializeTest::SerializeTestExtra      data;
-    ThorsAnvil::Serialize::ParserInterface::ParserConfig config(ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::ParserConfig    config(ThorsAnvil::Serialize::ParseType::Exact);
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream                   stream(testData4Bson);
@@ -533,7 +533,7 @@ TEST(SerializeTest, BsonExactParserNeedsAllMembersFail)
     // testData1 has all the members of SerializeTestExtra (parent of SerializeExact)
     // but does not have anotherValue so should throw an exception
     std::stringstream                   stream(testData1Bson);
-    ThorsAnvil::Serialize::ParserInterface::ParserConfig config(ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    ThorsAnvil::Serialize::ParserConfig config(ThorsAnvil::Serialize::ParseType::Exact);
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
     ThorsAnvil::Serialize::BsonParser   parser(stream, config);
     ThorsAnvil::Serialize::DeSerializer deSerializer(parser);
@@ -545,8 +545,8 @@ TEST(SerializeTest, BsonExactParserNeedsAllMembersFail)
 }
 TEST(SerializeTest, BsonExactParserNeedsAllMembersGood)
 {
-    SerializeTest::SerializeExact      data;
-    ThorsAnvil::Serialize::ParserInterface::ParserConfig config(ThorsAnvil::Serialize::ParserInterface::ParseType::Exact);
+    SerializeTest::SerializeExact       data;
+    ThorsAnvil::Serialize::ParserConfig config(ThorsAnvil::Serialize::ParseType::Exact);
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream                   stream(testData5Bson);
@@ -558,7 +558,7 @@ TEST(SerializeTest, BsonExactParserNeedsAllMembersGood)
 TEST(SerializeTest, BsonIgnoreAllTheDataWeDontCareAbout)
 {
     SerializeTest::SerializeTestExtra      data;
-    ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
+    ThorsAnvil::Serialize::PrinterConfig   config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream                   stream(testData4Bson);
@@ -575,7 +575,7 @@ TEST(SerializeTest, BsonIgnoreAllTheDataWeDontCareAbout)
 TEST(SerializeTest, BsonDerivedTypeNoNewMembers)
 {
     SerializeTest::SerializeExactNoMembers        data(34,56.78, true, "Done");
-    ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
+    ThorsAnvil::Serialize::PrinterConfig          config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream   stream;
@@ -590,7 +590,7 @@ TEST(SerializeTest, BsonDerivedTypeNoNewMembers)
 TEST(SerializeTest, BsonDerivedTypeNoNewMembersPolyMorphic)
 {
     SerializeTest::SerializeExactNoMembersPoly        data(34,56.78, true, "Done");
-    ThorsAnvil::Serialize::PrinterInterface::PrinterConfig config;
+    ThorsAnvil::Serialize::PrinterConfig              config;
     config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
 
     std::stringstream   stream;

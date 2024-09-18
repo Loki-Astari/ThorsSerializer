@@ -37,11 +37,11 @@ int main()
     MyClass   data {56, 23.456, "Hi there"};
 
 
-    // This generates a simple Json Object (wordy)
+    // This generates a simple JSON Object (wordy)
     std::cout << "Version 1\n";
     std::cout << jsonExporter(data) << "\n\n\n";
 
-    // This generates a compact Json 
+    // This generates a compact JSON 
     std::cout << "Version 2 (Stream)\n";
     std::cout << jsonExporter(data, PrinterInterface::OutputType::Stream) << "\n\n\n";
 

@@ -8,7 +8,7 @@
 
 using ThorsAnvil::Serialize::bsonExporter;
 using ThorsAnvil::Serialize::jsonExporter;
-using ThorsAnvil::Serialize::PrinterInterface;
+using ThorsAnvil::Serialize::OutputType;
 using namespace std::string_literals;
 
 struct ViewData
@@ -24,7 +24,7 @@ TEST(Issue88Test, SerializeStringViewToJSON)
     std::string         house = "Madlabo";
     ViewData            view{{house}};
     std::stringstream   output;
-    output << jsonExporter(view,{PrinterInterface::OutputType::Stream});
+    output << jsonExporter(view,{OutputType::Stream});
 
     EXPECT_EQ(  R"({"house":"Madlabo"})"s,
                 output.str());

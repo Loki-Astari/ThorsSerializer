@@ -40,22 +40,24 @@ ThorsAnvil_TTemplate_MakeTrait(2, CurrentDate, currentDate);
 TEST(TemplateTemplateTest, SerializeATemplateTemplateDate)
 {
     using ThorsAnvil::Serialize::jsonExporter;
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
+    using ThorsAnvil::Serialize::PrinterConfig;
 
     CurrentDate<Time, SetDate>  time;
     std::stringstream   stream;
-    stream << jsonExporter(time, PrinterInterface::PrinterConfig{PrinterInterface::OutputType::Stream});
+    stream << jsonExporter(time, PrinterConfig{OutputType::Stream});
 
     EXPECT_EQ(R"({"currentDate":{"time":{"type":"date"}}})", stream.str());
 }
 TEST(TemplateTemplateTest, SerializeATemplateTemplateTimeStamp)
 {
     using ThorsAnvil::Serialize::jsonExporter;
-    using  ThorsAnvil::Serialize::PrinterInterface;
+    using  ThorsAnvil::Serialize::OutputType;
+    using  ThorsAnvil::Serialize::PrinterConfig;
 
     CurrentDate<Time, SetTimeStamp>  time;
     std::stringstream   stream;
-    stream << jsonExporter(time, PrinterInterface::PrinterConfig{PrinterInterface::OutputType::Stream});
+    stream << jsonExporter(time, PrinterConfig{OutputType::Stream});
 
     EXPECT_EQ(R"({"currentDate":{"time":{"type":"timestamp"}}})", stream.str());
 }

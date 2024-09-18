@@ -1,9 +1,7 @@
-[![Build Status](https://travis-ci.org/Loki-Astari/ThorsSerializer.svg?branch=master)](https://travis-ci.org/Loki-Astari/ThorsSerializer)
-
 ![ThorStream](../img/stream.jpg)
 
 ## Example-2: [see doc/example2.cpp](example2.cpp)
-````c++
+```C++
     #include <string>
     #include "ThorSerialize/Traits.h"
     #include "ThorSerialize/SerUtil.h"
@@ -34,9 +32,9 @@
      * Specifying your class, and a list of members to serialize.
      */
     ThorsAnvil_MakeTrait(MyClass, data1, data2, data3);
-````
+```
 This allows us to import and export object of the above class really easily.
-````c++
+```C++
     int main()
     {
         using ThorsAnvil::Serialize::jsonExporter;
@@ -45,11 +43,11 @@ This allows us to import and export object of the above class really easily.
         MyClass   data {56, 23.456, "Hi there"};
 
 
-        // This generates a simple Json Object (wordy)
+        // This generates a simple JSON Object (wordy)
         std::cout << "Version 1\n";
         std::cout << jsonExporter(data) << "\n\n\n";
 
-        // This generates a compact Json 
+        // This generates a compact JSON 
         std::cout << "Version 2 (Stream)\n";
         std::cout << jsonExporter(data, PrinterInterface::OutputType::Stream) << "\n\n\n";
 
@@ -60,12 +58,12 @@ This allows us to import and export object of the above class really easily.
         std::cout << "Vector\n";
         std::cout << jsonExporter(vec) << "\n";
     }
-````
+```
 
 This generates:
 
-````bash
-    > g++ -std=c++17 -o example2 example2.cpp -lThorSerialize17 -lThorsLogging17
+```bash
+    > g++ -std=c++20 -o example2 example2.cpp -lThorSerialize -lThorsLogging
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./example2
     Version 1
@@ -103,4 +101,4 @@ This generates:
                 "data2": 23.456,
                 "data3": "Hi there"
             }]
-````
+```
