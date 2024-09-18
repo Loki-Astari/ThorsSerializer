@@ -11,11 +11,11 @@
 #include <cstddef>
 #include <algorithm>
 #include <functional>
+#include <optional>
+#include <memory>
 
-namespace ThorsAnvil
+namespace ThorsAnvil::Serialize
 {
-    namespace Serialize
-    {
 
         namespace Private
         {
@@ -680,7 +680,7 @@ auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size
     // Please look at test/ExceptionTest.h for a simple example.
 }
 
-    }
+
 }
 
 #if defined(THORS_SERIALIZER_HEADER_ONLY) && THORS_SERIALIZER_HEADER_ONLY == 1

@@ -366,9 +366,7 @@ An example usage:
 
 If the type `T` is polymorphic then simple allocation is not sufficient. You need to understand the type being created, to do this you need to store type information in the object. The serialization/de-serialization code will handle this automatically if you make some small additions.
 
-Inside the class add the macro `ThorsAnvil_PolyMorphicSerializer`. This adds some virtual functions that are used in the serialization/de-serialization processes.
-
-In a source file add `ThorsAnvil_RegisterPolyMorphicType(<ClassName>);` This registers the type with the serialization functions so that it can look up the name and call the correct new operator.
+Inside the class add the macro `ThorsAnvil_PolyMorphicSerializer`. This adds some virtual functions that are used in the serialization/de-serialization processes. Note: You should add this in a `public` section of your class.
 
 ```C++
 
@@ -382,12 +380,14 @@ In a source file add `ThorsAnvil_RegisterPolyMorphicType(<ClassName>);` This reg
     };
     struct Car
     {
-        ThorsAnvil_PolyMorphicSerializer(Car);
+        // Note: the 'WithOverride' just adds 'override' to any functions to prevent warnings.
+        //       You should use it with all by the base class.
+        ThorsAnvil_PolyMorphicSerializerWithOverride(Car);
         Engine      engineInfo;
     };
     struct Bike
     {
-        ThorsAnvil_PolyMorphicSerializer(Bike);
+        ThorsAnvil_PolyMorphicSerializerWithOverride(Bike);
         bool        electric;
     };
     struct PersonTransport
@@ -400,11 +400,6 @@ In a source file add `ThorsAnvil_RegisterPolyMorphicType(<ClassName>);` This reg
     ThorsAnvil_MakeTrait(Bike,              electric);
     ThorsAnvil_MakeTrait(PersonTransport,   name, transport);
 
-
-    // In Source File:
-    ThorsAnvil_RegisterPolyMorphicType(Transport);
-    ThorsAnvil_RegisterPolyMorphicType(Car);
-    ThorsAnvil_RegisterPolyMorphicType(Bike);
 ```
 
 # Custom Serialization:
@@ -591,13 +586,5 @@ ThorsAnvil_Template_MakeTrait(1, OnLineBank::Flounder, data);
 ThorsAnvil_MakeTrait(OnLineBank::BankAccount, id, balance, details, valid);
 ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::CurrentAccount, actions);
 ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::DepositAccount, withdrawlLimit);
-```
-
-## BankAccount.cpp
-
-```C++
-// Bank.cpp
-ThorsAnvil_RegisterPolyMorphicType(OnLineBank::CurrentAccount);
-ThorsAnvil_RegisterPolyMorphicType(OnLineBank::DepositAccount);
 ```
 

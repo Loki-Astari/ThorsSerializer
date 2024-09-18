@@ -38,10 +38,8 @@
 #include <iostream>
 #include <utility>
 
-namespace ThorsAnvil
+namespace ThorsAnvil::Serialize
 {
-    namespace Serialize
-    {
 
 
 template<typename T>
@@ -311,7 +309,6 @@ inline Serializer::~Serializer()
     }
 }
 
-    }
 }
 
 #include "Serialize.tpp"

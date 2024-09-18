@@ -8,7 +8,6 @@
 #include <arpa/inet.h>
 #endif
 
-using namespace ThorsAnvil::Serialize;
 using namespace ThorsAnvil::Serialize::MongoUtility;
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE

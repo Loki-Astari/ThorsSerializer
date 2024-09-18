@@ -32,7 +32,7 @@ ThorsAnvil_MakeTrait(MyClass, data1, data2, data3);
 int main()
 {
     using ThorsAnvil::Serialize::jsonExporter;
-    using ThorsAnvil::Serialize::PrinterInterface;
+    using ThorsAnvil::Serialize::OutputType;
 
     MyClass   data {56, 23.456, "Hi there"};
 
@@ -43,7 +43,7 @@ int main()
 
     // This generates a compact JSON 
     std::cout << "Version 2 (Stream)\n";
-    std::cout << jsonExporter(data, PrinterInterface::OutputType::Stream) << "\n\n\n";
+    std::cout << jsonExporter(data, OutputType::Stream) << "\n\n\n";
 
     // Standard containers work automatically.
     // As long as the type held by the container has had an appropriate

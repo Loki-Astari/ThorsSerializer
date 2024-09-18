@@ -63,10 +63,8 @@
  * Traits<std::reference_wrapper<T>>
  */
 
-namespace ThorsAnvil
+namespace ThorsAnvil::Serialize
 {
-    namespace Serialize
-    {
 /* Container Helper */
 
 template<typename C, typename T>
@@ -978,7 +976,7 @@ class Traits<std::optional<T>>
                 : 0;
         }
 };
-    }
+
 }
 
 #endif

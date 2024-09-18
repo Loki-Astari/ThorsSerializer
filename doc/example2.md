@@ -38,24 +38,24 @@ This allows us to import and export object of the above class really easily.
     int main()
     {
         using ThorsAnvil::Serialize::jsonExporter;
-        using ThorsAnvil::Serialize::PrinterInterface;
+        using ThorsAnvil::Serialize::OutputType;
 
         MyClass   data {56, 23.456, "Hi there"};
 
 
         // This generates a simple JSON Object (wordy)
-        std::cout << "Version 1\n";
+        std::cout << "Version 1";
         std::cout << jsonExporter(data) << "\n\n\n";
 
         // This generates a compact JSON 
         std::cout << "Version 2 (Stream)\n";
-        std::cout << jsonExporter(data, PrinterInterface::OutputType::Stream) << "\n\n\n";
+        std::cout << jsonExporter(data, OutputType::Stream) << "\n\n\n";
 
         // Standard containers work automatically.
         // As long as the type held by the container has had an appropriate
         // Traits declaration.
         std::vector<MyClass>   vec(4, data);
-        std::cout << "Vector\n";
+        std::cout << "Vector";
         std::cout << jsonExporter(vec) << "\n";
     }
 ```
@@ -67,12 +67,11 @@ This generates:
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./example2
     Version 1
-
-        {
-            "data1": 56,
-            "data2": 23.456,
-            "data3": "Hi there"
-        }
+    {
+        "data1": 56,
+        "data2": 23.456,
+        "data3": "Hi there"
+    }
 
 
     Version 2 (Stream)
@@ -80,25 +79,26 @@ This generates:
 
 
     Vector
-     [
-            {
-                "data1": 56,
-                "data2": 23.456,
-                "data3": "Hi there"
-            },
-            {
-                "data1": 56,
-                "data2": 23.456,
-                "data3": "Hi there"
-            },
-            {
-                "data1": 56,
-                "data2": 23.456,
-                "data3": "Hi there"
-            },
-            {
-                "data1": 56,
-                "data2": 23.456,
-                "data3": "Hi there"
-            }]
+    [
+        {
+            "data1": 56,
+            "data2": 23.456,
+            "data3": "Hi there"
+        },
+        {
+            "data1": 56,
+            "data2": 23.456,
+            "data3": "Hi there"
+        },
+        {
+            "data1": 56,
+            "data2": 23.456,
+            "data3": "Hi there"
+        },
+        {
+            "data1": 56,
+            "data2": 23.456,
+            "data3": "Hi there"
+        }
+    ]
 ```

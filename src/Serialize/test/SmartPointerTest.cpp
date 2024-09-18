@@ -123,7 +123,7 @@ TEST(SmartPointerTest, JsonSerializeNormalPtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), " null");
+    EXPECT_EQ(stream.str(), "null");
 }
 
 TEST(SmartPointerTest, JsonSerializeNormalPtrObject)
@@ -156,7 +156,7 @@ TEST(SmartPointerTest, JsonSerializeUniquePtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), " null");
+    EXPECT_EQ(stream.str(), "null");
 }
 
 TEST(SmartPointerTest, JsonSerializeUniquePtrObject)
@@ -189,7 +189,7 @@ TEST(SmartPointerTest, JsonSerializeSharedPtrNull)
         import = true;
     }
     EXPECT_EQ(import, true);
-    EXPECT_EQ(stream.str(), " null");
+    EXPECT_EQ(stream.str(), "null");
 }
 
 TEST(SmartPointerTest, JsonSerializeSharedPtrObject)
@@ -363,7 +363,7 @@ TEST(SmartPointerTest, BsonSerializeNormalPtrNull)
     EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), " null");
+    //NOTE OUTPUT  (stream.str(), "null");
 }
 
 TEST(SmartPointerTest, BsonSerializeNormalPtrObject)
@@ -402,7 +402,7 @@ TEST(SmartPointerTest, BsonSerializeUniquePtrNull)
     EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), " null");
+    //NOTE OUTPUT  (stream.str(), "null");
 }
 
 TEST(SmartPointerTest, BsonSerializeUniquePtrObject)
@@ -441,7 +441,7 @@ TEST(SmartPointerTest, BsonSerializeSharedPtrNull)
     EXPECT_EQ(stream.str(), "\x0B\x00\x00\x00"
                             "\x0A" "data\x00"
                             "\x00"s);
-    //NOTE OUTPUT  (stream.str(), " null");
+    //NOTE OUTPUT  (stream.str(), "null");
 }
 
 TEST(SmartPointerTest, BsonSerializeSharedPtrObject)

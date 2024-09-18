@@ -77,17 +77,17 @@ The one difference from normal serialization is that it adds an extra member to 
     > ./example3
     {
         "__type": "Bike",
-        "speed": 15,
-        "stroke": 2
+        "stroke": 2,
+        "speed": 15
     }
 
-null
+    null
 
 
     {
         "__type": "Bike",
-        "speed": 15,
-        "stroke": 2
+        "stroke": 2,
+        "speed": 15
     }
 ```
 

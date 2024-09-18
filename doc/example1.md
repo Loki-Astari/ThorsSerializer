@@ -57,26 +57,26 @@
     > g++ -std=c++20 example1.cpp -lThorSerialize -lThorsLogging
     > # Note on mac you may need to add -I/opt/homebrew/include -L/opt/homebrew/lib/ on Mac's with M1 chip.
     > ./a.out
-        { 
-            "name": "mark", 
-            "score": 10, 
-            "damage": 5, 
-            "team": 
-            { 
-                "red": 255, 
-                "green": 0, 
-                "blue": 0
-            }
-        }
+    {
+        "name": "mark",
+        "score": 10,
+        "damage": 5,
+        "team":
         {
-            "name": "John",
-            "score": 13,
-            "damage": 0,
-            "team":
-            {
-                "red": 0,
-                "green": 0,
-                "blue": 255
-            }
+            "red": 255,
+            "green": 0,
+            "blue": 0
         }
+    }
+    {
+        "name": "John",
+        "score": 13,
+        "damage": 0,
+        "team":
+        {
+            "red": 0,
+            "green": 0,
+            "blue": 255
+        }
+    }
 ```

@@ -45,7 +45,7 @@
 
         if (file >> jsonImporter(data2)) {
             std::cout << "Object Read OK\n";
-            std::cout << jsonExporter(data2) < "\n";
+            std::cout << jsonExporter(data2) << "\n";
         }
         else {
             std::cout << "Object Read FAIL\n";
@@ -61,11 +61,14 @@
 Object Read OK
 
     {
-        "components": [
+        "components":
+        [
             {
                 "type": "mesh",
-                "axis": [ "x", "y", "z"]
-            }]
+                "axis":
+                ["x", "y", "z"]
+            }
+        ]
     }
 Object Read FAIL
 

@@ -24,7 +24,7 @@ TEST(ExceptionWhilePrintingTest, JsonNormalPrint)
     std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
     EXPECT_EQ(state, std::ios::goodbit);
-    EXPECT_EQ(stream.str(), " 15");
+    EXPECT_EQ(stream.str(), "15");
 }
 
 
@@ -47,7 +47,7 @@ TEST(ExceptionWhilePrintingTest, JsonNormalPrintCatchEnabled)
     std::ios_base::iostate state = stream.rdstate();
     EXPECT_EQ(thrown, false);
     EXPECT_EQ(state, std::ios::goodbit);
-    EXPECT_EQ(stream.str(), " 16");
+    EXPECT_EQ(stream.str(), "16");
 }
 
 TEST(ExceptionWhilePrintingTest, JsonThrowPrint)
