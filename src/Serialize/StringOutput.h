@@ -17,14 +17,18 @@ struct StringOutput
     char*           end;
     std::size_t     calcSize;
     bool            ok;
+    bool            preFlight;
+    bool            estimateSize;
 
     public:
-        StringOutput(std::string& output)
+        StringOutput(std::string& output, bool estimateSize)
             : data(output)
             , current(nullptr)
             , end(nullptr)
             , calcSize(0)
             , ok(true)
+            , preFlight(false)
+            , estimateSize(estimateSize)
         {}
         bool write(char const* src, std::size_t size)
         {
@@ -50,9 +54,15 @@ struct StringOutput
             using std::to_chars;
             if (preFlight)
             {
-                static char buffer[100];
-                auto result = to_chars(buffer, buffer + 100, src);
-                calcSize += (result.ptr - buffer);
+                if (estimateSize) {
+                    calcSize += 25;
+                }
+                else
+                {
+                    static char buffer[100];
+                    auto result = to_chars(buffer, buffer + 100, src);
+                    calcSize += (result.ptr - buffer);
+                }
             }
             else
             {
@@ -71,6 +81,14 @@ struct StringOutput
             current = &data[0];
             end = current + calcSize;
             preFlight = false;
+        }
+        void finalizePrint()
+        {
+            // Actual size the string
+            // If we are using estimateSize this may have been large.
+            if (!preFlight) {
+                data.resize(current - &data[0]);
+            }
         }
 };
 

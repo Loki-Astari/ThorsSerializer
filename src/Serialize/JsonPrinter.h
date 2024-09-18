@@ -19,6 +19,9 @@ class JsonPrinter: public PrinterInterface
     public:
         JsonPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
         JsonPrinter(std::string& output, PrinterConfig config = PrinterConfig{});
+
+        virtual void reset()                                override;
+
         virtual FormatType formatType()                     override {return FormatType::Json;}
         virtual void openDoc()                              override;
         virtual void closeDoc()                             override;

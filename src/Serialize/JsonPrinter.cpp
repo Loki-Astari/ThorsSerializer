@@ -4,6 +4,7 @@
 #include "ThorsLogging/ThorsLogging.h"
 #include <iomanip>
 #include <algorithm>
+#include <charconv>
 
 using namespace ThorsAnvil::Serialize;
 
@@ -146,6 +147,13 @@ JsonPrinter::JsonPrinter(std::string& output, PrinterConfig config)
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void JsonPrinter::reset()
+{
+    state.clear();
+    state.emplace_back(0, TraitType::Value, false);
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::openDoc()
 {}
 
@@ -264,12 +272,16 @@ struct BoolFormatter
 };
 
 template<typename T>
-inline std::string to_string(FormatDouble<T> const& value)
+inline std::to_chars_result to_chars(char* first, char* last, FormatDouble<T> const& value)
 {
-    if (value.value == 0) {
-        return "0.0";
+    static char   doubleZero[] = "0.0";
+    if (value.value == 0)
+    {
+        std::copy(std::begin(doubleZero), std::end(doubleZero), first);
+        return std::to_chars_result{first + 3, static_cast<std::errc>(0)};
     }
 #if defined(HOMEBREW_OLD_VERSION_OF_MAC) && (HOMEBREW_OLD_VERSION_OF_MAC >= 1)
+    ((void)last);
     std::string v = std::to_string(value.value);
     first = std::copy(std::begin(v), std::end(v), first);
     return std::to_chars_result{first, static_cast<std::errc>(0)};
@@ -277,9 +289,12 @@ inline std::string to_string(FormatDouble<T> const& value)
     return std::to_chars(first, last, value.value, std::chars_format::fixed, 6);
 #endif
 }
-inline std::string to_string(BoolFormatter const& value)
+inline std::to_chars_result to_chars(char* first, char*, BoolFormatter const& value)
 {
-    return value.value ? "true" : "false";
+    static char const*  boolStr[2]   = {"false", "true"};
+    static int          boolSize[2]  = {5, 4};
+    std::copy(boolStr[value.value], boolStr[value.value] + boolSize[value.value], first);
+    return std::to_chars_result{first + boolSize[value.value], static_cast<std::errc>(0)};
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonPrinter::addValue(short int value)             {addIndent(); writeValue(value);}
