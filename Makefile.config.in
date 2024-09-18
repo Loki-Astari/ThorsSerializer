@@ -1,7 +1,8 @@
 
 MagicEnumHeaderOnly_ROOT_DIR=@MagicEnumHeaderOnly_ROOT_DIR@
 
-
+BOOST_CPPFLAGS=@BOOST_CPPFLAGS@
+BOOST_LDFLAGS=@BOOST_LDFLAGS@
 
 yaml_ROOT_DIR=@yaml_ROOT_DIR@
 yaml_ROOT_LIB=@yaml_ROOT_LIB@

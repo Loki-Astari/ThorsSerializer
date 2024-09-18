@@ -362,6 +362,8 @@ class PrinterInterface
         void addValue(void const*)  = delete;
 
         virtual bool        printerUsesSize()                       {return false;}
+        virtual void        pushLevel(bool)                         {}
+        virtual void        popLevel()                              {}
         virtual std::size_t getSizeMap(std::size_t /*count*/)       {return 0;}
         virtual std::size_t getSizeArray(std::size_t /*count*/)     {return 0;}
         virtual std::size_t getSizeNull()                           {return 0;}
