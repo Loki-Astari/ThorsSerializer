@@ -55,7 +55,7 @@ class ApplyActionToAllParent<Parents<Args...>, T, I>
 template<typename T, typename I>
 class ApplyActionToParent<TraitType::Parent, T, I>
 {
-    ApplyActionToAllParent<typename Traits<T>::Parent, T, I>  parentAction;
+    ApplyActionToAllParent<typename Traits<std::remove_cv_t<T>>::Parent, T, I>  parentAction;
     public:
         void printParentMembers(Serializer& serializer, T const& object)
         {
@@ -71,15 +71,15 @@ template<typename T>
 struct HeedAllValues;
 
 template<typename T>
-typename std::enable_if<! HasParent<T>::value>::type
+typename std::enable_if_t<! HasParent<T>::value>
 heedAllParentMembers(std::map<std::string, bool> const& /*membersound*/)
 {}
 
 template<typename T>
-typename std::enable_if<HasParent<T>::value>::type
+std::enable_if_t<HasParent<T>::value>
 heedAllParentMembers(std::map<std::string, bool> const& membersFound)
 {
-    HeedAllValues<typename Traits<T>::Parent>   heedParent;
+    HeedAllValues<typename Traits<std::remove_cv_t<T>>::Parent>   heedParent;
     heedParent(membersFound);
 }
 
@@ -114,7 +114,7 @@ struct HeedAllValues
 
     void operator()(std::map<std::string, bool> const& membersFound)
     {
-        checkMemberFound(membersFound, Traits<T>::getMembers());
+        checkMemberFound(membersFound, Traits<std::remove_cv_t<T>>::getMembers());
     }
 };
 template<typename... P>
@@ -294,7 +294,7 @@ class DeSerializationForBlock<TraitType::Custom_Serialize, T>
                                  "DeSerializationForBlock",
                                  "Invalid Object");
             }
-            using SerializingType = typename Traits<T>::SerializingType;
+            using SerializingType = typename Traits<std::remove_cv_t<T>>::SerializingType;
             SerializingType info;
             info.readCustom(parser, object);
         }
@@ -376,7 +376,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
     std::string className;
     parser.getValue(className);
 
-    using BaseType  = typename std::remove_pointer<T>::type;
+    using BaseType  = std::remove_pointer_t<T>;
     using AllocType = typename GetAllocationType<BaseType>::AllocType;
     object = ConvertPointer<BaseType>::assign(PolyMorphicRegistry::getNamedTypeConvertedTo<AllocType>(className));
 
@@ -394,7 +394,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
 template<class T>
 auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, long) -> void
 {
-    using TraitPoint = Traits<T>;
+    using TraitPoint = Traits<std::remove_cv_t<T>>;
     object = TraitPoint::alloc();
 
     parsePolyMorphicObject(parent, parser, *object);
@@ -403,7 +403,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
 template<typename T>
 void parsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object)
 {
-    using TraitBase = Traits<T>;
+    using TraitBase = Traits<std::remove_cv_t<T>>;
     DeSerializationForBlock<TraitBase::type, T>   pointerDeSerializer(parent, parser);
     pointerDeSerializer.scanObject(object);
 }
@@ -420,7 +420,7 @@ class DeSerializationForBlock<TraitType::Pointer, T>
         {}
         void scanObject(T& object)
         {
-            Traits<T>::release(object);
+            Traits<std::remove_cv_t<T>>::release(object);
 
             ParserInterface::ParserToken    tokenType = parser.getToken();
             if (parser.isValueNull())
@@ -447,8 +447,8 @@ class DeSerializationForBlock<TraitType::Reference, T>
         {}
         void scanObject(T& object)
         {
-            using RefType = typename Traits<T>::RefType;
-            DeSerializationForBlock<Traits<RefType>::type, RefType>    deserializer(parent, parser);
+            using RefType = typename Traits<std::remove_cv_t<T>>::RefType;
+            DeSerializationForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>    deserializer(parent, parser);
             deserializer.scanObject(object.get());
         }
 };
@@ -479,7 +479,7 @@ class DeSerializationForBlock<TraitType::Enum, T>
             std::string     objectValue;
             parser.getValue(objectValue);
 
-            object = Traits<T>::getValue(objectValue, "ThorsAnvil::Serialize::DeSerializationForBlock<Enum>::DeSerializationForBlock:");
+            object = Traits<std::remove_cv_t<T>>::getValue(objectValue, "ThorsAnvil::Serialize::DeSerializationForBlock<Enum>::DeSerializationForBlock:");
         }
 };
 
@@ -578,7 +578,7 @@ void DeSerializeMemberValue<T, M, Type>::init(DeSerializer& parent, ParserInterf
     }
 }
 
-template<typename T, typename M, TraitType Type = Traits<M>::type>
+template<typename T, typename M, TraitType Type = Traits<std::remove_cv_t<M>>::type>
 class DeSerializeMember: public TraitsInfo<T, M, Type>::DeSerializeMember
 {
     using Parent = typename TraitsInfo<T, M, Type>::DeSerializeMember;
@@ -623,10 +623,10 @@ inline bool DeSerializer::scanMembers(I const& key, T& object, Action action)
 template<typename T, typename I>
 inline bool DeSerializer::scanObjectMembers(I const& key, T& object)
 {
-    ApplyActionToParent<Traits<T>::type, T, I>     parentScanner;
+    ApplyActionToParent<Traits<std::remove_cv_t<T>>::type, T, I>     parentScanner;
 
     bool result =  parentScanner.scanParentMember(*this, key, object)
-                || scanMembers(key, object, Traits<T>::getMembers());
+                || scanMembers(key, object, Traits<std::remove_cv_t<T>>::getMembers());
     return result;
 }
 
@@ -635,7 +635,7 @@ inline void DeSerializer::parse(T& object)
 {
     try
     {
-        DeSerializationForBlock<Traits<T>::type, T>     block(*this, parser);
+        DeSerializationForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, parser);
         block.scanObject(object);
     }
     catch (std::exception const& e)
@@ -676,7 +676,7 @@ class SerializerForBlock
             std::size_t size = 0;
             if (printer.printerUsesSize())
             {
-                size = Traits<T>::getPrintSize(printer, object, poly);
+                size = Traits<std::remove_cv_t<T>>::getPrintSize(printer, object, poly);
             }
             printer.openMap(size);
         }
@@ -736,7 +736,7 @@ SerializerForBlock<TraitType::Custom_Depricated, T>
             {
                 // Force a call to getPrintSize()
                 // Otherwise this is not done at the root level.
-                Traits<T>::getPrintSize(printer, object, false);
+                Traits<std::remove_cv_t<T>>::getPrintSize(printer, object, false);
             }
             printer.addRawValue(buffer.str());
         }
@@ -756,7 +756,7 @@ class SerializerForBlock<TraitType::Custom_Serialize, T>
         ~SerializerForBlock()   {}
         void printMembers()
         {
-            using SerializingType = typename Traits<T>::SerializingType;
+            using SerializingType = typename Traits<std::remove_cv_t<T>>::SerializingType;
             SerializingType info;
             info.writeCustom(printer, object);
         }
@@ -784,15 +784,15 @@ auto tryPrintPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T 
     // object and thus we simply use `T` and we can simply print the
     // normal members.
     using BaseType = typename BaseTypeGetter<T>::type;
-    SerializerForBlock<ThorsAnvil::Serialize::Traits<BaseType>::type, BaseType>  block(parent, printer, *object);
+    SerializerForBlock<ThorsAnvil::Serialize::Traits<std::remove_cv_t<BaseType>>::type, BaseType>  block(parent, printer, *object);
     block.printMembers();
 }
 /* ------------ PolyMorphic Serializer ------------------------- */
 template<typename T>
 void printPolyMorphicObject(Serializer& parent, PrinterInterface& printer, T const& object)
 {
-    using BaseType = typename std::remove_pointer<T>::type;
-    SerializerForBlock<ThorsAnvil::Serialize::Traits<BaseType>::type, BaseType>  block(parent, printer, object, true);
+    using BaseType = std::remove_pointer_t<T>;
+    SerializerForBlock<ThorsAnvil::Serialize::Traits<std::remove_cv_t<BaseType>>::type, BaseType>  block(parent, printer, object, true);
 
     // Note the call to printPolyMorphicMembers() rather than printMembers()
     // this adds the "__type": "<Type Name>"
@@ -840,8 +840,8 @@ class SerializerForBlock<TraitType::Reference, T>
         ~SerializerForBlock()   {}
         void printMembers()
         {
-            using RefType = typename Traits<T>::RefType;
-            SerializerForBlock<Traits<RefType>::type, RefType>        serializer(parent, printer, object.get());
+            using RefType = typename Traits<std::remove_cv_t<T>>::RefType;
+            SerializerForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>        serializer(parent, printer, object.get());
             serializer.printMembers();
         }
 };
@@ -861,7 +861,7 @@ class SerializerForBlock<TraitType::Enum, T>
         ~SerializerForBlock()   {}
         void printMembers()
         {
-            Traits<T>::serializeForBlock(printer, object);
+            Traits<std::remove_cv_t<T>>::serializeForBlock(printer, object);
         }
 };
 
@@ -880,7 +880,7 @@ class SerializerForBlock<TraitType::Array, T>
             std::size_t size = 0;
             if (printer.printerUsesSize())
             {
-                size = Traits<T>::getPrintSize(printer, object, false);
+                size = Traits<std::remove_cv_t<T>>::getPrintSize(printer, object, false);
             }
             printer.openArray(size);
         }
@@ -986,7 +986,7 @@ inline void Serializer::printMembers(T const& object, Action action)
 template<typename T>
 inline void Serializer::print(T const& object)
 {
-    SerializerForBlock<Traits<T>::type, T>     block(*this, printer, object);
+    SerializerForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, printer, object);
     block.printMembers();
 }
 
@@ -1013,10 +1013,10 @@ struct IndexType<TraitType::Parent>
 template<typename T>
 inline void Serializer::printObjectMembers(T const& object)
 {
-    printMembers(object, Traits<T>::getMembers());
+    printMembers(object, Traits<std::remove_cv_t<T>>::getMembers());
 
-    using IndexInfoType = typename IndexType<Traits<T>::type>::IndexInfoType;
-    ApplyActionToParent<Traits<T>::type, T, IndexInfoType>     parentPrinter;
+    using IndexInfoType = typename IndexType<Traits<std::remove_cv_t<T>>::type>::IndexInfoType;
+    ApplyActionToParent<Traits<std::remove_cv_t<T>>::type, T, IndexInfoType>     parentPrinter;
 
     parentPrinter.printParentMembers(*this, object);
 }

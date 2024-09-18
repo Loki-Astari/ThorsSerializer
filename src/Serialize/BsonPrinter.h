@@ -131,7 +131,7 @@ template<std::size_t Size, typename Int>
 inline void BsonPrinter::writeInt(Int value)
 {
     static char  intKey[]      = {'\x10', '\x12'};
-    using IntType = typename std::tuple_element<Size/4 - 1, IntTypes>::type;
+    using IntType = std::tuple_element_t<Size/4 - 1, IntTypes>;
 
     IntType             output = value;
     writeKey(intKey[Size/4 - 1], Size);
