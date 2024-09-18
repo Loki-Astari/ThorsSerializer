@@ -9,11 +9,15 @@
 #include "Serialize.h"
 #include "MongoUtilityObjectId.h"
 #include "BsonUtil.h"
-#include "GitUtility/ieee754_types.h"
-#include <boost/endian/conversion.hpp>
 #include <vector>
 #include <iostream>
 #include <functional>
+#include <bit>
+
+static_assert(
+    std::endian::little == std::endian::native,
+    "Don't want to support big endian unless I can do some good testing. Don't have a system for that so currently not suppoorted, but should be a relatively easy change"
+);
 
 namespace ThorsAnvil
 {
@@ -75,12 +79,12 @@ class BsonPrinter: public PrinterInterface
         virtual void addValue(unsigned long int value)              override    {if (writeProjection()){return;}writeInt<sizeof(unsigned long int)>(value);}
         virtual void addValue(unsigned long long int value)         override    {if (writeProjection()){return;}writeInt<sizeof(unsigned long long int)>(value);}
 
-        virtual void addValue(float value)                          override    {if (writeProjection()){return;}writeFloat<MaxTemplate<sizeof(float), 8>::value>(value);}
-        virtual void addValue(double value)                         override    {if (writeProjection()){return;}writeFloat<sizeof(double)>(value);}
-// Work here
+        virtual void addValue(float value)                          override    {if (writeProjection()){return;}writeFloat<double>(value);}
+        virtual void addValue(double value)                         override    {if (writeProjection()){return;}writeFloat<double>(value);}
+// TODO
 // Currently long double is saved as ieee64 double precision.
 // We need to work out how to use ieee128 quad precision where appropriate.
-        virtual void addValue(long double value)                    override    {if (writeProjection()){return;}writeFloat<8>(value);}
+        virtual void addValue(long double value)                    override    {if (writeProjection()){return;}writeFloat<double>(value);}
 
         virtual void addValue(bool value)                           override    {if (writeProjection()){return;}writeBool(value);}
 
@@ -120,14 +124,18 @@ class BsonPrinter: public PrinterInterface
         void writeKey(char value, std::size_t size);
         template<std::size_t size, typename Int> void writeLE(Int value)
         {
-            Int docValue = boost::endian::native_to_little(value);
+            Int docValue = value;
             output.write(reinterpret_cast<char*>(&docValue), size);
         }
 
         template<std::size_t size, typename Int> void writeBE(Int value)
         {
-            Int docValue = boost::endian::native_to_big(value);
-            output.write(reinterpret_cast<char*>(&docValue) + (sizeof(docValue) - size), size);
+            Int     docValue = value;
+            char*   docData  = reinterpret_cast<char*>(&docValue);
+            for (std::size_t loop = 0; loop < sizeof(docValue)/2; ++loop) {
+                std::swap(docData[loop], docData[sizeof(docValue) - loop - 1]);
+            }
+            output.write(docData + sizeof(docValue) - size, size);
         }
 
 
@@ -136,7 +144,7 @@ class BsonPrinter: public PrinterInterface
         void writeSize(Int value);
         template<std::size_t size, typename Int>
         void writeInt(Int value);
-        template<std::size_t size, typename Float>
+        template<typename Float>
         void writeFloat(Float value);
         void writeBool(bool value);
         void writeString(std::string const& value);
@@ -163,14 +171,38 @@ inline void BsonPrinter::writeInt(Int value)
     writeLE<Size, IntType>(output);
 }
 
-template<std::size_t Size, typename Float>
+template<typename F>
+struct BsonPrintFloatTraits;
+
+template<>
+struct BsonPrintFloatTraits<float>
+{
+    static constexpr char           keyValue  = '\x01';
+    static constexpr std::size_t    size      = 8;
+    using ConversionType = double;
+};
+template<>
+struct BsonPrintFloatTraits<double>
+{
+    static constexpr char           keyValue  = '\x01';
+    static constexpr std::size_t    size      = 8;
+    using ConversionType = double;
+};
+template<>
+struct BsonPrintFloatTraits<long double>
+{
+    // TODO
+    // Is there a supported 128 bit float?
+    static constexpr char           keyValue  = '\x01';
+    static constexpr std::size_t    size      = 8;
+    using ConversionType = long double;
+};
+template<typename Float>
 inline void BsonPrinter::writeFloat(Float value)
 {
-    static char  floatKey[]    = {'\x01', '\x13'};
-
-    IEEE_754::_2008::Binary<Size * 8>   outputValue = value;
-    writeKey(floatKey[Size/8 - 1], Size);
-    output.write(reinterpret_cast<char*>(&outputValue), Size);
+    typename BsonPrintFloatTraits<Float>::ConversionType outputValue = value;
+    writeKey(BsonPrintFloatTraits<Float>::keyValue, BsonPrintFloatTraits<Float>::size);
+    output.write(reinterpret_cast<char*>(&outputValue), BsonPrintFloatTraits<Float>::size);
 }
 
     }

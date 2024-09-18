@@ -238,7 +238,6 @@ void BsonParser::ignoreDataValue()
         {
             std::int32_t size;
             read(input, reinterpret_cast<char*>(&size), sizeof(size));
-            boost::endian::little_to_native(size);
             ignore(input, size);
             dataLeft.back() -= (size + 4);
             ThorsMessage(5, "BsonParser", "ignoreDataValue", "String");
@@ -248,7 +247,6 @@ void BsonParser::ignoreDataValue()
         {
             std::int32_t size;
             read(input, reinterpret_cast<char*>(&size), sizeof(size));
-            boost::endian::little_to_native(size);
             ignore(input, size + 1);
             dataLeft.back() -= (size + 5);
             ThorsMessage(5, "BsonParser", "ignoreDataValue", "Binary");
@@ -340,7 +338,7 @@ std::size_t BsonParser::peekSize()
     if (input.read(reinterpret_cast<char*>(&size), 4))
     {
         input.seekg(pos);
-        return boost::endian::little_to_native(size);
+        return size;
     }
     ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
                      "peekSize",
@@ -408,7 +406,7 @@ std::string BsonParser::getRawValue()
 {
     switch (nextType)
     {
-        case '\x01':            ThorsMessage(5, "BsonParser", "getRawValue", "Double-64");return std::to_string(readFloat<8>());
+        case '\x01':            ThorsMessage(5, "BsonParser", "getRawValue", "Double-64");return std::to_string(readFloat<double>());
         case '\x10':            ThorsMessage(5, "BsonParser", "getRawValue", "Int-32");return std::to_string(readInt<4, std::int32_t>());
         case '\x12':            ThorsMessage(5, "BsonParser", "getRawValue", "Int-64");return std::to_string(readInt<8, std::int64_t>());
         case '\x08':            ThorsMessage(5, "BsonParser", "getRawValue", "Bool");return readBool() ? "true" : "false";

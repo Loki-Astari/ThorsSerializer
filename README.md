@@ -57,7 +57,6 @@ Some dependencies:
 
     For All:    Magic Enum: https://github.com/Neargye/magic_enum
     For Json:   None        :-)
-    For Bson:   boost       https://www.boost.org/                  needs  boost/endian/conversion.hpp
     For Yaml:   libYaml     https://github.com/yaml/libyaml
 
 ## Building With Visual Studio

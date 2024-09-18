@@ -22,11 +22,16 @@
 #include "BsonUtil.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
-#include <GitUtility/ieee754_types.h>
-#include <boost/endian/conversion.hpp>
 #include <istream>
 #include <string>
 #include <vector>
+#include <bit>
+
+static_assert(
+    std::endian::little == std::endian::native,
+    "Don't want to support big endian unless I can do some good testing. Don't have a system for that so currently not suppoorted, but should be a relatively easy change"
+);
+
 
 namespace ThorsAnvil
 {
@@ -92,14 +97,18 @@ class BsonParser: public ParserInterface
         {
             Int docSize;
             input.read(reinterpret_cast<char*>(&docSize), size);
-            return boost::endian::little_to_native(docSize);
+            return docSize;
         }
 
         template<std::size_t size, typename Int> Int readBE()
         {
-            Int docSize = 0;
-            input.read(reinterpret_cast<char*>(&docSize) + (sizeof(docSize) - size), size);
-            return boost::endian::big_to_native(docSize);
+            Int     docSize = 0;
+            char*   docData = reinterpret_cast<char*>(&docSize);
+            input.read(docData + sizeof(docSize) - size, size);
+            for (std::size_t loop = 0; loop < sizeof(docSize)/2; ++loop) {
+                std::swap(docData[loop], docData[sizeof(docSize) - loop - 1]);
+            }
+            return docSize;
         }
 
 
@@ -121,8 +130,8 @@ class BsonParser: public ParserInterface
         template<std::size_t Size, typename Int>
         Int readInt();
 
-        template<std::size_t Size>
-        IEEE_754::_2008::Binary<Size * 8> readFloat();
+        template<typename F>
+        F readFloat();
 
         bool readBool();
         std::string readString();
@@ -179,18 +188,18 @@ inline Int BsonParser::readInt()
     return readLE<size, Int>();
 }
 
-template<std::size_t size>
-inline IEEE_754::_2008::Binary<size * 8> BsonParser::readFloat()
+template<typename F>
+inline F BsonParser::readFloat()
 {
-    IEEE_754::_2008::Binary<size * 8> result;
-    if (input.read(reinterpret_cast<char*>(&result), size))
+    F result;
+    if (input.read(reinterpret_cast<char*>(&result), sizeof(F)))
     {
-        dataLeft.back() -= size;
+        dataLeft.back() -= sizeof(F);
         return result;
     }
     ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
                      "readFloat",
-                     "Failed to read Float Value. Size: ", size);
+                     "Failed to read Float Value. Size: ", sizeof(F));
 }
 
 template<std::size_t Size, typename Int>
@@ -206,9 +215,10 @@ inline Float BsonParser::getFloatValue()
 {
     if (nextType == '\x10')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-32");return static_cast<Float>(readInt<4, std::int32_t>());}
     if (nextType == '\x12')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-64");return static_cast<Float>(readInt<8, std::int64_t>());}
-    if (nextType == '\x01')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-128");return static_cast<Float>(readFloat<8>());}
+    if (nextType == '\x01')     {ThorsMessage(5, "BsonParser", "getFloatValue", "Double-128");return static_cast<Float>(readFloat<double>());}
 #if 0
-    if (nextType == '\x13')     {return readFloat<16>();}
+    // TODO
+    if (nextType == '\x13')     {return readFloat<long double>();}
 #endif
     badType("Float", nextType);
 }
