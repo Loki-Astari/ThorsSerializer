@@ -514,7 +514,8 @@ template<BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>       \
 class Filter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > \
 {                                                                       \
     public:                                                             \
-        static bool filter(DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) const& object, char const* name)    \
+        template<typename M>                                            \
+        static bool filter(DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) const& object, char const* name, M const& /*v*/)    \
         {                                                               \
             auto find = object.member.find(name);                       \
             return find == object.member.end() ? true : find->second;   \
@@ -567,7 +568,7 @@ class Traits<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, Count) > 
         template<typename M>                                            \
         static std::pair<std::size_t, std::size_t> addSizeEachMemberItem(PrinterInterface& printer, MyType const& object, M item) \
         {                                                               \
-            if (!Filter<MyType>::filter(object, item.first)) {          \
+            if (!Filter<MyType>::filter(object, item.first, item)) {          \
                 return std::make_pair(0UL,0UL);                         \
             }                                                           \
             auto partSize   = addSizeOneMember(printer, object, item.second);           \
@@ -929,10 +930,30 @@ class Override
 };
 
 template<typename T>
+struct IsOptional
+{
+    static constexpr bool value = false;
+};
+template<typename M>
+struct IsOptional<std::optional<M>>
+{
+    static constexpr bool value = true;
+};
+template<typename T>
+inline constexpr bool isOptional_v = IsOptional<T>::value;
+
+template<typename T>
 class Filter
 {
     public:
-        static constexpr bool filter(T const& /*object*/, char const* /*name*/)   {return true;}
+        template<typename M>
+        static constexpr bool filter(T const& /*object*/, char const* /*name*/, M const& value)
+        {
+            if constexpr (isOptional_v<M>) {
+                return value.has_value();
+            }
+            return true;
+        }
 };
 
 /*
