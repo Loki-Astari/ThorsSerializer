@@ -446,7 +446,7 @@ The unique_ptr is serialized as if the object was a pointer. If the pointer is `
 
 ## std::shared_ptr
 
-I have not implemented the serialization of `std::shared_ptr`. This is relatively trivial to do like `std::unique_ptr`, but I want to handle situations where multiple pointers in the serialized object point at the same object. In this case I would like serialization/de-serialization to be able to handle this situation and de-serialize into a single object.
+The `std::shared_ptr` is correctly de-dupped. i.e. If you have two (or more) shared pointers pointing at the same object then the object is only serialized once (the second time we serialize an id). When de-serializing shared_ptr the reference id is used to reconnect the objects so that the shared pointers now continue to use a shared object.
 
 # Example:
 

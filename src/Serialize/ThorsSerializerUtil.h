@@ -6,6 +6,8 @@
 #include "ThorsLogging/ThorsLogging.h"
 #include <type_traits>
 #include <string>
+#include <map>
+#include <any>
 #include <iostream>
 #include <iomanip>
 #include <cstddef>
@@ -28,6 +30,13 @@ std::string const& getDefaultPolymorphicMarker()
     return defaultPolymorphicMarker;
 }
         }
+
+template<typename T>
+struct SharedInfo
+{
+    std::intmax_t       sharedPtrName;
+    std::optional<T*>   data;
+};
 
 struct EscapeString
 {
@@ -190,6 +199,7 @@ struct ParserConfig
         , catchExceptions(catchExceptions)
         , parserInfo(0)
         , ignoreCallBack(std::move(cb))
+        , useOldSharedPtr(false)
     {}
     ParserConfig(ParseType parseStrictness,
                  std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
@@ -198,24 +208,28 @@ struct ParserConfig
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     ParserConfig(std::string const& polymorphicMarker, bool catchExceptions = true)
         : parseStrictness(ParseType::Weak)
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     ParserConfig(bool catchExceptions)
         : parseStrictness(ParseType::Weak)
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     ParserConfig(ParseType parseStrictness, bool catchExceptions)
         : parseStrictness(parseStrictness)
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     // Use this constructor.
     ParserConfig()
@@ -223,15 +237,18 @@ struct ParserConfig
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(true)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     ParserConfig& setParseStrictness(ParseType p_parseStrictness)               {parseStrictness = p_parseStrictness;       return *this;}
     ParserConfig& setPolymorphicMarker(std::string const& p_polymorphicMarker)  {polymorphicMarker = p_polymorphicMarker;   return *this;}
     ParserConfig& setCatchExceptions(bool p_catchExceptions)                    {catchExceptions = p_catchExceptions;       return *this;}
+    ParserConfig& setUseOldSharedPtr()                                          {useOldSharedPtr = true;                    return *this;}
     ParseType       parseStrictness;
     std::string     polymorphicMarker;
     bool            catchExceptions;
     long            parserInfo;
     IgnoreCallBack  ignoreCallBack;
+    bool            useOldSharedPtr;
 };
 
 class ParserInterface
@@ -282,7 +299,23 @@ class ParserInterface
         void    ignoreValue();
 
         std::istream& stream() {return input;}
+
+        template<typename T>
+        void getShared(SharedInfo<T> const& info, std::shared_ptr<T>& object)
+        {
+            std::intmax_t index = info.sharedPtrName;
+            if (info.data.has_value())
+            {
+                object.reset(info.data.value());
+                savedSharedPtr[index] = object;
+                return;
+            }
+            std::shared_ptr<T>  sharedPtr = std::any_cast<std::shared_ptr<T>>(savedSharedPtr[index]);
+            object = sharedPtr;
+        }
+
     private:
+        std::map<std::intmax_t, std::any>     savedSharedPtr;
         void    ignoreTheValue();
         void    ignoreTheMap();
         void    ignoreTheArray();
@@ -309,6 +342,7 @@ struct PrinterConfig
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     PrinterConfig(std::string const& polymorphicMarker,
                   bool catchExceptions = true)
@@ -316,18 +350,21 @@ struct PrinterConfig
         , polymorphicMarker(polymorphicMarker)
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     PrinterConfig(bool catchExceptions)
         : characteristics(OutputType::Default)
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     PrinterConfig(OutputType characteristic, bool catchExceptions)
         : characteristics(characteristic)
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(catchExceptions)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
 
     /* Please use the default constructor
@@ -338,15 +375,18 @@ struct PrinterConfig
         , polymorphicMarker(Private::getDefaultPolymorphicMarker())
         , catchExceptions(true)
         , parserInfo(0)
+        , useOldSharedPtr(false)
     {}
     PrinterConfig& setOutputType(OutputType p_characteristics)                  {characteristics = p_characteristics;      return *this;}
     PrinterConfig& setPolymorphicMarker(std::string const& p_polymorphicMarker) {polymorphicMarker = p_polymorphicMarker;  return *this;}
     PrinterConfig& setCatchExceptions(bool p_catchExceptions)                   {catchExceptions = p_catchExceptions;      return *this;}
+    PrinterConfig& setUseOldSharedPtr()                                         {useOldSharedPtr = true;                   return *this;}
 
     OutputType      characteristics;
     std::string     polymorphicMarker;
     bool            catchExceptions;
     long            parserInfo;
+    bool            useOldSharedPtr;
 };
 
 class PrinterInterface
@@ -419,6 +459,25 @@ class PrinterInterface
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 
         std::ostream& stream() {return output;}
+
+        template<typename T>
+        SharedInfo<T> addShared(std::shared_ptr<T> const& shared)
+        {
+            std::intmax_t index = reinterpret_cast<std::intmax_t>(shared.get());
+            void const*&  save = savedSharedPtr[index];
+            if (save == nullptr)
+            {
+                save = &shared;
+            }
+            SharedInfo<T>   result;
+            result.sharedPtrName = index;
+            if (save == &shared) {
+                result.data     = shared.get();
+            }
+            return result;
+        }
+    private:
+        std::map<std::intmax_t, void const*>     savedSharedPtr;
 };
 
 template<typename T, bool = HasParent<T>::value>

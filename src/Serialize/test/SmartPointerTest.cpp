@@ -92,12 +92,31 @@ TEST(SmartPointerTest, JsonCreateSharedPtrNull)
     EXPECT_EQ(data, nullptr);
 }
 
-TEST(SmartPointerTest, JsonCreateSharedPtrObject)
+TEST(SmartPointerTest, JsonCreateSharedPtrObjectOriginal)
 {
     using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     std::stringstream           stream(R"({"id": 456, "name": "This is a test"})");
+    UniObject                   data;
+    bool                        import = false;
+
+    if (stream >> ThorsAnvil::Serialize::jsonImporter(data, ThorsAnvil::Serialize::ParserConfig{ParseType::Weak}.setUseOldSharedPtr()))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    ASSERT_NE(data.get(), nullptr);
+    EXPECT_EQ(data->id, 456);
+    EXPECT_EQ(data->name, "This is a test");
+}
+
+TEST(SmartPointerTest, JsonCreateSharedPtrObject)
+{
+    using ThorsAnvil::Serialize::ParseType;
+    using UniObject = std::shared_ptr<SmartPtrTest::Object>;
+
+    std::stringstream           stream(R"({"sharedPtrName":1,"data":{"id": 456, "name": "This is a test"}})");
     UniObject                   data;
     bool                        import = false;
 
@@ -323,15 +342,42 @@ TEST(SmartPointerTest, BsonCreateSharedPtrNull)
     EXPECT_EQ(wrap.data, nullptr);
 }
 
-TEST(SmartPointerTest, BsonCreateSharedPtrObject)
+TEST(SmartPointerTest, BsonCreateSharedPtrObjectOriginal)
 {
     using ThorsAnvil::Serialize::ParseType;
     using UniObject = std::shared_ptr<SmartPtrTest::Object>;
 
     //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
     std::string                 input = "\x26\x00\x00\x00"
-                                        "\x10" "id\x00"      "\xc8\x01\x00\x00"
-                                        "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
+                                            "\x10" "id\x00"      "\xc8\x01\x00\x00"
+                                            "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
+                                            "\x00"s;
+    std::stringstream           stream(input);
+    UniObject                   data;
+    bool                        import = false;
+
+    if (stream >> ThorsAnvil::Serialize::bsonImporter(data, ThorsAnvil::Serialize::ParserConfig{ParseType::Weak}.setUseOldSharedPtr()))
+    {
+        import = true;
+    }
+    EXPECT_EQ(import, true);
+    ASSERT_NE(data.get(), nullptr);
+    EXPECT_EQ(data->id, 456);
+    EXPECT_EQ(data->name, "This is a test");
+}
+TEST(SmartPointerTest, BsonCreateSharedPtrObject)
+{
+    using ThorsAnvil::Serialize::ParseType;
+    using UniObject = std::shared_ptr<SmartPtrTest::Object>;
+
+    //NOTE INPUT (R"({"id": 456, "name": "This is a test"})");
+    std::string                 input = "\x48\x00\x00\x00"
+                                        "\x12" "sharedPtrName\x00"  "\x00\x00\x00\x00\x04\x03\x02\x01"
+                                        "\x03" "data\x00"
+                                                "\x26\x00\x00\x00"
+                                                "\x10" "id\x00"      "\xc8\x01\x00\x00"
+                                                "\x02" "name\x00"    "\x0F\x00\x00\x00" "This is a test\x00"
+                                                "\x00"
                                         "\x00"s;
     std::stringstream           stream(input);
     UniObject                   data;

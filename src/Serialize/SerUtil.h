@@ -929,11 +929,15 @@ class Traits<std::shared_ptr<T>>
         static void release(std::shared_ptr<T>& p)  {p.reset();}
         static std::size_t getPrintSize(PrinterInterface& printer, std::shared_ptr<T> const& object, bool)
         {
-            if (object)
-            {
+            if (object == nullptr) {
+                return printer.getSizeNull();
+            }
+            if (printer.config.useOldSharedPtr) {
                 return Traits<std::remove_cv_t<T>>::getPrintSize(printer, *object, true);
             }
-            return printer.getSizeNull();
+
+            SharedInfo<T>      info = printer.addShared(object);
+            return Traits<SharedInfo<T>>::getPrintSize(printer, info, true);
         }
 };
 
