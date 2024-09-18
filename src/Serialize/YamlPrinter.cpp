@@ -14,8 +14,8 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size)
 {
     YamlPrinter*     owner = reinterpret_cast<YamlPrinter*>(data);
-    owner->output.write(reinterpret_cast<char*>(buffer), size);
-    bool result      = static_cast<bool>(owner->output);
+    owner->write(reinterpret_cast<char*>(buffer), size);
+    bool result      = owner->ok();
 
     return result ? 1 : 0;
 }
@@ -46,6 +46,20 @@ void YamlPrinter::checkYamlResultCode(std::function<int(yaml_event_t&)> init, ch
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 YamlPrinter::YamlPrinter(std::ostream& output, PrinterConfig config)
+    : PrinterInterface(output, config)
+    , error(false)
+{
+    checkYamlResultCode(yaml_emitter_initialize(&emitter), "YamlPrinter", "yaml_emitter_initialize");
+    yaml_emitter_set_output(&emitter, thorsanvilYamlStreamWritter, this);
+    checkYamlResultCode(
+            [&](yaml_event_t& event){return yaml_stream_start_event_initialize(&event, YAML_UTF8_ENCODING);},
+            "YamlPrinter",
+            "yaml_stream_start_event_initialize");
+    state.emplace_back(0, TraitType::Value);
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+YamlPrinter::YamlPrinter(std::string& output, PrinterConfig config)
     : PrinterInterface(output, config)
     , error(false)
 {

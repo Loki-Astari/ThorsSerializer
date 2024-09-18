@@ -18,6 +18,7 @@ class JsonPrinter: public PrinterInterface
     std::vector<PrintState> state;
     public:
         JsonPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
+        JsonPrinter(std::string& output, PrinterConfig config = PrinterConfig{});
         virtual FormatType formatType()                     override {return FormatType::Json;}
         virtual void openDoc()                              override;
         virtual void closeDoc()                             override;
@@ -53,6 +54,8 @@ class JsonPrinter: public PrinterInterface
         virtual void addNull()                              override;
 
         void addPrefix();
+    private:
+        void addIndent();
 };
 
 }

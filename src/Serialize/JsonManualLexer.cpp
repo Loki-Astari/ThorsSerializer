@@ -10,8 +10,8 @@
 using namespace ThorsAnvil::Serialize;
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-JsonManualLexer::JsonManualLexer(std::istream& str)
-    : str(str)
+JsonManualLexer::JsonManualLexer(ParserInterface& parser)
+    : parser(parser)
     , lastNull(false)
 {}
 
@@ -19,7 +19,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 int JsonManualLexer::yylex()
 {
     char    next;
-    str >> next;
+    parser.readValue(next);
     buffer.clear();
     lastNull = false;
     switch (next)
@@ -35,30 +35,30 @@ int JsonManualLexer::yylex()
         }
         case 't':
         {
-            str.unget();
+            parser.unget();
             lastBool = true;
             return lastToken = ThorsAnvil::Serialize::JSON_TRUE;
         }
         case 'f':
         {
-            str.unget();
+            parser.unget();
             lastBool = false;
             return lastToken = ThorsAnvil::Serialize::JSON_FALSE;
         }
         case 'n':
         {
-            str.unget();
+            parser.unget();
             lastNull = true;
             return lastToken = ThorsAnvil::Serialize::JSON_NULL;
         }
         case '"':
         {
-            str.unget();
+            parser.unget();
             return lastToken = ThorsAnvil::Serialize::JSON_STRING;
         }
         default:
         {
-            str.unget();
+            parser.unget();
             return lastToken = ThorsAnvil::Serialize::JSON_NUMBER;
         }
     }
@@ -87,18 +87,18 @@ void JsonManualLexer::ignoreRawValue()
 {
     switch (lastToken)
     {
-        case ThorsAnvil::Serialize::JSON_TRUE:      str.ignore(4);break;
-        case ThorsAnvil::Serialize::JSON_FALSE:     str.ignore(5);break;
-        case ThorsAnvil::Serialize::JSON_NULL:      str.ignore(4);break;
+        case ThorsAnvil::Serialize::JSON_TRUE:      parser.ignore(4);break;
+        case ThorsAnvil::Serialize::JSON_FALSE:     parser.ignore(5);break;
+        case ThorsAnvil::Serialize::JSON_NULL:      parser.ignore(4);break;
         case ThorsAnvil::Serialize::JSON_NUMBER:    readNumber();break;
         case ThorsAnvil::Serialize::JSON_STRING:
         {
-            char last = str.get();  // Read the first Quote off the stream
-            int next = str.get();
+            char last = parser.get();  // Read the first Quote off the stream
+            int next = parser.get();
             while (next != EOF && !(next == '"' && last != '\\'))
             {
                 last = next;
-                next = str.get();
+                next = parser.get();
             }
             if (next == EOF)
             {
@@ -121,9 +121,9 @@ std::string JsonManualLexer::getRawString()
         case ']':   return "]";
         case ',':   return ",";
         case ':':   return ":";
-        case ThorsAnvil::Serialize::JSON_TRUE:  str.ignore(4);return "true";
-        case ThorsAnvil::Serialize::JSON_FALSE: str.ignore(5);return "false";
-        case ThorsAnvil::Serialize::JSON_NULL:  str.ignore(4);return "null";
+        case ThorsAnvil::Serialize::JSON_TRUE:  parser.ignore(4);return "true";
+        case ThorsAnvil::Serialize::JSON_FALSE: parser.ignore(5);return "false";
+        case ThorsAnvil::Serialize::JSON_NULL:  parser.ignore(4);return "null";
         //case ThorsAnvil::Serialize::JSON_INTEGER:
         //case ThorsAnvil::Serialize::JSON_FLOAT:
         case ThorsAnvil::Serialize::JSON_NUMBER:
@@ -135,9 +135,9 @@ std::string JsonManualLexer::getRawString()
         {
             std::string result;
 
-            char last = str.get();  // Read the first Quote off the stream
+            char last = parser.get();  // Read the first Quote off the stream
             result.push_back(last);
-            int next = str.get();
+            int next = parser.get();
             while (next != EOF && !(next == '"' && last != '\\'))
             {
                 if (next < 0x20)
@@ -148,7 +148,7 @@ std::string JsonManualLexer::getRawString()
                 }
                 result.push_back(next);
                 last = next;
-                next = str.get();
+                next = parser.get();
             }
             if (next == EOF)
             {
@@ -303,7 +303,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonManualLexer::getStringInto(std::string& value)
 {
     //return std::string(make_UnicodeWrapperIterator(std::istreambuf_iterator<char>(str)), make_EndUnicodeWrapperIterator(std::istreambuf_iterator<char>(str)));
-    char next = str.get();
+    char next = parser.get();
     if (next != '"')
     {
         ThorsLogAndThrow("ThorsAnvil::Serialize::UnicodeWrapperIterator",
@@ -356,7 +356,7 @@ char JsonManualLexer::readDigits(char next)
     while (std::isdigit(next))
     {
         buffer.push_back(next);
-        next = str.get();
+        next = parser.get();
     }
     return next;
 }
@@ -366,12 +366,12 @@ void JsonManualLexer::readNumber()
 {
     buffer.clear();
 
-    int next = str.get();
+    int next = parser.get();
 
     if (next == '-' || next == '+')
     {
         buffer.push_back(next);
-        next = str.get();
+        next = parser.get();
         if (next == EOF)
         {   error();
         }
@@ -379,7 +379,7 @@ void JsonManualLexer::readNumber()
     if (next == '0')
     {
         buffer.push_back(next);
-        next = str.get();
+        next = parser.get();
     }
     else
     {
@@ -388,7 +388,7 @@ void JsonManualLexer::readNumber()
     if (next == '.')
     {
         buffer.push_back(next);
-        next        = str.get();
+        next        = parser.get();
         if (next == EOF)
         {   error();
         }
@@ -397,14 +397,14 @@ void JsonManualLexer::readNumber()
     if (next == 'e' || next == 'E')
     {
         buffer.push_back(next);
-        next = str.get();
+        next = parser.get();
         if (next == EOF)
         {   error();
         }
         if (next == '-' || next == '+')
         {
             buffer.push_back(next);
-            next = str.get();
+            next = parser.get();
             if (next == EOF)
             {   error();
             }
@@ -413,7 +413,7 @@ void JsonManualLexer::readNumber()
     }
     if (next != EOF)
     {
-        str.unget();
+        parser.unget();
     }
 }
 
@@ -421,7 +421,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonManualLexer::checkFixed(char const* check, std::size_t size)
 {
     buffer.resize(size);
-    str.read(&buffer[0], size);
+    parser.read(&buffer[0], size);
     if (std::strncmp(&buffer[0], check, size) != 0)
     {
         error();
