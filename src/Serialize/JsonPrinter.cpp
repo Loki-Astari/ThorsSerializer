@@ -31,9 +31,9 @@ namespace
             {}
             void printSeporator(PrinterInterface& printer, bool key, bool sep) const
             {
-                char const*(&seporator)[2][3] = (!key && std::get<1>(state) == TraitType::Map)
+                char const*(&seporator)[2][3] = (!key && state.f1 == TraitType::Map)
                                                 ? colon
-                                                : (std::get<0>(state) != 0) ? comma : space;
+                                                : (state.f0 != 0) ? comma : space;
                 printer.write(seporator[sep][static_cast<int>(characteristics)]);
             }
             void printIndent(PrinterInterface& printer, bool hasIndent)
@@ -82,13 +82,13 @@ namespace
         {
             bool sep = (characteristics != OutputType::Stream)
                     && (
-                             (std::get<1>(state) == TraitType::Array && std::get<0>(state) != 0)
-                          || (std::get<1>(state) == TraitType::Map)
+                             (state.f1 == TraitType::Array && state.f0 != 0)
+                          || (state.f1 == TraitType::Map)
                        );
 
             printSeporator(printer, false, sep);
-            ++std::get<0>(state);
-            std::get<2>(state) = true;
+            ++state.f0;
+            state.f2 = true;
         }
     };
     struct PrefixMap: public Prefix
@@ -105,7 +105,7 @@ namespace
         using Prefix::Prefix;
         virtual void write(PrinterInterface& printer, char suffix) //override
         {
-            ++std::get<0>(state);
+            ++state.f0;
             printIndent(printer, (characteristics != OutputType::Stream), suffix);
         }
     };
@@ -123,7 +123,7 @@ namespace
         using Prefix::Prefix;
         virtual void write(PrinterInterface& printer, char suffix) //override
         {
-            ++std::get<0>(state);
+            ++state.f0;
             printIndent(printer, ((characteristics != OutputType::Stream) && (!prefixValue)), suffix);
         }
     };
@@ -174,13 +174,13 @@ void JsonPrinter::openMap(std::size_t)
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::closeMap()
 {
-    if (std::get<1>(state.back()) != TraitType::Map)
+    if (state.back().f1 != TraitType::Map)
     {
         ThorsLogAndThrow("ThorsAnvil::Serialize::JsonPrinter",
                          "closeMap",
                          "Invalid call to closeMap(): Currently not in a map");
     }
-    bool prefixValue = std::get<2>(state.back());
+    bool prefixValue = state.back().f2;
     state.pop_back();
     PrefixMapClose  prefix(config.characteristics, state.size(), state.back(), prefixValue);
     prefix.write(*this, '}');
@@ -197,13 +197,13 @@ void JsonPrinter::openArray(std::size_t)
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::closeArray()
 {
-    if (std::get<1>(state.back()) != TraitType::Array)
+    if (state.back().f1 != TraitType::Array)
     {
         ThorsLogAndThrow("ThorsAnvil::Serialize::JsonPrinter",
                          "closeArray",
                          "Invalid call to closeArray(): Currently not in an array");
     }
-    bool prefixValue = std::get<2>(state.back());
+    bool prefixValue = state.back().f2;
     state.pop_back();
     PrefixArrayClose    prefix(config.characteristics, state.size(), state.back(), prefixValue);
     prefix.write(*this, ']');
@@ -212,7 +212,7 @@ void JsonPrinter::closeArray()
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::addKey(std::string_view const& key)
 {
-    if (std::get<1>(state.back()) != TraitType::Map)
+    if (state.back().f1 != TraitType::Map)
     {
         ThorsLogAndThrow("ThorsAnvil::Serialize::JsonPrinter",
                          "addKey",
