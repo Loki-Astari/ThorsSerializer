@@ -48,6 +48,7 @@ ParserToken JsonParser::getNextToken()
     }
 
     // Convert Lexer tokens into smaller range 0-12
+#if 0
     static std::map<int, int>   tokenIndex  =
     {
         {0,                                     0},
@@ -65,6 +66,7 @@ ParserToken JsonParser::getNextToken()
         //{ThorsAnvil::Serialize::JSON_FLOAT,     12}
         {ThorsAnvil::Serialize::JSON_NUMBER,    13}
     };
+#endif
     // State transition table;
     static State   stateTable[][14]   =
     {
@@ -86,8 +88,9 @@ ParserToken JsonParser::getNextToken()
     };
 
     // Read the next token and update the state.
-    int token   = lexer.yylex();
-    int index   = tokenIndex[token];
+    //int token   = lexer.yylex();
+    //int index   = tokenIndex[token];
+    int index = lexer.yylex();
 
     currentState    = stateTable[currentState][index];
     switch (currentState)
