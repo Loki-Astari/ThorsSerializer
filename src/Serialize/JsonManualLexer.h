@@ -60,9 +60,9 @@ inline T JsonManualLexer::scan()
     int peek = parser.peek();
     if (!readOK || posBefore == parser.getPos() || peek == '.' || peek == 'e' || peek == 'E')
     {
-        ThorsLogAndThrow("ThorsAnvil::Serialize::JsonParser",
+        ThorsLogAndThrow("ThorsAnvil::Serialize::JsonManualLexer",
                          "scan",
-                         "No data left to scan");
+                         "Failed to Scan a number correctly");
     }
     return value;
 }

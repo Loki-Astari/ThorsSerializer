@@ -4,3 +4,6 @@
 [submodule ".build"]
 	path = build
 	url = ../../Loki-Astari/ThorMaker.git
+[submodule "third/fastfloat"]
+	path = third/fastfloat
+	url = https://github.com/fastfloat/fast_float.git

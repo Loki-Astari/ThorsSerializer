@@ -4,6 +4,11 @@
 #include "SerializeConfig.h"
 #include <string_view>
 #include <string>
+#include <charconv>
+
+#if defined(NO_STD_SUPPORT_FROM_CHAR_DOUBLE) && (NO_STD_SUPPORT_FROM_CHAR_DOUBLE >= 1)
+#include "../fast_float/fast_float.h"
+#endif
 
 namespace ThorsAnvil::Serialize
 {
@@ -82,19 +87,31 @@ struct StringInput
             position = data.size() + 1;
         }
 
-        void readValue(short int& value)                {value = readInteger();}
-        void readValue(int& value)                      {value = readInteger();}
-        void readValue(long int& value)                 {value = readInteger();}
-        void readValue(long long int& value)            {value = readLongInteger();}
+        template<typename T>
+        void readValue(T& value)
+        {
+            using std::from_chars;
+#if defined(NO_STD_SUPPORT_FROM_CHAR_DOUBLE) && (NO_STD_SUPPORT_FROM_CHAR_DOUBLE >= 1)
+            using fast_float::from_chars;
+#endif
 
-        void readValue(unsigned short int& value)       {value = readUInteger();}
-        void readValue(unsigned int& value)             {value = readUInteger();}
-        void readValue(unsigned long int& value)        {value = readUInteger();}
-        void readValue(unsigned long long int& value)   {value = readULongInteger();}
+            auto start = &data[position];
+            auto result = from_chars(start, &data[0] + data.size(), value);
+            if (result.ec != std::errc::invalid_argument)
+            {
+                lastRead = (result.ptr - start);
+                position+= lastRead;
+            }
+        }
+#if defined(NO_STD_SUPPORT_FROM_CHAR_DOUBLE) && (NO_STD_SUPPORT_FROM_CHAR_DOUBLE >= 1)
+        void readValue(long double& result)
+        {
+            double tmp;
+            readValue(tmp);
+            result = tmp;
+        }
+#endif
 
-        void readValue(float& value)                    {value = readDouble();}
-        void readValue(double& value)                   {value = readDouble();}
-        void readValue(long double& value)              {value = readLongDouble();}
         void readValue(char& value)
         {
             while (position < data.size() && std::isspace(data[position])) {
@@ -104,60 +121,6 @@ struct StringInput
             ++position;
         }
     private:
-        long readInteger()
-        {
-            char* end;
-            char const* start = &data[position];
-            long result = std::strtol(start, &end, 10);
-            lastRead = (end - start);
-            position += lastRead;
-            return result;
-        }
-        long long readLongInteger()
-        {
-            char* end;
-            char const* start = &data[position];
-            long long result = std::strtoll(start, &end, 10);
-            lastRead = (end - start);
-            position += lastRead;
-            return result;
-        }
-        unsigned long readUInteger()
-        {
-            char* end;
-            char const* start = &data[position];
-            unsigned long result = std::strtoul(start, &end, 10);
-            lastRead = (end - start);
-            position += lastRead;
-            return result;
-        }
-        unsigned long long readULongInteger()
-        {
-            char* end;
-            char const* start = &data[position];
-            unsigned long long result = std::strtoull(start, &end, 10);
-            lastRead = (end - start);
-            position += lastRead;
-            return result;
-        }
-        double readDouble()
-        {
-            char* end;
-            char const* start = &data[position];
-            double result = std::strtod(start, &end);
-            lastRead = (end - start);
-            position += lastRead;
-            return result;
-        }
-        long double readLongDouble()
-        {
-            char* end;
-            char const* start = &data[position];
-            long double result = std::strtold(start, &end);
-            lastRead = (end - start);
-            position += lastRead;
-            return result;
-        }
 };
 
 }
