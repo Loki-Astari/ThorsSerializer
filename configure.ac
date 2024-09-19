@@ -49,17 +49,6 @@ int main() {
     ]
 )
 
-cat - << 'MAKEDOC' > src/fast_float/Makefile
-
-THORSANVIL_ROOT				?= $(realpath ../../)
-
-TARGET						= fast_float.head
-
-include $(THORSANVIL_ROOT)/build/tools/Makefile
-
-MAKEDOC
-
-
 
 LT_INIT
 
@@ -67,5 +56,22 @@ subconfigure="${subconfigure} --with-thorserialize-root=$(pwd)/build "
 
 AX_THOR_FEATURE_HEADER_ONLY_VARIANT([THORS_SERIALIZER])
 AX_THOR_FUNC_TERM_BUILD([SERIALIZER], [src/Serialize/SerializeConfig.h:config.h.in])
+
+#
+# Must be done after AX_THOR_FUNC_TERM_BUILD
+# This is becuase the AX_THOR_FUNC_TERM_BUILD makes sure that
+# windows sym links are correctly set up.
+#
+cat - << 'MAKEDOC' > src/fast_float/Makefile
+
+THORSANVIL_ROOT				?= $(realpath ../../)
+
+TARGET						= fast_float.head
+VERA                        = echo
+
+include $(THORSANVIL_ROOT)/build/tools/Makefile
+
+MAKEDOC
+
 
 AC_OUTPUT
