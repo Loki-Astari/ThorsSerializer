@@ -259,7 +259,7 @@ class ParserInterface
                 }
                 int operator()(StringInput& input)
                 {
-                    char value;
+                    char value = -1;
                     input.readValue(value);
                     switch (value)
                     {
@@ -273,7 +273,7 @@ class ParserInterface
                         default:
                             input.unget();
                     }
-                    return input.isOk() ? value : -1;
+                    return value;
                 }
             };
             return std::visit(PeekNextNonSpaceValue{}, input);
