@@ -13,9 +13,9 @@ namespace
     struct Prefix
     {
 
-        static char const*  space[2][3];
-        static char const*  comma[2][3];
-        static char const*  colon[2][3];
+        static std::string_view  space[2][3];
+        static std::string_view  comma[2][3];
+        static std::string_view  colon[2][3];
 
         OutputType                  characteristics;
         std::size_t                 size;
@@ -31,9 +31,9 @@ namespace
             {}
             void printSeporator(PrinterInterface& printer, bool key, bool sep) const
             {
-                char const*(&seporator)[2][3] = (!key && state.f1 == TraitType::Map)
-                                                ? colon
-                                                : (state.f0 != 0) ? comma : space;
+                std::string_view(&seporator)[2][3] = (!key && state.f1 == TraitType::Map)
+                                                        ? colon
+                                                        : (state.f0 != 0) ? comma : space;
                 printer.write(seporator[sep][static_cast<int>(characteristics)]);
             }
             void printIndent(PrinterInterface& printer, bool hasIndent)
@@ -129,9 +129,9 @@ namespace
     };
 }
 
-char const*  Prefix::space[2][3]   = {{"",  "",  ""},  {" ",  " ",  " "  }};
-char const*  Prefix::comma[2][3]   = {{",", ",", ","}, {", ", ", ", ", " }};
-char const*  Prefix::colon[2][3]   = {{":", ":", ":"}, {": ", ": ", ": " }};
+std::string_view  Prefix::space[2][3]   = {{"",  "",  ""},  {" ",  " ",  " "  }};
+std::string_view  Prefix::comma[2][3]   = {{",", ",", ","}, {", ", ", ", ", " }};
+std::string_view  Prefix::colon[2][3]   = {{":", ":", ":"}, {": ", ": ", ": " }};
 
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
