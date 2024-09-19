@@ -13,124 +13,125 @@ namespace
     struct Prefix
     {
 
-        static char const*  space[];
-        static char const*  comma[];
-        static char const*  colon[];
+        static char const*  space[2][3];
+        static char const*  comma[2][3];
+        static char const*  colon[2][3];
 
         OutputType                  characteristics;
         std::size_t                 size;
         PrintState&                 state;
         bool                        prefixValue;
         public:
+            std::size_t             getSize() const {return size;}
             Prefix(OutputType characteristics, std::size_t size, PrintState& state, bool prefixValue = false)
                 : characteristics(characteristics)
                 , size(size - 1)
                 , state(state)
                 , prefixValue(prefixValue)
             {}
-            void printSeporator(PrinterInterface& printer, bool key) const
+            void printSeporator(PrinterInterface& printer, bool key, bool sep) const
             {
-                char const*(&seporator)[] = (!key && std::get<1>(state) == TraitType::Map)
-                                            ? colon
-                                            : (std::get<0>(state) != 0) ? comma : space;
-                printer.write(seporator[static_cast<int>(characteristics)]);
+                char const*(&seporator)[2][3] = (!key && std::get<1>(state) == TraitType::Map)
+                                                ? colon
+                                                : (std::get<0>(state) != 0) ? comma : space;
+                printer.write(seporator[sep][static_cast<int>(characteristics)]);
             }
-            void printIndent(PrinterInterface& printer)
+            void printIndent(PrinterInterface& printer, bool hasIndent)
             {
-                static const    std::string indent(1000, '\t');
-                printer.write("\n", 1);
-                printer.write(std::string_view(&indent[0], size));
+                static const    std::string indent = buildIndent();
+                if (hasIndent)
+                {
+                    printer.write(std::string_view(&indent[0], size + 1));
+                }
             }
-            virtual void write(PrinterInterface& printer) = 0;
+            void printIndent(PrinterInterface& printer, bool hasIndent, char suffix)
+            {
+                static std::string indent = buildIndent();
+                if (hasIndent)
+                {
+                    indent[size + 1] = suffix;
+                    printer.write(std::string_view(&indent[0], size + 2));
+                    indent[size + 1] = '\t';
+                }
+                else
+                {
+                    printer.write(&suffix, 1);
+                }
+            }
+            std::string buildIndent()
+            {
+                std::string     indent(1001, '\t');
+                indent[0] = '\n';
+                return indent;
+            }
+            //virtual void write(PrinterInterface& printer) = 0;
     };
     struct PrefixKey: public Prefix
     {
         using Prefix::Prefix;
-        virtual void write(PrinterInterface& printer) override
+        virtual void write(PrinterInterface& printer) //override
         {
-            printSeporator(printer, true);
-            if (characteristics == OutputType::Stream) {
-                return;
-            }
-            printIndent(printer);
+            printSeporator(printer, true, false);
+            printIndent(printer, (characteristics != OutputType::Stream));
         }
     };
     struct PrefixValue: public Prefix
     {
         using Prefix::Prefix;
-        virtual void write(PrinterInterface& printer) override
+        virtual void write(PrinterInterface& printer) //override
         {
-            printSeporator(printer, false);
+            bool sep = (characteristics != OutputType::Stream)
+                    && (
+                             (std::get<1>(state) == TraitType::Array && std::get<0>(state) != 0)
+                          || (std::get<1>(state) == TraitType::Map)
+                       );
+
+            printSeporator(printer, false, sep);
             ++std::get<0>(state);
             std::get<2>(state) = true;
-
-            if (characteristics == OutputType::Stream) {
-                return;
-            }
-            if (std::get<1>(state) == TraitType::Array && std::get<0>(state) != 1) {
-                printer.write(" ", 1);
-            }
-            if (std::get<1>(state) == TraitType::Map) {
-                printer.write(" ", 1);
-            }
         }
     };
     struct PrefixMap: public Prefix
     {
         using Prefix::Prefix;
-        virtual void write(PrinterInterface& printer) override
+        virtual void write(PrinterInterface& printer, char suffix) //override
         {
-            printSeporator(printer, false);
-            if (characteristics == OutputType::Stream) {
-                return;
-            }
-            printIndent(printer);
+            printSeporator(printer, false, false);
+            printIndent(printer, (characteristics != OutputType::Stream), suffix);
         }
     };
     struct PrefixMapClose: public Prefix
     {
         using Prefix::Prefix;
-        virtual void write(PrinterInterface& printer) override
+        virtual void write(PrinterInterface& printer, char suffix) //override
         {
             ++std::get<0>(state);
-            if (characteristics == OutputType::Stream) {
-                return;
-            }
-            printIndent(printer);
+            printIndent(printer, (characteristics != OutputType::Stream), suffix);
         }
     };
     struct PrefixArray: public Prefix
     {
         using Prefix::Prefix;
-        virtual void write(PrinterInterface& printer) override
+        virtual void write(PrinterInterface& printer, char suffix) //override
         {
-            printSeporator(printer, false);
-            if (characteristics == OutputType::Stream) {
-                return;
-            }
-            printIndent(printer);
+            printSeporator(printer, false, false);
+            printIndent(printer, (characteristics != OutputType::Stream), suffix);
         }
     };
     struct PrefixArrayClose: public Prefix
     {
         using Prefix::Prefix;
-        virtual void write(PrinterInterface& printer) override
+        virtual void write(PrinterInterface& printer, char suffix) //override
         {
             ++std::get<0>(state);
-            if (characteristics == OutputType::Stream) {
-                return;
-            }
-            if (prefixValue) {
-                return;
-            }
-            printIndent(printer);
+            printIndent(printer, ((characteristics != OutputType::Stream) && (!prefixValue)), suffix);
         }
     };
 }
 
-char const*  Prefix::space[]   = {"",  "",  ""};
-char const*  Prefix::comma[]   = {",", ",", ","};
-char const*  Prefix::colon[]   = {":", ":", ":"};
+char const*  Prefix::space[2][3]   = {{"",  "",  ""},  {" ",  " ",  " "  }};
+char const*  Prefix::comma[2][3]   = {{",", ",", ","}, {", ", ", ", ", " }};
+char const*  Prefix::colon[2][3]   = {{":", ":", ":"}, {": ", ": ", ": " }};
 
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
@@ -166,8 +167,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::openMap(std::size_t)
 {
     PrefixMap       prefix(config.characteristics, state.size(), state.back());
-    prefix.write(*this);
-    write("{", 1);
+    prefix.write(*this, '{');
     state.emplace_back(0, TraitType::Map, false);
 }
 
@@ -183,16 +183,14 @@ void JsonPrinter::closeMap()
     bool prefixValue = std::get<2>(state.back());
     state.pop_back();
     PrefixMapClose  prefix(config.characteristics, state.size(), state.back(), prefixValue);
-    prefix.write(*this);
-    write("}", 1);
+    prefix.write(*this, '}');
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::openArray(std::size_t)
 {
     PrefixArray prefix(config.characteristics, state.size(), state.back());
-    prefix.write(*this);
-    write("[", 1);
+    prefix.write(*this, '[');
     state.emplace_back(0, TraitType::Array, false);
 }
 
@@ -208,8 +206,7 @@ void JsonPrinter::closeArray()
     bool prefixValue = std::get<2>(state.back());
     state.pop_back();
     PrefixArrayClose    prefix(config.characteristics, state.size(), state.back(), prefixValue);
-    prefix.write(*this);
-    write("]", 1);
+    prefix.write(*this, ']');
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
