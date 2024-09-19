@@ -13,6 +13,7 @@
 #include <map>
 #include <any>
 #include <memory>
+#include <concepts>
 
 namespace ThorsAnvil::Serialize
 {
@@ -175,6 +176,7 @@ class ParserInterface
             std::visit(SetFail{}, input);
         }
         template<typename T>
+        requires std::integral<T>
         bool readValue(T& value)
         {
             struct ReadValue
@@ -196,7 +198,86 @@ class ParserInterface
             };
             return std::visit(ReadValue{value}, input);
         }
+        template<typename T>
+        requires std::floating_point<T>
+        bool readValue(T& value)
+        {
+            struct ReadValue
+            {
+                T& value;
+                ReadValue(T& value) :value(value) {}
+                bool operator()(std::istream* input)
+                {
+                    return static_cast<bool>((*input) >> value);
+                }
+                bool operator()(StringInput& input)
+                {
+                    return input.readValue(value);
+                }
+            };
+            return std::visit(ReadValue{value}, input);
+        }
+        bool readValue(char& value)
+        {
+            struct ReadValue
+            {
+                char& value;
+                ReadValue(char& value) :value(value) {}
+                bool operator()(std::istream* input)
+                {
+                    return static_cast<bool>((*input) >> value);
+                }
+                bool operator()(StringInput& input)
+                {
+                    return input.readValue(value);
+                }
+            };
+            return std::visit(ReadValue{value}, input);
+        }
 
+        int peekNextNonSpaceValue()
+        {
+            struct PeekNextNonSpaceValue
+            {
+                int operator()(std::istream* input)
+                {
+                    char value;
+                    bool ok = static_cast<bool>((*input) >> value);
+                    switch (value)
+                    {
+                        case '{':
+                        case '}':
+                        case '[':
+                        case ']':
+                        case ',':
+                        case ':':
+                            break;
+                        default:
+                            input->unget();
+                    }
+                    return ok ? value : -1;
+                }
+                int operator()(StringInput& input)
+                {
+                    char value;
+                    input.readValue(value);
+                    switch (value)
+                    {
+                        case '{':
+                        case '}':
+                        case '[':
+                        case ']':
+                        case ',':
+                        case ':':
+                            break;
+                        default:
+                            input.unget();
+                    }
+                    return input.isOk() ? value : -1;
+                }
+            };
+            return std::visit(PeekNextNonSpaceValue{}, input);
+        }
         template<typename T>
         void getShared(SharedInfo<T> const& info, std::shared_ptr<T>& object)
         {
