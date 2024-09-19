@@ -151,13 +151,13 @@ ParserToken JsonParser::getNextToken()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonParser::getString()
+std::string_view JsonParser::getString()
 {
     return lexer.getString();
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonParser::getRawString()
+std::string_view JsonParser::getRawString()
 {
     return lexer.getRawString();
 }
@@ -169,7 +169,7 @@ void JsonParser::ignoreDataValue()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonParser::getKey()
+std::string_view JsonParser::getKey()
 {
     return getString();
 }
@@ -214,7 +214,7 @@ bool JsonParser::isValueNull()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonParser::getRawValue()
+std::string_view JsonParser::getRawValue()
 {
     return getRawString();
 }

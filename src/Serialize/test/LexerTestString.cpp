@@ -13,7 +13,7 @@ class FakeParser: public ThorsAnvil::Serialize::ParserInterface
         {}
         virtual ThorsAnvil::Serialize::FormatType  formatType()    {return ThorsAnvil::Serialize::FormatType::Json;}
         virtual ThorsAnvil::Serialize::ParserToken getNextToken()  {return ThorsAnvil::Serialize::ParserToken::Value;}
-        virtual std::string     getKey()                 {return "";}
+        virtual std::string_view     getKey()            {return "";}
 
         virtual void    getValue(short int&)             {}
         virtual void    getValue(int&)                   {}
@@ -34,7 +34,7 @@ class FakeParser: public ThorsAnvil::Serialize::ParserInterface
 
         virtual bool    isValueNull()                    {return false;}
 
-        virtual std::string getRawValue()                {return "";}
+        virtual std::string_view getRawValue()           {return "";}
 };
 TEST(LexerTestString, JsonArrayTokens)
 {

@@ -151,11 +151,11 @@ class ParserInterface
             , pushBack(ParserToken::Error)
         {}
         virtual ~ParserInterface() {}
-        virtual FormatType formatType()                 = 0;
-                ParserToken     getToken();
-                void            pushBackToken(ParserToken token);
-        virtual ParserToken     getNextToken()          = 0;
-        virtual std::string     getKey()                = 0;
+        virtual FormatType formatType()                  = 0;
+                ParserToken         getToken();
+                void                pushBackToken(ParserToken token);
+        virtual ParserToken         getNextToken()       = 0;
+        virtual std::string_view    getKey()             = 0;
 
         virtual void    ignoreDataValue()               {}
         virtual void    ignoreDataMap(bool)             {}
@@ -181,7 +181,7 @@ class ParserInterface
 
         virtual bool    isValueNull()                    = 0;
 
-        virtual std::string getRawValue()                = 0;
+        virtual std::string_view getRawValue()           = 0;
 
         void    ignoreValue();
 
@@ -350,7 +350,7 @@ class PrinterInterface
         virtual void    openArray(std::size_t size)     = 0;
         virtual void    closeArray()                    = 0;
 
-        virtual void    addKey(std::string const& key)  = 0;
+        virtual void    addKey(std::string_view const& key)  = 0;
 
         virtual void    addValue(short int)             = 0;
         virtual void    addValue(int)                   = 0;
@@ -368,10 +368,9 @@ class PrinterInterface
 
         virtual void    addValue(bool)                  = 0;
 
-        virtual void    addValue(std::string const&)    = 0;
         virtual void    addValue(std::string_view const&) = 0;
 
-        virtual void    addRawValue(std::string const&) = 0;
+        virtual void    addRawValue(std::string_view const&) = 0;
 
         virtual void    addNull()                       = 0;
 
@@ -396,7 +395,6 @@ class PrinterInterface
         virtual std::size_t getSizeValue(double)                    {return 0;}
         virtual std::size_t getSizeValue(long double)               {return 0;}
         virtual std::size_t getSizeValue(bool)                      {return 0;}
-        virtual std::size_t getSizeValue(std::string const&)        {return 0;}
         virtual std::size_t getSizeValue(std::string_view const&)   {return 0;}
         virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
 
@@ -413,9 +411,9 @@ class PrinterInterface
             };
             return std::visit(Write{src, size}, output);
         }
-        bool write(std::string const& src)
+        bool write(std::string_view const& src)
         {
-            return write(src.c_str(), src.size());
+            return write(std::begin(src), src.size());
         }
         bool ok() const
         {
@@ -730,7 +728,7 @@ auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size
     // Please look at test/ExceptionTest.h for a simple example.
 }
 
-inline void escapeString(PrinterInterface& printer, std::string const& value)
+inline void escapeString(PrinterInterface& printer, std::string_view const& value)
 {
     using namespace std::string_literals;
 
