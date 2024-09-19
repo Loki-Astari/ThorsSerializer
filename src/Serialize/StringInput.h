@@ -88,7 +88,7 @@ struct StringInput
         }
 
         template<typename T>
-        void readValue(T& value)
+        bool readValue(T& value)
         {
             using std::from_chars;
 #if defined(NO_STD_SUPPORT_FROM_CHAR_DOUBLE) && (NO_STD_SUPPORT_FROM_CHAR_DOUBLE >= 1)
@@ -101,24 +101,28 @@ struct StringInput
             {
                 lastRead = (result.ptr - start);
                 position+= lastRead;
+                return true;
             }
+            return false;
         }
 #if defined(NO_STD_SUPPORT_FROM_CHAR_DOUBLE) && (NO_STD_SUPPORT_FROM_CHAR_DOUBLE >= 1)
-        void readValue(long double& result)
+        bool readValue(long double& value)
         {
             double tmp;
-            readValue(tmp);
-            result = tmp;
+            bool result = readValue(tmp);
+            value = tmp;
+            return result;
         }
 #endif
 
-        void readValue(char& value)
+        bool readValue(char& value)
         {
             while (position < data.size() && std::isspace(data[position])) {
                 ++position;
             }
             value = (position < data.size()) ? data[position] : -1;
             ++position;
+            return true;
         }
     private:
 };
