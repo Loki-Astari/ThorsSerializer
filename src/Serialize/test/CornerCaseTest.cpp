@@ -714,7 +714,7 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SlashSlash)
     using ThorsAnvil::Serialize::UnicodeWrapperIterator;
     using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
 
-    std::string                 stream(R"("\\")");;
+    std::string                 stream(R"(\\")");;
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
     char    value = *loop;
@@ -725,7 +725,7 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_BackSlashBackSlash)
     using ThorsAnvil::Serialize::UnicodeWrapperIterator;
     using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
 
-    std::string                 stream(R"("\/")");;
+    std::string                 stream(R"(\/")");;
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
     char    value = *loop;
@@ -736,7 +736,7 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SlashK)
     using ThorsAnvil::Serialize::UnicodeWrapperIterator;
     using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
 
-    std::string                 stream(R"("\k")");;
+    std::string                 stream(R"(\k")");;
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
     EXPECT_THROW(
@@ -753,7 +753,7 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair)
     using ThorsAnvil::Serialize::UnicodeWrapperIterator;
     using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
 
-    std::string                 stream(R"("\ud834\udd1e")");
+    std::string                 stream(R"(\ud834\udd1e")");
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
     EXPECT_EQ('\xf0', *loop);   ++loop;
@@ -766,7 +766,7 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid)
     using ThorsAnvil::Serialize::UnicodeWrapperIterator;
     using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
 
-    std::string                 stream(R"("\ud834a")");
+    std::string                 stream(R"(\ud834a")");
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
     // Should be R"(\udd1e)"
@@ -784,7 +784,7 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid_P2)
     using ThorsAnvil::Serialize::UnicodeWrapperIterator;
     using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
 
-    std::string                 stream(R"("\ud834\\")");
+    std::string                 stream(R"(\ud834\\")");
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
     //IF VALID WOULD BE('\xf0', *loop);   ++loop;
@@ -801,7 +801,7 @@ TEST(CornerCaseTest, UnicodeWrapperIterator_SurogatePair_SecondNotValid_P3)
     using ThorsAnvil::Serialize::UnicodeWrapperIterator;
     using ThorsAnvil::Serialize::make_UnicodeWrapperIterator;
 
-    std::string                 stream(R"("\ud834\u1d1e")");
+    std::string                 stream(R"(\ud834\u1d1e")");
     auto                        loop  = make_UnicodeWrapperIterator(std::begin(stream));
 
     //IF VALID WOULD BE('\xf0', *loop);   ++loop;

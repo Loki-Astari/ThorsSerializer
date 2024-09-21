@@ -44,8 +44,9 @@ struct StringInput
             }
             auto size = find - position;
 
-            dst.resize(size);
-            std::copy(&data[position], &data[position + size], &dst[0]);
+            std::size_t start = dst.size();
+            dst.resize(start + size);
+            std::copy(&data[position], &data[position + size], &dst[start]);
 
             position += (size + 1);
             return position <= data.size();
@@ -60,7 +61,7 @@ struct StringInput
         }
         int get()
         {
-            return data[position++];
+            return position < data.size() ? data[position++] : EOF;
         }
         int peek()
         {
@@ -117,7 +118,25 @@ struct StringInput
 
         bool readValue(char& value)
         {
-            while (position < data.size() && std::isspace(data[position])) {
+            // ' ' \f \n \r \t \v
+            static char isspace[] =
+                "01234567" "8     EF"   // 00-15
+                "01234567" "89ABCDEF"   // 16-31
+                " 1234567" "89ABCDEF"   // 32-47
+                "01234567" "89ABCDEF"   // 48-63
+                "01234567" "89ABCDEF"   // 64-79
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF"
+                "01234567" "89ABCDEF";
+            while (position < data.size() && isspace[static_cast<unsigned char>(data[position])] == ' ') {
                 ++position;
             }
             value = (position < data.size()) ? data[position] : -1;

@@ -88,7 +88,7 @@ class ParserInterface
                 char            delim;
                 ReadTo(std::string& dst, char delim):dst(dst),delim(delim){}
                 bool operator()(std::istream* input)    {return static_cast<bool>(std::getline((*input), dst, delim));}
-                bool operator()(StringInput& input)     {return input.readTo(dst, delim);}
+                bool operator()(StringInput& input)     {dst.clear();return input.readTo(dst, delim);}
             };
             return std::visit(ReadTo(dst, delim), input);
         }
