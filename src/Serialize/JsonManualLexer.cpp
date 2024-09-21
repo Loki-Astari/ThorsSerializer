@@ -162,12 +162,46 @@ std::string_view JsonManualLexer::getRawString()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+void Unicode::checkBufferFast(ParserInterface& i, std::string& reply)
+{
+    //std::cerr << "Fast:\n";
+    i.readTo(reply, '"');
+    //std::cerr << "\tFirst: >" << reply << "<\n";
+
+    if (reply.size() > 0 && reply[reply.size() - 1] == '\\')
+    {
+        std::string tmp;
+        do
+        {
+            reply.append("\"");
+            //std::cerr << "\tNext: >" << tmp << "< => >" << reply << "<\n";
+            i.readTo(tmp, '"');
+            reply.append(tmp);
+        }
+        while (tmp.size() > 0 && tmp[tmp.size() - 1] == '\\');
+        //std::cerr << "\tLast: >" << tmp << "< => >" << reply << "<\n";
+    }
+    //std::cerr << "\tCheck: >" << reply << "<\n";
+    if (i.config.convertBackSlash)
+    {
+        auto newEnd = std::copy(make_UnicodeWrapperIterator(std::begin(reply)),
+                                make_EndUnicodeWrapperIterator(std::end(reply)),
+                                std::begin(reply));
+        //std::cerr << "\tSize:  >" << std::distance(std::begin(reply), newEnd) << "\n";
+        reply.resize(std::distance(std::begin(reply), newEnd));
+    }
+    //std::cerr << "\tDone:  >" << reply << "<\n";
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void Unicode::checkBuffer(ParserInterface& i, std::string& reply)
 {
     reply.clear();
-    while (i.ok())
+
+    int next;
+    while ((next = i.get()) != EOF)
     {
-        unsigned char result = i.get();
+        unsigned char result = next;
         if (result == '"') {
             return;
         }
@@ -183,6 +217,12 @@ void Unicode::checkBuffer(ParserInterface& i, std::string& reply)
             continue;
         }
         result = i.get();
+        if (!i.config.convertBackSlash)
+        {
+            reply += '\\';
+            reply += result;
+            continue;
+        }
         switch (result)
         {
             case '"':   reply += '"';   continue;
@@ -305,7 +345,7 @@ void JsonManualLexer::getStringInto(std::string& value)
                          "UnicodeWrapperIterator",
                          "String does not start with a \" character");
     }
-    Unicode::checkBuffer(parser, value);
+    Unicode::checkBufferFast(parser, value);
 }
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 std::string_view JsonManualLexer::getString()
