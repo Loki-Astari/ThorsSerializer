@@ -32,7 +32,8 @@ struct ReadValue
     void checkZero(I& stream)
     {
         int peek = stream.peek();
-        if (peek == '0') {
+        if (peek == '0')
+        {
             stream.get();
             peek = stream.peek();
             if (peek >= '1' && peek <= '9') {
