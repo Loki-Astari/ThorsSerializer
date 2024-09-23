@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <charconv>
+#include <cmath>
 
 using namespace ThorsAnvil::Serialize;
 
@@ -248,7 +249,7 @@ struct FormatDouble
     {
         if (formater.value == 0)
         {
-            return str << "0.0";
+            return str << (signbit(formater.value) ? "-0.0" : "0.0");
         }
         else
         {
