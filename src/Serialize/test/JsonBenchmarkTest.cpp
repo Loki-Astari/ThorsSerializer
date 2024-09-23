@@ -1,6 +1,10 @@
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "Traits.h"
+#include "test/TwitterTest.h"
+#include "test/CountryTest.h"
+#include "test/CatalogTest.h"
+#include <fstream>
 
 namespace JsonBenchmarkTest
 {
@@ -2050,4 +2054,62 @@ TEST(JsonBenchmarkTest, round27)
         action()
     );
 }
+
+TEST(JsonBenchmarkTest, performanceTwitter)
+{
+    using ThorsAnvil::Serialize::ParseType;
+
+    auto action = []()
+    {
+        TwitterTest::Twitter    value;
+        std::ifstream           input("test/data/twitter.json");
+
+        input >> ThorsAnvil::Serialize::jsonImporter(value, config);
+
+        EXPECT_EQ(value.statuses[0].user.screen_name, "ayuu0123");
+        EXPECT_EQ(value.statuses[0].entities.user_mentions[0].screen_name, "aym0566x");
+    };
+    EXPECT_NO_THROW(
+        action()
+    );
+}
+
+TEST(JsonBenchmarkTest, performanceCountry)
+{
+    using ThorsAnvil::Serialize::ParseType;
+
+    auto action = []()
+    {
+        CountryTest::Country    value;
+        std::ifstream           input("test/data/canada.json");
+
+        input >> ThorsAnvil::Serialize::jsonImporter(value, config);
+
+        EXPECT_EQ(value.features[0].properties.name, "Canada");
+        EXPECT_EQ(value.features[0].geometry.coordinates[0][0][1], 43.420273000000009);
+    };
+    EXPECT_NO_THROW(
+        action()
+    );
+}
+
+TEST(JsonBenchmarkTest, performanceCatalog)
+{
+    using ThorsAnvil::Serialize::ParseType;
+
+    auto action = []()
+    {
+        CatalogTest::Perform    value;
+        std::ifstream           input("test/data/citm_catalog.json");
+
+        input >> ThorsAnvil::Serialize::jsonImporter(value, config);
+
+        EXPECT_EQ(value.events["138586341"].name, "30th Anniversary Tour");
+        EXPECT_EQ(value.performances[0].prices[0].amount, 90250);
+    };
+    EXPECT_NO_THROW(
+        action()
+    );
+}
+
 
