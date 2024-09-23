@@ -18,12 +18,14 @@ struct StringInput
     std::string_view    data;
     std::size_t         position;
     std::size_t         lastRead;
+    bool                good;
 
     public:
         StringInput(std::string_view const& view)
             : data(view)
             , position(0)
             , lastRead(0)
+            , good(true)
         {}
 
         bool read(char* dst, std::size_t size)
@@ -34,7 +36,7 @@ struct StringInput
             position += copySize;
             lastRead = copySize;
 
-            return position <= data.size();
+            return good = position <= data.size();
         }
         bool readTo(std::string& dst, char delim)
         {
@@ -49,7 +51,7 @@ struct StringInput
             std::copy(&data[position], &data[position + size], &dst[start]);
 
             position += (size + 1);
-            return position <= data.size();
+            return good = position <= data.size();
         }
         std::size_t getLastReadCount() const
         {
@@ -61,7 +63,7 @@ struct StringInput
         }
         int get()
         {
-            return position < data.size() ? data[position++] : EOF;
+            return good ? data[position++] : EOF;
         }
         int peek()
         {
@@ -70,22 +72,24 @@ struct StringInput
         void ignore(std::size_t size)
         {
             position += size;
+            good = position <= data.size();
         }
-        void clear()
+        void clear(bool newState = true)
         {
-            position = 0;
+            good = newState;
         }
         void unget()
         {
             --position;
+            good = position <= data.size();
         }
         bool isOk() const
         {
-            return position <= data.size();
+            return good;
         }
         void setFail()
         {
-            position = data.size() + 1;
+            good = false;
         }
 
         template<typename T>
@@ -102,6 +106,7 @@ struct StringInput
             {
                 lastRead = (result.ptr - start);
                 position+= lastRead;
+                good = position <= data.size();
                 return true;
             }
             return false;
@@ -141,7 +146,12 @@ struct StringInput
             }
             value = (position < data.size()) ? data[position] : -1;
             ++position;
+            good = position <= data.size();
             return true;
+        }
+        bool rdstate()
+        {
+            return good;
         }
     private:
 };

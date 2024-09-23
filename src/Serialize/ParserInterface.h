@@ -55,10 +55,18 @@ struct ReadValue
     requires std::floating_point<T>
     bool validateResult(bool ok, I& stream)
     {
-        if (!ok && pos != stream.tellg())
+        if (!ok)
         {
+            auto state = stream.rdstate();
             stream.clear();
-            ok = true;
+            if (pos == stream.tellg())
+            {
+                stream.clear(state);
+            }
+            else
+            {
+                ok = true;
+            }
         }
         return ok;
     }
