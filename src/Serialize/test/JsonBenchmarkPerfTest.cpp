@@ -21,7 +21,7 @@ TEST(JsonBenchmarkPerfTest, parse)
     std::getline(twitter, twitterData, static_cast<char>(-1));
     std::getline(country, countryData, static_cast<char>(-1));
     std::getline(catalog, catalogData, static_cast<char>(-1));
-    ThorsAnvil::Serialize::ParserConfig  config{ThorsAnvil::Serialize::ParserConfig{}.setCatchExceptions(false)};
+    ThorsAnvil::Serialize::ParserConfig  config{ThorsAnvil::Serialize::ParserConfig{}.setCatchExceptions(false).setNoBackslashConversion()};
 
     auto start = std::chrono::high_resolution_clock::now();
     for (int loop = 0; loop < 10; ++loop)
@@ -56,8 +56,8 @@ TEST(JsonBenchmarkPerfTest, stringify)
     CountryTest::Country    countryValue;
     CatalogTest::Perform    catalogValue;
 
-    ThorsAnvil::Serialize::ParserConfig  config{ThorsAnvil::Serialize::ParserConfig{}.setCatchExceptions(false)};
-    ThorsAnvil::Serialize::PrinterConfig configOut{ThorsAnvil::Serialize::PrinterConfig{}.setOutputType(ThorsAnvil::Serialize::OutputType::Stream)};
+    ThorsAnvil::Serialize::ParserConfig  config{ThorsAnvil::Serialize::ParserConfig{}.setCatchExceptions(false).setNoBackslashConversion()};
+    ThorsAnvil::Serialize::PrinterConfig configOut{ThorsAnvil::Serialize::PrinterConfig{}.setOutputType(ThorsAnvil::Serialize::OutputType::Stream).setCatchExceptions(false)};
 
     twitterData >> ThorsAnvil::Serialize::jsonImporter(twitterValue, config);
     countryData >> ThorsAnvil::Serialize::jsonImporter(countryValue, config);
@@ -97,8 +97,8 @@ TEST(JsonBenchmarkPerfTest, pritify)
     CountryTest::Country    countryValue;
     CatalogTest::Perform    catalogValue;
 
-    ThorsAnvil::Serialize::ParserConfig  config{ThorsAnvil::Serialize::ParserConfig{}.setCatchExceptions(false)};
-    ThorsAnvil::Serialize::PrinterConfig configOut{ThorsAnvil::Serialize::PrinterConfig{}.setOutputType(ThorsAnvil::Serialize::OutputType::Default)};
+    ThorsAnvil::Serialize::ParserConfig  config{ThorsAnvil::Serialize::ParserConfig{}.setCatchExceptions(false).setNoBackslashConversion()};
+    ThorsAnvil::Serialize::PrinterConfig configOut{ThorsAnvil::Serialize::PrinterConfig{}.setOutputType(ThorsAnvil::Serialize::OutputType::Default).setCatchExceptions(false)};
 
     twitterData >> ThorsAnvil::Serialize::jsonImporter(twitterValue, config);
     countryData >> ThorsAnvil::Serialize::jsonImporter(countryValue, config);
