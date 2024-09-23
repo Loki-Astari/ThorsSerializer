@@ -18,11 +18,60 @@ int main() {
     std::index_sequence<1,2,3,4>    seq;
 }])
 
+AX_THOR_FUNC_TEST_COMP_ACTION([[
+#include <charconv>
+int main() {
+    char    buffer[100];
+    double  value = 12.345;
+    auto result = std::to_chars(buffer, buffer+100, value, std::chars_format::fixed, 6);
+}]],
+    [
+        AC_MSG_NOTICE([[Supports std::to_chars(begin, end, double)]])
+    ],
+    [
+        AC_MSG_NOTICE([Setting NO_STD_SUPPORT_TO_CHAR_DOUBLE])
+        AC_DEFINE([NO_STD_SUPPORT_TO_CHAR_DOUBLE], [1], [Check for older build tools and use simpler code with old tools])
+    ]
+)
+AX_THOR_FUNC_TEST_COMP_ACTION([[
+#include <charconv>
+int main() {
+    char    buffer[] = "12.345";
+    double  value;
+    auto result = std::from_chars(buffer, buffer+100, value);
+}]],
+    [
+        AC_MSG_NOTICE([[Supports std::from_chars(begin, end, double)]])
+    ],
+    [
+        AC_MSG_NOTICE([Setting NO_STD_SUPPORT_FROM_CHAR_DOUBLE])
+        AC_DEFINE([NO_STD_SUPPORT_FROM_CHAR_DOUBLE], [1], [Check for older build tools and use simpler code with old tools])
+    ]
+)
+
+
 LT_INIT
 
 subconfigure="${subconfigure} --with-thorserialize-root=$(pwd)/build "
 
 AX_THOR_FEATURE_HEADER_ONLY_VARIANT([THORS_SERIALIZER])
 AX_THOR_FUNC_TERM_BUILD([SERIALIZER], [src/Serialize/SerializeConfig.h:config.h.in])
+
+#
+# Must be done after AX_THOR_FUNC_TERM_BUILD
+# This is becuase the AX_THOR_FUNC_TERM_BUILD makes sure that
+# windows sym links are correctly set up.
+#
+cat - << 'MAKEDOC' > src/fast_float/Makefile
+
+THORSANVIL_ROOT				?= $(realpath ../../)
+
+TARGET						= fast_float.head
+VERA                        = echo
+
+include $(THORSANVIL_ROOT)/build/tools/Makefile
+
+MAKEDOC
+
 
 AC_OUTPUT

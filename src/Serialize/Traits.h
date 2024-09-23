@@ -455,7 +455,7 @@
 #define BUILDTEMPLATETYPEVALUE(Act, M1, Count)  ALT_REP_OF_N(Act, M1, <, >, Count)
 
 
-#define THOR_TYPEACTION(TC, Type, Member)       std::pair<char const*, decltype(&Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , TC) ::Member)>
+#define THOR_TYPEACTION(TC, Type, Member)       std::pair<std::string_view, decltype(&Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , TC) ::Member)>
 #define THOR_VALUEACTION(TC, Type, Member)      { QUOTE(Member), &Type BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , TC) ::Member }
 #define THOR_NAMEACTION(TC, Type, Member)       { Type::Member, #Member ## s}
 #define LAST_THOR_TYPEACTION(TC, Type)
@@ -558,18 +558,18 @@ template<TT BUILDTEMPLATETYPEPARAM(THOR_TYPENAMEPARAMACTION, Count)>    \
 class Override<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) > \
 {                                                                       \
     public:                                                             \
-        static char const* nameOverride(char const* name)               \
+        static std::string_view const& nameOverride(std::string_view const& name)   \
         {                                                               \
-            static auto hashCString = [](char const* str)               \
+            static auto hashCString = [](std::string_view const& str)   \
             {                                                           \
                 std::hash<std::string_view>  viewHash;                  \
-                return viewHash(std::string_view(str));                 \
+                return viewHash(str);                                   \
             };                                                          \
-            static auto cmpCString = [](char const* lhs, char const* rhs)\
+            static auto cmpCString = [](std::string_view const& lhs, std::string_view const& rhs)\
             {                                                           \
-                return std::strcmp(lhs, rhs) == 0;                      \
+                return lhs == rhs;                                      \
             };                                                          \
-            using OverrideMap = std::unordered_map<char const*, char const*, decltype(hashCString), decltype(cmpCString)>;   \
+            using OverrideMap = std::unordered_map<std::string_view, std::string_view, decltype(hashCString), decltype(cmpCString)>;   \
             static OverrideMap overrideMap =                            \
             {                                                           \
                 {__VA_ARGS__},                                          \
@@ -601,7 +601,7 @@ class Filter<DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) 
 {                                                                       \
     public:                                                             \
         template<typename M>                                            \
-        static bool filter(DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) const& object, char const* name, M const& /*v*/)    \
+        static bool filter(DataType BUILDTEMPLATETYPEVALUE(THOR_TYPENAMEVALUEACTION, , Count) const& object, std::string_view const& name, M const& /*v*/)    \
         {                                                               \
             auto find = object.member.find(name);                       \
             return find == object.member.end() ? true : find->second;   \
@@ -891,7 +891,7 @@ template<typename T>
 class Override
 {
     public:
-        static char const* nameOverride(char const* name) {return name;}
+        static std::string_view const& nameOverride(std::string_view const& name) {return name;}
 };
 
 template<typename T>
@@ -912,7 +912,7 @@ class Filter
 {
     public:
         template<typename M>
-        static constexpr bool filter(T const& /*object*/, char const* /*name*/, M const& value)
+        static constexpr bool filter(T const& /*object*/, std::string_view const& /*name*/, M const& value)
         {
             if constexpr (isOptional_v<M>) {
                 return value.has_value();
@@ -978,7 +978,7 @@ class TraitsSizeCalculator
                 return std::make_pair(0UL,0UL);
             }
             auto partSize   = addSizeOneMember(printer, object, item.second);
-            auto nameSize   = std::strlen(Override<MyType>::nameOverride(item.first));
+            auto nameSize   = std::size(Override<MyType>::nameOverride(item.first));
             return std::make_pair(partSize + nameSize, 1);
         }
         template<typename MyType, typename M, typename C>
@@ -988,7 +988,7 @@ class TraitsSizeCalculator
                 return std::make_pair(0UL,0UL);
             }
             auto partSize   = addSizeOneMember(printer, object, item.second);
-            auto nameSize   = std::strlen(Override<MyType>::nameOverride(item.first));
+            auto nameSize   = std::size(Override<MyType>::nameOverride(item.first));
             return std::make_pair(partSize + nameSize, 1);
         }
         template<typename MyType, typename Members, std::size_t... Seq>
@@ -1249,181 +1249,4 @@ struct Fake55{};
 
 }
 
-#endif
-
-
-#if 0
-#####
-#define NUM_ARGS
-#define NUM_ARGS_
-
-#define QUOTE_
-#define QUOTE
-
-#define EXPAND_
-#define EXPAND
-#define ALT_EXPAND_
-#define ALT_EXPAND
-
-#define REP_N
-#define REP_OF_N
-#define REP_OF_N_
-
-#define REP_OF_43
-...
-#define REP_OF_00
-
-#define ALT_REP_OF_N
-#define ALT_REP_OF_N_
-
-#define ALT_REP_OF_43
-...
-#define ALT_REP_OF_00
-
-#define REP_CMD_N
-#define REP_CMD_OF_N
-#define REP_CMD_OF_N_
-
-#define REP_CMD_OF_43
-...
-#define REP_CMD_OF_00
-
-#define BUILDTEMPLATETYPEPARAM
-#define BUILDTEMPLATETYPEVALUE
-
-#define THOR_TYPEACTION
-#define THOR_VALUEACTION
-#define THOR_NAMEACTION
-#define LAST_THOR_TYPEACTION
-#define LAST_THOR_VALUEACTION
-#define LAST_THOR_NAMEACTION
-
-#define THOR_TYPENAMEPARAMACTION
-#define THOR_TYPENAMEVALUEACTION
-#define THOR_TYPE_INT_VALUE
-#define THOR_TYPE_INT_VALUE_FAKETemplate
-#define THOR_TYPE_INT_VALUE_FAKE
-#define THOR_CHECK_ASSERT
-#define LAST_THOR_TYPENAMEPARAMACTION
-#define LAST_THOR_TYPENAMEVALUEACTION
-#define LAST_THOR_TYPE_INT_VALUE
-#define LAST_THOR_CHECK_ASSERT
-
-#define THOR_BUILD_NAME
-#define THOR_DECLARE_MEMBER_TYPE
-#define LAST_THOR_DECLARE_MEMBER_TYPE
-
-#define THOR_MERGE_LABEL_NAME
-#define THOR_UNIQUE_LABEL
-#define THOR_UNIQUE_NAME
-
-#define DO_ASSERT_WITH_TEMPLATE
-
-#define DO_ASSERT_WITH_TEMPLATE_CHECK_00
-...
-#define DO_ASSERT_WITH_TEMPLATE_CHECK_29
-
-#define DO_ASSERT
-#define DO_ASSERT_WITH_TEMPLATE_WORKING
-
-#define ThorsAnvil_MakeOverride
-#define ThorsAnvil_Template_MakeOverride
-#define ThorsAnvil_TTemplate_MakeOverride
-#define ThorsAnvil_MakeOverride_Base
-
-
-#define ThorsAnvil_MakeFilter
-#define ThorsAnvil_Template_MakeFilter
-#define ThorsAnvil_MakeFilter_Base
-
-#define ThorsAnvil_Parent
-
-#define ThorsAnvil_MakeTrait
-#define ThorsAnvil_Template_MakeTrait
-#define ThorsAnvil_TTemplate_MakeTrait
-
-#define ThorsAnvil_ExpandTrait
-#define ThorsAnvil_ExpandTrait_Base
-#define ThorsAnvil_Template_ExpandTrait
-#define ThorsAnvil_TTemplate_ExpandTrait
-
-#define ThorsAnvil_Template_ExpandTemplate
-
-#define ThorsAnvil_MakeTrait_Base
-
-#define ThorsAnvil_MakeTraitCustom
-#define ThorsAnvil_MakeTraitCustomSerialize
-
-#define ThorsAnvil_MakeEnum
-
-#define ThorsAnvil_MakeEnumFlag
-
-#define ThorsAnvil_PointerAllocator
-
-#define ThorsAnvil_RegisterPolyMorphicType_Internal
-#define ThorsAnvil_RegisterPolyMorphicType
-
-#define ThorsAnvil_PolyMorphicSerializer
-#define ThorsAnvil_PolyMorphicSerializerWithOverride
-
-
-namespace ThorsAnvil
-{
-    namespace Serialize
-    {
-
-template<typename EnumName>
-class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>;
-
-template<typename T, typename SFINE>
-class Traits;
-
-template<typename T>
-class Override;
-
-template<typename T>
-struct IsOptional;
-template<typename M>
-struct IsOptional<std::optional<M>>;
-template<typename T>
-inline constexpr bool isOptional_v = IsOptional<T>::value;
-template<typename T>
-class Filter;
-template<typename T>
-class SerializeArraySize;
-template<typename T, typename R = T>
-struct GetRootType;
-template<typename T>
-struct GetRootType<T, typename Traits<std::remove_cv_t<T>>::Root>;
-template<typename T>
-struct GetAllocationType;
-template<typename T>
-struct GetAllocationType<std::unique_ptr<T>>;
-
-#ifdef  SCGRROT_SHARED_PTR_SUPPRT
-template<typename T>
-struct GetAllocationType<std::shared_ptr<T>>;
-#endif
-
-class PolyMorphicRegistry;
-template <typename T>
-class HasPolyMorphicObjectMarker;
-template<typename T, bool Poly = HasPolyMorphicObjectMarker<T>::Value>
-struct ThorsAnvil_InitPolyMorphicType;
-template<typename T>
-struct ThorsAnvil_InitPolyMorphicType<T, true>;
-template<typename T>
-struct ThorsAnvil_InitPolyMorphicType<T, false>;
-
-template<typename T>
-struct TemplateFake{};
-struct Fake1{};
-...
-struct Fake55{};
-
-
-    }
-}
-
-#####
 #endif

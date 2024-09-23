@@ -30,11 +30,11 @@ namespace OnLineBank
     {
         virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& printer, ID const& object) const override
         {
-            printer.stream() << object.id;
+            printer.writeValue(object.id);
         }
         virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object) const override
         {
-            parser.stream() >> object.id;
+            parser.readValue(object.id);
         }
 
         //virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& printer, ID const& object)   override 
@@ -49,13 +49,13 @@ namespace OnLineBank
         virtual char getBsonByteMark() const override   {return '\x07';}
         virtual void writeBson(ThorsAnvil::Serialize::BsonPrinter& printer, ID const& object) const override
         {
-            printer.stream().write(reinterpret_cast<char const*>(&object.id), sizeof(object.id));
-            printer.stream().write("            ", sizeOfID - sizeof(object.id));
+            printer.write(reinterpret_cast<char const*>(&object.id), sizeof(object.id));
+            printer.write("            ", sizeOfID - sizeof(object.id));
         }
         virtual void readBson(ThorsAnvil::Serialize::BsonParser& parser, char /*byteMarker*/, ID& object) const override
         {
-            parser.stream().read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
-            parser.stream().ignore(sizeOfID - sizeof(object.id));
+            parser.read(reinterpret_cast<char*>(&object.id), sizeof(object.id));
+            parser.ignore(sizeOfID - sizeof(object.id));
         }
     };
 
@@ -143,6 +143,10 @@ ThorsAnvil_Template_MakeTrait(1, OnLineBank::Flounder, data);
 ThorsAnvil_MakeTrait(OnLineBank::BankAccount, id, balance, details, valid);
 ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::CurrentAccount, actions);
 ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::DepositAccount, withdrawlLimit);
+
+ThorsAnvil_RegisterPolyMorphicType(OnLineBank::CurrentAccount);
+ThorsAnvil_RegisterPolyMorphicType(OnLineBank::DepositAccount);
+
 
 #endif
 

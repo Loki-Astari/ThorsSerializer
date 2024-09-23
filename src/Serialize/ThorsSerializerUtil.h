@@ -2,6 +2,14 @@
 #define THORSANVIL_SERIALIZER_THORSSERIALIZERUTIL_H
 
 #include "SerializeConfig.h"
+#include "ThorsSerializerUtilTypes.h"
+#include "PolymorphicMarker.h"
+#include "PrinterConfig.h"
+#include "ParserConfig.h"
+#include "PrinterInterface.h"
+#include "ParserInterface.h"
+#include "StringOutput.h"
+#include "StringInput.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
 #include <type_traits>
@@ -15,126 +23,15 @@
 #include <functional>
 #include <optional>
 #include <memory>
+#include <variant>
 
 namespace ThorsAnvil::Serialize
 {
-
-        namespace Private
-        {
-
-inline
-std::string const& getDefaultPolymorphicMarker()
-{
-    using std::string_literals::operator""s;
-    static std::string const defaultPolymorphicMarker = "__type"s;
-    return defaultPolymorphicMarker;
-}
-        }
-
-template<typename T>
-struct SharedInfo
-{
-    std::intmax_t       sharedPtrName;
-    std::optional<T*>   data;
-};
-
-struct EscapeString
-{
-    std::string_view    value;
-    EscapeString(std::string const& value)
-        : value(value)
-    {}
-    EscapeString(std::string_view const& value)
-        : value(value)
-    {}
-    friend std::ostream& operator<<(std::ostream& stream, EscapeString const& data)
-    {
-        std::string_view const& value = data.value;
-
-        static auto isEscape = [](char c)
-        {
-            return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
-        };
-
-        auto begin  = std::begin(value);
-        auto end    = std::end(value);
-        auto next = std::find_if(begin, end, isEscape);
-        if (next == end)
-        {
-            stream << value;
-        }
-        else
-        {
-            while (next != end)
-            {
-                stream << std::string(begin, next);
-                if (*next == '"')
-                {
-                    stream << R"(\")";
-                    ++next;
-                }
-                else if (*next == '\\')
-                {
-                    stream << R"(\\)";
-                    ++next;
-                }
-                else if (*next == 0x08)
-                {
-                    stream << R"(\b)";
-                    ++next;
-                }
-                else if (*next == 0x0C)
-                {
-                    stream << R"(\f)";
-                    ++next;
-                }
-                else if (*next == 0x0A)
-                {
-                    stream << R"(\n)";
-                    ++next;
-                }
-                else if (*next == 0x0D)
-                {
-                    stream << R"(\r)";
-                    ++next;
-                }
-                else if (*next == 0x09)
-                {
-                    stream << R"(\t)";
-                    ++next;
-                }
-                else
-                {
-                    stream << R"(\u)"
-                           << std::setw(4)
-                           << std::setfill('0')
-                           << std::hex
-                           << static_cast<unsigned int>(static_cast<unsigned char>(*next))
-                           << std::dec;
-                    ++next;
-                }
-                /*
-                else
-                {
-                    110xxxxx
-
-                    stream << R("\u") << std::setw(4) << std::setfill('0') << std::hex << codepoint;
-                }
-                */
-                begin = next;
-                next = std::find_if(begin, end, isEscape);
-            }
-            stream << std::string(begin, end);
-        }
-        return stream;
-    }
-};
 
 /*
  * Defines the generic type that all serialization types can expand on
  */
 enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Reference, Custom_Depricated, Custom_Serialize};
-enum class FormatType{Json, Yaml, Bson};
 
 template<typename T, typename SFINE = void>
 class Traits;
@@ -170,314 +67,6 @@ template<typename... Args>
 struct GetPrimaryParentType<Parents<Args...>>
 {
     using type = std::tuple_element_t<0, std::tuple<Args...>>;
-};
-
-struct IgnoreCallBack
-{
-    using AppendFunc = std::function<void(char const*, std::size_t)>;
-    using ReadFunc   = std::function<void(std::istream&, char*, std::size_t)>;
-    using IgnoreFunc = std::function<void(std::istream&, std::size_t)>;
-    AppendFunc  append  = [](char const*, std::size_t){};
-    ReadFunc    read    = [](std::istream& s, char* d, std::size_t size){s.read(d, size);};
-    IgnoreFunc  ignore  = [](std::istream& s, std::size_t size)         {s.ignore(size);};
-};
-
-enum class ParseType   {Weak, Strict, Exact};
-enum class ParserToken {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
-struct ParserConfig
-{
-    /*
-     * These constructor are maintained for backwards compatability
-     * Please use a the default constructor followed by the Set<Attribute>() methods
-     */
-    ParserConfig(IgnoreCallBack&& cb,
-                 ParseType parseStrictness = ParseType::Weak,
-                 std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
-                 bool catchExceptions = true)
-        : parseStrictness(parseStrictness)
-        , polymorphicMarker(polymorphicMarker)
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , ignoreCallBack(std::move(cb))
-        , useOldSharedPtr(false)
-    {}
-    ParserConfig(ParseType parseStrictness,
-                 std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
-                 bool catchExceptions = true)
-        : parseStrictness(parseStrictness)
-        , polymorphicMarker(polymorphicMarker)
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    ParserConfig(std::string const& polymorphicMarker, bool catchExceptions = true)
-        : parseStrictness(ParseType::Weak)
-        , polymorphicMarker(polymorphicMarker)
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    ParserConfig(bool catchExceptions)
-        : parseStrictness(ParseType::Weak)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    ParserConfig(ParseType parseStrictness, bool catchExceptions)
-        : parseStrictness(parseStrictness)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    // Use this constructor.
-    ParserConfig()
-        : parseStrictness(ParseType::Weak)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
-        , catchExceptions(true)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    ParserConfig& setParseStrictness(ParseType p_parseStrictness)               {parseStrictness = p_parseStrictness;       return *this;}
-    ParserConfig& setPolymorphicMarker(std::string const& p_polymorphicMarker)  {polymorphicMarker = p_polymorphicMarker;   return *this;}
-    ParserConfig& setCatchExceptions(bool p_catchExceptions)                    {catchExceptions = p_catchExceptions;       return *this;}
-    ParserConfig& setUseOldSharedPtr()                                          {useOldSharedPtr = true;                    return *this;}
-    ParseType       parseStrictness;
-    std::string     polymorphicMarker;
-    bool            catchExceptions;
-    long            parserInfo;
-    IgnoreCallBack  ignoreCallBack;
-    bool            useOldSharedPtr;
-};
-
-class ParserInterface
-{
-    public:
-        std::istream&   input;
-        ParserToken     pushBack;
-        ParserConfig    config;
-
-        ParserInterface(std::istream& input, ParserConfig  config = ParserConfig{})
-            : input(input)
-            , pushBack(ParserToken::Error)
-            , config(config)
-        {}
-        virtual ~ParserInterface() {}
-        virtual FormatType formatType()                 = 0;
-                ParserToken     getToken();
-                void            pushBackToken(ParserToken token);
-        virtual ParserToken     getNextToken()          = 0;
-        virtual std::string     getKey()                = 0;
-
-        virtual void    ignoreDataValue()               {}
-        virtual void    ignoreDataMap(bool)             {}
-        virtual void    ignoreDataArray(bool)           {}
-
-        virtual void    getValue(short int&)             = 0;
-        virtual void    getValue(int&)                   = 0;
-        virtual void    getValue(long int&)              = 0;
-        virtual void    getValue(long long int&)         = 0;
-
-        virtual void    getValue(unsigned short int&)    = 0;
-        virtual void    getValue(unsigned int&)          = 0;
-        virtual void    getValue(unsigned long int&)     = 0;
-        virtual void    getValue(unsigned long long int&)= 0;
-
-        virtual void    getValue(float&)                 = 0;
-        virtual void    getValue(double&)                = 0;
-        virtual void    getValue(long double&)           = 0;
-
-        virtual void    getValue(bool&)                  = 0;
-
-        virtual void    getValue(std::string&)           = 0;
-
-        virtual bool    isValueNull()                    = 0;
-
-        virtual std::string getRawValue()                = 0;
-
-        void    ignoreValue();
-
-        std::istream& stream() {return input;}
-
-        template<typename T>
-        void getShared(SharedInfo<T> const& info, std::shared_ptr<T>& object)
-        {
-            std::intmax_t index = info.sharedPtrName;
-            if (info.data.has_value())
-            {
-                object.reset(info.data.value());
-                savedSharedPtr[index] = object;
-                return;
-            }
-            std::shared_ptr<T>  sharedPtr = std::any_cast<std::shared_ptr<T>>(savedSharedPtr[index]);
-            object = sharedPtr;
-        }
-
-    private:
-        std::map<std::intmax_t, std::any>     savedSharedPtr;
-        void    ignoreTheValue();
-        void    ignoreTheMap();
-        void    ignoreTheArray();
-
-};
-
-// Default:     What ever the implementation likes.
-// Stream:      Compressed for over the wire protocol.
-// Config:      Human readable (potentially config file like)
-enum class OutputType {Default, Stream, Config};
-
-
-struct PrinterConfig
-{
-    /*
-     * These constructors are maintained for backward compatibility.
-     * But should not be used in new code.
-     * Please use the set<Attribute>() methods.
-     */
-    PrinterConfig(OutputType characteristics,
-                  std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
-                  bool catchExceptions = true)
-        : characteristics(characteristics)
-        , polymorphicMarker(polymorphicMarker)
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    PrinterConfig(std::string const& polymorphicMarker,
-                  bool catchExceptions = true)
-        : characteristics(OutputType::Default)
-        , polymorphicMarker(polymorphicMarker)
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    PrinterConfig(bool catchExceptions)
-        : characteristics(OutputType::Default)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    PrinterConfig(OutputType characteristic, bool catchExceptions)
-        : characteristics(characteristic)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
-        , catchExceptions(catchExceptions)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-
-    /* Please use the default constructor
-     * Then call the appropriate set<Attributes>() to define the characteristics you need.
-     */
-    PrinterConfig()
-        : characteristics(OutputType::Default)
-        , polymorphicMarker(Private::getDefaultPolymorphicMarker())
-        , catchExceptions(true)
-        , parserInfo(0)
-        , useOldSharedPtr(false)
-    {}
-    PrinterConfig& setOutputType(OutputType p_characteristics)                  {characteristics = p_characteristics;      return *this;}
-    PrinterConfig& setPolymorphicMarker(std::string const& p_polymorphicMarker) {polymorphicMarker = p_polymorphicMarker;  return *this;}
-    PrinterConfig& setCatchExceptions(bool p_catchExceptions)                   {catchExceptions = p_catchExceptions;      return *this;}
-    PrinterConfig& setUseOldSharedPtr()                                         {useOldSharedPtr = true;                   return *this;}
-
-    OutputType      characteristics;
-    std::string     polymorphicMarker;
-    bool            catchExceptions;
-    long            parserInfo;
-    bool            useOldSharedPtr;
-};
-
-class PrinterInterface
-{
-    public:
-        std::ostream&   output;
-        PrinterConfig   config;
-
-        PrinterInterface(std::ostream& output, PrinterConfig config = PrinterConfig{})
-            : output(output)
-            , config(config)
-        {}
-        virtual ~PrinterInterface() {}
-        virtual FormatType formatType()                 = 0;
-        virtual void openDoc()                          = 0;
-        virtual void closeDoc()                         = 0;
-        virtual void openMap(std::size_t size)          = 0;
-        virtual void closeMap()                         = 0;
-        virtual void openArray(std::size_t size)        = 0;
-        virtual void closeArray()                       = 0;
-
-        virtual void    addKey(std::string const& key)  = 0;
-
-        virtual void    addValue(short int)             = 0;
-        virtual void    addValue(int)                   = 0;
-        virtual void    addValue(long int)              = 0;
-        virtual void    addValue(long long int)         = 0;
-
-        virtual void    addValue(unsigned short int)    = 0;
-        virtual void    addValue(unsigned int)          = 0;
-        virtual void    addValue(unsigned long int)     = 0;
-        virtual void    addValue(unsigned long long int)= 0;
-
-        virtual void    addValue(float)                 = 0;
-        virtual void    addValue(double)                = 0;
-        virtual void    addValue(long double)           = 0;
-
-        virtual void    addValue(bool)                  = 0;
-
-        virtual void    addValue(std::string const&)    = 0;
-        virtual void    addValue(std::string_view const&) = 0;
-
-        virtual void    addRawValue(std::string const&) = 0;
-
-        virtual void    addNull()                       = 0;
-
-        void addValue(void*)        = delete;
-        void addValue(void const*)  = delete;
-
-        virtual bool        printerUsesSize()                       {return false;}
-        virtual void        pushLevel(bool)                         {}
-        virtual void        popLevel()                              {}
-        virtual std::size_t getSizeMap(std::size_t /*count*/)       {return 0;}
-        virtual std::size_t getSizeArray(std::size_t /*count*/)     {return 0;}
-        virtual std::size_t getSizeNull()                           {return 0;}
-        virtual std::size_t getSizeValue(short int)                 {return 0;}
-        virtual std::size_t getSizeValue(int)                       {return 0;}
-        virtual std::size_t getSizeValue(long int)                  {return 0;}
-        virtual std::size_t getSizeValue(long long int)             {return 0;}
-        virtual std::size_t getSizeValue(unsigned short int)        {return 0;}
-        virtual std::size_t getSizeValue(unsigned int)              {return 0;}
-        virtual std::size_t getSizeValue(unsigned long int)         {return 0;}
-        virtual std::size_t getSizeValue(unsigned long long int)    {return 0;}
-        virtual std::size_t getSizeValue(float)                     {return 0;}
-        virtual std::size_t getSizeValue(double)                    {return 0;}
-        virtual std::size_t getSizeValue(long double)               {return 0;}
-        virtual std::size_t getSizeValue(bool)                      {return 0;}
-        virtual std::size_t getSizeValue(std::string const&)        {return 0;}
-        virtual std::size_t getSizeValue(std::string_view const&)   {return 0;}
-        virtual std::size_t getSizeRaw(std::size_t)                 {return 0;}
-
-        std::ostream& stream() {return output;}
-
-        template<typename T>
-        SharedInfo<T> addShared(std::shared_ptr<T> const& shared)
-        {
-            std::intmax_t index = reinterpret_cast<std::intmax_t>(shared.get());
-            void const*&  save = savedSharedPtr[index];
-            if (save == nullptr)
-            {
-                save = &shared;
-            }
-            SharedInfo<T>   result;
-            result.sharedPtrName = index;
-            if (save == &shared) {
-                result.data     = shared.get();
-            }
-            return result;
-        }
-    private:
-        std::map<std::intmax_t, void const*>     savedSharedPtr;
 };
 
 template<typename T, bool = HasParent<T>::value>
@@ -567,26 +156,6 @@ THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(bool);
 
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(std::string);
 THORSANVIL_TRAITS_FOR_BASIC_TYPE_VALUE(std::string_view);
-
-#if 0
-template<> class Traits<short int>              {public: THORSANVIL_TRAITS_FOR_VALUE(short int)};
-template<> class Traits<int>                    {public: THORSANVIL_TRAITS_FOR_VALUE(int)};
-template<> class Traits<long int>               {public: THORSANVIL_TRAITS_FOR_VALUE(long int)};
-template<> class Traits<long long int>          {public: THORSANVIL_TRAITS_FOR_VALUE(long long int)};
-
-template<> class Traits<unsigned short int>     {public: THORSANVIL_TRAITS_FOR_VALUE(unsigned short int)};
-template<> class Traits<unsigned int>           {public: THORSANVIL_TRAITS_FOR_VALUE(unsigned int)};
-template<> class Traits<unsigned long int>      {public: THORSANVIL_TRAITS_FOR_VALUE(unsigned long int)};
-template<> class Traits<unsigned long long int> {public: THORSANVIL_TRAITS_FOR_VALUE(unsigned long long int)};
-
-template<> class Traits<float>                  {public: THORSANVIL_TRAITS_FOR_VALUE(float)};
-template<> class Traits<double>                 {public: THORSANVIL_TRAITS_FOR_VALUE(double)};
-template<> class Traits<long double>            {public: THORSANVIL_TRAITS_FOR_VALUE(long double)};
-
-template<> class Traits<bool>                   {public: THORSANVIL_TRAITS_FOR_VALUE(bool)};
-
-template<> class Traits<std::string>            {public: THORSANVIL_TRAITS_FOR_VALUE(std::string const&)};
-#endif
 
 /*
  * A specialization for pointer objects.
@@ -739,11 +308,90 @@ auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size
     // Please look at test/ExceptionTest.h for a simple example.
 }
 
+inline void escapeString(PrinterInterface& printer, std::string_view const& value)
+{
+    using namespace std::string_literals;
 
+    static auto isEscape = [](char c)
+    {
+        return (c >= 0x00 && c <= 0x1f) || c == '"' || c == '\\';
+    };
+
+    auto begin  = std::begin(value);
+    auto end    = std::end(value);
+    auto next = std::find_if(begin, end, isEscape);
+    if (next == end)
+    {
+        printer.write(value);
+    }
+    else
+    {
+        while (next != end)
+        {
+            printer.write(&*begin, (next - begin));
+            if (*next == '"')
+            {
+                printer.write(R"(\")"s);
+                ++next;
+            }
+            else if (*next == '\\')
+            {
+                printer.write(R"(\\)"s);
+                ++next;
+            }
+            else if (*next == 0x08)
+            {
+                printer.write(R"(\b)"s);
+                ++next;
+            }
+            else if (*next == 0x0C)
+            {
+                printer.write(R"(\f)"s);
+                ++next;
+            }
+            else if (*next == 0x0A)
+            {
+                printer.write(R"(\n)"s);
+                ++next;
+            }
+            else if (*next == 0x0D)
+            {
+                printer.write(R"(\r)"s);
+                ++next;
+            }
+            else if (*next == 0x09)
+            {
+                printer.write(R"(\t)"s);
+                ++next;
+            }
+            else
+            {
+                std::stringstream ss;
+                ss     << R"(\u)"
+                       << std::setw(4)
+                       << std::setfill('0')
+                       << std::hex
+                       << static_cast<unsigned int>(static_cast<unsigned char>(*next))
+                       << std::dec;
+                printer.write(ss.str());
+                ++next;
+            }
+            /*
+            else
+            {
+                110xxxxx
+
+                stream << R("\u") << std::setw(4) << std::setfill('0') << std::hex << codepoint;
+            }
+            */
+            begin = next;
+            next = std::find_if(begin, end, isEscape);
+        }
+        printer.write(&*begin, (end - begin));
+    }
 }
 
-#if defined(THORS_SERIALIZER_HEADER_ONLY) && THORS_SERIALIZER_HEADER_ONLY == 1
-#include "ThorsSerializerUtil.source"
-#endif
+
+}
 
 #endif

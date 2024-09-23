@@ -13,7 +13,16 @@ using namespace ThorsAnvil::Serialize;
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 JsonParser::JsonParser(std::istream& stream, ParserConfig config)
     : ParserInterface(stream, config)
-    , lexer(stream)
+    , lexer(*this)
+    , currentEnd(Done)
+    , currentState(Init)
+    , started(false)
+{}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+JsonParser::JsonParser(std::string_view const& stream, ParserConfig config)
+    : ParserInterface(stream, config)
+    , lexer(*this)
     , currentEnd(Done)
     , currentState(Init)
     , started(false)
@@ -38,24 +47,6 @@ ParserToken JsonParser::getNextToken()
         return ParserToken::Error;
     }
 
-    // Convert Lexer tokens into smaller range 0-12
-    static std::map<int, int>   tokenIndex  =
-    {
-        {0,                                     0},
-        {'{',                                   1},
-        {'}',                                   2},
-        {'[',                                   3},
-        {']',                                   4},
-        {',',                                   5},
-        {':',                                   6},
-        {ThorsAnvil::Serialize::JSON_TRUE,      7},
-        {ThorsAnvil::Serialize::JSON_FALSE,     8},
-        {ThorsAnvil::Serialize::JSON_NULL,      9},
-        {ThorsAnvil::Serialize::JSON_STRING,    10},
-        //{ThorsAnvil::Serialize::JSON_INTEGER,   11},
-        //{ThorsAnvil::Serialize::JSON_FLOAT,     12}
-        {ThorsAnvil::Serialize::JSON_NUMBER,    13}
-    };
     // State transition table;
     static State   stateTable[][14]   =
     {
@@ -76,9 +67,7 @@ ParserToken JsonParser::getNextToken()
         /* Done  */ {   Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error,  Error   },
     };
 
-    // Read the next token and update the state.
-    int token   = lexer.yylex();
-    int index   = tokenIndex[token];
+    int index = lexer.yylex();
 
     currentState    = stateTable[currentState][index];
     switch (currentState)
@@ -142,13 +131,13 @@ ParserToken JsonParser::getNextToken()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonParser::getString()
+std::string_view JsonParser::getString()
 {
     return lexer.getString();
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonParser::getRawString()
+std::string_view JsonParser::getRawString()
 {
     return lexer.getRawString();
 }
@@ -160,30 +149,24 @@ void JsonParser::ignoreDataValue()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonParser::getKey()
+std::string_view JsonParser::getKey()
 {
     return getString();
 }
 
-template<typename T>
-inline T JsonParser::scan()
-{
-    return lexer.scan<T>();
-}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(short int& value)                     {value = lexer.scan<short int>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(int& value)                           {value = lexer.scan<int>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(long int& value)                      {value = lexer.scan<long int>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(long long int& value)                 {value = lexer.scan<long long int>();}
 
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(short int& value)                     {value = scan<short int>();}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(int& value)                           {value = scan<int>();}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(long int& value)                      {value = scan<long int>();}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(long long int& value)                 {value = scan<long long int>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned short int& value)            {value = lexer.scan<unsigned short int>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned int& value)                  {value = lexer.scan<unsigned int>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned long int& value)             {value = lexer.scan<unsigned long int>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned long long int& value)        {value = lexer.scan<unsigned long long int>();}
 
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned short int& value)            {value = scan<unsigned short int>();}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned int& value)                  {value = scan<unsigned int>();}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned long int& value)             {value = scan<unsigned long int>();}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(unsigned long long int& value)        {value = scan<unsigned long long int>();}
-
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(float& value)                         {value = scan<float>();}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(double& value)                        {value = scan<double>();}
-THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(long double& value)                   {value = scan<long double>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(float& value)                         {value = lexer.scan<float>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(double& value)                        {value = lexer.scan<double>();}
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(long double& value)                   {value = lexer.scan<long double>();}
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonParser::getValue(bool& value)
@@ -194,7 +177,7 @@ void JsonParser::getValue(bool& value)
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonParser::getValue(std::string& value)
 {
-    value = getString();
+    lexer.getStringInto(value);
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
@@ -204,7 +187,7 @@ bool JsonParser::isValueNull()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string JsonParser::getRawValue()
+std::string_view JsonParser::getRawValue()
 {
     return getRawString();
 }

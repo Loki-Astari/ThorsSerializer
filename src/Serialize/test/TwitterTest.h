@@ -37,7 +37,7 @@ namespace TwitterTest
 
     struct User
     {
-        long            id;
+        std::uint64_t   id;
         std::string     id_str;
         std::string     name;
         std::string     screen_name;
@@ -90,7 +90,7 @@ namespace TwitterTest
     {
         std::string     screen_name;
         std::string     name;
-        long            id;
+        std::uint64_t   id;
         std::string     id_str;
         IntVec          indices;
     };
@@ -113,7 +113,7 @@ namespace TwitterTest
 
     struct Media
     {
-        long            id;
+        std::uint64_t   id;
         std::string     id_str;
         IntVec          indices;
         std::string     media_url;
@@ -123,7 +123,7 @@ namespace TwitterTest
         std::string     expanded_url;
         std::string     type;
         Sizes           sizes;
-        long*           source_status_id    = nullptr;
+        std::uint64_t*  source_status_id    = nullptr;
         std::string*    source_status_id_str= nullptr;
     };
     using Medias = std::vector<Media>;
@@ -141,14 +141,14 @@ namespace TwitterTest
     {
         Metadata        metadata;
         std::string     created_at;
-        long            id;
+        std::uint64_t   id;
         std::string     id_str;
         std::string     text;
         std::string     source;
         bool            truncated;
-        long*           in_reply_to_status_id       = nullptr;
+        std::uint64_t*  in_reply_to_status_id       = nullptr;
         std::string*    in_reply_to_status_id_str   = nullptr;
-        long*           in_reply_to_user_id         = nullptr;
+        std::uint64_t*  in_reply_to_user_id         = nullptr;
         std::string*    in_reply_to_user_id_str     = nullptr;
         std::string*    in_reply_to_screen_name     = nullptr;
         User            user;
@@ -169,14 +169,14 @@ namespace TwitterTest
     {
         Metadata        metadata;
         std::string     created_at;
-        long            id;
+        std::uint64_t   id;
         std::string     id_str;
         std::string     text;
         std::string     source;
         bool            truncated;
-        long*           in_reply_to_status_id       = nullptr;
+        std::uint64_t*  in_reply_to_status_id       = nullptr;
         std::string*    in_reply_to_status_id_str   = nullptr;
-        long*           in_reply_to_user_id         = nullptr;
+        std::uint64_t*  in_reply_to_user_id         = nullptr;
         std::string*    in_reply_to_user_id_str     = nullptr;
         std::string*    in_reply_to_screen_name     = nullptr;
         User            user;
@@ -198,13 +198,13 @@ namespace TwitterTest
     struct SearchMetadata
     {
         double          completed_in;
-        long            max_id;
+        std::uint64_t   max_id;
         std::string     max_id_str;
         std::string     next_results;
         std::string     query;
         std::string     refresh_url;
         int             count;
-        long            since_id;
+        std::uint64_t   since_id;
         std::string     since_id_str;
     };
 

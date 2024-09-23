@@ -13,7 +13,7 @@ struct FilterTestType
     std::string     m1;
     std::string     m2;
 
-    std::map<std::string, bool> filter;
+    std::map<std::string_view, bool> filter;
 };
 
 ThorsAnvil_MakeFilter(FilterTestType, filter);

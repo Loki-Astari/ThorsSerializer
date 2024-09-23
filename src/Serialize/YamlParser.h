@@ -37,7 +37,7 @@ class YamlParser: public ParserInterface
     bool                first;
     bool                error;
 
-    std::string getString();
+    std::string_view getString();
     void generateParsingException(std::function<bool ()> test, std::string const& msg);
     ParserToken parsingError();
 
@@ -48,11 +48,12 @@ class YamlParser: public ParserInterface
     T scan();
     public:
         YamlParser(std::istream& input, ParserConfig config = ParserConfig{});
+        YamlParser(std::string_view const& input, ParserConfig config = ParserConfig{});
         virtual ~YamlParser();
 
-        virtual FormatType formatType()                         override {return FormatType::Yaml;}
-        virtual ParserToken     getNextToken()                  override;
-        virtual std::string     getKey()                        override    {return getString();}
+        virtual FormatType          formatType()                override {return FormatType::Yaml;}
+        virtual ParserToken         getNextToken()              override;
+        virtual std::string_view    getKey()                    override    {return getString();}
 
         virtual void    getValue(short int& value)              override;
         virtual void    getValue(int& value)                    override;
@@ -74,7 +75,7 @@ class YamlParser: public ParserInterface
 
         virtual bool    isValueNull()                           override;
 
-        virtual std::string getRawValue()                       override;
+        virtual std::string_view getRawValue()                  override;
 };
 
 }

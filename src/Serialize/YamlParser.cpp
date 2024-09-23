@@ -15,12 +15,12 @@ int thorsanvilYamlStreamReader(void* data, unsigned char* buffer, size_t size, s
     YamlParser*     owner = reinterpret_cast<YamlParser*>(data);
     bool            result  = false;
 
-    owner->input.read(reinterpret_cast<char*>(buffer), size);
-    *size_read      = owner->input.gcount();
+    bool    good    = owner->read(reinterpret_cast<char*>(buffer), size);
+    *size_read      = owner->lastReadCount();
     result          = ((*size_read) != size_t(-1));
 
-    if ((owner->input.rdstate() == (std::ios::eofbit | std::ios::failbit)) && (*size_read) > 0) {
-        owner->input.clear();
+    if ((!good) && (*size_read) > 0) {
+        owner->clear();
     }
 
     return result;
@@ -28,6 +28,16 @@ int thorsanvilYamlStreamReader(void* data, unsigned char* buffer, size_t size, s
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 YamlParser::YamlParser(std::istream& input, ParserConfig config)
+    : ParserInterface(input, config)
+    , first(true)
+    , error(false)
+{
+    yaml_parser_initialize(&parser);
+    yaml_parser_set_input(&parser, thorsanvilYamlStreamReader, this);
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+YamlParser::YamlParser(std::string_view const& input, ParserConfig config)
     : ParserInterface(input, config)
     , first(true)
     , error(false)
@@ -157,7 +167,7 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string YamlParser::getString()
+std::string_view YamlParser::getString()
 {
 //int   plain_implicit
 //int   quoted_implicit
@@ -177,7 +187,7 @@ std::string YamlParser::getString()
 */
 
 
-    return std::string(buffer, buffer + length);
+    return std::string_view(buffer, length);
 }
 
 template<typename T>
@@ -251,7 +261,7 @@ bool YamlParser::isValueNull()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-std::string YamlParser::getRawValue()
+std::string_view YamlParser::getRawValue()
 {
     return getString();
 }

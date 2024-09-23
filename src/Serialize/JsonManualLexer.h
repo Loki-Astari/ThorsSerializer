@@ -10,20 +10,22 @@
 namespace ThorsAnvil::Serialize
 {
 
+class ParserInterface;
 class JsonManualLexer
 {
-    std::istream&       str;
+    ParserInterface&    parser;
     std::string         buffer;
     int                 lastToken;
     bool                lastBool;
     bool                lastNull;
     public:
-        JsonManualLexer(std::istream& str);
+        JsonManualLexer(ParserInterface& parser);
         int yylex();
 
         void        ignoreRawValue();
-        std::string getRawString();
-        std::string getString();
+        std::string_view getRawString();
+        std::string_view getString();
+        void        getStringInto(std::string&);
         bool        getLastBool();
         bool        isLastNull();
         template<typename T>
@@ -37,20 +39,19 @@ class JsonManualLexer
         void checkFixed(char const* check, std::size_t size);
         char readDigits(char next);
         void error();
+        bool checkEscape(std::string& reply);
 };
 
 template<typename T>
 inline T JsonManualLexer::scan()
 {
-    readNumber();
-
-    char*   end;
-    T value = scanValue<T>(&buffer[0], &end);
-    if (buffer.size() == 0 || &buffer[0] + buffer.size() != end)
+    T           value;
+    bool readOK = parser.readValue(value);
+    if (!readOK)
     {
-        ThorsLogAndThrow("ThorsAnvil::Serialize::JsonParser",
+        ThorsLogAndThrow("ThorsAnvil::Serialize::JsonManualLexer",
                          "scan",
-                         "No data left to scan");
+                         "Failed to Scan a number correctly");
     }
     return value;
 }

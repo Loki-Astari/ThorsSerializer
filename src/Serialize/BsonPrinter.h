@@ -58,6 +58,7 @@ class BsonPrinter: public PrinterInterface
         bool        writeProjection()                               {if (projection){writeInt<sizeof(int)>(1);}return projection;}
     public:
         BsonPrinter(std::ostream& output, BsonPrinterConfig config = BsonPrinterConfig{});
+        BsonPrinter(std::string& output, BsonPrinterConfig config = BsonPrinterConfig{});
         virtual FormatType formatType()                             override {return FormatType::Bson;}
         virtual void openDoc()                                      override;
         virtual void closeDoc()                                     override;
@@ -67,7 +68,7 @@ class BsonPrinter: public PrinterInterface
         virtual void openArray(std::size_t size)                    override;
         virtual void closeArray()                                   override;
 
-        virtual void addKey(std::string const& key)                 override;
+        virtual void addKey(std::string_view const& key)            override;
 
         virtual void addValue(short int value)                      override    {if (writeProjection()){return;}writeInt<MaxTemplate<sizeof(short int), 4>::value>(value);}
         virtual void addValue(int value)                            override    {if (writeProjection()){return;}writeInt<sizeof(int)>(value);}
@@ -87,10 +88,9 @@ class BsonPrinter: public PrinterInterface
 
         virtual void addValue(bool value)                           override    {if (writeProjection()){return;}writeBool(value);}
 
-        virtual void addValue(std::string const& value)             override    {if (writeProjection()){return;}writeString(value);}
-        virtual void addValue(std::string_view const& value)        override    {if (writeProjection()){return;}writeString(std::string(value));}
+        virtual void addValue(std::string_view const& value)        override    {if (writeProjection()){return;}writeString(value);}
 
-        virtual void addRawValue(std::string const& value)          override    {if (writeProjection()){return;}writeBinary(value);}
+        virtual void addRawValue(std::string_view const& value)     override    {if (writeProjection()){return;}writeBinary(value);}
 
         virtual void addNull()                                      override    {if (writeProjection()){return;}writeNull();}
     protected:
@@ -113,7 +113,6 @@ class BsonPrinter: public PrinterInterface
         virtual std::size_t getSizeValue(double)                    override    {return getSize(8);}
         virtual std::size_t getSizeValue(long double)               override    {return getSize(8);}
         virtual std::size_t getSizeValue(bool)                      override    {return getSize(1);}
-        virtual std::size_t getSizeValue(std::string const& value)  override    {return getSize(4 + value.size() + 1);}
         virtual std::size_t getSizeValue(std::string_view const& v) override    {return getSize(4 + std::size(v) + 1);}
         virtual std::size_t getSizeRaw(std::size_t size)            override    {return getSize(4 + 1 + size);}
 
@@ -124,7 +123,7 @@ class BsonPrinter: public PrinterInterface
         template<std::size_t size, typename Int> void writeLE(Int value)
         {
             Int docValue = value;
-            output.write(reinterpret_cast<char*>(&docValue), size);
+            write(reinterpret_cast<char*>(&docValue), size);
         }
 
         template<std::size_t size, typename Int> void writeBE(Int value)
@@ -134,7 +133,7 @@ class BsonPrinter: public PrinterInterface
             for (std::size_t loop = 0; loop < sizeof(docValue)/2; ++loop) {
                 std::swap(docData[loop], docData[sizeof(docValue) - loop - 1]);
             }
-            output.write(docData + sizeof(docValue) - size, size);
+            write(docData + sizeof(docValue) - size, size);
         }
 
 
@@ -146,9 +145,9 @@ class BsonPrinter: public PrinterInterface
         template<typename Float>
         void writeFloat(Float value);
         void writeBool(bool value);
-        void writeString(std::string const& value);
+        void writeString(std::string_view const& value);
         void writeNull();
-        void writeBinary(std::string const& value);
+        void writeBinary(std::string_view const& value);
 
         bool needToInsertId() const;
 };
@@ -201,7 +200,7 @@ inline void BsonPrinter::writeFloat(Float value)
 {
     typename BsonPrintFloatTraits<Float>::ConversionType outputValue = value;
     writeKey(BsonPrintFloatTraits<Float>::keyValue, BsonPrintFloatTraits<Float>::size);
-    output.write(reinterpret_cast<char*>(&outputValue), BsonPrintFloatTraits<Float>::size);
+    write(reinterpret_cast<char*>(&outputValue), BsonPrintFloatTraits<Float>::size);
 }
 
 }

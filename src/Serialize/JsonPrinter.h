@@ -12,12 +12,25 @@
 namespace ThorsAnvil::Serialize
 {
 
-using PrintState = std::tuple<int, TraitType, bool>;
+// TODO This needs better field names
+struct PrintState
+{
+    PrintState(int f0, TraitType f1, bool f2)
+        : f0(f0), f1(f1), f2(f2)
+    {}
+    int         f0;
+    TraitType   f1;
+    bool        f2;
+};
 class JsonPrinter: public PrinterInterface
 {
     std::vector<PrintState> state;
     public:
         JsonPrinter(std::ostream& output, PrinterConfig config = PrinterConfig{});
+        JsonPrinter(std::string& output, PrinterConfig config = PrinterConfig{});
+
+        virtual void reset()                                override;
+
         virtual FormatType formatType()                     override {return FormatType::Json;}
         virtual void openDoc()                              override;
         virtual void closeDoc()                             override;
@@ -27,7 +40,7 @@ class JsonPrinter: public PrinterInterface
         virtual void openArray(std::size_t size)            override;
         virtual void closeArray()                           override;
 
-        virtual void addKey(std::string const& key)         override;
+        virtual void addKey(std::string_view const& key)    override;
 
         virtual void addValue(short int value)              override;
         virtual void addValue(int value)                    override;
@@ -45,14 +58,15 @@ class JsonPrinter: public PrinterInterface
 
         virtual void addValue(bool value)                   override;
 
-        virtual void addValue(std::string const& value)     override;
         virtual void addValue(std::string_view const& value)override;
 
-        virtual void addRawValue(std::string const& value)  override;
+        virtual void addRawValue(std::string_view const& value)  override;
 
         virtual void addNull()                              override;
 
         void addPrefix();
+    private:
+        void addIndent();
 };
 
 }

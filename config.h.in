@@ -51,6 +51,12 @@
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #undef LT_OBJDIR
 
+/* Check for older build tools and use simpler code with old tools */
+#undef NO_STD_SUPPORT_FROM_CHAR_DOUBLE
+
+/* Check for older build tools and use simpler code with old tools */
+#undef NO_STD_SUPPORT_TO_CHAR_DOUBLE
+
 /* Name of package */
 #undef PACKAGE
 
