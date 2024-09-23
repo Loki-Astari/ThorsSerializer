@@ -162,13 +162,24 @@ std::string_view JsonManualLexer::getRawString()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+bool Unicode::checkEscape(std::string& reply)
+{
+    bool isEscape = false;
+    for (std::size_t loop = reply.size(); (loop > 0) && (reply[loop - 1] == '\\'); --loop)
+    {
+        isEscape = !isEscape;
+    }
+    return isEscape;
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void Unicode::checkBufferFast(ParserInterface& i, std::string& reply)
 {
     //std::cerr << "Fast:\n";
     i.readTo(reply, '"');
     //std::cerr << "\tFirst: >" << reply << "<\n";
 
-    if (reply.size() > 0 && reply[reply.size() - 1] == '\\')
+    if (reply.size() > 0 && checkEscape(reply))
     {
         std::string tmp;
         do
@@ -178,17 +189,19 @@ void Unicode::checkBufferFast(ParserInterface& i, std::string& reply)
             i.readTo(tmp, '"');
             reply.append(tmp);
         }
-        while (tmp.size() > 0 && tmp[tmp.size() - 1] == '\\');
+        while (tmp.size() > 0 && checkEscape(tmp));
         //std::cerr << "\tLast: >" << tmp << "< => >" << reply << "<\n";
     }
     //std::cerr << "\tCheck: >" << reply << "<\n";
     if (i.config.convertBackSlash)
     {
+        //std::cerr << "\tConvert\n";
         auto newEnd = std::copy(make_UnicodeWrapperIterator(std::begin(reply)),
                                 make_EndUnicodeWrapperIterator(std::end(reply)),
                                 std::begin(reply));
         //std::cerr << "\tSize:  >" << std::distance(std::begin(reply), newEnd) << "\n";
         reply.resize(std::distance(std::begin(reply), newEnd));
+        //std::cerr << "\tReSize Done\n";
     }
     //std::cerr << "\tDone:  >" << reply << "<\n";
 }

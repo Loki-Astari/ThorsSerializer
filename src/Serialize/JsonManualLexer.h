@@ -44,10 +44,10 @@ class JsonManualLexer
 class Unicode
 {
     public:
-        static void checkBufferFast2(ParserInterface& i, std::string& reply);
         static void checkBufferFast(ParserInterface& i, std::string& reply);
         static void checkBuffer(ParserInterface& i, std::string& reply);
     private:
+        static bool checkEscape(std::string& reply);
         static void decodeUnicode(ParserInterface& i, std::string& reply);
         static void decodeSurrogatePairs(long unicodeValue, ParserInterface& i, std::string& reply);
         static long getUnicodeHex(ParserInterface& i);

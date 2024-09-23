@@ -55,7 +55,7 @@ struct StringInput
         {
             return lastRead;
         }
-        std::streampos  getPos()
+        std::streampos  tellg()
         {
             return position;
         }
