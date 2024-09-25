@@ -85,6 +85,42 @@ struct ReadValue
     }
 };
 
+struct PeekNextNonSpaceValue
+{
+    template<typename I>
+    void checkAction(I& input, char value) const
+    {
+        switch (value)
+        {
+            case '{':
+            case '}':
+            case '[':
+            case ']':
+            case ',':
+            case ':':
+                break;
+            default:
+                input.unget();
+        }
+    }
+    int operator()(std::istream* input) const
+    {
+        char value = -1;
+        if ((*input) >> value) {
+            checkAction(*input, value);
+        }
+        return value;
+    }
+    int operator()(StringInput& input) const
+    {
+        char value = -1;
+        if (input.readValue(value)) {
+            checkAction(input, value);
+        }
+        return value;
+    }
+};
+
 class ParserInterface
 {
     public:
@@ -142,8 +178,8 @@ class ParserInterface
                 char*       dst;
                 std::size_t size;
                 Read(char* dst, std::size_t size):dst(dst),size(size){}
-                bool operator()(std::istream* input)    {return static_cast<bool>(input->read(dst, size));}
-                bool operator()(StringInput& input)     {return input.read(dst, size);}
+                bool operator()(std::istream* input)    const {return static_cast<bool>(input->read(dst, size));}
+                bool operator()(StringInput& input)     const {return input.read(dst, size);}
             };
             return std::visit(Read{dst, size}, input);
         }
@@ -154,8 +190,8 @@ class ParserInterface
                 std::string&    dst;
                 char            delim;
                 ReadTo(std::string& dst, char delim):dst(dst),delim(delim){}
-                bool operator()(std::istream* input)    {return static_cast<bool>(std::getline((*input), dst, delim));}
-                bool operator()(StringInput& input)     {dst.clear();return input.readTo(dst, delim);}
+                bool operator()(std::istream* input)    const {return static_cast<bool>(std::getline((*input), dst, delim));}
+                bool operator()(StringInput& input)     const {dst.clear();return input.readTo(dst, delim);}
             };
             return std::visit(ReadTo(dst, delim), input);
         }
@@ -163,8 +199,8 @@ class ParserInterface
         {
             struct LastReadCount
             {
-                std::size_t operator()(std::istream const* input)    {return input->gcount();}
-                std::size_t operator()(StringInput const& input)     {return input.getLastReadCount();}
+                std::size_t operator()(std::istream const* input)    const {return input->gcount();}
+                std::size_t operator()(StringInput const& input)     const {return input.getLastReadCount();}
             };
             return std::visit(LastReadCount{}, input);
         }
@@ -172,8 +208,8 @@ class ParserInterface
         {
             struct GetPos
             {
-                std::streampos operator()(std::istream* input)    {return input->tellg();}
-                std::streampos operator()(StringInput& input)     {return input.tellg();}
+                std::streampos operator()(std::istream* input)    const {return input->tellg();}
+                std::streampos operator()(StringInput& input)     const {return input.tellg();}
             };
             return std::visit(GetPos{}, input);
         }
@@ -181,8 +217,8 @@ class ParserInterface
         {
             struct Get
             {
-                int operator()(std::istream* input)    {return input->get();}
-                int operator()(StringInput& input)     {return input.get();}
+                int operator()(std::istream* input)    const {return input->get();}
+                int operator()(StringInput& input)     const {return input.get();}
             };
             return std::visit(Get{}, input);
         }
@@ -190,8 +226,8 @@ class ParserInterface
         {
             struct Peek
             {
-                int operator()(std::istream* input)    {return input->peek();}
-                int operator()(StringInput& input)     {return input.peek();}
+                int operator()(std::istream* input)    const {return input->peek();}
+                int operator()(StringInput& input)     const {return input.peek();}
             };
             return std::visit(Peek{}, input);
         }
@@ -201,8 +237,8 @@ class ParserInterface
             {
                 std::size_t size;
                 Ignore(std::size_t size): size(size) {}
-                void operator()(std::istream* input)    {input->ignore(size);}
-                void operator()(StringInput& input)     {input.ignore(size);}
+                void operator()(std::istream* input)    const {input->ignore(size);}
+                void operator()(StringInput& input)     const {input.ignore(size);}
             };
             std::visit(Ignore{size}, input);
         }
@@ -210,8 +246,8 @@ class ParserInterface
         {
             struct Clear
             {
-                void operator()(std::istream* input)    {input->clear();}
-                void operator()(StringInput& input)     {input.clear();}
+                void operator()(std::istream* input)    const {input->clear();}
+                void operator()(StringInput& input)     const {input.clear();}
             };
             std::visit(Clear{}, input);
         }
@@ -219,8 +255,8 @@ class ParserInterface
         {
             struct Unget
             {
-                void operator()(std::istream* input)    {input->unget();}
-                void operator()(StringInput& input)     {input.unget();}
+                void operator()(std::istream* input)    const {input->unget();}
+                void operator()(StringInput& input)     const {input.unget();}
             };
             std::visit(Unget{}, input);
         }
@@ -228,8 +264,8 @@ class ParserInterface
         {
             struct OK
             {
-                bool operator()(std::istream const* input)    {return !input->fail();}
-                bool operator()(StringInput const& input)     {return input.isOk();}
+                bool operator()(std::istream const* input)    const {return !input->fail();}
+                bool operator()(StringInput const& input)     const {return input.isOk();}
             };
             return std::visit(OK{}, input);
         }
@@ -237,8 +273,8 @@ class ParserInterface
         {
             struct SetFail
             {
-                void operator()(std::istream* input)    {input->setstate(std::ios::failbit);}
-                void operator()(StringInput& input)     {input.setFail();}
+                void operator()(std::istream* input)    const {input->setstate(std::ios::failbit);}
+                void operator()(StringInput& input)     const {input.setFail();}
             };
             std::visit(SetFail{}, input);
         }
@@ -260,11 +296,11 @@ class ParserInterface
             {
                 char& value;
                 ReadValue(char& value) :value(value) {}
-                bool operator()(std::istream* input)
+                bool operator()(std::istream* input) const
                 {
                     return static_cast<bool>((*input) >> value);
                 }
-                bool operator()(StringInput& input)
+                bool operator()(StringInput& input) const
                 {
                     return input.readValue(value);
                 }
@@ -274,45 +310,6 @@ class ParserInterface
 
         int peekNextNonSpaceValue()
         {
-            struct PeekNextNonSpaceValue
-            {
-                int operator()(std::istream* input)
-                {
-                    char value;
-                    bool ok = static_cast<bool>((*input) >> value);
-                    switch (value)
-                    {
-                        case '{':
-                        case '}':
-                        case '[':
-                        case ']':
-                        case ',':
-                        case ':':
-                            break;
-                        default:
-                            input->unget();
-                    }
-                    return ok ? value : -1;
-                }
-                int operator()(StringInput& input)
-                {
-                    char value = -1;
-                    input.readValue(value);
-                    switch (value)
-                    {
-                        case '{':
-                        case '}':
-                        case '[':
-                        case ']':
-                        case ',':
-                        case ':':
-                            break;
-                        default:
-                            input.unget();
-                    }
-                    return value;
-                }
-            };
             return std::visit(PeekNextNonSpaceValue{}, input);
         }
         template<typename T>

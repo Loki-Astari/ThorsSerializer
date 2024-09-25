@@ -15,10 +15,10 @@ namespace ThorsAnvil::Serialize
 
 struct StringInput
 {
-    std::string_view    data;
-    std::size_t         position;
-    std::size_t         lastRead;
-    bool                good;
+    std::string_view const  data;
+    std::size_t             position;
+    std::size_t             lastRead;
+    bool                    good;
 
     public:
         StringInput(std::string_view const& view)
@@ -107,7 +107,7 @@ struct StringInput
                 lastRead = (result.ptr - start);
                 position+= lastRead;
                 good = position <= data.size();
-                return true;
+                return lastRead != 0;
             }
             return false;
         }
