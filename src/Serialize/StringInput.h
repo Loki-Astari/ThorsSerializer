@@ -123,26 +123,10 @@ struct StringInput
 
         bool readValue(char& value)
         {
-            // ' ' \f \n \r \t \v
-            static char isspace[] =
-                "01234567" "8     EF"   // 00-15
-                "01234567" "89ABCDEF"   // 16-31
-                " 1234567" "89ABCDEF"   // 32-47
-                "01234567" "89ABCDEF"   // 48-63
-                "01234567" "89ABCDEF"   // 64-79
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF"
-                "01234567" "89ABCDEF";
-            while (position < data.size() && isspace[static_cast<unsigned char>(data[position])] == ' ') {
-                ++position;
+            static const std::string_view space(" \t\n\r\v\f");
+            position = data.find_first_not_of(space, position);
+            if (position == std::string::npos) {
+                position = data.size();
             }
             value = (position < data.size()) ? data[position] : -1;
             ++position;
