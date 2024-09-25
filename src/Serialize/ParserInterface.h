@@ -19,15 +19,8 @@
 namespace ThorsAnvil::Serialize
 {
 
-template<typename T>
 struct ReadValue
 {
-    T&              value;
-
-    ReadValue(T& value)
-        :value(value)
-    {}
-
     template<typename I>
     void checkZero(I& stream) const
     {
@@ -44,14 +37,14 @@ struct ReadValue
             }
         }
     }
-    template<typename I>
+    template<typename T, typename I>
     requires std::integral<T>
     bool validateResult(bool ok, I& stream) const
     {
         char next = stream.peek();
         return ok && next != '.' && next != 'e' && next != 'E';
     }
-    template<typename I>
+    template<typename T, typename I>
     requires std::floating_point<T>
     bool validateResult(bool ok, I&) const
     {
@@ -80,17 +73,19 @@ struct ReadValue
         value = neg ? -tmp : tmp;
         return ok;
     }
-    bool operator()(std::istream* input) const
+    template<typename T>
+    bool operator()(std::istream* input, T* value) const
     {
         checkZero(*input);
-        bool ok = readNumber(*input, value);
-        return validateResult(ok, *input);
+        bool ok = readNumber(*input, *value);
+        return validateResult<T>(ok, *input);
     }
-    bool operator()(StringInput& input) const
+    template<typename T>
+    bool operator()(StringInput& input, T* value) const
     {
         checkZero(input);
-        bool ok = input.readValue(value);
-        return validateResult(ok, input);
+        bool ok = input.readValue(*value);
+        return validateResult<T>(ok, input);
     }
 };
 
@@ -184,25 +179,23 @@ class ParserInterface
         {
             struct Read
             {
-                char*       dst;
-                std::size_t size;
-                Read(char* dst, std::size_t size):dst(dst),size(size){}
-                bool operator()(std::istream* input)    const {return static_cast<bool>(input->read(dst, size));}
-                bool operator()(StringInput& input)     const {return input.read(dst, size);}
+                bool operator()(std::istream* input, char* dst, std::size_t size)    const {return static_cast<bool>(input->read(dst, size));}
+                bool operator()(StringInput& input, char* dst, std::size_t size)     const {return input.read(dst, size);}
             };
-            return std::visit(Read{dst, size}, input);
+            using Dst   = std::variant<char*>;
+            using Size  = std::variant<std::size_t>;
+            return std::visit(Read{}, input, Dst{dst}, Size{size});
         }
         bool            readTo(std::string& dst, char delim)
         {
             struct ReadTo
             {
-                std::string&    dst;
-                char            delim;
-                ReadTo(std::string& dst, char delim):dst(dst),delim(delim){}
-                bool operator()(std::istream* input)    const {return static_cast<bool>(std::getline((*input), dst, delim));}
-                bool operator()(StringInput& input)     const {dst.clear();return input.readTo(dst, delim);}
+                bool operator()(std::istream* input, std::string* dst, char delim)    const {return static_cast<bool>(std::getline((*input), *dst, delim));}
+                bool operator()(StringInput& input, std::string* dst, char delim)     const {dst->clear();return input.readTo(*dst, delim);}
             };
-            return std::visit(ReadTo(dst, delim), input);
+            using Dst   = std::variant<std::string*>;
+            using Delim = std::variant<char>;
+            return std::visit(ReadTo{}, input, Dst{&dst}, Delim{delim});
         }
         std::size_t     lastReadCount() const
         {
@@ -244,12 +237,11 @@ class ParserInterface
         {
             struct Ignore
             {
-                std::size_t size;
-                Ignore(std::size_t size): size(size) {}
-                void operator()(std::istream* input)    const {input->ignore(size);}
-                void operator()(StringInput& input)     const {input.ignore(size);}
+                void operator()(std::istream* input, std::size_t size)    const {input->ignore(size);}
+                void operator()(StringInput& input, std::size_t size)     const {input.ignore(size);}
             };
-            std::visit(Ignore{size}, input);
+            using Size = std::variant<std::size_t>;
+            std::visit(Ignore{}, input, Size{size});
         }
         void            clear()
         {
@@ -291,24 +283,25 @@ class ParserInterface
         requires std::integral<T>
         bool readValue(T& value)
         {
-            return std::visit(ReadValue{value}, input);
+            using Value = std::variant<T*>;
+            return std::visit(ReadValue{}, input, Value{&value});
         }
         template<typename T>
         requires std::floating_point<T>
         bool readValue(T& value)
         {
-            return std::visit(ReadValue{value}, input);
+            using Value = std::variant<T*>;
+            return std::visit(ReadValue{}, input, Value{&value});
         }
         bool readValue(char& value)
         {
             struct ReadValue
             {
-                char& value;
-                ReadValue(char& value) :value(value) {}
-                bool operator()(std::istream* input)    const {return static_cast<bool>((*input) >> value);}
-                bool operator()(StringInput& input)     const {return input.readValue(value);}
+                bool operator()(std::istream* input, char* value)    const {return static_cast<bool>((*input) >> (*value));}
+                bool operator()(StringInput& input, char* value)     const {return input.readValue(*value);}
             };
-            return std::visit(ReadValue{value}, input);
+            using Value = std::variant<char*>;
+            return std::visit(ReadValue{}, input, Value{&value});
         }
 
         int peekNextNonSpaceValue()
