@@ -305,14 +305,8 @@ class ParserInterface
             {
                 char& value;
                 ReadValue(char& value) :value(value) {}
-                bool operator()(std::istream* input) const
-                {
-                    return static_cast<bool>((*input) >> value);
-                }
-                bool operator()(StringInput& input) const
-                {
-                    return input.readValue(value);
-                }
+                bool operator()(std::istream* input)    const {return static_cast<bool>((*input) >> value);}
+                bool operator()(StringInput& input)     const {return input.readValue(value);}
             };
             return std::visit(ReadValue{value}, input);
         }

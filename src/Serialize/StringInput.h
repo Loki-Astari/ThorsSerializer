@@ -57,7 +57,7 @@ struct StringInput
         {
             return lastRead;
         }
-        std::streampos  tellg()
+        std::streampos  tellg() const
         {
             return position;
         }
@@ -65,7 +65,7 @@ struct StringInput
         {
             return good ? data[position++] : EOF;
         }
-        int peek()
+        int peek() const
         {
             return data[position];
         }
