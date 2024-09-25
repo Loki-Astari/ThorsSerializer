@@ -14,6 +14,7 @@
 #include <any>
 #include <memory>
 #include <concepts>
+#include <locale>
 
 namespace ThorsAnvil::Serialize
 {
@@ -21,7 +22,6 @@ namespace ThorsAnvil::Serialize
 template<typename T>
 struct ReadValue
 {
-    std::streampos  pos;
     T&              value;
 
     ReadValue(T& value)
@@ -29,7 +29,7 @@ struct ReadValue
     {}
 
     template<typename I>
-    void checkZero(I& stream)
+    void checkZero(I& stream) const
     {
         int peek = stream.peek();
         if (peek == '0')
@@ -43,41 +43,50 @@ struct ReadValue
                 stream.unget();
             }
         }
-        pos = stream.tellg();
     }
     template<typename I>
     requires std::integral<T>
-    bool validateResult(bool ok, I& stream)
+    bool validateResult(bool ok, I& stream) const
     {
         char next = stream.peek();
         return ok && next != '.' && next != 'e' && next != 'E';
     }
     template<typename I>
     requires std::floating_point<T>
-    bool validateResult(bool ok, I& stream)
+    bool validateResult(bool ok, I&) const
     {
-        if (!ok)
-        {
-            auto state = stream.rdstate();
-            stream.clear();
-            if (pos == stream.tellg())
-            {
-                stream.clear(state);
-            }
-            else
-            {
-                ok = true;
-            }
-        }
         return ok;
     }
-    bool operator()(std::istream* input)
+    template<typename X>
+    bool readNumber(std::istream& input, X& value) const
+    requires ((std::integral<X> && std::is_unsigned_v<X>) || std::floating_point<X>)
+    {
+        std::locale         loc;
+        std::ios::iostate   state{0};
+        auto                before = input.tellg();
+        std::use_facet<std::num_get<char>>(loc).get(input, std::istreambuf_iterator<char>(), input, state, value);
+        return before != input.tellg();
+    }
+    template<typename X>
+    bool readNumber(std::istream& input, X& value) const
+    requires (std::integral<X> && !std::is_unsigned_v<X>)
+    {
+        bool neg = input.peek() == '-';
+        if (neg) {
+            input.get();
+        }
+        std::make_unsigned_t<X>     tmp;
+        bool ok = readNumber(input, tmp);
+        value = neg ? -tmp : tmp;
+        return ok;
+    }
+    bool operator()(std::istream* input) const
     {
         checkZero(*input);
-        bool ok = static_cast<bool>((*input) >> value);
+        bool ok = readNumber(*input, value);
         return validateResult(ok, *input);
     }
-    bool operator()(StringInput& input)
+    bool operator()(StringInput& input) const
     {
         checkZero(input);
         bool ok = input.readValue(value);
