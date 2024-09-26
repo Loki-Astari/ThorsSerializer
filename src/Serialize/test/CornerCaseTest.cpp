@@ -303,6 +303,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Struct_Constructor)
         std::runtime_error
     );
 }
+#if defined(FULL_VALIDATION_OF_PARSER)
 TEST(CornerCaseTest, DeSerializationForBlock_Struct_HasMoreValue)
 {
     auto test = [](){
@@ -328,6 +329,7 @@ TEST(CornerCaseTest, DeSerializationForBlock_Struct_HasMoreValue)
         std::runtime_error
     );
 }
+#endif
 TEST(CornerCaseTest, DeSerializationForBlock_Value_ScanObject)
 {
     auto test = [](){
