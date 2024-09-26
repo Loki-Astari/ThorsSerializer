@@ -1062,6 +1062,7 @@ TEST(JsonBenchmarkTest, float42)
     );
 }
 
+#ifndef __WINNT__
 TEST(JsonBenchmarkTest, float43)
 {
     auto action = [&]()
@@ -1075,6 +1076,7 @@ TEST(JsonBenchmarkTest, float43)
         action()
     );
 }
+#endif
 
 TEST(JsonBenchmarkTest, float44)
 {
