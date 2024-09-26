@@ -249,7 +249,7 @@ struct FormatDouble
     {
         if (formater.value == 0)
         {
-            return str << (signbit(formater.value) ? "-0.0" : "0.0");
+            return str << (std::signbit(formater.value) ? "-0.0" : "0.0");
         }
         else
         {
@@ -276,7 +276,7 @@ inline std::to_chars_result to_chars(char* first, char* last, FormatDouble<T> co
     if (value.value == 0)
     {
         static std::string_view   doubleZero[2] = {"0.0", "-0.0"};
-        std::string_view& doubleZeroRef = doubleZero[signbit(value.value) ? 1 : 0];
+        std::string_view& doubleZeroRef = doubleZero[std::signbit(value.value) ? 1 : 0];
         std::copy(std::begin(doubleZeroRef), std::end(doubleZeroRef), first);
         return std::to_chars_result{first + 3, static_cast<std::errc>(0)};
     }
