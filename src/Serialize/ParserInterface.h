@@ -55,7 +55,7 @@ struct ReadValue
     requires ((std::integral<X> && std::is_unsigned_v<X>) || std::floating_point<X>)
     {
         std::locale         loc;
-        std::ios::iostate   state{0};
+        std::ios::iostate   state{std::ios::goodbit};
         auto                before = input.tellg();
         std::use_facet<std::num_get<char>>(loc).get(input, std::istreambuf_iterator<char>(), input, state, value);
         return before != input.tellg();
