@@ -230,18 +230,13 @@ struct TraitsInfo<T, M, TraitType::Custom_Serialize>
 /* ------------ ParserInterface ------------------------- */
 inline ParserToken ParserInterface::getToken()
 {
-    ParserToken result  = ParserToken::Error;
-
     if (pushBack != ParserToken::Error)
     {
-        std::swap(pushBack, result);
+        return std::exchange(pushBack, ParserToken::Error);
     }
-    else
-    {
-        result = this->getNextToken();
-    }
-    return result;
+    return this->getNextToken();
 }
+
 inline void ParserInterface::pushBackToken(ParserToken token)
 {
     if (pushBack != ParserToken::Error)
