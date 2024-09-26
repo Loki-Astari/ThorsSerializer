@@ -1506,8 +1506,7 @@ TEST(JsonBenchmarkTest, string06)
         std::stringstream              s(R"(["\"\\/\b\f\n\r\t"])");
         JsonBenchmarkTest::ValStr      data;
         s >> ThorsAnvil::Serialize::jsonImporter(data, config);
-        EXPECT_EQ(data[0], R"("\/
-	)");
+        EXPECT_EQ(data[0], "\"\\/\b\f\n\r\t");
     };
     EXPECT_NO_THROW(
         action()
