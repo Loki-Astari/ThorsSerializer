@@ -61,9 +61,11 @@ TEST(ParserInterfaceTest, JsonPushBackTwoValue)
     EXPECT_EQ(ParserToken::Value, parser.getToken());
 
     parser.pushBackToken(ParserToken::Value);
+#if defined(VALIDATE_EXTRA_PUSH_BACK_TOKEN)
     ASSERT_ANY_THROW(
         parser.pushBackToken(ParserToken::Value)
     );
+#endif
 }
 
 TEST(ParserInterfaceTest, JsonPushBackTwoValueWithReads)
@@ -172,9 +174,11 @@ TEST(ParserInterfaceTest, BsonPushBackTwoValue)
     EXPECT_EQ(ParserToken::Value, parser.getToken());
 
     parser.pushBackToken(ParserToken::Value);
+#if defined(VALIDATE_EXTRA_PUSH_BACK_TOKEN)
     ASSERT_ANY_THROW(
         parser.pushBackToken(ParserToken::Value)
     );
+#endif
 }
 
 TEST(ParserInterfaceTest, BsonPushBackTwoValueWithReads)

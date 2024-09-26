@@ -239,12 +239,14 @@ inline ParserToken ParserInterface::getToken()
 
 inline void ParserInterface::pushBackToken(ParserToken token)
 {
+#if defined(VALIDATE_EXTRA_PUSH_BACK_TOKEN)
     if (pushBack != ParserToken::Error)
     {
         ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
                          "pushBackToken",
                          "Push only allows for single push back. More than one token has been pushed back between reads.");
     }
+#endif
     pushBack    = token;
 }
 /* ------------ DeSerializer ------------------------- */
