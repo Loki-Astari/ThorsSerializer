@@ -11,7 +11,7 @@ namespace JsonBenchmarkTest
     using FailArray = std::vector<std::string>;
     struct FailMap
     {
-        std::string  data1;;
+        std::string  data1;
     };
     using ValFloat  = std::vector<double>;
     using ValStr    = std::vector<std::string>;
