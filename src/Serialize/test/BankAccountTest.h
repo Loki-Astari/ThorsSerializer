@@ -30,11 +30,11 @@ namespace OnLineBank
     {
         virtual void writeJson(ThorsAnvil::Serialize::JsonPrinter& printer, ID const& object) const override
         {
-            printer.writeValue(object.id);
+            printer.addValue(object.id);
         }
         virtual void readJson(ThorsAnvil::Serialize::JsonParser& parser, ID& object) const override
         {
-            parser.readValue(object.id);
+            parser.getValue(object.id);
         }
 
         //virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& printer, ID const& object)   override 
