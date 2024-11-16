@@ -4889,6 +4889,9 @@ then :
             MAGIC_ENUM_FILE=magic_enum.hpp
 
 
+printf "%s\n" "#define HAVE_MagicEnumHeaderOnlyV1 1" >>confdefs.h
+
+
 else case e in #(
   e)
 
@@ -4963,6 +4966,9 @@ then :
                     HAVE_MagicEnumHeaderOnly=1
 
                     MAGIC_ENUM_FILE=magic_enum/magic_enum.hpp
+
+
+printf "%s\n" "#define HAVE_MagicEnumHeaderOnlyV2 1" >>confdefs.h
 
 
 fi
