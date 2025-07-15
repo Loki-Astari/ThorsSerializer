@@ -713,6 +713,8 @@ ThorSerialize_ROOT_LIB
 ThorSerialize_ROOT_DIR
 yaml_ROOT_LIB
 yaml_ROOT_DIR
+MAGIC_ENUM_FILE
+HAVE_MagicEnumHeaderOnly
 MagicEnumHeaderOnly_ROOT_DIR
 THOR_CONAN_ENABLE
 UNZIP
@@ -791,8 +793,6 @@ PACKAGE_TARNAME
 PACKAGE_NAME
 PATH_SEPARATOR
 SHELL
-MAGIC_ENUM_FILE
-HAVE_MagicEnumHeaderOnly
 am__quote'
 ac_subst_files=''
 ac_user_opts='
@@ -4833,6 +4833,7 @@ fi
 
 
 
+
 # Check whether --with-magicenum-header-only-root was given.
 if test ${with_magicenum_header_only_root+y}
 then :
@@ -4983,6 +4984,55 @@ esac
 fi
 
 
+    if [ "x1" == "x0" ]; then
+        grep -q 'MagicEnum_ROOT_DIR=@MagicEnum_ROOT_DIR@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting MagicEnum_ROOT_DIR to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        MagicEnum_ROOT_DIR=@MagicEnum_ROOT_DIR@
+                " "$LINENO" 5
+
+
+fi
+
+        grep -q 'MagicEnum_ROOT_LIB=@MagicEnum_ROOT_LIB@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting MagicEnum_ROOT_LIB to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        MagicEnum_ROOT_LIB=@MagicEnum_ROOT_LIB@
+                " "$LINENO" 5
+
+
+fi
+    else
+        grep -q 'MagicEnumHeaderOnly_ROOT_DIR=@MagicEnumHeaderOnly_ROOT_DIR@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting MagicEnumHeaderOnly_ROOT_DIR to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        MagicEnumHeaderOnly_ROOT_DIR=@MagicEnumHeaderOnly_ROOT_DIR@
+                " "$LINENO" 5
+
+
+fi
+    fi
+
+
+
 
 
 # Check whether --with-yaml-root was given.
@@ -4991,6 +5041,60 @@ then :
   withval=$with_yaml_root;
 fi
 
+
+    if test "xyaml" != "x"
+then :
+
+
+    if [ "x0" == "x0" ]; then
+        grep -q 'yaml_ROOT_DIR=@yaml_ROOT_DIR@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting yaml_ROOT_DIR to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        yaml_ROOT_DIR=@yaml_ROOT_DIR@
+                " "$LINENO" 5
+
+
+fi
+
+        grep -q 'yaml_ROOT_LIB=@yaml_ROOT_LIB@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting yaml_ROOT_LIB to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        yaml_ROOT_LIB=@yaml_ROOT_LIB@
+                " "$LINENO" 5
+
+
+fi
+    else
+        grep -q 'yamlHeaderOnly_ROOT_DIR=@yamlHeaderOnly_ROOT_DIR@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting yamlHeaderOnly_ROOT_DIR to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        yamlHeaderOnly_ROOT_DIR=@yamlHeaderOnly_ROOT_DIR@
+                " "$LINENO" 5
+
+
+fi
+    fi
+
+
+fi
 
     LIBRARY_DIR="-L ${with_yaml_root}/lib"
     if test "x${with_yaml_root}" == "x"
@@ -5133,6 +5237,60 @@ then :
   withval=$with_thorserialize_root;
 fi
 
+
+    if test "x" != "x"
+then :
+
+
+    if [ "x0" == "x0" ]; then
+        grep -q '_ROOT_DIR=@_ROOT_DIR@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting _ROOT_DIR to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        _ROOT_DIR=@_ROOT_DIR@
+                " "$LINENO" 5
+
+
+fi
+
+        grep -q '_ROOT_LIB=@_ROOT_LIB@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting _ROOT_LIB to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        _ROOT_LIB=@_ROOT_LIB@
+                " "$LINENO" 5
+
+
+fi
+    else
+        grep -q 'HeaderOnly_ROOT_DIR=@HeaderOnly_ROOT_DIR@' Makefile.config.in
+        result=$?
+        if test "x${result}" != "x0"
+then :
+
+                as_fn_error $? "
+                    Expecting HeaderOnly_ROOT_DIR to be defined in Makefile.config.in
+                    You should probably add this line to Makefile.config.in
+
+                        HeaderOnly_ROOT_DIR=@HeaderOnly_ROOT_DIR@
+                " "$LINENO" 5
+
+
+fi
+    fi
+
+
+fi
 
     LIBRARY_DIR="-L ${with_thorserialize_root}/lib"
     if test "x${with_thorserialize_root}" == "x"
