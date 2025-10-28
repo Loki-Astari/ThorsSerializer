@@ -4984,7 +4984,8 @@ esac
 fi
 
 
-    if [ "x1" == "x0" ]; then
+    if [ "x13" == "x12" ] || [ "x13" == "x10" ]; then
+
         grep -q 'MagicEnum_ROOT_DIR=@MagicEnum_ROOT_DIR@' Makefile.config.in
         result=$?
         if test "x${result}" != "x0"
@@ -4999,6 +5000,9 @@ then :
 
 
 fi
+    fi
+
+    if [ "x13" == "x12" ] || [ "x13" == "x11" ]; then
 
         grep -q 'MagicEnum_ROOT_LIB=@MagicEnum_ROOT_LIB@' Makefile.config.in
         result=$?
@@ -5014,7 +5018,9 @@ then :
 
 
 fi
-    else
+    fi
+
+    if [ "x13" == "x13" ]; then
         grep -q 'MagicEnumHeaderOnly_ROOT_DIR=@MagicEnumHeaderOnly_ROOT_DIR@' Makefile.config.in
         result=$?
         if test "x${result}" != "x0"
@@ -5046,7 +5052,8 @@ fi
 then :
 
 
-    if [ "x0" == "x0" ]; then
+    if [ "x12" == "x12" ] || [ "x12" == "x10" ]; then
+
         grep -q 'yaml_ROOT_DIR=@yaml_ROOT_DIR@' Makefile.config.in
         result=$?
         if test "x${result}" != "x0"
@@ -5061,6 +5068,9 @@ then :
 
 
 fi
+    fi
+
+    if [ "x12" == "x12" ] || [ "x12" == "x11" ]; then
 
         grep -q 'yaml_ROOT_LIB=@yaml_ROOT_LIB@' Makefile.config.in
         result=$?
@@ -5076,7 +5086,9 @@ then :
 
 
 fi
-    else
+    fi
+
+    if [ "x12" == "x13" ]; then
         grep -q 'yamlHeaderOnly_ROOT_DIR=@yamlHeaderOnly_ROOT_DIR@' Makefile.config.in
         result=$?
         if test "x${result}" != "x0"
@@ -5238,51 +5250,57 @@ then :
 fi
 
 
-    if test "x" != "x"
+    if test "xThorSerialize" != "x"
 then :
 
 
-    if [ "x0" == "x0" ]; then
-        grep -q '_ROOT_DIR=@_ROOT_DIR@' Makefile.config.in
+    if [ "x12" == "x12" ] || [ "x12" == "x10" ]; then
+
+        grep -q 'ThorSerialize_ROOT_DIR=@ThorSerialize_ROOT_DIR@' Makefile.config.in
         result=$?
         if test "x${result}" != "x0"
 then :
 
                 as_fn_error $? "
-                    Expecting _ROOT_DIR to be defined in Makefile.config.in
+                    Expecting ThorSerialize_ROOT_DIR to be defined in Makefile.config.in
                     You should probably add this line to Makefile.config.in
 
-                        _ROOT_DIR=@_ROOT_DIR@
+                        ThorSerialize_ROOT_DIR=@ThorSerialize_ROOT_DIR@
                 " "$LINENO" 5
 
 
 fi
+    fi
 
-        grep -q '_ROOT_LIB=@_ROOT_LIB@' Makefile.config.in
+    if [ "x12" == "x12" ] || [ "x12" == "x11" ]; then
+
+        grep -q 'ThorSerialize_ROOT_LIB=@ThorSerialize_ROOT_LIB@' Makefile.config.in
         result=$?
         if test "x${result}" != "x0"
 then :
 
                 as_fn_error $? "
-                    Expecting _ROOT_LIB to be defined in Makefile.config.in
+                    Expecting ThorSerialize_ROOT_LIB to be defined in Makefile.config.in
                     You should probably add this line to Makefile.config.in
 
-                        _ROOT_LIB=@_ROOT_LIB@
+                        ThorSerialize_ROOT_LIB=@ThorSerialize_ROOT_LIB@
                 " "$LINENO" 5
 
 
 fi
-    else
-        grep -q 'HeaderOnly_ROOT_DIR=@HeaderOnly_ROOT_DIR@' Makefile.config.in
+    fi
+
+    if [ "x12" == "x13" ]; then
+        grep -q 'ThorSerializeHeaderOnly_ROOT_DIR=@ThorSerializeHeaderOnly_ROOT_DIR@' Makefile.config.in
         result=$?
         if test "x${result}" != "x0"
 then :
 
                 as_fn_error $? "
-                    Expecting HeaderOnly_ROOT_DIR to be defined in Makefile.config.in
+                    Expecting ThorSerializeHeaderOnly_ROOT_DIR to be defined in Makefile.config.in
                     You should probably add this line to Makefile.config.in
 
-                        HeaderOnly_ROOT_DIR=@HeaderOnly_ROOT_DIR@
+                        ThorSerializeHeaderOnly_ROOT_DIR=@ThorSerializeHeaderOnly_ROOT_DIR@
                 " "$LINENO" 5
 
 
@@ -5400,7 +5418,7 @@ You can solve this by installing Thors Serializer
     brew install thors-mongo
 
 Alternately specify install location with:
-    --with-thorserialize-root=<location of ThorsDB installation>
+    --with-thorserialize-root=<location of ThorsSerializer installation>
 
 
     " "$LINENO" 5
