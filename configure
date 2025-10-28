@@ -5237,7 +5237,7 @@ fi
 
 
 
-    remove="Serialize"
+    remove="ThorSerialize"
     libs="ThorSerialize ThorsSocket ThorsStorage ThorsLogging"
     libs=${libs//"${remove}"/}
     echo "Libs: ${libs}"
