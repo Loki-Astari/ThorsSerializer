@@ -1,4 +1,4 @@
-AC_INIT([ThorsSerialize], [0.1], [Loki.Astari+ThorsAnvil@gmail.com])
+AC_INIT([ThorsSerialize], [0.1], [Loki.Astari+ThorsSerializer@gmail.com])
 AC_PREREQ([2.65])
 
 AC_CONFIG_MACRO_DIR([build/autotools/m4])
