@@ -6,6 +6,7 @@ MagicEnumHeaderOnly_ROOT_DIR=@MagicEnumHeaderOnly_ROOT_DIR@
 yaml_ROOT_DIR=@yaml_ROOT_DIR@
 yaml_ROOT_LIB=@yaml_ROOT_LIB@
 
+ThorSerialize_ROOT_LIB=@ThorSerialize_ROOT_LIB@
 ThorSerialize_ROOT_DIR=@ThorSerialize_ROOT_DIR@
 ThorSerializeHeaderOnly_ROOT_DIR=
 
