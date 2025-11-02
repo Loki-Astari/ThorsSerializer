@@ -727,7 +727,8 @@ class Traits<DataType>                                                  \
             case FormatType::Yaml:  /* Fall Through */                  \
             default:                                                    \
             {                                                           \
-                ThorsLogAndThrowError("ThorsAnivl::Seriaizlize::Traits<DataType>",   \
+                ThorsLogAndThrowError(std::runtime_error,               \
+                                      "ThorsAnivl::Seriaizlize::Traits<DataType>",   \
                                       "getPrintSize",                   \
                                       "Should not get here");           \
             }                                                           \
@@ -766,7 +767,8 @@ class Traits<EnumName>                                                  \
                     return value.first;                                 \
                 }                                                       \
             }                                                           \
-            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::Traits<EnumName>", \
+            ThorsLogAndThrowDebug(std::runtime_error,                   \
+                                  "ThorsAnvil::Serialize::Traits<EnumName>", \
                                   "getValue",                           \
                                   "Invalid Enum Value");                \
         }                                                               \
@@ -780,7 +782,8 @@ class Traits<EnumName>                                                  \
             auto values = getValues();                                  \
             auto find = values.find(object);                            \
             if (find == values.end()) {                                 \
-                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::Traits<EnumName>", \
+                ThorsLogAndThrowDebug(std::runtime_error,               \
+                                      "ThorsAnvil::Serialize::Traits<EnumName>", \
                                       "serializeForBlock",              \
                                       "Invalid Enum Value");            \
             }                                                           \
@@ -1044,7 +1047,8 @@ class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
             {
                 return enumDecode.value();
             }
-            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::Traits<EnumName>",
+            ThorsLogAndThrowDebug(std::runtime_error,
+                                  "ThorsAnvil::Serialize::Traits<EnumName>",
                                   "getValue",
                                   "Invalid Enum Value");
         }
@@ -1058,7 +1062,8 @@ class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
             auto findValue = magic_enum::enum_name(object);
             if (findValue == "")
             {
-                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::Traits<EnumName(With Magic)>",
+                ThorsLogAndThrowDebug(std::runtime_error,
+                                      "ThorsAnvil::Serialize::Traits<EnumName(With Magic)>",
                                       "serializeForBlock",
                                       "Invalid Enum Value");
             }
@@ -1144,7 +1149,8 @@ class PolyMorphicRegistry
             auto     find       = cont.find(name);
             if (find == cont.end())
             {
-                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::PolyMorphicRegistry",
+                ThorsLogAndThrowDebug(std::runtime_error,
+                                      "ThorsAnvil::Serialize::PolyMorphicRegistry",
                                       "getNamedTypeConvertedTo",
                                       "Non polymorphic type");
             }

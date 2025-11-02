@@ -137,7 +137,8 @@ std::string_view JsonManualLexer::getRawString()
             {
                 if (next < 0x20)
                 {
-                    ThorsLogAndThrowDebug("ThorsAnvil::Serializer::JsonManualLexer",
+                    ThorsLogAndThrowDebug(std::runtime_error,
+                                          "ThorsAnvil::Serializer::JsonManualLexer",
                                           "getRawString",
                                           "Strings should not contain control characters.");
                 }
@@ -154,7 +155,8 @@ std::string_view JsonManualLexer::getRawString()
         }
         default:
         {
-            ThorsLogAndThrowDebug("ThorsAnvil::Serializer::JsonManualLexer",
+            ThorsLogAndThrowDebug(std::runtime_error,
+                                  "ThorsAnvil::Serializer::JsonManualLexer",
                                   "getRawString",
                                   "Don't know how to retrieve the RAW data from the JSON input");
         }
@@ -179,7 +181,8 @@ void JsonManualLexer::getStringInto(std::string& value)
     char next = parser.get();
     if (next != '"')
     {
-        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::UnicodeWrapperIterator",
+        ThorsLogAndThrowDebug(std::runtime_error,
+                              "ThorsAnvil::Serialize::UnicodeWrapperIterator",
                               "UnicodeWrapperIterator",
                               "String does not start with a \" character");
     }
@@ -226,7 +229,8 @@ bool JsonManualLexer::getLastBool()
             return lastBool;
         default:
         {
-            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::JsonParser",
+            ThorsLogAndThrowDebug(std::runtime_error,
+                                  "ThorsAnvil::Serialize::JsonParser",
                                   "getLastBool",
                                   "The last value was not a bool");
         }
@@ -324,7 +328,8 @@ void JsonManualLexer::checkFixed(char const* check, std::size_t size)
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonManualLexer::error()
 {
-    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::JsonManualLexer",
+    ThorsLogAndThrowDebug(std::runtime_error,
+                          "ThorsAnvil::Serialize::JsonManualLexer",
                           "error",
                           "Invalid Character in Lexer");
 }

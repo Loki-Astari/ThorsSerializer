@@ -12,6 +12,7 @@
 #include "StringInput.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
+#include <stdexcept>
 #include <type_traits>
 #include <string>
 #include <map>
@@ -264,10 +265,17 @@ auto tryGetSizeFromSerializeType(PrinterInterface& printer, T const& value, int)
     return printer.getSizeRaw(size);
 }
 
+class DepricatedIssue: public std::runtime_error
+{
+    public:
+        using std::runtime_error::runtime_error;
+};
+
 template<typename T>
 auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size_t
 {
-    ThorsLogAndThrowError("ThorsAnvil::Serialize",
+    ThorsLogAndThrowError(DepricatedIssue,
+                          "ThorsAnvil::Serialize",
                           "tryGetSizeFromSerializeType",
                           "BSON backward compatibility. See comments in function.");
     // This function is needed for backward compatibility to make things compile without

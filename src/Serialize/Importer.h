@@ -50,11 +50,11 @@ class Importer
                     {
                         // If the stream is OK then there was junk on the stream.
                         // So we have effectively failed.
-                        ThorsLogAndThrowDebug("ThorsAnvil::Serializer::Importer", "extract", "Validating no trailing data fail");
+                        ThorsLogAndThrowDebug(std::runtime_error, "ThorsAnvil::Serializer::Importer", "extract", "Validating no trailing data fail");
                     }
                 }
             }
-            catch (ThorsAnvil::Logging::LogErrorException const& e)
+            catch (DepricatedIssue const& e)
             {
                 ThorsCatchMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
                 ThorsRethrowMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());

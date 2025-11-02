@@ -160,7 +160,8 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
     if (test())
     {
         error = true;
-        ThorsLogAndThrowDebug("ThorsAnvil::Serializer::YamlParser",
+        ThorsLogAndThrowDebug(std::runtime_error,
+                              "ThorsAnvil::Serializer::YamlParser",
                               "generateParsingException",
                               msg);
     }
@@ -200,7 +201,8 @@ T YamlParser::scan()
     T   value = scanValue<T>(buffer, &end);
     if (buffer + length != end)
     {
-        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::YamlParser",
+        ThorsLogAndThrowDebug(std::runtime_error,
+                              "ThorsAnvil::Serialize::YamlParser",
                               "scan",
                               "Not an integer");
     }
@@ -238,7 +240,8 @@ void YamlParser::getValue(bool& value)
     }
     else
     {
-        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::YamlParser",
+        ThorsLogAndThrowDebug(std::runtime_error,
+                              "ThorsAnvil::Serialize::YamlParser",
                               "getValue",
                               "Not a bool");
     }
