@@ -10,9 +10,9 @@ void ParserInterface::ignoreValue()
 {
     if (config.parseStrictness != ParseType::Weak)
     {
-        ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                         "ignoreValue",
-                         "In Strict parser mode not allowed to ignore values.");
+        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                              "ignoreValue",
+                              "In Strict parser mode not allowed to ignore values.");
     }
 
     ignoreTheValue();
@@ -27,9 +27,9 @@ void ParserInterface::ignoreTheMap()
         ignoreDataValue();
         if (token != ParserToken::Key)
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                             "ignoreTheMap",
-                             "Invalid token found. (Expecting Key)");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                  "ignoreTheMap",
+                                  "Invalid token found. (Expecting Key)");
         }
         ignoreTheValue();
     }
@@ -47,30 +47,30 @@ void ParserInterface::ignoreTheArray()
         {
             case ParserToken::Error:
             {
-                ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                                 "ignoreTheArray",
-                                 "Invalid token found: Error");
+                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                      "ignoreTheArray",
+                                      "Invalid token found: Error");
             }
             case ParserToken::Key:
             {
-                ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                                 "ignoreTheArray",
-                                 "Invalid token found: Key");
+                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                      "ignoreTheArray",
+                                      "Invalid token found: Key");
             }
             case ParserToken::MapEnd:
             {
-                ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                                 "ignoreTheArray",
-                                 "Invalid token found: MapEnd");
+                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                      "ignoreTheArray",
+                                      "Invalid token found: MapEnd");
             }
             case ParserToken::Value:     ignoreDataValue(); break;
             case ParserToken::MapStart:  ignoreTheMap();    break;
             case ParserToken::ArrayStart:ignoreTheArray();  break;
             default:
             {
-                ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                                 "ignoreTheArray",
-                                 "Invalid token found: Unknown");
+                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                      "ignoreTheArray",
+                                      "Invalid token found: Unknown");
             }
         }
         token = getNextToken();
@@ -86,36 +86,36 @@ void ParserInterface::ignoreTheValue()
     {
         case ParserToken::Error:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                             "ignoreTheValue",
-                             "Invalid token found: Error");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                  "ignoreTheValue",
+                                  "Invalid token found: Error");
         }
         case ParserToken::Key:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                             "ignoreTheValue",
-                             "Invalid token found: Key");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                  "ignoreTheValue",
+                                  "Invalid token found: Key");
         }
         case ParserToken::MapEnd:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                             "ignoreTheValue",
-                             "Invalid token found: MapEnd");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                  "ignoreTheValue",
+                                  "Invalid token found: MapEnd");
         }
         case ParserToken::ArrayEnd:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                             "ignoreTheValue",
-                             "Invalid token found: ArrayEnd");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                  "ignoreTheValue",
+                                  "Invalid token found: ArrayEnd");
         }
         case ParserToken::Value:     ignoreDataValue(); break;
         case ParserToken::MapStart:  ignoreTheMap();    break;
         case ParserToken::ArrayStart:ignoreTheArray();  break;
         default:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::ParserInterface",
-                             "ignoreTheValue",
-                             "Invalid token found: Unknown");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::ParserInterface",
+                                  "ignoreTheValue",
+                                  "Invalid token found: Unknown");
         }
     }
 }

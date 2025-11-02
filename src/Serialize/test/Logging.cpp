@@ -1,4 +1,3 @@
-#if 0
 #include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "ThorsLogging/ThorsLogging.h"
@@ -23,7 +22,7 @@ class LoggingEnvironment: public ::testing::Environment
         else
         {
             std::cerr << "Logging Level BEFORE: " << loguru::g_stderr_verbosity << "\n";
-            std::cerr << "THOR_LOG_LEVEL = " << logging << "\n";
+            std::cerr << "THOR_LOG_LEVEL = >" << logging << "<\n";
             int level = std::strtol(logging, nullptr, 10);
             if (level > 0 && level <10)
             {
@@ -47,7 +46,11 @@ class LoggingEnvironment: public ::testing::Environment
             }
             else if ("DEBUG"s == logging)
             {
-                loguru::g_stderr_verbosity = 5;
+                loguru::g_stderr_verbosity = 6;
+            }
+            else if ("TRACE"s == logging)
+            {
+                loguru::g_stderr_verbosity = 8;
             }
             else if ("ALL"s == logging)
             {
@@ -73,5 +76,4 @@ bool initLogging()
 bool logingInit = false;
 #else
 bool logingInit = initLogging();
-#endif
 #endif

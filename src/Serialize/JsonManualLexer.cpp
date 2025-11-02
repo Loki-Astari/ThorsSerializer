@@ -137,9 +137,9 @@ std::string_view JsonManualLexer::getRawString()
             {
                 if (next < 0x20)
                 {
-                    ThorsLogAndThrow("ThorsAnvil::Serializer::JsonManualLexer",
-                                     "getRawString",
-                                     "Strings should not contain control characters.");
+                    ThorsLogAndThrowDebug("ThorsAnvil::Serializer::JsonManualLexer",
+                                          "getRawString",
+                                          "Strings should not contain control characters.");
                 }
                 buffer.push_back(next);
                 last = next;
@@ -154,9 +154,9 @@ std::string_view JsonManualLexer::getRawString()
         }
         default:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serializer::JsonManualLexer",
-                             "getRawString",
-                             "Don't know how to retrieve the RAW data from the JSON input");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serializer::JsonManualLexer",
+                                  "getRawString",
+                                  "Don't know how to retrieve the RAW data from the JSON input");
         }
     }
 }
@@ -179,9 +179,9 @@ void JsonManualLexer::getStringInto(std::string& value)
     char next = parser.get();
     if (next != '"')
     {
-        ThorsLogAndThrow("ThorsAnvil::Serialize::UnicodeWrapperIterator",
-                         "UnicodeWrapperIterator",
-                         "String does not start with a \" character");
+        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::UnicodeWrapperIterator",
+                              "UnicodeWrapperIterator",
+                              "String does not start with a \" character");
     }
 
     parser.readTo(value, '"');
@@ -226,9 +226,9 @@ bool JsonManualLexer::getLastBool()
             return lastBool;
         default:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::JsonParser",
-                             "getLastBool",
-                             "The last value was not a bool");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::JsonParser",
+                                  "getLastBool",
+                                  "The last value was not a bool");
         }
     }
 }
@@ -324,7 +324,7 @@ void JsonManualLexer::checkFixed(char const* check, std::size_t size)
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonManualLexer::error()
 {
-    ThorsLogAndThrow("ThorsAnvil::Serialize::JsonManualLexer",
-                     "error",
-                     "Invalid Character in Lexer");
+    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::JsonManualLexer",
+                          "error",
+                          "Invalid Character in Lexer");
 }

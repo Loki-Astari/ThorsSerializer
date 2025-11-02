@@ -125,9 +125,9 @@ ParserToken JsonParser::getNextToken()
     }
     // If we hit anything else there was a serious problem in the
     // parser itself.
-    ThorsLogAndThrow("ThorsAnvil::Serialize::JsonParser",
-                     "getNextToken",
-                     "Reached an Unnamed State");
+    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::JsonParser",
+                          "getNextToken",
+                          "Reached an Unnamed State");
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE

@@ -267,9 +267,9 @@ auto tryGetSizeFromSerializeType(PrinterInterface& printer, T const& value, int)
 template<typename T>
 auto tryGetSizeFromSerializeType(PrinterInterface&, T const&, long) -> std::size_t
 {
-    ThorsLogAndThrowCritical("ThorsAnvil::Serialize",
-                             "tryGetSizeFromSerializeType",
-                             "BSON backward compatibility. See comments in function.");
+    ThorsLogAndThrowError("ThorsAnvil::Serialize",
+                          "tryGetSizeFromSerializeType",
+                          "BSON backward compatibility. See comments in function.");
     // This function is needed for backward compatibility to make things compile without
     // requiring user code to be changed.
     //

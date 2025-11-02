@@ -20,6 +20,12 @@ ThorsAnvil_MakeTrait(CLASS, val, y);
 
 TEST(Issue78Test, ThorwOnInvalidEnumDeSerializationOriginalEnum)
 {
+    ThorsLogError("X", "Y", "Message Error");
+    ThorsLogWarning("X", "Y", "Message Warning");
+    ThorsLogInfo("X", "Y", "Message Info");
+    ThorsLogDebug("X", "Y", "Message Debug");
+    ThorsLogTrace("X", "Y", "Message Trace");
+    ThorsLogAll("X", "Y", "Message All");
     using ThorsAnvil::Serialize::jsonExporter;
 
     auto action = []() {

@@ -727,9 +727,9 @@ class Traits<DataType>                                                  \
             case FormatType::Yaml:  /* Fall Through */                  \
             default:                                                    \
             {                                                           \
-                ThorsLogAndThrowCritical("ThorsAnivl::Seriaizlize::Traits<DataType>",   \
-                                         "getPrintSize",                \
-                                         "Should not get here");        \
+                ThorsLogAndThrowError("ThorsAnivl::Seriaizlize::Traits<DataType>",   \
+                                      "getPrintSize",                   \
+                                      "Should not get here");           \
             }                                                           \
         }                                                               \
     }                                                                   \
@@ -766,9 +766,9 @@ class Traits<EnumName>                                                  \
                     return value.first;                                 \
                 }                                                       \
             }                                                           \
-            ThorsLogAndThrow("ThorsAnvil::Serialize::Traits<EnumName>", \
-                             "getValue",                                \
-                             "Invalid Enum Value");                     \
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::Traits<EnumName>", \
+                                  "getValue",                           \
+                                  "Invalid Enum Value");                \
         }                                                               \
         static std::size_t getPrintSize(PrinterInterface& printer, EnumName const& value, bool)\
         {                                                               \
@@ -780,9 +780,9 @@ class Traits<EnumName>                                                  \
             auto values = getValues();                                  \
             auto find = values.find(object);                            \
             if (find == values.end()) {                                 \
-                ThorsLogAndThrow("ThorsAnvil::Serialize::Traits<EnumName>", \
-                                 "serializeForBlock",                       \
-                                 "Invalid Enum Value");                     \
+                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::Traits<EnumName>", \
+                                      "serializeForBlock",              \
+                                      "Invalid Enum Value");            \
             }                                                           \
             printer.addValue(getValues().find(object)->second);         \
         }                                                               \
@@ -1044,9 +1044,9 @@ class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
             {
                 return enumDecode.value();
             }
-            ThorsLogAndThrow("ThorsAnvil::Serialize::Traits<EnumName>",
-                             "getValue",
-                             "Invalid Enum Value");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::Traits<EnumName>",
+                                  "getValue",
+                                  "Invalid Enum Value");
         }
         static std::size_t getPrintSize(PrinterInterface& printer, EnumName const& value, bool)
         {
@@ -1058,9 +1058,9 @@ class Traits<EnumName, std::enable_if_t<std::is_enum<EnumName>::value>>
             auto findValue = magic_enum::enum_name(object);
             if (findValue == "")
             {
-                ThorsLogAndThrow("ThorsAnvil::Serialize::Traits<EnumName(With Magic)>",
-                                 "serializeForBlock",
-                                 "Invalid Enum Value");
+                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::Traits<EnumName(With Magic)>",
+                                      "serializeForBlock",
+                                      "Invalid Enum Value");
             }
             printer.addValue(magic_enum::enum_name(object));
         }
@@ -1144,9 +1144,9 @@ class PolyMorphicRegistry
             auto     find       = cont.find(name);
             if (find == cont.end())
             {
-                ThorsLogAndThrow("ThorsAnvil::Serialize::PolyMorphicRegistry",
-                                 "getNamedTypeConvertedTo",
-                                 "Non polymorphic type");
+                ThorsLogAndThrowDebug("ThorsAnvil::Serialize::PolyMorphicRegistry",
+                                      "getNamedTypeConvertedTo",
+                                      "Non polymorphic type");
             }
             void*       data        = find->second();
             AllocType*  dataBase    = reinterpret_cast<AllocType*>(data);

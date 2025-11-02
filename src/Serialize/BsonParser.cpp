@@ -143,9 +143,9 @@ ParserToken BsonParser::getNextToken()
         }
         default:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                             "getNextToken",
-                             "Invalid state reached in switch");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                                  "getNextToken",
+                                  "Invalid state reached in switch");
         }
     }
     ThorsMessage(5, "BsonParser", "getNextToken", getTokenTypeAsString(result));
@@ -263,9 +263,9 @@ void BsonParser::ignoreDataValue()
         }
         default:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                             "ignoreDataValue",
-                             "trying to ignore a non value. Type: ", static_cast<unsigned int>(static_cast<unsigned char>(nextType)));
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                                  "ignoreDataValue",
+                                  "trying to ignore a non value. Type: ", static_cast<unsigned int>(static_cast<unsigned char>(nextType)));
         }
     }
 }
@@ -297,16 +297,16 @@ void BsonParser::readEndOfContainer()
         dataLeft.back() -= 1;
         if (mark != '\x00')
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                             "readEndOfContainer",
-                             "End of container marker should be '\\x00' but is >", static_cast<int>(mark), "<");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                                  "readEndOfContainer",
+                                  "End of container marker should be '\\x00' but is >", static_cast<int>(mark), "<");
         }
     }
     else
     {
-        ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                         "readEndOfContainer",
-                         "End of container marker should be '\\x00' but we failed to read any data from the stream");
+        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                              "readEndOfContainer",
+                              "End of container marker should be '\\x00' but we failed to read any data from the stream");
     }
 }
 
@@ -319,9 +319,9 @@ void BsonParser::readKey()
         dataLeft.back() -= (1 + nextKey.size() + 1);
         return;
     }
-    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                     "readKey",
-                     "Failed to read Key");
+    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                          "readKey",
+                          "Failed to read Key");
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
@@ -333,9 +333,9 @@ bool BsonParser::readBool()
         dataLeft.back() -= 1;
         return result;
     }
-    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                     "readBool",
-                     "Failed to read Bool");
+    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                          "readBool",
+                          "Failed to read Bool");
 }
 
 #if 0
@@ -350,9 +350,9 @@ std::size_t BsonParser::peekSize()
         input.seekg(pos);
         return size;
     }
-    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                     "peekSize",
-                     "Failed to peek at the size of the next object");
+    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                          "peekSize",
+                          "Failed to peek at the size of the next object");
 }
 #endif
 
@@ -370,9 +370,9 @@ void BsonParser::readString(std::string& dst)
         dst.resize(dstCurrentSize + size - 1);   // remove the trailing '\0'
         return;
     }
-    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                     "readString",
-                     "Failed to read String");
+    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                          "readString",
+                          "Failed to read String");
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
@@ -396,9 +396,9 @@ void BsonParser::readBinary(std::string& dst)
             return;
         }
     }
-    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                     "readKBinary",
-                     "Failed to read Binary Data");
+    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                          "readKBinary",
+                          "Failed to read Binary Data");
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
@@ -438,9 +438,9 @@ std::string_view BsonParser::getRawValue()
         case '\x05':         ThorsMessage(5, "BsonParser", "getRawValue", "Binary");        readBinary(buffer);return buffer;
         default:
         {
-            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                             "getRawValue",
-                             "Could not convert the data into raw output for some reason");
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                                  "getRawValue",
+                                  "Could not convert the data into raw output for some reason");
         }
     }
 }

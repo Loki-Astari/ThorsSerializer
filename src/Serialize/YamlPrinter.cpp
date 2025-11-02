@@ -28,9 +28,9 @@ void YamlPrinter::checkYamlResultCode(int code, char const* method, char const* 
     if (code == 0)
     {
         error = true;
-        ThorsLogAndThrow("ThorsAnvil::Serialize::YamlPrinter",
-                         "checkYamlResultCode",
-                         method, ":", msg);
+        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::YamlPrinter",
+                              "checkYamlResultCode",
+                              method, ":", msg);
     }
 }
 
@@ -224,9 +224,9 @@ void YamlPrinter::addKey(std::string_view const& key)
     if (state.back().second != TraitType::Map && state.back().first % 2 != 1)
     {
         error = true;
-        ThorsLogAndThrow("ThorsAnvil::Serialize::YamlPrinter",
-                         "addKey",
-                         "Invalid call to addKey(): Currently not in a map");
+        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::YamlPrinter",
+                              "addKey",
+                              "Invalid call to addKey(): Currently not in a map");
     }
     emit(key);
 }

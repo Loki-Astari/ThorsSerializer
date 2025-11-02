@@ -177,9 +177,9 @@ void JsonPrinter::closeMap()
 {
     if (state.back().f1 != TraitType::Map)
     {
-        ThorsLogAndThrow("ThorsAnvil::Serialize::JsonPrinter",
-                         "closeMap",
-                         "Invalid call to closeMap(): Currently not in a map");
+        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::JsonPrinter",
+                              "closeMap",
+                              "Invalid call to closeMap(): Currently not in a map");
     }
     bool prefixValue = state.back().f2;
     state.pop_back();
@@ -200,9 +200,9 @@ void JsonPrinter::closeArray()
 {
     if (state.back().f1 != TraitType::Array)
     {
-        ThorsLogAndThrow("ThorsAnvil::Serialize::JsonPrinter",
-                         "closeArray",
-                         "Invalid call to closeArray(): Currently not in an array");
+        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::JsonPrinter",
+                              "closeArray",
+                              "Invalid call to closeArray(): Currently not in an array");
     }
     bool prefixValue = state.back().f2;
     state.pop_back();
@@ -215,9 +215,9 @@ void JsonPrinter::addKey(std::string_view const& key)
 {
     if (state.back().f1 != TraitType::Map)
     {
-        ThorsLogAndThrow("ThorsAnvil::Serialize::JsonPrinter",
-                         "addKey",
-                         "Invalid call to addKey(): Currently not in a map");
+        ThorsLogAndThrowDebug("ThorsAnvil::Serialize::JsonPrinter",
+                              "addKey",
+                              "Invalid call to addKey(): Currently not in a map");
     }
     PrefixKey   prefix(config.characteristics, state.size(), state.back());
     prefix.write(*this);

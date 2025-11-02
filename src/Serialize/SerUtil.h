@@ -126,9 +126,9 @@ class GetValueType<V, TraitType::Value>
         {
             if (parser.getToken() != ThorsAnvil::Serialize::ParserToken::Value)
             {
-                ThorsLogAndThrow("ThorsAnvil::Serializer::SerMap::GetValueType",
-                                 "GetValueType<Value>",
-                                 "Expecting a normal value after the key");
+                ThorsLogAndThrowDebug("ThorsAnvil::Serializer::SerMap::GetValueType",
+                                      "GetValueType<Value>",
+                                      "Expecting a normal value after the key");
             }
             parser.getValue(value);
         }

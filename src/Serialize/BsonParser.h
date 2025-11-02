@@ -169,10 +169,10 @@ class BsonParser: public ParserInterface
                 default:
                     gotName = "Unknown";
             }
-            ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                             "badType",
-                             "Trying to read a type that we can can't convert.",
-                             "Expected: ", expected, " Got: ", gotName, " : ", got);
+            ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                                  "badType",
+                                  "Trying to read a type that we can can't convert.",
+                                  "Expected: ", expected, " Got: ", gotName, " : ", got);
         }
 };
 
@@ -198,9 +198,9 @@ inline F BsonParser::readFloat()
         dataLeft.back() -= sizeof(F);
         return result;
     }
-    ThorsLogAndThrow("ThorsAnvil::Serialize::BsonParser",
-                     "readFloat",
-                     "Failed to read Float Value. Size: ", sizeof(F));
+    ThorsLogAndThrowDebug("ThorsAnvil::Serialize::BsonParser",
+                          "readFloat",
+                          "Failed to read Float Value. Size: ", sizeof(F));
 }
 
 template<std::size_t Size, typename Int>
