@@ -11,6 +11,7 @@
  *      std::cin  >> jsonImporter(object); // converts Json to a C++ object from an input stream
  */
 
+#include "PrinterConfig.h"
 #include "SerializeConfig.h"
 #include "JsonParser.h"
 #include "JsonPrinter.h"
@@ -37,6 +38,17 @@ template<typename T>
 Exporter<Json, T> jsonExporter(T const& value, PrinterConfig config = PrinterConfig{})
 {
     return Exporter<Json, T>(value, config);
+}
+
+/*
+ * Size of the output (if streamed with no extra space)
+ */
+template<typename T>
+std::size_t jsonStreanSize(T const& value)
+{
+    ThorsAnvil::Serialize::JsonPrinter      printer(std::cout, PrinterConfig{OutputType::Stream});
+    std::size_t size = ThorsAnvil::Serialize::Traits<T>::getPrintSize(printer, value, false);
+    return size;
 }
 // @function-api
 // @param value                     The object to be de-serialized.

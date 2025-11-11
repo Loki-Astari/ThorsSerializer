@@ -986,7 +986,7 @@ class TraitsSizeCalculator
                 return std::make_pair(0UL,0UL);
             }
             auto partSize   = addSizeOneMember(printer, object, item.second);
-            auto nameSize   = std::size(Override<MyType>::nameOverride(item.first));
+            auto nameSize = printer.getSizeMember(Override<MyType>::nameOverride(item.first));
             return std::make_pair(partSize + nameSize, 1);
         }
         template<typename MyType, typename M, typename C>
@@ -996,7 +996,7 @@ class TraitsSizeCalculator
                 return std::make_pair(0UL,0UL);
             }
             auto partSize   = addSizeOneMember(printer, object, item.second);
-            auto nameSize   = std::size(Override<MyType>::nameOverride(item.first));
+            auto nameSize = printer.getSizeMember(Override<MyType>::nameOverride(item.first));
             return std::make_pair(partSize + nameSize, 1);
         }
         template<typename MyType, typename Members, std::size_t... Seq>
