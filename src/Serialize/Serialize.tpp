@@ -207,6 +207,7 @@ class DeSerializationForBlock
             {
                 if (!parent.scanObjectMembers(key, object))
                 {
+                    ThorsLogDebug("DeSerializationForBlock", "scanObject", "Ignoring field: ", key);
                     parser.ignoreValue();
                 }
                 else
