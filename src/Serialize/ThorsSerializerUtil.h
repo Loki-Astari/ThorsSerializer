@@ -32,7 +32,7 @@ namespace ThorsAnvil::Serialize
 /*
  * Defines the generic type that all serialization types can expand on
  */
-enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Reference, Custom_Depricated, Custom_Serialize};
+enum class TraitType {Invalid, Parent, Value, Map, Array, Enum, Pointer, Reference, Variant, Custom_Depricated, Custom_Serialize};
 
 template<typename T, typename SFINE = void>
 class Traits;

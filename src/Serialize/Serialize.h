@@ -203,16 +203,22 @@ struct TraitsInfo<T, M, TraitType::Enum>
     using SerializeMember       = SerializeMemberValue<T, M, TraitType::Enum>;
 };
 template<typename T, typename M>
+struct TraitsInfo<T, M, TraitType::Pointer>
+{
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Pointer>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Pointer>;
+};
+template<typename T, typename M>
 struct TraitsInfo<T, M, TraitType::Reference>
 {
     using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Reference>;
     using SerializeMember       = SerializeMemberValue<T, M, TraitType::Reference>;
 };
 template<typename T, typename M>
-struct TraitsInfo<T, M, TraitType::Pointer>
+struct TraitsInfo<T, M, TraitType::Variant>
 {
-    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Pointer>;
-    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Pointer>;
+    using DeSerializeMember     = DeSerializeMemberValue<T, M, TraitType::Variant>;
+    using SerializeMember       = SerializeMemberValue<T, M, TraitType::Variant>;
 };
 template<typename T, typename M>
 struct TraitsInfo<T, M, TraitType::Custom_Depricated>

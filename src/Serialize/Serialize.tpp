@@ -509,6 +509,21 @@ class DeSerializationForBlock<TraitType::Reference, T>
             deserializer.scanObject(getter.getInputValue(object));
         }
 };
+template<typename T>
+class DeSerializationForBlock<TraitType::Variant, T>
+{
+    DeSerializer&       parent;
+    ParserInterface&    parser;
+    public:
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+            : parent(parent)
+            , parser(parser)
+        {}
+        void scanObject(T& /*object*/)
+        {
+            // TODO
+        }
+};
 /*
  * Specialization for Enum.
  * This is only used at the top level.
@@ -929,6 +944,42 @@ class SerializerForBlock<TraitType::Reference, T>
             ValueGetter         getter(printer);
             SerializerForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>    serializer(parent, printer, getter.getOutputValue(object));
             serializer.printMembers();
+        }
+};
+
+struct SerializeVisitor
+{
+    Serializer&         parent;
+    PrinterInterface&   printer;
+
+    SerializeVisitor(Serializer& parent, PrinterInterface& printer)
+        : parent(parent)
+        , printer(printer)
+    {}
+    template<typename Arg>
+    void operator()(Arg const& object)
+    {
+        printPolyMorphicObject(parent, printer, object);
+        //SerializerForBlock<Traits<std::remove_cv_t<Arg*>>::type, Arg const*>    serializer(parent, printer, &object);
+        //serializer.printMembers();
+    }
+};
+template<typename T>
+class SerializerForBlock<TraitType::Variant, T>
+{
+    Serializer&         parent;
+    PrinterInterface&   printer;
+    T const&            object;
+    public:
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer,T const& object, bool /*poly*/ = false)
+            : parent(parent)
+            , printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()   {}
+        void printMembers()
+        {
+            std::visit(SerializeVisitor{parent, printer}, object);
         }
 };
 
