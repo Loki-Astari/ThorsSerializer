@@ -352,7 +352,7 @@ struct ConvertPointer<std::shared_ptr<T>>
     }
 };
 
-template<class T>
+template<typename T>
 auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, int) -> decltype(object->parsePolyMorphicObject(parent, parser), void())
 {
     ParserToken    tokenType;
@@ -374,13 +374,15 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
                               "Invalid Object. Expecting Key");
     }
 
-
-    if (parser.getKey() != parser.config.polymorphicMarker)
+    using BaseType  = std::remove_pointer_t<T>;
+    using AllocType = typename GetAllocationType<BaseType>::AllocType;
+    std::string_view key = parser.getKey();
+    if (key != Private::getPolymorphicMarker<AllocType>(parser.config.polymorphicMarker))
     {
         ThorsLogAndThrowDebug(std::runtime_error,
                               "ThorsAnvil::Serialize",
                               "tryParsePolyMorphicObject",
-                              "Invalid PolyMorphic Object. Expecting Key Name ", parser.config.polymorphicMarker);
+                              "Invalid PolyMorphic Object. Found: >", key, "< Config Key: >", parser.config.polymorphicMarker, "< Expecting Key Name <", Private::getPolymorphicMarker<T>(parser.config.polymorphicMarker), "<");
     }
 
     tokenType = parser.getToken();
@@ -395,8 +397,6 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
     std::string className;
     parser.getValue(className);
 
-    using BaseType  = std::remove_pointer_t<T>;
-    using AllocType = typename GetAllocationType<BaseType>::AllocType;
     object = ConvertPointer<BaseType>::assign(PolyMorphicRegistry::getNamedTypeConvertedTo<AllocType>(className));
 
     // This uses a virtual method in the object to
@@ -739,7 +739,7 @@ class SerializerForBlock
         }
         void printPolyMorphicMembers(std::string const& type)
         {
-            printer.addKey(printer.config.polymorphicMarker);
+            printer.addKey(Private::getPolymorphicMarker<T>(printer.config.polymorphicMarker));
             printer.addValue(type);
             printMembers();
         }

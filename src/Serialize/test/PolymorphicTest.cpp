@@ -43,6 +43,41 @@ struct Bike: public Vehicle
     int     stroke;
     ThorsAnvil_PolyMorphicSerializer(PolymorphicTest::Bike);
 };
+
+struct Pod
+{
+    int level;
+    Pod():level(57) {}
+    Pod(int level): level(level) {}
+    static std::string polyname() {return "type";}
+    ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::Pod, pod);
+};
+struct HyperPod: public Pod
+{
+    int     size;
+    int     time;
+    HyperPod() {}
+    HyperPod(int size, int time)
+        : Pod(12)
+        , size(size)
+        , time(time)
+    {}
+    static std::string polyname() {return "type";}
+    ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::HyperPod, hyper-pod);
+};
+struct StaticPod: public Pod
+{
+    int     speed;
+    int     skill;
+    StaticPod() {}
+    StaticPod(int speed, int skill)
+        : Pod(88)
+        , speed(speed)
+        , skill(skill)
+    {}
+    static std::string polyname() {return "type";}
+    ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::HyperPod, static-pod);
+};
 struct User
 {
     ~User() { delete transport; }
@@ -64,9 +99,16 @@ struct UserSharedPtr
 ThorsAnvil_MakeTrait(PolymorphicTest::Vehicle, speed);
 ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Car, make);
 ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Bike, stroke);
+ThorsAnvil_MakeTrait(PolymorphicTest::Pod, level);
+ThorsAnvil_ExpandTrait(PolymorphicTest::Pod, PolymorphicTest::HyperPod, size, time);
+ThorsAnvil_ExpandTrait(PolymorphicTest::Pod, PolymorphicTest::StaticPod, speed, skill);
 ThorsAnvil_MakeTrait(PolymorphicTest::User, age, transport);
 ThorsAnvil_MakeTrait(PolymorphicTest::UserUniquePtr, age, transport);
 ThorsAnvil_MakeTrait(PolymorphicTest::UserSharedPtr, age, transport);
+
+ThorsAnvil_RegisterPolyMorphicTypeNamed(PolymorphicTest::Pod, pod)
+ThorsAnvil_RegisterPolyMorphicTypeNamed(PolymorphicTest::HyperPod, hyper-pod)
+ThorsAnvil_RegisterPolyMorphicTypeNamed(PolymorphicTest::StaticPod, static-pod)
 
 TEST(PolymorphicTest, JsonNullPointer)
 {
@@ -112,6 +154,18 @@ TEST(PolymorphicTest, JsonBikePointer)
 
     result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
     EXPECT_EQ(result, R"({"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}})");
+}
+
+TEST(PolymorphicTest, JsonHyperPodPointer)
+{
+    std::unique_ptr<PolymorphicTest::Pod> pod(new PolymorphicTest::HyperPod{18, 7});
+
+    std::stringstream   data;
+    data << ThorsAnvil::Serialize::jsonExporter(pod, false);
+    std::string result = data.str();
+
+    result.erase(std::remove_if(std::begin(result), std::end(result), [](char x){ return std::isspace(x);}), std::end(result));
+    EXPECT_EQ(result, R"({"type":"hyper-pod","size":18,"time":7,"level":12})");
 }
 
 TEST(PolymorphicTest, JsonReadNull)
@@ -163,6 +217,21 @@ TEST(PolymorphicTest, JsonReadBike)
     PolymorphicTest::Bike* bike = dynamic_cast<PolymorphicTest::Bike*>(user1.transport);
     ASSERT_NE(bike, nullptr);
     EXPECT_EQ(bike->stroke, 7);
+}
+
+TEST(PolymorphicTest, JsonReadHyperPod)
+{
+    std::stringstream       stream(R"({"type":"hyper-pod","size":18,"time":7,"level":12})");
+    PolymorphicTest::Pod*    pod(new PolymorphicTest::Pod(15));
+
+    stream >> ThorsAnvil::Serialize::jsonImporter(pod, false);
+    ASSERT_NE(pod, nullptr);
+    EXPECT_EQ(pod->level, 12);
+
+    PolymorphicTest::HyperPod* hp = dynamic_cast<PolymorphicTest::HyperPod*>(pod);
+    ASSERT_NE(hp, nullptr);
+    EXPECT_EQ(hp->size, 18);
+    EXPECT_EQ(hp->time, 7);
 }
 
 TEST(PolymorphicTest, BsonNullPointer)

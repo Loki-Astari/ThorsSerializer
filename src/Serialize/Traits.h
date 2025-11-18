@@ -853,12 +853,14 @@ class Traits<DataType*>                                                 \
 
 #if defined(NEOVIM)
 #define ThorsAnvil_RegisterPolyMorphicType(DataType)
+#define ThorsAnvil_RegisterPolyMorphicTypeNamed(DataType, Name)
 #else
-#define ThorsAnvil_RegisterPolyMorphicType(DataType)                    \
+#define ThorsAnvil_RegisterPolyMorphicType(DataType)     ThorsAnvil_RegisterPolyMorphicTypeNamed(DataType, DataType)
+#define ThorsAnvil_RegisterPolyMorphicTypeNamed(DataType, Name)         \
 namespace ThorsAnvil::Serialize {                                       \
 namespace                                                               \
 {                                                                       \
-    ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME ( # DataType); \
+    ThorsAnvil_InitPolyMorphicType<DataType>   THOR_UNIQUE_NAME ( #Name); \
 }                                                                       \
 }
 #endif
@@ -866,10 +868,12 @@ namespace                                                               \
 /*
  * Defined the virtual function needed by tryPrintPolyMorphicObject()
  */
-#define ThorsAnvil_PolyMorphicSerializer(Type)              ThorsAnvil_PolyMorphicSerializer_Internal(Type,)
-#define ThorsAnvil_PolyMorphicSerializerWithOverride(Type)  ThorsAnvil_PolyMorphicSerializer_Internal(Type, override)
+#define ThorsAnvil_PolyMorphicSerializer(Type)                      ThorsAnvil_PolyMorphicSerializer_Internal(Type, Type, )
+#define ThorsAnvil_PolyMorphicSerializerWithName(Type, Name)        ThorsAnvil_PolyMorphicSerializer_Internal(Type, Name, )
+#define ThorsAnvil_PolyMorphicSerializerWithOverride(Type)          ThorsAnvil_PolyMorphicSerializer_Internal(Type, Type, override)
+#define ThorsAnvil_PolyMorphicSerializerWithNameWithOverride(Type)  ThorsAnvil_PolyMorphicSerializer_Internal(Type, Name, override)
 
-#define ThorsAnvil_PolyMorphicSerializer_Internal(Type, OVERRIDE)                           \
+#define ThorsAnvil_PolyMorphicSerializer_Internal(Type, Name, OVERRIDE)                     \
     virtual void printPolyMorphicObject(ThorsAnvil::Serialize::Serializer&         parent,  \
                                        ThorsAnvil::Serialize::PrinterInterface&    printer) OVERRIDE \
     {                                                                                       \
@@ -883,13 +887,13 @@ namespace                                                               \
     virtual std::size_t getPolyMorphicPrintSize(ThorsAnvil::Serialize::PrinterInterface& printer) const OVERRIDE \
     {                                                                                       \
         std::size_t count = 1;                                                              \
-        std::size_t memberSize = (printer.config.polymorphicMarker.size() + printer.getSizeValue(std::string(polyMorphicSerializerName())));\
+        std::size_t memberSize = (ThorsAnvil::Serialize::Private::getPolymorphicMarker<Type>(printer.config.polymorphicMarker).size() + printer.getSizeValue(std::string(polyMorphicSerializerName())));\
                                                                                             \
         return getNormalPrintSize(printer, *this, count, memberSize);                       \
     }                                                                                       \
     static constexpr char const* polyMorphicSerializerName()                                \
     {                                                                                       \
-        return #Type;                                                                       \
+        return #Name;                                                                       \
     }
 
 

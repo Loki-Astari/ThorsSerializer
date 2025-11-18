@@ -18,7 +18,7 @@ struct ParserConfig
      */
     ParserConfig(IgnoreCallBack&& cb,
                  ParseType parseStrictness = ParseType::Weak,
-                 std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
+                 std::string const& polymorphicMarker = "",
                  bool catchExceptions = true)
         : parseStrictness(parseStrictness)
         , polymorphicMarker(polymorphicMarker)
@@ -26,7 +26,7 @@ struct ParserConfig
         , ignoreCallBack(std::move(cb))
     {}
     ParserConfig(ParseType parseStrictness,
-                 std::string const& polymorphicMarker = Private::getDefaultPolymorphicMarker(),
+                 std::string const& polymorphicMarker = "",
                  bool catchExceptions = true)
         : parseStrictness(parseStrictness)
         , polymorphicMarker(polymorphicMarker)
@@ -54,7 +54,7 @@ struct ParserConfig
     ParserConfig& setValidateNoTrailingData()                                   {validateNoTrailingData = true;             return *this;}
     ParserConfig& setNoBackslashConversion()                                    {convertBackSlash = false;                  return *this;}
     ParseType       parseStrictness         = ParseType::Weak;
-    std::string     polymorphicMarker       = Private::getDefaultPolymorphicMarker();
+    std::string     polymorphicMarker       = "";
     bool            catchExceptions         = true;
     bool            catchUnknownExceptions  = false;
     long            parserInfo              = 0;
