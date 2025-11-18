@@ -16,7 +16,7 @@
  *
  *      ThorsAnvil_PolyMorphicSerializer(Type)
  *      ThorsAnvil_PolyMorphicSerializerWithOverride(Type)
- *      ThorsAnvil_RegisterPolyMorphicType(Type)
+ *      ThorsAnvil_RegisterPolyMorphicTypeNamed(Type, CustomName)
  *
  *      ThorsAnvil_MakeTraitCustomSerialize(Type, SerializableType)
  *
@@ -66,8 +66,19 @@
  *              Add the following to your class definition:
  *                  ThorsAnvil_PolyMorphicSerializer(Type)
  *
- *              Then in a source file add the following line:
- *                  ThorsAnvil_RegisterPolyMorphicType(Type)
+ *              Note-1:
+ *              In most situations this will be enough.
+ *              The exact type name will be serialized into the object and used to reform the object when
+ *              de-serializeing. But sometimes this is not appropriate and you want to use a custom name
+ *              in the serialization processes. Use the following macro to declare a custom name.
+ *                  ThorsAnvil_RegisterPolyMorphicTypeNamed(Type, CustomName)
+ *                  Note: The CustomName must be globally unique to the application.
+ *
+ *              Note-2:
+ *              The label name used for serialization will be "__type" by default.
+ *              You can specify a class specific label with:
+ *                  static std::string polyname() {return XXX;}
+ *                  See test/PolymorphicTest.cpp for an example
  *
  *      The new version of Custom serializable:
  *
@@ -243,11 +254,6 @@
  *          ThorsAnvil_MakeTrait(OnLineBank::BankAccount, id, balance, details, valid);
  *          ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::CurrentAccount, actions);
  *          ThorsAnvil_ExpandTrait(OnLineBank::BankAccount, OnLineBank::DepositAccount, withdrawlLimit);
- *
- *      // Bank.cpp
- *
- *          ThorsAnvil_RegisterPolyMorphicType(OnLineBank::CurrentAccount);
- *          ThorsAnvil_RegisterPolyMorphicType(OnLineBank::DepositAccount);
  *
  */
 
@@ -849,13 +855,11 @@ class Traits<DataType*>                                                 \
 }
 
 #define ThorsAnvil_RegisterPolyMorphicType_Internal(DataType, ...)      \
-    ThorsAnvil_RegisterPolyMorphicType(DataType)
+    ThorsAnvil_RegisterPolyMorphicTypeNamed(DataType, DataType)
 
 #if defined(NEOVIM)
-#define ThorsAnvil_RegisterPolyMorphicType(DataType)
 #define ThorsAnvil_RegisterPolyMorphicTypeNamed(DataType, Name)
 #else
-#define ThorsAnvil_RegisterPolyMorphicType(DataType)     ThorsAnvil_RegisterPolyMorphicTypeNamed(DataType, DataType)
 #define ThorsAnvil_RegisterPolyMorphicTypeNamed(DataType, Name)         \
 namespace ThorsAnvil::Serialize {                                       \
 namespace                                                               \
