@@ -15,6 +15,7 @@
  *      ThorsAnvil_MakeEnum(EnumType, EnumValues...)
  *
  *      ThorsAnvil_PolyMorphicSerializer(Type)
+ *      ThorsAnvil_PolyMorphicSerializerWithOverride(Type)
  *      ThorsAnvil_RegisterPolyMorphicType(Type)
  *
  *      ThorsAnvil_MakeTraitCustomSerialize(Type, SerializableType)
@@ -211,7 +212,7 @@
  *                  public:
  *                      using BankAccount::BankAccount;
  *                      CurrentAccount() {}
- *                      ThorsAnvil_PolyMorphicSerializer(OnLineBank::CurrentAccount);
+ *                      ThorsAnvil_PolyMorphicSerializerWithOverride(OnLineBank::CurrentAccount);
  *                      void addTransaction(long timeStamp, int amount, TransType type)
  *                      {
  *                          actions.emplace_back(timeStamp, amount, type);
@@ -231,7 +232,7 @@
  *                  public:
  *                      using BankAccount::BankAccount;
  *                      DepositAccount() {}
- *                      ThorsAnvil_PolyMorphicSerializer(OnLineBank::DepositAccount);
+ *                      ThorsAnvil_PolyMorphicSerializerWithOverride(OnLineBank::DepositAccount);
  *              };
  *          }
  *
@@ -872,12 +873,12 @@ namespace                                                               \
     virtual void printPolyMorphicObject(ThorsAnvil::Serialize::Serializer&         parent,  \
                                        ThorsAnvil::Serialize::PrinterInterface&    printer) OVERRIDE \
     {                                                                                       \
-        ThorsAnvil::Serialize::printPolyMorphicObject<Type>(parent, printer, *this);        \
+        ThorsAnvil::Serialize::printPolyMorphicObject(parent, printer, *this);              \
     }                                                                                       \
     virtual void parsePolyMorphicObject(ThorsAnvil::Serialize::DeSerializer&       parent,  \
                                        ThorsAnvil::Serialize::ParserInterface&     parser)  OVERRIDE \
     {                                                                                       \
-        ThorsAnvil::Serialize::parsePolyMorphicObject<Type>(parent, parser, *this);         \
+        ThorsAnvil::Serialize::parsePolyMorphicObject(parent, parser, *this);               \
     }                                                                                       \
     virtual std::size_t getPolyMorphicPrintSize(ThorsAnvil::Serialize::PrinterInterface& printer) const OVERRIDE \
     {                                                                                       \
