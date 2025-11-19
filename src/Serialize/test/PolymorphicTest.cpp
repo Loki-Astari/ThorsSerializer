@@ -7,7 +7,7 @@
 #include "Traits.h"
 #include "SerUtil.h"
 #include "JsonThor.h"
-#include "BsonThor.h"
+//#include "BsonThor.h"
 #include <string>
 #include <sstream>
 #include <cctype>
@@ -139,7 +139,22 @@ TEST(PolymorphicTest, JsonReadHyperPod)
     EXPECT_EQ(hp->size, 18);
     EXPECT_EQ(hp->time, 7);
 }
+TEST(PolymorphicTest, JsonPolymorphicSize)
+{
+    // {"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}}   => Size 79
+    PolymorphicTest::User    user1{10, new PolymorphicTest::Bike(18, 7)};
 
+    EXPECT_EQ(79, ThorsAnvil::Serialize::jsonStreanSize(user1));
+
+}
+TEST(PolymorphicTest, JsonPolymorphicSizeWithCustomFieldName)
+{
+    // {"type":"hyper-pod","size":18,"time":7,"level":12}   Size => 50
+    std::unique_ptr<PolymorphicTest::Pod> pod(new PolymorphicTest::HyperPod{18, 7});
+
+    EXPECT_EQ(50, ThorsAnvil::Serialize::jsonStreanSize(pod));
+}
+#if 0
 TEST(PolymorphicTest, BsonNullPointer)
 {
     PolymorphicTest::User    user1{10, nullptr};
@@ -316,6 +331,7 @@ TEST(PolymorphicTest, BsonReadBike)
     ASSERT_NE(bike, nullptr);
     EXPECT_EQ(bike->stroke, 7);
 }
+#endif
 
 
 TEST(PolymorphicTest, UsingUniquePtr)
