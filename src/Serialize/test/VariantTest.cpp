@@ -147,4 +147,22 @@ TEST(VariantTest, DeSerializeVariantVarStatic)
     EXPECT_EQ(std::get<PolymorphicTest::VarStaticPod>(v1).skill, 22);
     EXPECT_EQ(std::get<PolymorphicTest::VarStaticPod>(v1).level, 88);
 }
+TEST(VariantTest, VariantPolyCarSize)
+{
+    // {"__type":"PolymorphicTest::Car","make":"BMW","speed":27}  Size => 57
+    Var1                v1{PolymorphicTest::Car{27, "BMW"}};
+    EXPECT_EQ(ThorsAnvil::Serialize::jsonStreanSize(v1), 57);
+}
+TEST(VariantTest, VariantPolyHyperSize)
+{
+    // {"type":"hyper-pod","size":12,"time":45,"level":12}  Size => 51
+    Var2                v1{PolymorphicTest::HyperPod{12, 45}};
+    EXPECT_EQ(ThorsAnvil::Serialize::jsonStreanSize(v1), 51);
+}
+TEST(VariantTest, VariantVarHyperSize)
+{
+    // {"type":"hyper-pod","size":12,"time":45,"level":12}  Size => 51
+    Var3                v1{PolymorphicTest::VarHyperPod{12, 45}};
+    EXPECT_EQ(ThorsAnvil::Serialize::jsonStreanSize(v1), 51);
+}
 
