@@ -897,7 +897,8 @@ namespace                                                               \
     virtual std::size_t getPolyMorphicPrintSize(ThorsAnvil::Serialize::PrinterInterface& printer) const OVERRIDE \
     {                                                                                       \
         std::size_t count = 1;                                                              \
-        std::size_t memberSize = (ThorsAnvil::Serialize::Private::getPolymorphicMarker<Type>(printer.config.polymorphicMarker).size() + printer.getSizeValue(std::string(polyMorphicSerializerName())));\
+        std::size_t memberSize = printer.getSizeMember(ThorsAnvil::Serialize::Private::getPolymorphicMarker<Type>(printer.config.polymorphicMarker)) \
+                               + printer.getSizeValue(std::string(polyMorphicSerializerName()));\
                                                                                             \
         return getNormalPrintSize(printer, *this, count, memberSize);                       \
     }                                                                                       \
