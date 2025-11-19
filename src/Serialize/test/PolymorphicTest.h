@@ -72,6 +72,34 @@ struct StaticPod: public Pod
     ThorsAnvil_TypeFieldName(type)
     ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::HyperPod, static-pod);
 };
+struct VarHyperPod
+{
+    int     level;
+    int     size;
+    int     time;
+    VarHyperPod() {}
+    VarHyperPod(int size, int time)
+        : level(12)
+        , size(size)
+        , time(time)
+    {}
+    ThorsAnvil_TypeFieldName(type)
+    ThorsAnvil_VariantSerializerWithName(PolymorphicTest::HyperPod, hyper-pod);
+};
+struct VarStaticPod
+{
+    int     level;
+    int     speed;
+    int     skill;
+    VarStaticPod() {}
+    VarStaticPod(int speed, int skill)
+        : level(88)
+        , speed(speed)
+        , skill(skill)
+    {}
+    ThorsAnvil_TypeFieldName(type)
+    ThorsAnvil_VariantSerializerWithName(PolymorphicTest::HyperPod, static-pod);
+};
 struct User
 {
     ~User() { delete transport; }
@@ -96,6 +124,8 @@ ThorsAnvil_ExpandTrait(PolymorphicTest::Vehicle, PolymorphicTest::Bike, stroke);
 ThorsAnvil_MakeTrait(PolymorphicTest::Pod, level);
 ThorsAnvil_ExpandTrait(PolymorphicTest::Pod, PolymorphicTest::HyperPod, size, time);
 ThorsAnvil_ExpandTrait(PolymorphicTest::Pod, PolymorphicTest::StaticPod, speed, skill);
+ThorsAnvil_MakeTrait(PolymorphicTest::VarHyperPod, size, time, level);
+ThorsAnvil_MakeTrait(PolymorphicTest::VarStaticPod, speed, skill, level);
 ThorsAnvil_MakeTrait(PolymorphicTest::User, age, transport);
 ThorsAnvil_MakeTrait(PolymorphicTest::UserUniquePtr, age, transport);
 ThorsAnvil_MakeTrait(PolymorphicTest::UserSharedPtr, age, transport);
