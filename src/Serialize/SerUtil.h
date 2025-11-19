@@ -995,7 +995,7 @@ struct SizeVisitor
     template<typename T>
     std::size_t operator()(T const& value) const
     {
-        return Traits<std::remove_cv_t<T>>::getPrintSize(printer, value(), pval);
+        return Traits<std::remove_cv_t<T>>::getPrintSize(printer, value, pval);
         return 0;
     }
 };
