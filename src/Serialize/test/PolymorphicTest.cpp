@@ -7,7 +7,7 @@
 #include "Traits.h"
 #include "SerUtil.h"
 #include "JsonThor.h"
-//#include "BsonThor.h"
+#include "BsonThor.h"
 #include <string>
 #include <sstream>
 #include <cctype>
@@ -154,7 +154,6 @@ TEST(PolymorphicTest, JsonPolymorphicSizeWithCustomFieldName)
 
     EXPECT_EQ(50, ThorsAnvil::Serialize::jsonStreanSize(pod));
 }
-#if 0
 TEST(PolymorphicTest, BsonNullPointer)
 {
     PolymorphicTest::User    user1{10, nullptr};
@@ -331,7 +330,6 @@ TEST(PolymorphicTest, BsonReadBike)
     ASSERT_NE(bike, nullptr);
     EXPECT_EQ(bike->stroke, 7);
 }
-#endif
 
 
 TEST(PolymorphicTest, UsingUniquePtr)

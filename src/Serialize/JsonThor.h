@@ -47,7 +47,7 @@ template<typename T>
 std::size_t jsonStreanSize(T const& value)
 {
     ThorsAnvil::Serialize::JsonPrinter      printer(std::cout, PrinterConfig{OutputType::Stream});
-    std::size_t size = ThorsAnvil::Serialize::Traits<T>::getPrintSize(printer, value, false);
+    std::size_t size = ThorsAnvil::Serialize::Traits<T>::getPrintSize(printer, value, true);
     return size;
 }
 // @function-api
