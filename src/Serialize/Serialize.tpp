@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <map>
 #include <set>
+#include <variant>
 #include <unordered_map>
 
 
@@ -418,7 +419,7 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
 
     parsePolyMorphicObject(parent, parser, *object);
 }
-/* ------------ PolyMorphic Serializer ------------------------- */
+/* ------------ PolyMorphic DeSerializer ------------------------- */
 template<typename T>
 void parsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object)
 {
@@ -426,6 +427,74 @@ void parsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& ob
     DeSerializationForBlock<TraitBase::type, T>   pointerDeSerializer(parent, parser);
     pointerDeSerializer.scanObject(object);
 }
+/* ------------ PolyMorphic DeSerializer For variant------------------------- */
+template<typename T, typename... Args>
+bool readVariantValue(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, std::variant<Args...>& dst, std::string const& name)
+{
+    if (name != T::polyMorphicSerializerName()) {
+        return false;
+    }
+    using ValueType = std::remove_cv_t<T>;
+    using TraitBase = ThorsAnvil::Serialize::Traits<ValueType>;
+    dst = ValueType{};
+
+    ThorsAnvil::Serialize::DeSerializationForBlock<TraitBase::type, T>   variantValueDeSerializer(parent, parser);
+    variantValueDeSerializer.scanObject(std::get<T>(dst));
+    return true;
+}
+template<typename... Args>
+void readVariant(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, std::variant<Args...>& dst)
+{
+    using namespace ThorsAnvil::Serialize;
+
+    ParserToken    tokenType;
+    tokenType = parser.getToken();
+    if (tokenType != ParserToken::MapStart)
+    {
+        ThorsLogAndThrowDebug(std::runtime_error,
+                              "ThorsAnvil::Serialize",
+                              "tryParsePolyMorphicObject",
+                              "Invalid Object. Expecting MapStart");
+    }
+
+    tokenType = parser.getToken();
+    if (tokenType != ParserToken::Key)
+    {
+        ThorsLogAndThrowDebug(std::runtime_error,
+                              "ThorsAnvil::Serialize",
+                              "tryParsePolyMorphicObject",
+                              "Invalid Object. Expecting Key");
+    }
+
+    std::string_view key = parser.getKey();
+    using AllocType = std::variant<Args...>;
+    if (key != Private::getPolymorphicMarker<AllocType>(parser.config.polymorphicMarker))
+    {
+        ThorsLogAndThrowDebug(std::runtime_error,
+                              "ThorsAnvil::Serialize",
+                              "tryParsePolyMorphicObject",
+                              "Invalid PolyMorphic Object. Found: >", key, "< Config Key: >", parser.config.polymorphicMarker, "< Expecting Key Name <", Private::getPolymorphicMarker<AllocType>(parser.config.polymorphicMarker), "<");
+    }
+
+    tokenType = parser.getToken();
+    if (tokenType != ParserToken::Value)
+    {
+        ThorsLogAndThrowDebug(std::runtime_error,
+                              "ThorsAnvil::Serialize",
+                              "tryParsePolyMorphicObject",
+                              "Invalid Object. Expecting Value");
+    }
+
+    std::string className;
+    parser.getValue(className);
+
+    parser.pushBackToken(ParserToken::MapStart);
+    bool result = (readVariantValue<Args>(parent, parser, dst, className) || ...);
+    if (!result) {
+        parser.ignoreValue();
+    }
+}
+
 
 template<typename T>
 class DeSerializationForBlock<TraitType::Pointer, T>
@@ -519,9 +588,9 @@ class DeSerializationForBlock<TraitType::Variant, T>
             : parent(parent)
             , parser(parser)
         {}
-        void scanObject(T& /*object*/)
+        void scanObject(T& object)
         {
-            // TODO
+            readVariant(parent, parser, object);
         }
 };
 /*
@@ -960,8 +1029,6 @@ struct SerializeVisitor
     void operator()(Arg const& object)
     {
         printPolyMorphicObject(parent, printer, object);
-        //SerializerForBlock<Traits<std::remove_cv_t<Arg*>>::type, Arg const*>    serializer(parent, printer, &object);
-        //serializer.printMembers();
     }
 };
 template<typename T>
