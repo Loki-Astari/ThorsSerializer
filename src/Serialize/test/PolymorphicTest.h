@@ -43,7 +43,7 @@ struct Pod
     int level;
     Pod():level(57) {}
     Pod(int level): level(level) {}
-    static std::string polyname() {return "type";}
+    ThorsAnvil_TypeFieldName(type)
     ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::Pod, pod);
 };
 struct HyperPod: public Pod
@@ -56,7 +56,7 @@ struct HyperPod: public Pod
         , size(size)
         , time(time)
     {}
-    static std::string polyname() {return "type";}
+    ThorsAnvil_TypeFieldName(type)
     ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::HyperPod, hyper-pod);
 };
 struct StaticPod: public Pod
@@ -69,7 +69,7 @@ struct StaticPod: public Pod
         , speed(speed)
         , skill(skill)
     {}
-    static std::string polyname() {return "type";}
+    ThorsAnvil_TypeFieldName(type)
     ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::HyperPod, static-pod);
 };
 struct User

@@ -15,8 +15,14 @@
  *      ThorsAnvil_MakeEnum(EnumType, EnumValues...)
  *
  *      ThorsAnvil_PolyMorphicSerializer(Type)
+ *      ThorsAnvil_PolyMorphicSerializerWithName(Type, Name)
  *      ThorsAnvil_PolyMorphicSerializerWithOverride(Type)
+ *      ThorsAnvil_PolyMorphicSerializerWithOverrideWithName(Type, Name)
  *      ThorsAnvil_RegisterPolyMorphicTypeNamed(Type, CustomName)
+ *
+ *      ThorsAnvil_VariantSerializer(Type)
+ *      ThorsAnvil_VariantSerializerWithName(Type, Name)
+ *      ThorsAnvil_TypeFieldName(Name)
  *
  *      ThorsAnvil_MakeTraitCustomSerialize(Type, SerializableType)
  *
@@ -895,6 +901,18 @@ namespace                                                               \
                                                                                             \
         return getNormalPrintSize(printer, *this, count, memberSize);                       \
     }                                                                                       \
+    ThorsAnvil_SerializeName(Name)
+
+#define ThorsAnvil_VariantSerializer(Type)  ThorsAnvil_VariantSerializerWithName(Type, Type)
+#define ThorsAnvil_VariantSerializerWithName(Type, Name) ThorsAnvil_SerializeName(Name)
+
+#define ThorsAnvil_TypeFieldName(Name)                                                      \
+    static constexpr char const* polyname()                                                 \
+    {                                                                                       \
+        return #Name;                                                                       \
+    }
+
+#define ThorsAnvil_SerializeName(Name)                                                      \
     static constexpr char const* polyMorphicSerializerName()                                \
     {                                                                                       \
         return #Name;                                                                       \
