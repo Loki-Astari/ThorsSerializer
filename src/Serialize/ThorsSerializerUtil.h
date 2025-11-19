@@ -248,7 +248,16 @@ auto tryGetPolyMorphicPrintSize(PrinterInterface& printer, T const& object, bool
     // `printPolyMorphicObject()`. Thus you get a call to the current
     // object and thus we simply use `T` and we can simply print the
     // normal members.
-    return getNormalPrintSize(printer, object, 0, 0);
+    std::size_t count = 0;
+    std::size_t memberSize = 0;
+
+    if constexpr (Private::CheckForPoly<T>::value)
+    {
+        ++count;
+        memberSize = printer.getSizeMember(ThorsAnvil::Serialize::Private::getPolymorphicMarker<T>(printer.config.polymorphicMarker))
+                   + printer.getSizeValue(std::string(T::polyMorphicSerializerName()));
+    }
+    return getNormalPrintSize(printer, object, count, memberSize);
 }
 
 template<typename T>

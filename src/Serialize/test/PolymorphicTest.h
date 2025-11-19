@@ -56,7 +56,7 @@ struct HyperPod: public Pod
         , size(size)
         , time(time)
     {}
-    ThorsAnvil_TypeFieldName(type)
+    ThorsAnvil_TypeFieldName(type);
     ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::HyperPod, hyper-pod);
 };
 struct StaticPod: public Pod
@@ -69,7 +69,7 @@ struct StaticPod: public Pod
         , speed(speed)
         , skill(skill)
     {}
-    ThorsAnvil_TypeFieldName(type)
+    ThorsAnvil_TypeFieldName(type);
     ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::HyperPod, static-pod);
 };
 struct VarHyperPod
@@ -83,7 +83,7 @@ struct VarHyperPod
         , size(size)
         , time(time)
     {}
-    ThorsAnvil_TypeFieldName(type)
+    ThorsAnvil_TypeFieldName(type);
     ThorsAnvil_VariantSerializerWithName(PolymorphicTest::HyperPod, hyper-pod);
 };
 struct VarStaticPod
@@ -97,7 +97,7 @@ struct VarStaticPod
         , speed(speed)
         , skill(skill)
     {}
-    ThorsAnvil_TypeFieldName(type)
+    ThorsAnvil_TypeFieldName(type);
     ThorsAnvil_VariantSerializerWithName(PolymorphicTest::HyperPod, static-pod);
 };
 struct User
