@@ -429,8 +429,11 @@ void parsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& ob
 }
 /* ------------ PolyMorphic DeSerializer For variant------------------------- */
 template<typename T, typename... Args>
-bool readVariantValue(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, std::variant<Args...>& dst, std::string const& name)
+bool readVariantValue(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, std::variant<Args...>& dst, std::string_view key, std::string const& name)
 {
+    if (key != Private::getPolymorphicMarker<T>(parser.config.polymorphicMarker)) {
+        return false;
+    }
     if (name != T::polyMorphicSerializerName()) {
         return false;
     }
@@ -467,14 +470,6 @@ void readVariant(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serial
     }
 
     std::string_view key = parser.getKey();
-    using AllocType = std::variant<Args...>;
-    if (key != Private::getPolymorphicMarker<AllocType>(parser.config.polymorphicMarker))
-    {
-        ThorsLogAndThrowDebug(std::runtime_error,
-                              "ThorsAnvil::Serialize",
-                              "tryParsePolyMorphicObject",
-                              "Invalid PolyMorphic Object. Found: >", key, "< Config Key: >", parser.config.polymorphicMarker, "< Expecting Key Name <", Private::getPolymorphicMarker<AllocType>(parser.config.polymorphicMarker), "<");
-    }
 
     tokenType = parser.getToken();
     if (tokenType != ParserToken::Value)
@@ -489,7 +484,7 @@ void readVariant(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serial
     parser.getValue(className);
 
     parser.pushBackToken(ParserToken::MapStart);
-    bool result = (readVariantValue<Args>(parent, parser, dst, className) || ...);
+    bool result = (readVariantValue<Args>(parent, parser, dst, key, className) || ...);
     if (!result) {
         parser.ignoreValue();
     }
