@@ -814,13 +814,17 @@ class SerializerForBlock
         }
         void printMembers()
         {
+            if constexpr (Private::CheckForPoly<T>::value) {
+                printer.addKey(Private::getPolymorphicMarker<T>(printer.config.polymorphicMarker));
+                printer.addValue(std::string(T::polyMorphicSerializerName()));
+            }
             parent.printObjectMembers(object);
         }
         void printPolyMorphicMembers(std::string const& type)
         {
             printer.addKey(Private::getPolymorphicMarker<T>(printer.config.polymorphicMarker));
             printer.addValue(type);
-            printMembers();
+            parent.printObjectMembers(object);
         }
 };
 
