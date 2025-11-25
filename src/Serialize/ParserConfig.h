@@ -2,6 +2,7 @@
 #define THORSANVIL_SERIALIZER_PARSER_CONFIG_H
 
 #include "SerializeConfig.h"
+#include "StringInput.h"
 #include "ThorsSerializerUtilTypes.h"
 #include "PolymorphicMarker.h"
 #include <string>
@@ -10,6 +11,8 @@
 namespace ThorsAnvil::Serialize
 {
 
+using DataInputStream = std::variant<std::istream*, StringInput>;
+using IdFunc = std::function<std::string(DataInputStream&)>;
 struct ParserConfig
 {
     /*
@@ -53,6 +56,7 @@ struct ParserConfig
     ParserConfig& setUseOldSharedPtr()                                          {useOldSharedPtr = true;                    return *this;}
     ParserConfig& setValidateNoTrailingData()                                   {validateNoTrailingData = true;             return *this;}
     ParserConfig& setNoBackslashConversion()                                    {convertBackSlash = false;                  return *this;}
+    ParserConfig& setIdentifyDynamicClass(IdFunc func)                          {identifyDynamcClass = std::move(func);     return *this;}
     ParseType       parseStrictness         = ParseType::Weak;
     std::string     polymorphicMarker       = "";
     bool            catchExceptions         = true;
@@ -62,6 +66,7 @@ struct ParserConfig
     bool            useOldSharedPtr         = false;
     bool            validateNoTrailingData  = false;
     bool            convertBackSlash        = true;
+    IdFunc          identifyDynamcClass     = [](DataInputStream&){return "";};
 };
 
 }

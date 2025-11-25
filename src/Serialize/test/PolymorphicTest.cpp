@@ -405,3 +405,75 @@ TEST(PolymorphicTest, UsingSharedPtr)
     EXPECT_EQ(bike.stroke, 7);
   }
 }
+
+TEST(PolymorphicTest, UsingSharedPtrFromStream)
+{
+    std::stringstream           stream(R"({"__type":"PolymorphicTest::Bike","stroke":7,"speed":18})");
+    using PolymorphicTest::Vehicle;
+    std::unique_ptr<Vehicle>    data;
+    stream >> ThorsAnvil::Serialize::jsonImporter(data);
+    ASSERT_NE(nullptr, data.get());
+    PolymorphicTest::Bike& bike = *(dynamic_cast<PolymorphicTest::Bike*>(data.get()));
+    EXPECT_EQ(7, bike.stroke);
+    EXPECT_EQ(18, bike.speed);
+}
+TEST(PolymorphicTest, UsingSharedPtrFromStreamBadTypeNotFirst)
+{
+    std::stringstream           stream(R"({"fake":5,"__type":"PolymorphicTest::Bike","stroke":7,"speed":18})");
+    using PolymorphicTest::Vehicle;
+    std::unique_ptr<Vehicle>    data;
+    auto action = [&]()
+    {
+        stream >> ThorsAnvil::Serialize::jsonImporter(data, ThorsAnvil::Serialize::ParserConfig{false});
+    };
+    EXPECT_THROW(action(), std::runtime_error);
+}
+TEST(PolymorphicTest, UsingSharedPtrFromStreamBadTypeNotFirstWithDefaultType)
+{
+    std::stringstream           stream(R"({"fake":5,"__type":"PolymorphicTest::Bike","stroke":7,"speed":18})");
+    using PolymorphicTest::Vehicle;
+    std::unique_ptr<Vehicle>    data;
+    auto action = [&]()
+    {
+        stream >> ThorsAnvil::Serialize::jsonImporter(data , ThorsAnvil::Serialize::ParserConfig{false}.setIdentifyDynamicClass([](ThorsAnvil::Serialize::DataInputStream&){return "PolymorphicTest::Bike";}));
+    };
+    EXPECT_NO_THROW(action());
+    ASSERT_NE(nullptr, data.get());
+    PolymorphicTest::Bike* bikePtr = dynamic_cast<PolymorphicTest::Bike*>(data.get());
+    ASSERT_NE(nullptr, bikePtr);
+    EXPECT_EQ(7, bikePtr->stroke);
+    EXPECT_EQ(18, bikePtr->speed);
+}
+using VehicleVar = std::variant<PolymorphicTest::Bike, PolymorphicTest::Car>;
+TEST(PolymorphicTest, UsingVariantPtrFromStream)
+{
+    std::stringstream           stream(R"({"__type":"PolymorphicTest::Bike","stroke":7,"speed":18})");
+    VehicleVar                  data;
+    stream >> ThorsAnvil::Serialize::jsonImporter(data);
+    PolymorphicTest::Bike& bike = std::get<PolymorphicTest::Bike>(data);
+    EXPECT_EQ(7, bike.stroke);
+    EXPECT_EQ(18, bike.speed);
+}
+TEST(PolymorphicTest, UsingVariantPtrFromStreamBadTypeNotFirst)
+{
+    std::stringstream           stream(R"({"fake":5,"__type":"PolymorphicTest::Bike","stroke":7,"speed":18})");
+    VehicleVar                  data;
+    auto action = [&]()
+    {
+        stream >> ThorsAnvil::Serialize::jsonImporter(data, ThorsAnvil::Serialize::ParserConfig{false});
+    };
+    EXPECT_THROW(action(), std::runtime_error);
+}
+TEST(PolymorphicTest, UsingVariantPtrFromStreamBadTypeNotFirstWithDefaultType)
+{
+    std::stringstream           stream(R"({"fake":5,"__type":"PolymorphicTest::Bike","stroke":7,"speed":18})");
+    VehicleVar                  data;
+    auto action = [&]()
+    {
+        stream >> ThorsAnvil::Serialize::jsonImporter(data, ThorsAnvil::Serialize::ParserConfig{false}.setIdentifyDynamicClass([](ThorsAnvil::Serialize::DataInputStream&){return "PolymorphicTest::Bike";}));
+    };
+    EXPECT_NO_THROW(action());
+    PolymorphicTest::Bike& bike = std::get<PolymorphicTest::Bike>(data);
+    EXPECT_EQ(7, bike.stroke);
+    EXPECT_EQ(18, bike.speed);
+}
