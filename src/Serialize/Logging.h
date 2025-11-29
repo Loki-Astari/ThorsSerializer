@@ -4,7 +4,7 @@
 #include "JsonThor.h"
 
 #define THORS_LOG_DATA_SERIAL                     ThorsAnvil::Serialize::PrinterConfig{ThorsAnvil::Serialize::OutputType::Stream}
-#define THORS_LOG_DATA(D)                         "|Data|", ThorsAnvil::Serialize::jsonExporter(D, LOG_DATA_SERIAL)
+#define THORS_LOG_DATA(D)                         "|Data|", ThorsAnvil::Serialize::jsonExporter(D, THORS_LOG_DATA_SERIAL)
 
 #define ThorsLogAndThrowFatalWithData(E, D, ...)   ThorsLogAndThrowFatal(E,   __VA_ARGS__, THORS_LOG_DATA(D))
 #define ThorsLogAndThrowErrorWithData(E, D, ...)   ThorsLogAndThrowError(E,   __VA_ARGS__, THORS_LOG_DATA(D))
