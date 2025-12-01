@@ -11,43 +11,13 @@ AX_THOR_ENABLE_CONAN
 AX_THOR_CHECK_USE_MAGIC_ENUM
 AX_THOR_CHECK_USE_YAML
 AX_THOR_CHECK_USE_THORS_SERIALIZE([ThorsLogging])
+AX_THOR_CHECK_FOR_DOUBLE_SCAN_SUPPORT
 
 AX_THOR_FUNC_TEST_COMP([
 #include <utility>
 int main() {
     std::index_sequence<1,2,3,4>    seq;
 }])
-
-AX_THOR_FUNC_TEST_COMP_ACTION([[
-#include <charconv>
-int main() {
-    char    buffer[100];
-    double  value = 12.345;
-    auto result = std::to_chars(buffer, buffer+100, value, std::chars_format::fixed, 6);
-}]],
-    [
-        AC_MSG_NOTICE([[Supports std::to_chars(begin, end, double)]])
-    ],
-    [
-        AC_MSG_NOTICE([Setting NO_STD_SUPPORT_TO_CHAR_DOUBLE])
-        AC_DEFINE([NO_STD_SUPPORT_TO_CHAR_DOUBLE], [1], [Check for older build tools and use simpler code with old tools])
-    ]
-)
-AX_THOR_FUNC_TEST_COMP_ACTION([[
-#include <charconv>
-int main() {
-    char    buffer[] = "12.345";
-    double  value;
-    auto result = std::from_chars(buffer, buffer+100, value);
-}]],
-    [
-        AC_MSG_NOTICE([[Supports std::from_chars(begin, end, double)]])
-    ],
-    [
-        AC_MSG_NOTICE([Setting NO_STD_SUPPORT_FROM_CHAR_DOUBLE])
-        AC_DEFINE([NO_STD_SUPPORT_FROM_CHAR_DOUBLE], [1], [Check for older build tools and use simpler code with old tools])
-    ]
-)
 
 
 LT_INIT

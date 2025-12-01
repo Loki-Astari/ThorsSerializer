@@ -8,6 +8,7 @@
 #include "SerializeConfig.h"
 #include "Serialize.h"
 #include <vector>
+#include <cmath>
 
 namespace ThorsAnvil::Serialize
 {

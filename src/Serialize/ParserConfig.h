@@ -6,7 +6,10 @@
 #include "ThorsSerializerUtilTypes.h"
 #include "PolymorphicMarker.h"
 #include <string>
+#include <variant>
+#include <functional>
 #include <utility>
+#include <istream>
 
 namespace ThorsAnvil::Serialize
 {

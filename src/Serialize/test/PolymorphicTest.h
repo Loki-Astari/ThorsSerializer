@@ -13,6 +13,10 @@ struct Vehicle
     Vehicle(int speed)
         : speed(speed)
     {}
+    Vehicle(Vehicle const&)             = default;
+    Vehicle(Vehicle&&)                  = default;
+    Vehicle& operator=(Vehicle const&)  = default;
+    Vehicle& operator=(Vehicle&&)       = default;
     virtual ~Vehicle(){}
     int     speed;
     ThorsAnvil_PolyMorphicSerializer(PolymorphicTest::Vehicle);
@@ -43,6 +47,11 @@ struct Pod
     int level;
     Pod():level(57) {}
     Pod(int level): level(level) {}
+    virtual ~Pod() {}
+    Pod(Pod const&)             = default;
+    Pod(Pod&&)                  = default;
+    Pod& operator=(Pod const&)  = default;
+    Pod& operator=(Pod&&)       = default;
     ThorsAnvil_TypeFieldName(type)
     ThorsAnvil_PolyMorphicSerializerWithName(PolymorphicTest::Pod, pod);
 };
