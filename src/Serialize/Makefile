@@ -1,4 +1,4 @@
-
+CONFIG_NAME					= ThorsSerializer
 THORSANVIL_ROOT				?= $(realpath ../../)
 COVERAGE_REQUIRED			= 70
 
