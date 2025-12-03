@@ -96,9 +96,6 @@
 /* Set up to build on Conan */
 #undef THOR_CONAN
 
-/* Name of package for header files */
-#undef THOR_PACKAGE_NAME
-
 /* Version number of package */
 #undef VERSION
 
