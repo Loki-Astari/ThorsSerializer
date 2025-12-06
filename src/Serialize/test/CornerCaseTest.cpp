@@ -19,9 +19,9 @@ class ParserMock: public ParserInterface
     std::vector<ParserToken> const& tokens;
     std::vector<std::string> const& keys;
     std::vector<std::string> const& values;
-    int nextToken;
-    int nextKey;
-    int nextValue;
+    std::size_t nextToken;
+    std::size_t nextKey;
+    std::size_t nextValue;
     public:
         ParserMock(std::istream& input, std::vector<ParserToken> const& tokens,  std::vector<std::string> const& keys, std::vector<std::string> const& values)
             : ParserInterface(input, ParseType::Weak)
