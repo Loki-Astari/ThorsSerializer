@@ -1,3 +1,4 @@
+#include "MongoUtilityObjectId.h"
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
@@ -13,7 +14,15 @@ TEST(MongoUtilityObjectIdTest, JsonSerialzieObjectID)
 
     ss << jsonExporter(objectId, PrinterConfig{OutputType::Stream});
 
-    EXPECT_EQ(R"("00000001-0000000002-000003")", ss.str());
+    EXPECT_EQ(R"("000000010000000002000003")", ss.str());
+}
+
+TEST(MongoUtilityObjectIdTest, ObjectIDFromStringInConstructor)
+{
+    ObjectID            input("000000010000000002000003");
+    ObjectID            expected{1, 2, 3};
+
+    EXPECT_EQ(expected, input);
 }
 
 TEST(MongoUtilityObjectIdTest, JsonArray)
@@ -26,7 +35,51 @@ TEST(MongoUtilityObjectIdTest, JsonArray)
 
     ss << jsonExporter(vec, PrinterConfig{OutputType::Stream});
 
-    EXPECT_EQ(R"(["00000001-0000000002-000003","00000004-0000000005-000006","00000007-0000000008-000009"])", ss.str());
+    EXPECT_EQ(R"(["000000010000000002000003","000000040000000005000006","000000070000000008000009"])", ss.str());
+}
+TEST(MongoUtilityObjectIdTest, JsonParseObjectIDWithDash)
+{
+    ObjectID            objectId;
+    std::stringstream   ss(R"("00000001-0000000002-000003")");
+    ss >> jsonImporter(objectId);
+
+    ObjectID    expected{1,2,3};
+    EXPECT_EQ(expected, objectId);
+}
+
+TEST(MongoUtilityObjectIdTest, JsonParseObjectID)
+{
+    ObjectID            objectId;
+    std::stringstream   ss(R"("000000010000000002000003")");
+    ss >> jsonImporter(objectId);
+
+    ObjectID    expected{1,2,3};
+    EXPECT_EQ(expected, objectId);
+}
+
+TEST(MongoUtilityObjectIdTest, JsonArrayParserWithDash)
+{
+    std::stringstream stream(R"(["00000001-0000000002-000003","00000004-0000000005-000006","00000007-0000000008-000009"])");
+    std::vector<ObjectID>            vec;
+    stream >> jsonImporter(vec);
+
+    ASSERT_EQ(3, vec.size());
+    std::vector<ObjectID>           expected{{1,2,3}, {4,5,6}, {7,8,9}};
+    EXPECT_EQ(expected[0], vec[0]);
+    EXPECT_EQ(expected[1], vec[1]);
+    EXPECT_EQ(expected[2], vec[2]);
+}
+TEST(MongoUtilityObjectIdTest, JsonArrayParser)
+{
+    std::stringstream stream(R"(["000000010000000002000003","000000040000000005000006","000000070000000008000009"])");
+    std::vector<ObjectID>            vec;
+    stream >> jsonImporter(vec);
+
+    ASSERT_EQ(3, vec.size());
+    std::vector<ObjectID>           expected{{1,2,3}, {4,5,6}, {7,8,9}};
+    EXPECT_EQ(expected[0], vec[0]);
+    EXPECT_EQ(expected[1], vec[1]);
+    EXPECT_EQ(expected[2], vec[2]);
 }
 
 struct ObjectIdInObject
@@ -47,7 +100,7 @@ TEST(MongoUtilityObjectIdTest, JsonObject)
 
     ss << jsonExporter(data, PrinterConfig{OutputType::Stream});
 
-    EXPECT_EQ(R"({"v1":"00000001-0000000002-000003","v2":8,"v3":"0000000a-000000000c-00000d","v4":"Hi There","v5":"00000020-0000000030-000040"})", ss.str());
+    EXPECT_EQ(R"({"v1":"000000010000000002000003","v2":8,"v3":"0000000a000000000c00000d","v4":"Hi There","v5":"000000200000000030000040"})", ss.str());
 }
 
 
