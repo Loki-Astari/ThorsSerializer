@@ -240,6 +240,99 @@ team:
 ...
 )", outss.str());
 }
+TEST(ExamplesTest, SimpleExample3Json)
+{
+    using ThorsAnvil::Serialize::jsonImporter;
+    using ThorsAnvil::Serialize::jsonExporter;
+    using ThorsAnvil::Serialize::PrinterConfig;
+
+    TeamMember          mark("mark", 10, 5, Shirt{255,0,0});
+    // Use the export function to serialize
+    std::stringstream   ss;
+    ss << jsonExporter(mark);
+    EXPECT_EQ(R"(
+{
+    "name": "mark",
+    "score": 10,
+    "damage": 5,
+    "team":
+    {
+        "red": 255,
+        "green": 0,
+        "blue": 0
+    }
+})", ss.str());
+
+    TeamMember          john("Empty", 0, 0, Shirt{0,0,0});
+    std::stringstream   input(R"({"name": "John","score": 13,"team":{"red": 0,"green": 0,"blue": 255, "black":25}})");
+    input >> jsonImporter(john);
+    EXPECT_EQ("John", john.getName());
+    EXPECT_EQ(13, john.getScore());
+    EXPECT_EQ(0, john.getDamage());
+    EXPECT_EQ(0, john.getTeam().red);
+    EXPECT_EQ(0, john.getTeam().green);
+    EXPECT_EQ(255, john.getTeam().blue);
+
+    std::stringstream   outss;
+    outss << jsonExporter(john, PrinterConfig{ThorsAnvil::Serialize::OutputType::Config, 2, 10});
+    EXPECT_EQ(R"(
+          {
+            "name": "John",
+            "score": 13,
+            "damage": 0,
+            "team":
+            {
+              "red": 0,
+              "green": 0,
+              "blue": 255
+            }
+          })", outss.str());
+          }
+TEST(ExamplesTest, SimpleExample3Yaml)
+{
+    using ThorsAnvil::Serialize::jsonImporter;
+    using ThorsAnvil::Serialize::yamlExporter;
+    using ThorsAnvil::Serialize::PrinterConfig;
+
+    TeamMember          mark("mark", 10, 5, Shirt{255,0,0});
+    // Use the export function to serialize
+    std::stringstream   ss;
+    ss << yamlExporter(mark);
+
+    EXPECT_EQ(R"(---
+name: mark
+score: 10
+damage: 5
+team:
+  red: 255
+  green: 0
+  blue: 0
+...
+)", ss.str());
+
+    TeamMember          john("Empty", 0, 0, Shirt{0,0,0});
+    std::stringstream   input(R"({"name": "John","score": 13,"team":{"red": 0,"green": 0,"blue": 255, "black":25}})");
+    input >> jsonImporter(john);
+    EXPECT_EQ("John", john.getName());
+    EXPECT_EQ(13, john.getScore());
+    EXPECT_EQ(0, john.getDamage());
+    EXPECT_EQ(0, john.getTeam().red);
+    EXPECT_EQ(0, john.getTeam().green);
+    EXPECT_EQ(255, john.getTeam().blue);
+
+    std::stringstream   outss;
+    outss << yamlExporter(john, PrinterConfig{ThorsAnvil::Serialize::OutputType::Config, 4, 10});
+    EXPECT_EQ(R"(          ---
+          name: John
+          score: 13
+          damage: 0
+          team:
+              red: 0
+              green: 0
+              blue: 255
+          ...
+          )", outss.str());
+}
 
 
 /* A class that you want to serialize. */

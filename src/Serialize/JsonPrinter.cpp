@@ -22,14 +22,16 @@ namespace
         OutputType                  characteristics;
         std::size_t                 size;
         std::size_t                 tabSize;
+        std::size_t                 blockSize;
         PrintState&                 state;
         bool                        prefixValue;
         public:
             std::size_t             getSize() const {return size;}
-            Prefix(OutputType characteristics, std::size_t size, std::size_t tabSize, PrintState& state, bool prefixValue = false)
+            Prefix(OutputType characteristics, std::size_t size, std::size_t tabSize, std::size_t blockSize, PrintState& state, bool prefixValue = false)
                 : characteristics(characteristics)
                 , size(size - 1)
                 , tabSize(tabSize == 0 ? 4 : tabSize)
+                , blockSize(blockSize)
                 , state(state)
                 , prefixValue(prefixValue)
             {}
@@ -45,7 +47,7 @@ namespace
                 static const    std::string indent = buildIndent();
                 if (hasIndent)
                 {
-                    printer.write(std::string_view(&indent[0], size * tabSize + 1));
+                    printer.write(std::string_view(&indent[0], size * tabSize + 1 + blockSize));
                 }
             }
             void printIndent(PrinterInterface& printer, bool hasIndent, char suffix)
@@ -53,9 +55,9 @@ namespace
                 static std::string indent = buildIndent();
                 if (hasIndent)
                 {
-                    indent[size * tabSize + 1] = suffix;
-                    printer.write(std::string_view(&indent[0], size * tabSize + 2));
-                    indent[size * tabSize + 1] = ' ';
+                    indent[size * tabSize + 1 + blockSize] = suffix;
+                    printer.write(std::string_view(&indent[0], size * tabSize + 2 + blockSize));
+                    indent[size * tabSize + 1 + blockSize] = ' ';
                 }
                 else
                 {
@@ -170,7 +172,7 @@ void JsonPrinter::closeDoc()
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::openMap(std::size_t)
 {
-    PrefixMap       prefix(config.characteristics, state.size(), config.tabSize, state.back());
+    PrefixMap       prefix(config.characteristics, state.size(), config.tabSize, config.blockSize, state.back());
     prefix.write(*this, '{');
     state.emplace_back(0, TraitType::Map, false);
 }
@@ -187,14 +189,14 @@ void JsonPrinter::closeMap()
     }
     bool prefixValue = state.back().f2;
     state.pop_back();
-    PrefixMapClose  prefix(config.characteristics, state.size(), config.tabSize, state.back(), prefixValue);
+    PrefixMapClose  prefix(config.characteristics, state.size(), config.tabSize, config.blockSize, state.back(), prefixValue);
     prefix.write(*this, '}');
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::openArray(std::size_t)
 {
-    PrefixArray prefix(config.characteristics, state.size(), config.tabSize, state.back());
+    PrefixArray prefix(config.characteristics, state.size(), config.tabSize, config.blockSize, state.back());
     prefix.write(*this, '[');
     state.emplace_back(0, TraitType::Array, false);
 }
@@ -211,7 +213,7 @@ void JsonPrinter::closeArray()
     }
     bool prefixValue = state.back().f2;
     state.pop_back();
-    PrefixArrayClose    prefix(config.characteristics, state.size(), config.tabSize, state.back(), prefixValue);
+    PrefixArrayClose    prefix(config.characteristics, state.size(), config.tabSize, config.blockSize, state.back(), prefixValue);
     prefix.write(*this, ']');
 }
 
@@ -225,7 +227,7 @@ void JsonPrinter::addKey(std::string_view const& key)
                               "addKey",
                               "Invalid call to addKey(): Currently not in a map");
     }
-    PrefixKey   prefix(config.characteristics, state.size(), config.tabSize, state.back());
+    PrefixKey   prefix(config.characteristics, state.size(), config.tabSize, config.blockSize, state.back());
     prefix.write(*this);
     write("\"", 1);
     write(key);
@@ -235,14 +237,14 @@ void JsonPrinter::addKey(std::string_view const& key)
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::addPrefix()
 {
-    PrefixValue prefix(config.characteristics, state.size(), config.tabSize, state.back());
+    PrefixValue prefix(config.characteristics, state.size(), config.tabSize, config.blockSize, state.back());
     prefix.write(*this);
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonPrinter::addIndent()
 {
-    PrefixValue     prefix(config.characteristics, state.size(), config.tabSize, state.back());
+    PrefixValue     prefix(config.characteristics, state.size(), config.tabSize, config.blockSize, state.back());
     prefix.write(*this);
 }
 

@@ -14,6 +14,22 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size)
 {
     YamlPrinter*     owner = reinterpret_cast<YamlPrinter*>(data);
+    std::string      blockInden(owner->config.blockSize, ' ');
+
+    if (owner->outputFirstLine()) {
+        owner->write(blockInden.data(), blockInden.size());
+    }
+    unsigned char*   bufferEnd = buffer + size;
+
+    auto find = std::find(buffer, bufferEnd, '\n');
+    while (find != bufferEnd) {
+        std::size_t lineSize = find - buffer + 1;
+        owner->write(reinterpret_cast<char*>(buffer), lineSize);
+        owner->write(blockInden.data(), blockInden.size());
+        buffer += lineSize;
+        size   -= lineSize;
+        find = std::find(buffer, bufferEnd, '\n');
+    }
     owner->write(reinterpret_cast<char*>(buffer), size);
     bool result      = owner->ok();
 
@@ -49,6 +65,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 YamlPrinter::YamlPrinter(std::ostream& output, PrinterConfig config)
     : PrinterInterface(output, config)
     , error(false)
+    , firstLine(false)
 {
     init();
 }
@@ -57,6 +74,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 YamlPrinter::YamlPrinter(std::string& output, PrinterConfig config)
     : PrinterInterface(output, config)
     , error(false)
+    , firstLine(false)
 {
     init();
 }
