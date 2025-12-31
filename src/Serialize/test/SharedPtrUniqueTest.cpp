@@ -16,22 +16,22 @@ TEST(SharedPtrUniqueTest, MultipleCopiesOfSameSharedPtrJson)
     data.emplace_back(value);
     data.emplace_back(value);
 
-	std::stringstream	expected;
-	expected << R"(
+    std::stringstream    expected;
+    expected << R"(
 [
-	{
-		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(,
-		"data": 5
-	},
-	{
-		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
-	},
-	{
-		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
-	},
-	{
-		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
-	}
+    {
+        "sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(,
+        "data": 5
+    },
+    {
+        "sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
+    },
+    {
+        "sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
+    },
+    {
+        "sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
+    }
 ])";
 
     std::stringstream   ss;
@@ -90,19 +90,19 @@ TEST(SharedPtrUniqueTest, ReadMultipleCopiesOfSameSharedPtrJson)
 
     std::stringstream   ss(R"(
 [
-	{
-		"sharedPtrName": 123456,
-		"data": 5
-	},
-	{
-		"sharedPtrName": 123456
-	},
-	{
-		"sharedPtrName": 123456
-	},
-	{
-		"sharedPtrName": 123456
-	}
+    {
+        "sharedPtrName": 123456,
+        "data": 5
+    },
+    {
+        "sharedPtrName": 123456
+    },
+    {
+        "sharedPtrName": 123456
+    },
+    {
+        "sharedPtrName": 123456
+    }
 ])");
 
     std::vector<std::shared_ptr<int>>   data;

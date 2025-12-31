@@ -19,19 +19,19 @@ TEST(SharedPtrUniqueTestString, MultipleCopiesOfSameSharedPtrJson)
     std::stringstream   expected;
     expected << R"(
 [
-	{
-		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(,
-		"data": 5
-	},
-	{
-		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
-	},
-	{
-		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
-	},
-	{
-		"sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
-	}
+    {
+        "sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(,
+        "data": 5
+    },
+    {
+        "sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
+    },
+    {
+        "sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
+    },
+    {
+        "sharedPtrName": )" << reinterpret_cast<std::intmax_t>(value.get()) << R"(
+    }
 ])";
 
     std::string   ss;

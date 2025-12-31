@@ -71,6 +71,7 @@ THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void YamlPrinter::init()
 {
     checkYamlResultCode(yaml_emitter_initialize(&emitter), "YamlPrinter", "yaml_emitter_initialize");
+    yaml_emitter_set_indent(&emitter, config.tabSize == 0 ? 2 : config.tabSize);
     yaml_emitter_set_output(&emitter, thorsanvilYamlStreamWritter, this);
     checkYamlResultCode(
             [&](yaml_event_t& event){return yaml_stream_start_event_initialize(&event, YAML_UTF8_ENCODING);},

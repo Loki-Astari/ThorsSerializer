@@ -1,6 +1,8 @@
+#include "PrinterConfig.h"
 #include "gtest/gtest.h"
 #include "Traits.h"
 #include "JsonThor.h"
+#include "YamlThor.h"
 
 TEST(ExamplesTest, TrivialExample0)
 {
@@ -23,7 +25,7 @@ struct Shirt
     int     red;
     int     green;
     int     blue;
-};    
+};
 class TeamMember
 {
     std::string     name;
@@ -52,7 +54,7 @@ class TeamMember
 ThorsAnvil_MakeTrait(Shirt, red, green, blue);
 ThorsAnvil_MakeTrait(TeamMember, name, score, damage, team);
 
-TEST(ExamplesTest, SimpleExample1)
+TEST(ExamplesTest, SimpleExample1Json)
 {
     using ThorsAnvil::Serialize::jsonImporter;
     using ThorsAnvil::Serialize::jsonExporter;
@@ -63,15 +65,15 @@ TEST(ExamplesTest, SimpleExample1)
     ss << jsonExporter(mark);
     EXPECT_EQ(R"(
 {
-	"name": "mark",
-	"score": 10,
-	"damage": 5,
-	"team":
-	{
-		"red": 255,
-		"green": 0,
-		"blue": 0
-	}
+    "name": "mark",
+    "score": 10,
+    "damage": 5,
+    "team":
+    {
+        "red": 255,
+        "green": 0,
+        "blue": 0
+    }
 })", ss.str());
 
     TeamMember          john("Empty", 0, 0, Shirt{0,0,0});
@@ -88,16 +90,155 @@ TEST(ExamplesTest, SimpleExample1)
     outss << jsonExporter(john);
     EXPECT_EQ(R"(
 {
-	"name": "John",
-	"score": 13,
-	"damage": 0,
-	"team":
-	{
-		"red": 0,
-		"green": 0,
-		"blue": 255
-	}
+    "name": "John",
+    "score": 13,
+    "damage": 0,
+    "team":
+    {
+        "red": 0,
+        "green": 0,
+        "blue": 255
+    }
 })", outss.str());
+}
+
+TEST(ExamplesTest, SimpleExample1Yaml)
+{
+    using ThorsAnvil::Serialize::jsonImporter;
+    using ThorsAnvil::Serialize::yamlExporter;
+
+    TeamMember          mark("mark", 10, 5, Shirt{255,0,0});
+    // Use the export function to serialize
+    std::stringstream   ss;
+    ss << yamlExporter(mark);
+
+    EXPECT_EQ(R"(---
+name: mark
+score: 10
+damage: 5
+team:
+  red: 255
+  green: 0
+  blue: 0
+...
+)", ss.str());
+
+    TeamMember          john("Empty", 0, 0, Shirt{0,0,0});
+    std::stringstream   input(R"({"name": "John","score": 13,"team":{"red": 0,"green": 0,"blue": 255, "black":25}})");
+    input >> jsonImporter(john);
+    EXPECT_EQ("John", john.getName());
+    EXPECT_EQ(13, john.getScore());
+    EXPECT_EQ(0, john.getDamage());
+    EXPECT_EQ(0, john.getTeam().red);
+    EXPECT_EQ(0, john.getTeam().green);
+    EXPECT_EQ(255, john.getTeam().blue);
+
+    std::stringstream   outss;
+    outss << yamlExporter(john);
+    EXPECT_EQ(R"(---
+name: John
+score: 13
+damage: 0
+team:
+  red: 0
+  green: 0
+  blue: 255
+...
+)", outss.str());
+}
+
+TEST(ExamplesTest, SimpleExample2Json)
+{
+    using ThorsAnvil::Serialize::jsonImporter;
+    using ThorsAnvil::Serialize::jsonExporter;
+    using ThorsAnvil::Serialize::PrinterConfig;
+
+    TeamMember          mark("mark", 10, 5, Shirt{255,0,0});
+    // Use the export function to serialize
+    std::stringstream   ss;
+    ss << jsonExporter(mark);
+    EXPECT_EQ(R"(
+{
+    "name": "mark",
+    "score": 10,
+    "damage": 5,
+    "team":
+    {
+        "red": 255,
+        "green": 0,
+        "blue": 0
+    }
+})", ss.str());
+
+    TeamMember          john("Empty", 0, 0, Shirt{0,0,0});
+    std::stringstream   input(R"({"name": "John","score": 13,"team":{"red": 0,"green": 0,"blue": 255, "black":25}})");
+    input >> jsonImporter(john);
+    EXPECT_EQ("John", john.getName());
+    EXPECT_EQ(13, john.getScore());
+    EXPECT_EQ(0, john.getDamage());
+    EXPECT_EQ(0, john.getTeam().red);
+    EXPECT_EQ(0, john.getTeam().green);
+    EXPECT_EQ(255, john.getTeam().blue);
+
+    std::stringstream   outss;
+    outss << jsonExporter(john, PrinterConfig{ThorsAnvil::Serialize::OutputType::Config, 2});
+    EXPECT_EQ(R"(
+{
+  "name": "John",
+  "score": 13,
+  "damage": 0,
+  "team":
+  {
+    "red": 0,
+    "green": 0,
+    "blue": 255
+  }
+})", outss.str());
+}
+TEST(ExamplesTest, SimpleExample2Yaml)
+{
+    using ThorsAnvil::Serialize::jsonImporter;
+    using ThorsAnvil::Serialize::yamlExporter;
+    using ThorsAnvil::Serialize::PrinterConfig;
+
+    TeamMember          mark("mark", 10, 5, Shirt{255,0,0});
+    // Use the export function to serialize
+    std::stringstream   ss;
+    ss << yamlExporter(mark);
+
+    EXPECT_EQ(R"(---
+name: mark
+score: 10
+damage: 5
+team:
+  red: 255
+  green: 0
+  blue: 0
+...
+)", ss.str());
+
+    TeamMember          john("Empty", 0, 0, Shirt{0,0,0});
+    std::stringstream   input(R"({"name": "John","score": 13,"team":{"red": 0,"green": 0,"blue": 255, "black":25}})");
+    input >> jsonImporter(john);
+    EXPECT_EQ("John", john.getName());
+    EXPECT_EQ(13, john.getScore());
+    EXPECT_EQ(0, john.getDamage());
+    EXPECT_EQ(0, john.getTeam().red);
+    EXPECT_EQ(0, john.getTeam().green);
+    EXPECT_EQ(255, john.getTeam().blue);
+
+    std::stringstream   outss;
+    outss << yamlExporter(john, PrinterConfig{ThorsAnvil::Serialize::OutputType::Config, 4});
+    EXPECT_EQ(R"(---
+name: John
+score: 13
+damage: 0
+team:
+    red: 0
+    green: 0
+    blue: 255
+...
+)", outss.str());
 }
 
 
@@ -140,9 +281,9 @@ TEST(ExamplesTest, BiggerExample2)
     ss1 << jsonExporter(data);
     EXPECT_EQ(R"(
 {
-	"data1": 56,
-	"data2": 23.456,
-	"data3": "Hi there"
+    "data1": 56,
+    "data2": 23.456,
+    "data3": "Hi there"
 })", ss1.str());
 
     // This generates a compact JSON 
@@ -158,26 +299,26 @@ TEST(ExamplesTest, BiggerExample2)
     ss3 << jsonExporter(vec);
     EXPECT_EQ(R"(
 [
-	{
-		"data1": 56,
-		"data2": 23.456,
-		"data3": "Hi there"
-	},
-	{
-		"data1": 56,
-		"data2": 23.456,
-		"data3": "Hi there"
-	},
-	{
-		"data1": 56,
-		"data2": 23.456,
-		"data3": "Hi there"
-	},
-	{
-		"data1": 56,
-		"data2": 23.456,
-		"data3": "Hi there"
-	}
+    {
+        "data1": 56,
+        "data2": 23.456,
+        "data3": "Hi there"
+    },
+    {
+        "data1": 56,
+        "data2": 23.456,
+        "data3": "Hi there"
+    },
+    {
+        "data1": 56,
+        "data2": 23.456,
+        "data3": "Hi there"
+    },
+    {
+        "data1": 56,
+        "data2": 23.456,
+        "data3": "Hi there"
+    }
 ])", ss3.str());
 }
 
@@ -219,26 +360,26 @@ TEST(ExamplesTest, BiggerExample2)
 
 TEST(ExamplesTest, PolyMorphicExample3)
 {
-	Vehicle*    init = new Bike(15, 2);
+    Vehicle*    init = new Bike(15, 2);
 
     std::stringstream   stream;
     stream << ThorsAnvil::Serialize::jsonExporter(init);
-	EXPECT_EQ(R"(
+    EXPECT_EQ(R"(
 {
-	"__type": "Bike",
-	"stroke": 2,
-	"speed": 15
+    "__type": "Bike",
+    "stroke": 2,
+    "speed": 15
 })", stream.str());
 
     Vehicle*    result = nullptr;
-	std::stringstream	stream2;
-	stream2 << ThorsAnvil::Serialize::jsonExporter(result);
-	EXPECT_EQ("null", stream2.str());
+    std::stringstream    stream2;
+    stream2 << ThorsAnvil::Serialize::jsonExporter(result);
+    EXPECT_EQ("null", stream2.str());
 
     stream >> ThorsAnvil::Serialize::jsonImporter(result);
-	std::stringstream	stream3;
+    std::stringstream    stream3;
     stream3 << ThorsAnvil::Serialize::jsonExporter(result);
-	EXPECT_EQ(stream.str(), stream3.str());
+    EXPECT_EQ(stream.str(), stream3.str());
 }
 
 class Car1
@@ -277,36 +418,36 @@ TEST(ExamplesTest, Exampl4)
     myGarage.emplace("car3", Car1{"yellow", 50, 7500});
     myGarage.emplace("car4", Car1{"green", 10, 750});
 
-	std::stringstream ss;
+    std::stringstream ss;
 
     using ThorsAnvil::Serialize::jsonExporter;
     ss << jsonExporter(myGarage);
-	EXPECT_EQ(R"(
+    EXPECT_EQ(R"(
 {
-	"car1":
-	{
-		"Color": "red",
-		"Price": 10000,
-		"Speed": 200
-	},
-	"car2":
-	{
-		"Color": "blue",
-		"Price": 16000,
-		"Speed": 666
-	},
-	"car3":
-	{
-		"Color": "yellow",
-		"Price": 7500,
-		"Speed": 50
-	},
-	"car4":
-	{
-		"Color": "green",
-		"Price": 750,
-		"Speed": 10
-	}
+    "car1":
+    {
+        "Color": "red",
+        "Price": 10000,
+        "Speed": 200
+    },
+    "car2":
+    {
+        "Color": "blue",
+        "Price": 16000,
+        "Speed": 666
+    },
+    "car3":
+    {
+        "Color": "yellow",
+        "Price": 7500,
+        "Speed": 50
+    },
+    "car4":
+    {
+        "Color": "green",
+        "Price": 750,
+        "Speed": 10
+    }
 })", ss.str());
 }
 
@@ -349,21 +490,21 @@ TEST(ExamplesTest, Example6)
 
 
     // This generates a simple JSON Object (wordy)
-	std::stringstream ss1;
+    std::stringstream ss1;
     ss1 << jsonExporter(data);
 
-	EXPECT_EQ(R"(
+    EXPECT_EQ(R"(
 {
-	"H": "1",
-	"N": 3,
-	"D1": 3,
-	"D2": 150
+    "H": "1",
+    "N": 3,
+    "D1": 3,
+    "D2": 150
 })", ss1.str());
 
     // This generates a compact JSON 
-	std::stringstream ss2;
+    std::stringstream ss2;
     ss2 << jsonExporter(data, OutputType::Stream);
-	EXPECT_EQ(R"({"H":"1","N":3,"D1":3,"D2":150})", ss2.str());
+    EXPECT_EQ(R"({"H":"1","N":3,"D1":3,"D2":150})", ss2.str());
 }
 
     struct Component
@@ -408,27 +549,27 @@ TEST(ExamplesTest, Example7)
 })");
 
     file >> jsonImporter(data1);
-	EXPECT_EQ(data1.components[0].type, "mesh");
-	EXPECT_EQ(data1.components[0].axis[0], "x");
-	EXPECT_EQ(data1.components[0].axis[1], "y");
-	EXPECT_EQ(data1.components[0].axis[2], "z");
+    EXPECT_EQ(data1.components[0].type, "mesh");
+    EXPECT_EQ(data1.components[0].axis[0], "x");
+    EXPECT_EQ(data1.components[0].axis[1], "y");
+    EXPECT_EQ(data1.components[0].axis[2], "z");
 
     std::stringstream ss1;
-	ss1 << jsonExporter(data1);
-	EXPECT_EQ(R"(
+    ss1 << jsonExporter(data1);
+    EXPECT_EQ(R"(
 {
-	"components":
-	[
-		{
-			"type": "mesh",
-			"axis":
-			["x", "y", "z"]
-		}
-	]
+    "components":
+    [
+        {
+            "type": "mesh",
+            "axis":
+            ["x", "y", "z"]
+        }
+    ]
 })", ss1.str());
 
     file >> jsonImporter(data2);
-	EXPECT_FALSE(static_cast<bool>(file));
+    EXPECT_FALSE(static_cast<bool>(file));
 }
 
 class Identifier
@@ -484,36 +625,36 @@ TEST(ExamplesTest, Example8)
 ])");
 
     file >> jsonImporter(objects);
-	EXPECT_TRUE(static_cast<bool>(file));
-	EXPECT_EQ(objects[0].operation, "test");
-	EXPECT_EQ(objects[0].identifier.name, "1");
-	EXPECT_EQ(objects[0].identifier.bar, "sandbox");
-	EXPECT_EQ(objects[0].identifier.foo, "foo");
-	EXPECT_EQ(objects[0].properties.category, "xxx");
-	EXPECT_EQ(objects[0].properties.time, "yyy");
-	EXPECT_EQ(objects[0].properties.shouldRetry, "False");
-	EXPECT_EQ(objects[0].properties.Id, "vvvv");
+    EXPECT_TRUE(static_cast<bool>(file));
+    EXPECT_EQ(objects[0].operation, "test");
+    EXPECT_EQ(objects[0].identifier.name, "1");
+    EXPECT_EQ(objects[0].identifier.bar, "sandbox");
+    EXPECT_EQ(objects[0].identifier.foo, "foo");
+    EXPECT_EQ(objects[0].properties.category, "xxx");
+    EXPECT_EQ(objects[0].properties.time, "yyy");
+    EXPECT_EQ(objects[0].properties.shouldRetry, "False");
+    EXPECT_EQ(objects[0].properties.Id, "vvvv");
 
-	std::stringstream ss;
+    std::stringstream ss;
     ss << jsonExporter(objects);
-	EXPECT_EQ(R"(
+    EXPECT_EQ(R"(
 [
-	{
-		"operation": "test",
-		"identifier":
-		{
-			"name": "1",
-			"bar": "sandbox",
-			"foo": "foo"
-		},
-		"properties":
-		{
-			"category": "xxx",
-			"time": "yyy",
-			"shouldRetry": "False",
-			"Id": "vvvv"
-		}
-	}
+    {
+        "operation": "test",
+        "identifier":
+        {
+            "name": "1",
+            "bar": "sandbox",
+            "foo": "foo"
+        },
+        "properties":
+        {
+            "category": "xxx",
+            "time": "yyy",
+            "shouldRetry": "False",
+            "Id": "vvvv"
+        }
+    }
 ])", ss.str());
 }
 
@@ -540,29 +681,29 @@ TEST(ExamplesTest, ExampleE)
     using ThorsAnvil::Serialize::OutputType;
 
     MyStruct    val;
-	std::stringstream inputss(R"({"e": "A", "s": "This string"}{"e": "B", "s": "Another string"}{"e": "C", "s": "Last string"})");
+    std::stringstream inputss(R"({"e": "A", "s": "This string"}{"e": "B", "s": "Another string"}{"e": "C", "s": "Last string"})");
 
     inputss >> jsonImporter(val);
-	EXPECT_EQ(val.e, EnumType::A);
-	EXPECT_EQ(val.s, "This string");
+    EXPECT_EQ(val.e, EnumType::A);
+    EXPECT_EQ(val.s, "This string");
 
     inputss >> jsonImporter(val);
-	EXPECT_EQ(val.e, EnumType::B);
-	EXPECT_EQ(val.s, "Another string");
+    EXPECT_EQ(val.e, EnumType::B);
+    EXPECT_EQ(val.s, "Another string");
 
     inputss >> jsonImporter(val);
-	EXPECT_EQ(val.e, EnumType::C);
-	EXPECT_EQ(val.s, "Last string");
+    EXPECT_EQ(val.e, EnumType::C);
+    EXPECT_EQ(val.s, "Last string");
 
-	std::stringstream ss;
+    std::stringstream ss;
     ss << jsonExporter(val);
-	EXPECT_EQ(R"(
+    EXPECT_EQ(R"(
 {
-	"e": "C",
-	"s": "Last string"
+    "e": "C",
+    "s": "Last string"
 })", ss.str());
 
-	std::stringstream ss2;
-	ss2 << jsonExporter(val, OutputType::Stream);
-	EXPECT_EQ(R"({"e":"C","s":"Last string"})", ss2.str());
+    std::stringstream ss2;
+    ss2 << jsonExporter(val, OutputType::Stream);
+    EXPECT_EQ(R"({"e":"C","s":"Last string"})", ss2.str());
 }

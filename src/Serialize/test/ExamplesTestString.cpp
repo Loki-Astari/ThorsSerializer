@@ -62,15 +62,15 @@ TEST(ExamplesTestString, SimpleExample1)
     ss << jsonExporter(mark);
     EXPECT_EQ(R"(
 {
-	"name": "mark",
-	"score": 10,
-	"damage": 5,
-	"team":
-	{
-		"red": 255,
-		"green": 0,
-		"blue": 0
-	}
+    "name": "mark",
+    "score": 10,
+    "damage": 5,
+    "team":
+    {
+        "red": 255,
+        "green": 0,
+        "blue": 0
+    }
 })", ss);
 
     TeamMember          john("Empty", 0, 0, Shirt{0,0,0});
@@ -87,15 +87,15 @@ TEST(ExamplesTestString, SimpleExample1)
     outss << jsonExporter(john);
     EXPECT_EQ(R"(
 {
-	"name": "John",
-	"score": 13,
-	"damage": 0,
-	"team":
-	{
-		"red": 0,
-		"green": 0,
-		"blue": 255
-	}
+    "name": "John",
+    "score": 13,
+    "damage": 0,
+    "team":
+    {
+        "red": 0,
+        "green": 0,
+        "blue": 255
+    }
 })", outss);
 }
 
@@ -138,9 +138,9 @@ TEST(ExamplesTestString, BiggerExample2)
     ss1 << jsonExporter(data);
     EXPECT_EQ(R"(
 {
-	"data1": 56,
-	"data2": 23.455999,
-	"data3": "Hi there"
+    "data1": 56,
+    "data2": 23.455999,
+    "data3": "Hi there"
 })", ss1);
 
     // This generates a compact JSON 
@@ -156,26 +156,26 @@ TEST(ExamplesTestString, BiggerExample2)
     ss3 << jsonExporter(vec);
     EXPECT_EQ(R"(
 [
-	{
-		"data1": 56,
-		"data2": 23.455999,
-		"data3": "Hi there"
-	},
-	{
-		"data1": 56,
-		"data2": 23.455999,
-		"data3": "Hi there"
-	},
-	{
-		"data1": 56,
-		"data2": 23.455999,
-		"data3": "Hi there"
-	},
-	{
-		"data1": 56,
-		"data2": 23.455999,
-		"data3": "Hi there"
-	}
+    {
+        "data1": 56,
+        "data2": 23.455999,
+        "data3": "Hi there"
+    },
+    {
+        "data1": 56,
+        "data2": 23.455999,
+        "data3": "Hi there"
+    },
+    {
+        "data1": 56,
+        "data2": 23.455999,
+        "data3": "Hi there"
+    },
+    {
+        "data1": 56,
+        "data2": 23.455999,
+        "data3": "Hi there"
+    }
 ])", ss3);
 }
 
@@ -223,9 +223,9 @@ TEST(ExamplesTestString, PolyMorphicExample3)
     stream << ThorsAnvil::Serialize::jsonExporter(init);
     EXPECT_EQ(R"(
 {
-	"__type": "Bike",
-	"stroke": 2,
-	"speed": 15
+    "__type": "Bike",
+    "stroke": 2,
+    "speed": 15
 })", stream);
 
     Vehicle*    result = nullptr;
@@ -281,30 +281,30 @@ TEST(ExamplesTestString, Exampl4)
     ss << jsonExporter(myGarage);
     EXPECT_EQ(R"(
 {
-	"car1":
-	{
-		"Color": "red",
-		"Price": 10000,
-		"Speed": 200
-	},
-	"car2":
-	{
-		"Color": "blue",
-		"Price": 16000,
-		"Speed": 666
-	},
-	"car3":
-	{
-		"Color": "yellow",
-		"Price": 7500,
-		"Speed": 50
-	},
-	"car4":
-	{
-		"Color": "green",
-		"Price": 750,
-		"Speed": 10
-	}
+    "car1":
+    {
+        "Color": "red",
+        "Price": 10000,
+        "Speed": 200
+    },
+    "car2":
+    {
+        "Color": "blue",
+        "Price": 16000,
+        "Speed": 666
+    },
+    "car3":
+    {
+        "Color": "yellow",
+        "Price": 7500,
+        "Speed": 50
+    },
+    "car4":
+    {
+        "Color": "green",
+        "Price": 750,
+        "Speed": 10
+    }
 })", ss);
 }
 
@@ -352,10 +352,10 @@ TEST(ExamplesTestString, Example6)
 
     EXPECT_EQ(R"(
 {
-	"H": "1",
-	"N": 3,
-	"D1": 3,
-	"D2": 150
+    "H": "1",
+    "N": 3,
+    "D1": 3,
+    "D2": 150
 })", ss1);
 
     // This generates a compact JSON 
@@ -389,20 +389,20 @@ TEST(ExamplesTestString, Example7)
     Data                data2;
     // See: https://github.com/Loki-Astari/ThorsSerializer/blob/master/doc/example7.json
     std::string         file(R"({
-	"components": [
-		{
-			"type": "mesh",
-			"axis": ["x","y","z"]
-		}
-	]
+    "components": [
+        {
+            "type": "mesh",
+            "axis": ["x","y","z"]
+        }
+    ]
 })");
     std::string         file2(R"({
-	"components": [
-		{
-			"type": "mesh",
-			"axis": ["x","y",z]
-		}
-	]
+    "components": [
+        {
+            "type": "mesh",
+            "axis": ["x","y",z]
+        }
+    ]
 })");
 
     file >> jsonImporter(data1);
@@ -415,14 +415,14 @@ TEST(ExamplesTestString, Example7)
     ss1 << jsonExporter(data1);
     EXPECT_EQ(R"(
 {
-	"components":
-	[
-		{
-			"type": "mesh",
-			"axis":
-			["x", "y", "z"]
-		}
-	]
+    "components":
+    [
+        {
+            "type": "mesh",
+            "axis":
+            ["x", "y", "z"]
+        }
+    ]
 })", ss1);
 
 
@@ -466,20 +466,20 @@ TEST(ExamplesTestString, Example8)
 
     std::string          file(R"(
 [
-	{
-		"operation": "test",
-		"identifier": {
-			"name": "1",
-			"bar": "sandbox",
-			"foo": "foo"
-		},
-		"properties": {
-			"category": "xxx",
-			"time": "yyy",
-			"shouldRetry": "False",
-			"Id": "vvvv"
-		}
-	}
+    {
+        "operation": "test",
+        "identifier": {
+            "name": "1",
+            "bar": "sandbox",
+            "foo": "foo"
+        },
+        "properties": {
+            "category": "xxx",
+            "time": "yyy",
+            "shouldRetry": "False",
+            "Id": "vvvv"
+        }
+    }
 ])");
 
     bool result = file >> jsonImporter(objects);
@@ -497,22 +497,22 @@ TEST(ExamplesTestString, Example8)
     ss << jsonExporter(objects);
     EXPECT_EQ(R"(
 [
-	{
-		"operation": "test",
-		"identifier":
-		{
-			"name": "1",
-			"bar": "sandbox",
-			"foo": "foo"
-		},
-		"properties":
-		{
-			"category": "xxx",
-			"time": "yyy",
-			"shouldRetry": "False",
-			"Id": "vvvv"
-		}
-	}
+    {
+        "operation": "test",
+        "identifier":
+        {
+            "name": "1",
+            "bar": "sandbox",
+            "foo": "foo"
+        },
+        "properties":
+        {
+            "category": "xxx",
+            "time": "yyy",
+            "shouldRetry": "False",
+            "Id": "vvvv"
+        }
+    }
 ])", ss);
 }
 
@@ -559,8 +559,8 @@ TEST(ExamplesTestString, ExampleE)
     ss << jsonExporter(val);
     EXPECT_EQ(R"(
 {
-	"e": "C",
-	"s": "Last string"
+    "e": "C",
+    "s": "Last string"
 })", ss);
 
     std::string        ss2;

@@ -21,6 +21,10 @@ struct PrinterConfig
      * But should not be used in new code.
      * Please use the set<Attribute>() methods.
      */
+    PrinterConfig(OutputType characteristics, int tabSize)
+        : characteristics(characteristics)
+        , tabSize(tabSize)
+    {}
     PrinterConfig(OutputType characteristics,
                   std::string const& polymorphicMarker = "",
                   bool catchExceptions = true)
@@ -59,6 +63,7 @@ struct PrinterConfig
     bool            catchExceptions         = true;
     bool            catchUnknownExceptions  = false;
     long            parserInfo              = 0;
+    long            tabSize                 = 0;
     bool            useOldSharedPtr         = false;
     bool            exactPreFlight          = false;
 };
