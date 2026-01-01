@@ -2,7 +2,6 @@
 #define THORSANVIL_SERIALIZE_FORMAT_H
 
 #include <cstddef>
-#if 1 // __cplusplus >= 202302L
 
 #include <format>
 #include <string>
@@ -114,7 +113,5 @@ struct /*vera-disable*/ std::formatter<TA::Ser<T>>
         return ctx.advance_to(std::copy(std::begin(out), std::end(out), ctx.out()));
     }
 };
-
-#endif
 
 #endif
