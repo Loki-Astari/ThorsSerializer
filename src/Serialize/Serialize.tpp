@@ -197,7 +197,7 @@ class DeSerializationForBlock
                 ThorsLogAndThrowError(std::runtime_error,
                                       "ThorsAnvil::Serialize::DeSerializationForBlock<Map>",
                                       "DeSerializationForBlock",
-                                      "Invalid Object Start");
+                                      "Invalid Object Start: Token ", static_cast<int>(tokenType));
             }
         }
 
