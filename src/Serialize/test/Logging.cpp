@@ -20,42 +20,42 @@ class LoggingEnvironment: public ::testing::Environment
         }
         else
         {
-            std::cerr << "Logging Level BEFORE: " << loguru::g_stderr_verbosity << "\n";
+            std::cerr << "Logging Level BEFORE: " << ThorsLogLevelGet() << "\n";
             std::cerr << "THOR_LOG_LEVEL = >" << logging << "<\n";
             int level = std::strtol(logging, nullptr, 10);
             if (level > 0 && level <10)
             {
-                loguru::g_stderr_verbosity = level;
+                ThorsLogLevelSet(level);
             }
             else if ("FATAL"s == logging)
             {
-                loguru::g_stderr_verbosity = loguru::Verbosity_FATAL;
+                ThorsLogLevel(FATAL);
             }
             else if ("ERROR"s == logging)
             {
-                loguru::g_stderr_verbosity = loguru::Verbosity_ERROR;
+                ThorsLogLevel(ERROR);
             }
             else if ("WARNING"s == logging)
             {
-                loguru::g_stderr_verbosity = loguru::Verbosity_WARNING;
+                ThorsLogLevel(WARNING);
             }
             else if ("INFO"s == logging)
             {
-                loguru::g_stderr_verbosity = loguru::Verbosity_INFO;
+                ThorsLogLevel(INFO);
             }
             else if ("DEBUG"s == logging)
             {
-                loguru::g_stderr_verbosity = 6;
+                ThorsLogLevel(6);
             }
             else if ("TRACE"s == logging)
             {
-                loguru::g_stderr_verbosity = 8;
+                ThorsLogLevel(8);
             }
             else if ("ALL"s == logging)
             {
-                loguru::g_stderr_verbosity = 9;
+                ThorsLogLevel(9);
             }
-            std::cerr << "Logging Level AFTER: " << loguru::g_stderr_verbosity << "\n";
+            std::cerr << "Logging Level AFTER: " << ThorsLogLevelGet() << "\n";
         }
     }
 
