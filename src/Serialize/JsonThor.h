@@ -61,6 +61,16 @@ Importer<Json, T> jsonImporter(T& value, ParserConfig config = ParserConfig{})
 {
     return Importer<Json, T>(value, config);
 }
+template<typename T, typename I>
+T jsonBuilder(I&& stream, ParserConfig config = ParserConfig{})
+{
+    // Note: Stream can be std::istream / std::string / std::string_view
+    T value;
+    if (stream >> jsonImporter(value, std::move(config))) {
+        return value;
+    }
+    return T{};
+}
 
 }
 

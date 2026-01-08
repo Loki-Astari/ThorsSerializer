@@ -50,6 +50,16 @@ Importer<Yaml, T> yamlImporter(T& value, ParserConfig config = ParserConfig{})
 {
     return Importer<Yaml, T>(value, config);
 }
+template<typename T, typename I>
+T yamlBuilder(I&& stream, ParserConfig config = ParserConfig{})
+{
+    // Note: Stream can be std::istream / std::string / std::string_view
+    T value;
+    if (stream >> yamlImporter(value, std::move(config))) {
+        return value;
+    }
+    return T{};
+}
 }
 
 #endif

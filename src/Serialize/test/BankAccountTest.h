@@ -37,8 +37,14 @@ namespace OnLineBank
             parser.getValue(object.id);
         }
 
-        //virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& printer, ID const& object)   override 
-        //virtual void readYaml(ThorsAnvil::Serialize::YamlParser& parser, ID& object)            override
+        virtual void writeYaml(ThorsAnvil::Serialize::YamlPrinter& printer, ID const& object) const override 
+        {
+            printer.addValue(object.id);
+        }
+        virtual void readYaml(ThorsAnvil::Serialize::YamlParser& parser, ID& object) const override
+        {
+            parser.getValue(object.id);
+        }
 
         // generic version we simply stream the integer value.
         static constexpr std::size_t sizeOfID = 12;

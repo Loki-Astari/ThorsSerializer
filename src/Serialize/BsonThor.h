@@ -104,6 +104,16 @@ Importer<Bson, T> bsonImporter(T& value, ParserConfig config = ParserConfig{})
 
     return Importer<Bson, T>(value, config);
 }
+template<typename T, typename I>
+T bsonBuilder(I&& stream, ParserConfig config = ParserConfig{})
+{
+    // Note: Stream can be std::istream / std::string / std::string_view
+    T value;
+    if (stream >> bsonImporter(value, std::move(config))) {
+        return value;
+    }
+    return T{};
+}
 
 // @function-api
 // @param value                     The object to be serialized.
