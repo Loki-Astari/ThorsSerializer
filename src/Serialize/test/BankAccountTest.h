@@ -104,6 +104,10 @@ namespace OnLineBank
                 , details(details)
                 , valid(valid)
             {}
+            BankAccount(BankAccount const&) = default;
+            BankAccount(BankAccount&&)      = default;
+            BankAccount& operator=(BankAccount const&) = default;
+            BankAccount& operator=(BankAccount&&)      = default;
             virtual ~BankAccount()  {}
             int getAccountIdent()   {return id.id;}
             int getBalance()        {return balance;}
