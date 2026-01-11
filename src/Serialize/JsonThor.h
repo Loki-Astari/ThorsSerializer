@@ -18,6 +18,7 @@
 #include "Exporter.h"
 #include "Importer.h"
 #include "SerUtil.h"
+#include "ThorsSerializerUtil.h"
 
 namespace ThorsAnvil::Serialize
 {
@@ -35,9 +36,16 @@ struct Json
 // @param config.catchExceptions    'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
 // @return                          Object that can be passed to operator<< for serialization.
 template<typename T>
+requires(Traits<T>::type != TraitType::Invalid)
 Exporter<Json, T> jsonExporter(T const& value, PrinterConfig config = PrinterConfig{})
 {
-    return Exporter<Json, T>(value, config);
+    return Exporter<Json, T>(value, std::move(config));
+}
+template<std::ranges::range R>
+requires(Traits<R>::type == TraitType::Invalid)
+ExporterRange<Json, R> jsonExporter(R range, PrinterConfig config = PrinterConfig{})
+{
+    return ExporterRange<Json, R>(std::move(range), std::move(config));
 }
 
 /*

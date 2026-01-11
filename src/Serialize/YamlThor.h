@@ -35,9 +35,17 @@ struct Yaml
 // @param config.catchExceptions    'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
 // @return                          Object that can be passed to operator<< for serialization.
 template<typename T>
+requires(Traits<T>::type != TraitType::Invalid)
 Exporter<Yaml, T> yamlExporter(T const& value, PrinterConfig config = PrinterConfig{})
 {
-    return Exporter<Yaml, T>(value, config);
+    return Exporter<Yaml, T>(value, std::move(config));
+}
+
+template<std::ranges::range R>
+requires(Traits<R>::type == TraitType::Invalid)
+ExporterRange<Yaml, R> yamlExporter(R range, PrinterConfig config = PrinterConfig{})
+{
+    return ExporterRange<Yaml, R>(std::move(range), std::move(config));
 }
 // @function-api
 // @param value                     The object to be de-serialized.
