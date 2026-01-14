@@ -41,13 +41,14 @@ class BsonPrinter: public PrinterInterface
     std::vector<BsonContainer>  currentContainer;
     std::vector<std::size_t>    arrayIndex;
     IdStore                     idStore;
+    BsonContainer               parserInfo;
     bool                        projection;
     private:
         std::size_t getSize(std::size_t expected) const             {return projection ? sizeof(int) : expected;}
         bool        writeProjection()                               {if (projection){writeInt<sizeof(int)>(1);}return projection;}
     public:
-        BsonPrinter(std::ostream& output, BsonPrinterConfig config = BsonPrinterConfig{});
-        BsonPrinter(std::string& output, BsonPrinterConfig config = BsonPrinterConfig{});
+        BsonPrinter(std::ostream& output, BsonPrinterConfig const& config);
+        BsonPrinter(std::string& output, BsonPrinterConfig const& config);
         virtual FormatType formatType()                             override {return FormatType::Bson;}
         virtual void openDoc()                                      override;
         virtual void closeDoc()                                     override;

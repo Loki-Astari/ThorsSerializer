@@ -63,7 +63,6 @@ struct PrinterConfig
     std::string     polymorphicMarker       = "";
     bool            catchExceptions         = true;
     bool            catchUnknownExceptions  = false;
-    long            parserInfo              = 0;
     long            tabSize                 = 0;
     long            blockSize               = 0;
     bool            useOldSharedPtr         = false;

@@ -20,13 +20,13 @@ namespace ThorsAnvil::Serialize
 class PrinterInterface
 {
     public:
-        PrinterConfig const  config;
+        PrinterConfig const&  config;
 
-        PrinterInterface(std::ostream& output, PrinterConfig config = PrinterConfig{})
+        PrinterInterface(std::ostream& output, PrinterConfig const& config)
             : config(config)
             , output(&output)
         {}
-        PrinterInterface(std::string& output, PrinterConfig config = PrinterConfig{})
+        PrinterInterface(std::string& output, PrinterConfig const& config)
             : config(config)
             , output(StringOutput{output, true /*!config.exactPreFlight*/})
         {}

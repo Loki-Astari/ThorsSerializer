@@ -84,18 +84,18 @@ struct Bson
 // @return                          Object that can be passed to operator<< for serialization.
 template<typename T>
 requires(Traits<T>::type != TraitType::Invalid)
-Exporter<Bson, T, BsonPrinterConfig> bsonExporter(T const& value, BsonPrinterConfig config = BsonPrinterConfig{})
+Exporter<Bson, T, BsonPrinterConfig, BsonPrinterConfig> bsonExporter(T const& value, PrinterConfig const& config = PrinterConfig{}, IdStore id = {})
 {
-    config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
+    std::cerr << "bsonExporter: " << id.has_value() << "\n";
     BsonBaseTypeGetter<T>::validate(value);
 
-    return Exporter<Bson, T, BsonPrinterConfig>(value, std::move(config));
+    return Exporter<Bson, T, BsonPrinterConfig, BsonPrinterConfig>(value, BsonPrinterConfig{config, BsonBaseTypeGetter<T>::value, id});
 }
 template<std::ranges::range R>
 requires(Traits<R>::type == TraitType::Invalid)
-ExporterRangeBson<Bson, R> bsonExporter(R range, BsonPrinterConfig config = BsonPrinterConfig{})
+ExporterRangeBson<Bson, R> bsonExporter(R range, PrinterConfig const& config = PrinterConfig{}, IdStore id = {})
 {
-    return ExporterRangeBson<Bson, R>(std::move(range), std::move(config));
+    return ExporterRangeBson<Bson, R>(std::move(range), BsonPrinterConfig{config, BsonContainer::Array, id});
 }
 
 // @function-api
@@ -129,13 +129,12 @@ T bsonBuilder(I&& stream, ParserConfig config = ParserConfig{})
 // @param config.catchExceptions    'false:    exceptions propogate.   'true':   parsing exceptions are stopped.
 // @return                          The size of the object that would be put on the stream in bytes.
 template<typename T>
-std::size_t bsonGetPrintSize(T const& value, BsonPrinterConfig config = PrinterConfig{})
+std::size_t bsonGetPrintSize(T const& value, PrinterConfig const& config = PrinterConfig{}, IdStore id = {})
 {
-    config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
     BsonBaseTypeGetter<T>::validate(value);
 
     std::stringstream         fakeStream;
-    typename Bson::Printer    printer(fakeStream, config);
+    typename Bson::Printer    printer(fakeStream, BsonPrinterConfig{config, BsonBaseTypeGetter<T>::value, id});
     return Traits<std::remove_cv_t<T>>::getPrintSize(printer, value, false);
 }
 

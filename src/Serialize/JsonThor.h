@@ -37,15 +37,15 @@ struct Json
 // @return                          Object that can be passed to operator<< for serialization.
 template<typename T>
 requires(Traits<T>::type != TraitType::Invalid)
-Exporter<Json, T> jsonExporter(T const& value, PrinterConfig config = PrinterConfig{})
+Exporter<Json, T> jsonExporter(T const& value, PrinterConfig const& config = PrinterConfig{})
 {
-    return Exporter<Json, T>(value, std::move(config));
+    return Exporter<Json, T>(value, config);
 }
 template<std::ranges::range R>
 requires(Traits<R>::type == TraitType::Invalid)
-ExporterRange<Json, R> jsonExporter(R range, PrinterConfig config = PrinterConfig{})
+ExporterRange<Json, R> jsonExporter(R range, PrinterConfig const& config = PrinterConfig{})
 {
-    return ExporterRange<Json, R>(std::move(range), std::move(config));
+    return ExporterRange<Json, R>(std::move(range), config);
 }
 
 /*
