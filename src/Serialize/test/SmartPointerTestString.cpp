@@ -235,7 +235,6 @@ TEST(SmartPointerTestString, BsonCreateNormalPtrNull)
 {
     using ThorsAnvil::Serialize::ParseType;
     ThorsAnvil::Serialize::ParserConfig config(ParseType::Weak);
-    config.parserInfo = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Map);
     //NOTE INPUT (R"(null)");
     std::string input = "\x0B\x00\x00\x00"
                         "\x0A" "data\x00"

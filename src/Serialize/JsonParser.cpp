@@ -11,7 +11,7 @@
 using namespace ThorsAnvil::Serialize;
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-JsonParser::JsonParser(std::istream& stream, ParserConfig config)
+JsonParser::JsonParser(std::istream& stream, ParserConfig const& config)
     : ParserInterface(stream, config)
     , lexer(*this)
     , currentEnd(Done)
@@ -20,7 +20,7 @@ JsonParser::JsonParser(std::istream& stream, ParserConfig config)
 {}
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-JsonParser::JsonParser(std::string_view const& stream, ParserConfig config)
+JsonParser::JsonParser(std::string_view const& stream, ParserConfig const& config)
     : ParserInterface(stream, config)
     , lexer(*this)
     , currentEnd(Done)

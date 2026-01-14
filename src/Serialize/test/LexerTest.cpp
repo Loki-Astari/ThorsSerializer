@@ -9,7 +9,7 @@ class FakeParser: public ThorsAnvil::Serialize::ParserInterface
 {
     public:
         FakeParser(std::istream& input)
-            : ParserInterface(input)
+            : ParserInterface(input, ThorsAnvil::Serialize::ParserConfig{})
         {}
         virtual ThorsAnvil::Serialize::FormatType  formatType()    {return ThorsAnvil::Serialize::FormatType::Json;}
         virtual ThorsAnvil::Serialize::ParserToken getNextToken()  {return ThorsAnvil::Serialize::ParserToken::Value;}

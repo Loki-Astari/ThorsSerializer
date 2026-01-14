@@ -65,16 +65,16 @@ std::size_t jsonStreanSize(T const& value)
 // @param config.catchExceptions    'false:    exceptions propogate.        'true':   parsing exceptions are stopped.
 // @return                          Object that can be passed to operator>> for de-serialization.
 template<typename T>
-Importer<Json, T> jsonImporter(T& value, ParserConfig config = ParserConfig{})
+Importer<Json, T> jsonImporter(T& value, ParserConfig const& config = ParserConfig{})
 {
     return Importer<Json, T>(value, config);
 }
 template<typename T, typename I>
-T jsonBuilder(I&& stream, ParserConfig config = ParserConfig{})
+T jsonBuilder(I&& stream, ParserConfig const& config = ParserConfig{})
 {
     // Note: Stream can be std::istream / std::string / std::string_view
     T value;
-    if (stream >> jsonImporter(value, std::move(config))) {
+    if (stream >> jsonImporter(value, config)) {
         return value;
     }
     return T{};

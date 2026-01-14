@@ -64,7 +64,6 @@ struct ParserConfig
     std::string     polymorphicMarker       = "";
     bool            catchExceptions         = true;
     bool            catchUnknownExceptions  = false;
-    long            parserInfo              = 0;
     IgnoreCallBack  ignoreCallBack;
     bool            useOldSharedPtr         = false;
     bool            validateNoTrailingData  = false;

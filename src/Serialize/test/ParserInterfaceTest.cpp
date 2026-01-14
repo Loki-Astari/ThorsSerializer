@@ -2,12 +2,14 @@
 #include "gtest/gtest.h"
 #include "JsonParser.h"
 #include "BsonParser.h"
+#include "BsonPrinterConfig.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::JsonParser;
 using TA::BsonParser;
 using TA::ParserConfig;
 using TA::ParserToken;
+using TA::BsonParserConfig;
 
 TEST(ParserInterfaceTest, JsonNormalNoPushBack)
 {
@@ -104,8 +106,7 @@ TEST(ParserInterfaceTest, BsonNormalNoPushBack)
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
     std::stringstream   stream(input);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    BsonParser          parser(stream, config);
+    BsonParser          parser(stream, BsonParserConfig{config, ThorsAnvil::Serialize::BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -131,8 +132,7 @@ TEST(ParserInterfaceTest, BsonPushBackValue)
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
     std::stringstream   stream(input);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    BsonParser          parser(stream, config);
+    BsonParser          parser(stream, BsonParserConfig{config, ThorsAnvil::Serialize::BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -162,8 +162,7 @@ TEST(ParserInterfaceTest, BsonPushBackTwoValue)
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
     std::stringstream   stream(input);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    BsonParser          parser(stream, config);
+    BsonParser          parser(stream, BsonParserConfig{config, ThorsAnvil::Serialize::BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -193,8 +192,7 @@ TEST(ParserInterfaceTest, BsonPushBackTwoValueWithReads)
     std::string input(std::begin(inputRaw), std::end(inputRaw) - 1);
     std::stringstream   stream(input);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    BsonParser          parser(stream, config);
+    BsonParser          parser(stream, BsonParserConfig{config, ThorsAnvil::Serialize::BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart, parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());

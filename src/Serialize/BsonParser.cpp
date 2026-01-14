@@ -1,4 +1,5 @@
 #include "BsonParser.h"
+#include "BsonPrinterConfig.h"
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
 #include "ThorsIOUtil/Utility.h"
@@ -13,8 +14,9 @@ using namespace ThorsAnvil::Serialize;
 char const* getTokenTypeAsString(ParserToken result);
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-BsonParser::BsonParser(std::istream& stream, ParserConfig config)
-    : ParserInterface(stream, config)
+BsonParser::BsonParser(std::istream& stream, BsonParserConfig const& config)
+    : ParserInterface(stream, config.config)
+    , parserInfo(config.parserInfo)
     , nextToken(ParserToken::DocStart)
     , nextType('\x00')
     , skipOverValue(false)
@@ -23,8 +25,9 @@ BsonParser::BsonParser(std::istream& stream, ParserConfig config)
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-BsonParser::BsonParser(std::string_view const& stream, ParserConfig config)
-    : ParserInterface(stream, config)
+BsonParser::BsonParser(std::string_view const& stream, BsonParserConfig const& config)
+    : ParserInterface(stream, config.config)
+    , parserInfo(config.parserInfo)
     , nextToken(ParserToken::DocStart)
     , nextType('\x00')
     , skipOverValue(false)

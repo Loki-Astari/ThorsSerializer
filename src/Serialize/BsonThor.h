@@ -105,18 +105,16 @@ ExporterRangeBson<Bson, R> bsonExporter(R range, PrinterConfig const& config = P
 // @param config.catchExceptions    'false:    exceptions propogate.        'true':   parsing exceptions are stopped.
 // @return                          Object that can be passed to operator>> for de-serialization.
 template<typename T>
-Importer<Bson, T> bsonImporter(T& value, ParserConfig config = ParserConfig{})
+Importer<Bson, T, BsonParserConfig, BsonParserConfig> bsonImporter(T& value, ParserConfig const& config = ParserConfig{})
 {
-    config.parserInfo = static_cast<long>(BsonBaseTypeGetter<T>::value);
-
-    return Importer<Bson, T>(value, config);
+    return Importer<Bson, T, BsonParserConfig, BsonParserConfig>(value, BsonParserConfig{config, BsonBaseTypeGetter<T>::value});
 }
 template<typename T, typename I>
-T bsonBuilder(I&& stream, ParserConfig config = ParserConfig{})
+T bsonBuilder(I&& stream, ParserConfig const& config = ParserConfig{})
 {
     // Note: Stream can be std::istream / std::string / std::string_view
     T value;
-    if (stream >> bsonImporter(value, std::move(config))) {
+    if (stream >> bsonImporter(value, config)) {
         return value;
     }
     return T{};

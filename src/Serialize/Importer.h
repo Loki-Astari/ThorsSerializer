@@ -11,13 +11,13 @@
 namespace ThorsAnvil::Serialize
 {
 
-template<typename Format, typename T>
+template<typename Format, typename T, typename Config = ParserConfig, typename ConfigStore = std::reference_wrapper<const Config>>
 class Importer
 {
-    T&              value;
-    ParserConfig    config;
+    T&             value;
+    ConfigStore    config;
     public:
-        Importer(T& value, ParserConfig config = ParserConfig{})
+        Importer(T& value, Config const& config)
             : value(value)
             , config(config)
         {}
@@ -31,7 +31,7 @@ class Importer
 
                 deSerializer.parse(value);
 
-                if (config.validateNoTrailingData && parser.ok())
+                if (parser.config.validateNoTrailingData && parser.ok())
                 {
                     // This reads the next non space character.
                     char next;
@@ -68,7 +68,7 @@ class Importer
             {
                 ThorsCatchMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
                 parser.setFail();
-                if (!config.catchExceptions)
+                if (!parser.config.catchExceptions)
                 {
                     ThorsRethrowMessage("ThorsAnvil::Serialize::Importer", "operator>>", e.what());
                     throw;
@@ -78,7 +78,7 @@ class Importer
             {
                 ThorsCatchMessage("ThorsAnvil::Serialize::Importer", "operator>>", "UNKNOWN");
                 parser.setFail();
-                if (!config.catchUnknownExceptions)
+                if (!parser.config.catchUnknownExceptions)
                 {
                     // Don't set this to true if you are using boost-coroutines.
                     // As this may prevent the force_unwind exception propagating.

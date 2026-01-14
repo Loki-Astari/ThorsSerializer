@@ -54,16 +54,16 @@ ExporterRange<Yaml, R> yamlExporter(R range, PrinterConfig const& config = Print
 // @param config.catchExceptions    'false:    exceptions propogate.        'true':   parsing exceptions are stopped.
 // @return                          Object that can be passed to operator>> for de-serialization.
 template<typename T>
-Importer<Yaml, T> yamlImporter(T& value, ParserConfig config = ParserConfig{})
+Importer<Yaml, T> yamlImporter(T& value, ParserConfig const& config = ParserConfig{})
 {
     return Importer<Yaml, T>(value, config);
 }
 template<typename T, typename I>
-T yamlBuilder(I&& stream, ParserConfig config = ParserConfig{})
+T yamlBuilder(I&& stream, ParserConfig const& config = ParserConfig{})
 {
     // Note: Stream can be std::istream / std::string / std::string_view
     T value;
-    if (stream >> yamlImporter(value, std::move(config))) {
+    if (stream >> yamlImporter(value, config)) {
         return value;
     }
     return T{};

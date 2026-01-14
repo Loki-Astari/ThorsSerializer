@@ -321,6 +321,8 @@ inline Serializer::~Serializer()
 
 }
 
+#ifndef THORS_ANVIL_DONT_INCLUDE_SERIALIZE_TPP
 #include "Serialize.tpp"
+#endif
 
 #endif

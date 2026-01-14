@@ -44,10 +44,12 @@ namespace MongoUtility
     BsonParser& operator>>(BsonParser& parser, MongoUtility::UTCDateTime& data);
 }
 
+struct BsonParserConfig;
 class BsonParser: public ParserInterface
 {
     friend BsonParser& MongoUtility::operator>>(BsonParser& parser, MongoUtility::UTCDateTime& data);
 
+    BsonContainer               parserInfo;
     std::vector<BsonContainer>  currentContainer;
     std::vector<std::size_t>    dataLeft;
     std::vector<std::size_t>    dataSize;
@@ -58,8 +60,8 @@ class BsonParser: public ParserInterface
 
 
     public:
-        BsonParser(std::istream& stream, ParserConfig config = ParserConfig{});
-        BsonParser(std::string_view const& stream, ParserConfig config = ParserConfig{});
+        BsonParser(std::istream& stream, BsonParserConfig const& config);
+        BsonParser(std::string_view const& stream, BsonParserConfig const& config);
         virtual FormatType formatType()                         override {return FormatType::Bson;}
         virtual ParserToken getNextToken()                      override;
         virtual std::string_view getKey()                       override;

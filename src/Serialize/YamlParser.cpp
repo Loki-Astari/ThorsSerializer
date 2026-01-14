@@ -27,7 +27,7 @@ int thorsanvilYamlStreamReader(void* data, unsigned char* buffer, size_t size, s
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-YamlParser::YamlParser(std::istream& input, ParserConfig config)
+YamlParser::YamlParser(std::istream& input, ParserConfig const& config)
     : ParserInterface(input, config)
     , first(true)
     , error(false)
@@ -37,7 +37,7 @@ YamlParser::YamlParser(std::istream& input, ParserConfig config)
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
-YamlParser::YamlParser(std::string_view const& input, ParserConfig config)
+YamlParser::YamlParser(std::string_view const& input, ParserConfig const& config)
     : ParserInterface(input, config)
     , first(true)
     , error(false)

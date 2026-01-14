@@ -1,10 +1,13 @@
 #include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "BsonParser.h"
+#include "BsonPrinterConfig.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserConfig;
 using TA::ParserToken;
+using ThorsAnvil::Serialize::BsonContainer;
+using ThorsAnvil::Serialize::BsonParserConfig;
 
 TEST(BsonParserTestString, ArrayEmpty)
 {
@@ -14,8 +17,7 @@ TEST(BsonParserTestString, ArrayEmpty)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser          parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -31,8 +33,7 @@ TEST(BsonParserTestString, ArrayOneValue)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -51,8 +52,7 @@ TEST(BsonParserTestString, ArrayTwoValue)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -74,8 +74,7 @@ TEST(BsonParserTestString, ArrayThreeValue)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -99,8 +98,7 @@ TEST(BsonParserTestString, ArrayWithArray)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -123,8 +121,7 @@ TEST(BsonParserTestString, ArrayWithTwoArray)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -146,8 +143,7 @@ TEST(BsonParserTestString, ArrayWithMap)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -170,8 +166,7 @@ TEST(BsonParserTestString, ArrayWithTwoMap)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -190,7 +185,7 @@ TEST(BsonParserTestString, MapEmpty)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -206,7 +201,7 @@ TEST(BsonParserTestString, MapOneValue)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -227,7 +222,7 @@ TEST(BsonParserTestString, MapTwoValue)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -253,7 +248,7 @@ TEST(BsonParserTestString, MapThreeValue)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -283,7 +278,7 @@ TEST(BsonParserTestString, MapWithArray)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -308,7 +303,7 @@ TEST(BsonParserTestString, MapWithTwoArray)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -334,7 +329,7 @@ TEST(BsonParserTestString, MapWithMap)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -359,7 +354,7 @@ TEST(BsonParserTestString, MapWithTwoMap)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -383,7 +378,7 @@ TEST(BsonParserTestString, GetKeyValue)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Map});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::MapStart,   parser.getToken());
@@ -414,8 +409,7 @@ TEST(BsonParserTestString, GetArrayValues)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -463,8 +457,7 @@ TEST(BsonParserTestString, getDataFromString_1)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -486,8 +479,7 @@ TEST(BsonParserTestString, getDataFromString_2)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -507,8 +499,7 @@ TEST(BsonParserTestString, getDataFromString_3)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -528,8 +519,7 @@ TEST(BsonParserTestString, getDataFromString_4)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -549,8 +539,7 @@ TEST(BsonParserTestString, getDataFromString_5)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -570,8 +559,7 @@ TEST(BsonParserTestString, getDataFromString_6)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -591,8 +579,7 @@ TEST(BsonParserTestString, getDataFromString_7)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -612,8 +599,7 @@ TEST(BsonParserTestString, getDataFromString_8)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -633,8 +619,7 @@ TEST(BsonParserTestString, getDataFromString_9)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -655,8 +640,7 @@ TEST(BsonParserTestString, getDataFromString_a)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -676,8 +660,7 @@ TEST(BsonParserTestString, getDataFromString_b)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -697,8 +680,7 @@ TEST(BsonParserTestString, getDataFromString_c)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -714,8 +696,7 @@ TEST(BsonParserTestString, getDataFromString_d)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -736,8 +717,7 @@ TEST(BsonParserTestString, getDataFromString_e)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -757,8 +737,7 @@ TEST(BsonParserTestString, getDataFromInt_1)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -779,8 +758,7 @@ TEST(BsonParserTestString, getDataFromInt_2)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -802,8 +780,7 @@ TEST(BsonParserTestString, getDataFromInt_3)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -824,8 +801,7 @@ TEST(BsonParserTestString, getDataFromInt_4)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -846,8 +822,7 @@ TEST(BsonParserTestString, getDataFromInt_5)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -868,8 +843,7 @@ TEST(BsonParserTestString, getDataFromInt_6)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -890,8 +864,7 @@ TEST(BsonParserTestString, getDataFromInt_7)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -912,8 +885,7 @@ TEST(BsonParserTestString, getDataFromInt_8)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -934,8 +906,7 @@ TEST(BsonParserTestString, getDataFromInt_9)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -956,8 +927,7 @@ TEST(BsonParserTestString, getDataFromInt_a)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -978,8 +948,7 @@ TEST(BsonParserTestString, getDataFromInt_b)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1000,8 +969,7 @@ TEST(BsonParserTestString, getDataFromInt_c)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1022,8 +990,7 @@ TEST(BsonParserTestString, getDataFromInt_d)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1043,8 +1010,7 @@ TEST(BsonParserTestString, getDataFromFloat_1)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1065,8 +1031,7 @@ TEST(BsonParserTestString, getDataFromFloat_2)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1087,8 +1052,7 @@ TEST(BsonParserTestString, getDataFromFloat_3)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1109,8 +1073,7 @@ TEST(BsonParserTestString, getDataFromFloat_4)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1131,8 +1094,7 @@ TEST(BsonParserTestString, getDataFromFloat_5)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1153,8 +1115,7 @@ TEST(BsonParserTestString, getDataFromFloat_6)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1175,8 +1136,7 @@ TEST(BsonParserTestString, getDataFromFloat_7)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1197,8 +1157,7 @@ TEST(BsonParserTestString, getDataFromFloat_8)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1219,8 +1178,7 @@ TEST(BsonParserTestString, getDataFromFloat_9)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1241,8 +1199,7 @@ TEST(BsonParserTestString, getDataFromFloat_a)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1264,8 +1221,7 @@ TEST(BsonParserTestString, getDataFromFloat_b)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1287,8 +1243,7 @@ TEST(BsonParserTestString, getDataFromFloat_c)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1311,8 +1266,7 @@ TEST(BsonParserTestString, getDataFromFloat_d)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1333,8 +1287,7 @@ TEST(BsonParserTestString, getDataFromBool_1)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1356,8 +1309,7 @@ TEST(BsonParserTestString, getDataFromBool_2)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1379,8 +1331,7 @@ TEST(BsonParserTestString, getDataFromBool_3)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1402,8 +1353,7 @@ TEST(BsonParserTestString, getDataFromBool_4)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1425,8 +1375,7 @@ TEST(BsonParserTestString, getDataFromBool_5)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1448,8 +1397,7 @@ TEST(BsonParserTestString, getDataFromBool_6)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1471,8 +1419,7 @@ TEST(BsonParserTestString, getDataFromBool_7)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1494,8 +1441,7 @@ TEST(BsonParserTestString, getDataFromBool_8)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1517,8 +1463,7 @@ TEST(BsonParserTestString, getDataFromBool_9)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1540,8 +1485,7 @@ TEST(BsonParserTestString, getDataFromBool_a)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1563,8 +1507,7 @@ TEST(BsonParserTestString, getDataFromBool_b)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1586,8 +1529,7 @@ TEST(BsonParserTestString, getDataFromBool_c)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1609,8 +1551,7 @@ TEST(BsonParserTestString, getDataFromBool_d)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1632,8 +1573,7 @@ TEST(BsonParserTestString, getDataFromBool_e)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());
     EXPECT_EQ(ParserToken::ArrayStart, parser.getToken());
@@ -1664,8 +1604,7 @@ TEST(BsonParserTestString, getRawValue)
                   "\x00";
     std::string stream(std::begin(inputRaw), std::end(inputRaw) - 1);
     ParserConfig        config;
-    config.parserInfo   = static_cast<long>(ThorsAnvil::Serialize::BsonContainer::Array);
-    TA::BsonParser      parser(stream, config);
+    TA::BsonParser      parser(stream, BsonParserConfig{config, BsonContainer::Array});
     std::string         value;
 
     EXPECT_EQ(ParserToken::DocStart,   parser.getToken());

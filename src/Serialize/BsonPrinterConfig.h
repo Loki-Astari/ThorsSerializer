@@ -24,6 +24,17 @@ struct BsonPrinterConfig
             , idStore(idStore)
         {}
 };
+struct BsonParserConfig
+{
+    ParserConfig const&     config;
+    BsonContainer           parserInfo;
+
+    public:
+        BsonParserConfig(ParserConfig const& config, BsonContainer parserInfo)
+            : config(config)
+            , parserInfo(parserInfo)
+        {}
+};
 }
 
 #endif
