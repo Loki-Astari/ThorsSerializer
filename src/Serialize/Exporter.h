@@ -6,7 +6,6 @@
  */
 
 #include "SerializeConfig.h"
-#include "BsonConfig.h"
 #include "ThorsSerializerUtil.h"
 #include "Serialize.h"
 
