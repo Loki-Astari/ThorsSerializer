@@ -4,6 +4,7 @@
 #include "SerializeConfig.h"
 #include "CustomSerialization.h"
 #include "Traits.h"
+#include "SerUtil.h"
 
 #include <string>
 #include <iostream>

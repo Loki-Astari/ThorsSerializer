@@ -4,7 +4,6 @@
 #include "ThorsLogging/ThorsLogging.h"
 
 
-
 extern "C"
 {
     int thorsanvilYamlStreamWritter(void* data, unsigned char* buffer, size_t size);

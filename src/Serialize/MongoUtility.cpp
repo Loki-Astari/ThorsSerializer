@@ -1,3 +1,4 @@
+#include "MongoUtility.h"
 
 using namespace ThorsAnvil::Serialize::MongoUtility;
 
