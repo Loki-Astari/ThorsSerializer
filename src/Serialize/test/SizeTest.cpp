@@ -1,8 +1,6 @@
-#include <string>
-#include "JsonPrinter.h"
-#include "JsonThor.h"
-#include "PrinterConfig.h"
 #include "gtest/gtest.h"
+#include "JsonThor.h"
+#include <string>
 
 
 struct SizeBoolFalse

@@ -1,4 +1,3 @@
-#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
 #include "SerUtil.h"

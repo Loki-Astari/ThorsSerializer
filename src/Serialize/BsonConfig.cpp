@@ -1,7 +1,5 @@
 #include "BsonConfig.h"
 
-#include "PrinterConfig.h"
-#include "ParserConfig.h"
 
 using namespace ThorsAnvil::Serialize;
 

@@ -1,7 +1,6 @@
 #ifndef THORSANVIL_SERIALIZE_TEST_POLYMORPHIC_TEST_H
 #define THORSANVIL_SERIALIZE_TEST_POLYMORPHIC_TEST_H
 
-#include "Serialize.h"
 #include "Traits.h"
 #include "SerUtil.h"
 

@@ -1,13 +1,3 @@
-#include "MongoUtility.h"
-
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <tuple>
-#ifndef __WINNT
-#include <arpa/inet.h>
-#endif
 
 using namespace ThorsAnvil::Serialize::MongoUtility;
 

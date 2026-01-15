@@ -1,4 +1,3 @@
-#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "BsonThor.h"
 #include "test/BsonUtilitySerializationTest.h"

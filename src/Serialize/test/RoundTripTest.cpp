@@ -1,4 +1,3 @@
-#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/BinaryParserTest.h"
 #include "JsonThor.h"

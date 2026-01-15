@@ -3,8 +3,7 @@
 #define THORSANVIL_SERIALIZE_TEST_SERIALIZE_TEST_EXTRA_H
 
 #include "Traits.h"
-#include "Serialize.h"
-#include "Serialize.tpp"
+#include "JsonThor.h"
 
 namespace SerializeTest
 {

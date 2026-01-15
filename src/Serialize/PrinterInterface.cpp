@@ -1,7 +1,5 @@
 #include "PrinterInterface.h"
-#include "ThorsIOUtil/Utility.h"
-#include "ThorsLogging/ThorsLogging.h"
-#include <string>
+
 
 using namespace ThorsAnvil::Serialize;
 

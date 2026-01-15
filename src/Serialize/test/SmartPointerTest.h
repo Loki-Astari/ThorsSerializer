@@ -1,5 +1,4 @@
 #include "Traits.h"
-#include "Serialize.h"
 #include <string>
 #include <memory>
 

@@ -1,13 +1,6 @@
 #include "JsonParser.h"
-#include "JsonLexemes.h"
-#include "UnicodeIterator.h"
-#include "ThorsIOUtil/Utility.h"
-#include "ThorsLogging/ThorsLogging.h"
-#include <map>
-#include <cstdlib>
-#include <cstring>
 
-// enum class ParserToken {Error, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
+
 using namespace ThorsAnvil::Serialize;
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE

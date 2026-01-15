@@ -1,7 +1,6 @@
-#include "SerializeConfig.h"
+#include "gtest/gtest.h"
 #include "DeprecatedTest.h"
 #include "IgnoreUneededDataTest.h"
-#include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "YamlThor.h"
 #include "BsonThor.h"

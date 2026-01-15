@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "Traits.h"
 #include "JsonThor.h"
-#include "ThorsSerializerUtil.h"
 
 
 template<typename T>

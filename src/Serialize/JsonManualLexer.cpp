@@ -1,11 +1,7 @@
 #include "JsonManualLexer.h"
+
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
-#include "ThorsIOUtil/Utility.h"
-#include "ThorsLogging/ThorsLogging.h"
-
-#include <limits>
-#include <cstring>
 
 using namespace ThorsAnvil::Serialize;
 

@@ -1,9 +1,8 @@
 #include "BsonPrinter.h"
+
+#include "ThorsSerializerUtil.h"
 #include "MongoUtility.h"
-#include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
-#include <iomanip>
-#include <algorithm>
 
 using namespace ThorsAnvil::Serialize;
 

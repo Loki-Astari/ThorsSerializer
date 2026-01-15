@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include <optional>
 #include "Traits.h"
 #include "JsonThor.h"
+#include <optional>
 
 
 struct OptionalTest

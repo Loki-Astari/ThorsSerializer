@@ -1,12 +1,8 @@
 #include "BsonParser.h"
+
 #include "BsonConfig.h"
-#include "JsonLexemes.h"
-#include "UnicodeIterator.h"
-#include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
-#include <map>
-#include <cstdlib>
-#include <cstring>
+
 
 using namespace ThorsAnvil::Serialize;
 

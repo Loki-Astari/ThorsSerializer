@@ -1,8 +1,5 @@
-#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
-#include "Serialize.h"
-#include "Serialize.tpp"
 #include "Traits.h"
 #include "JsonThor.h"
 #include "BsonThor.h"

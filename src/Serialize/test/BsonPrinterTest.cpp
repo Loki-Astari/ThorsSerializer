@@ -1,8 +1,4 @@
-#include "PrinterConfig.h"
-#include "BsonConfig.h"
-#include "SerializeConfig.h"
 #include "gtest/gtest.h"
-#include "BsonPrinter.h"
 #include "BsonThor.h"
 #include <algorithm>
 

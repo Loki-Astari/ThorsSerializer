@@ -1,4 +1,3 @@
-#include "PrinterConfig.h"
 #include "gtest/gtest.h"
 #include "Traits.h"
 #include "JsonThor.h"

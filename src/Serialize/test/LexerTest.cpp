@@ -1,4 +1,3 @@
-#include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "JsonManualLexer.h"
 #include "JsonLexemes.h"

@@ -1,11 +1,7 @@
 #ifndef THORSANVIL_BANK_ACCOUNT_TEST_H
 #define THORSANVIL_BANK_ACCOUNT_TEST_H
 
-#include "SerializeConfig.h"
-
 #include "Traits.h"
-#include "Serialize.h"
-#include "SerUtil.h"
 
 #include "JsonThor.h"
 #include "YamlThor.h"

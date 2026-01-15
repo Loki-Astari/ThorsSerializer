@@ -1,12 +1,6 @@
 #include "JsonPrinter.h"
-#include "JsonThor.h"
-#include "ThorsIOUtil/Utility.h"
-#include "ThorsLogging/ThorsLogging.h"
-#include <cstddef>
-#include <iomanip>
-#include <algorithm>
-#include <charconv>
-#include <cmath>
+
+#include "ThorsSerializerUtil.h"
 
 using namespace ThorsAnvil::Serialize;
 
