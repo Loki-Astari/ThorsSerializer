@@ -6,7 +6,12 @@
  */
 
 #include "SerializeConfig.h"
-#include "Serialize.h"
+#include <istream>
+#include <string>
+#include <string_view>
+#include <functional>
+#include <exception>
+#include <stdexcept>
 
 namespace ThorsAnvil::Serialize
 {

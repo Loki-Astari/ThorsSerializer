@@ -2,7 +2,6 @@
 #define THORSANVIL_SERIALIZE_BSON_PRINTER_CONFIG_H
 
 #include "SerializeConfig.h"
-#include "BsonUtil.h"
 #include "MongoUtilityObjectId.h"
 
 #include <functional>
@@ -11,6 +10,7 @@
 namespace ThorsAnvil::Serialize
 {
 
+enum class BsonContainer;
 using IdStore   = std::optional<std::reference_wrapper<std::vector<MongoUtility::ObjectID>>>;
 
 struct PrinterConfig;

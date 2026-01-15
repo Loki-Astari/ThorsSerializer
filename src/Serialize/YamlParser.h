@@ -19,11 +19,16 @@
 
 
 #include "SerializeConfig.h"
-#include "Serialize.h"
+#include "ParserInterface.h"
+
 #include <yaml.h>
+
 #include <istream>
+#include <string>
+#include <string_view>
 #include <vector>
 #include <functional>
+#include <utility>
 
 namespace ThorsAnvil::Serialize
 {

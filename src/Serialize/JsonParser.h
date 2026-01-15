@@ -18,10 +18,12 @@
  */
 
 #include "SerializeConfig.h"
-#include "Serialize.h"
+#include "ParserInterface.h"
 #include "JsonManualLexer.h"
+
 #include <istream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace ThorsAnvil::Serialize

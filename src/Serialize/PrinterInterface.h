@@ -2,11 +2,11 @@
 #define THORSANVIL_SERIALIZER_PRINTER_INTERFACE_H
 
 #include "SerializeConfig.h"
-#include "PrinterConfig.h"
 #include "StringOutput.h"
 #include "ThorsSerializerUtilTypes.h"
+
 #include <cstddef>
-#include <iostream>
+#include <ostream>
 #include <string>
 #include <string_view>
 #include <map>
@@ -16,6 +16,8 @@
 
 namespace ThorsAnvil::Serialize
 {
+
+struct PrinterConfig;
 
 class PrinterInterface
 {

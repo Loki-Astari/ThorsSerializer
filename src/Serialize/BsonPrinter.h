@@ -6,14 +6,19 @@
  */
 
 #include "SerializeConfig.h"
-#include "Serialize.h"
-#include "MongoUtilityObjectId.h"
+#include "PrinterInterface.h"
 #include "BsonUtil.h"
 #include "BsonConfig.h"
+
 #include <vector>
-#include <iostream>
-#include <functional>
+#include <ostream>
+#include <string>
+#include <string_view>
+#include <tuple>
 #include <bit>
+#include <utility>
+#include <cstddef>
+#include <cstdint>
 
 static_assert(
     std::endian::little == std::endian::native,

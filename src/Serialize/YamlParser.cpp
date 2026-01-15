@@ -1,4 +1,5 @@
 #include "YamlParser.h"
+#include "Serialize.h"
 #include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
 

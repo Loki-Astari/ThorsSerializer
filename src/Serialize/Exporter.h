@@ -6,15 +6,22 @@
  */
 
 #include "SerializeConfig.h"
+#include "ThorsSerializerUtil.h"
 #include "Serialize.h"
-#include "ThorsLogging/ThorsLogging.h"
-#include "BsonConfig.h"
-#include "PrinterConfig.h"
 
+#include <string>
+#include <ostream>
+#include <ranges>
 #include <functional>
+#include <exception>
+#include <utility>
+#include <cstddef>
+#include <type_traits>
 
 namespace ThorsAnvil::Serialize
 {
+
+struct BsonPrinterConfig;
 
 template<typename Format, typename Config, typename ConfigStore>
 class ExporterBase

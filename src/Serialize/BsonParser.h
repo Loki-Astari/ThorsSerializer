@@ -19,14 +19,18 @@
  */
 
 #include "SerializeConfig.h"
-#include "Serialize.h"
+#include "ParserInterface.h"
 #include "BsonUtil.h"
-#include "ThorsIOUtil/Utility.h"
 #include "ThorsLogging/ThorsLogging.h"
+
 #include <istream>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <bit>
+#include <stdexcept>
+#include <cstddef>
+#include <cstdint>
 
 static_assert(
     std::endian::little == std::endian::native,

@@ -4,7 +4,7 @@
 #include "SerializeConfig.h"
 #include "StringInput.h"
 #include "ThorsSerializerUtilTypes.h"
-#include "PolymorphicMarker.h"
+
 #include <string>
 #include <variant>
 #include <functional>
@@ -16,6 +16,7 @@ namespace ThorsAnvil::Serialize
 
 using DataInputStream = std::variant<std::istream*, StringInput>;
 using IdFunc = std::function<std::string(DataInputStream&)>;
+
 struct ParserConfig
 {
     /*

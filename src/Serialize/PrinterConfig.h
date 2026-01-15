@@ -2,7 +2,7 @@
 #define THORSANVIL_SERIALIZER_PRINTER_CONFIG_H
 
 #include "SerializeConfig.h"
-#include "PolymorphicMarker.h"
+
 #include <string>
 
 namespace ThorsAnvil::Serialize

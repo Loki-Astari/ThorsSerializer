@@ -16,9 +16,14 @@
 #include "BsonPrinter.h"
 #include "Exporter.h"
 #include "Importer.h"
-#include "SerUtil.h"
-#include "ThorsIOUtil/Utility.h"
-#include "ThorsLogging/ThorsLogging.h"
+
+#include <type_traits>
+#include <memory>
+#include <stdexcept>
+#include <ranges>
+#include <utility>
+#include <cstddef>
+#include <sstream>
 
 namespace ThorsAnvil::Serialize
 {
