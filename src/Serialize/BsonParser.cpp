@@ -1,5 +1,5 @@
 #include "BsonParser.h"
-#include "BsonPrinterConfig.h"
+#include "BsonConfig.h"
 #include "JsonLexemes.h"
 #include "UnicodeIterator.h"
 #include "ThorsIOUtil/Utility.h"

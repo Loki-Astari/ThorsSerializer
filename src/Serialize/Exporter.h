@@ -5,12 +5,13 @@
  * it creates an object of type Serializer and calls it appropriately.
  */
 
-#include <functional>
-#include "PrinterConfig.h"
 #include "SerializeConfig.h"
 #include "Serialize.h"
 #include "ThorsLogging/ThorsLogging.h"
-#include "BsonPrinterConfig.h"
+#include "BsonConfig.h"
+#include "PrinterConfig.h"
+
+#include <functional>
 
 namespace ThorsAnvil::Serialize
 {
@@ -151,9 +152,9 @@ class ExporterRangeBson: public ExporterBase<Format, BsonPrinterConfig, BsonPrin
 };
 
 template<typename Format, typename T>
-Exporter<Format, T, PrinterConfig, std::reference_wrapper<const PrinterConfig>> Export(T const& value, PrinterConfig config = PrinterConfig{})
+Exporter<Format, T> Export(T const& value, PrinterConfig config = PrinterConfig{})
 {
-    return Exporter<Format, T, std::reference_wrapper<const T>>(value, config);
+    return Exporter<Format, T>(value, config);
 }
 
 

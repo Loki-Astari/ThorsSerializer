@@ -3,9 +3,7 @@
 
 #include "SerializeConfig.h"
 #include "Traits.h"
-#define THORS_ANVIL_DONT_INCLUDE_SERIALIZE_TPP
 #include "Serialize.h"
-#undef THORS_ANVIL_DONT_INCLUDE_SERIALIZE_TPP
 #include <utility>
 #include <string>
 #include "ThorsIOUtil/Utility.h"
@@ -1022,6 +1020,5 @@ class Traits<std::variant<Args...>>
 
 }
 
-#include "Serialize.tpp"
 
 #endif

@@ -9,7 +9,7 @@
 #include "Serialize.h"
 #include "MongoUtilityObjectId.h"
 #include "BsonUtil.h"
-#include "BsonPrinterConfig.h"
+#include "BsonConfig.h"
 #include <vector>
 #include <iostream>
 #include <functional>

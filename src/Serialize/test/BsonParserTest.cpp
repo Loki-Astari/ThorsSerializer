@@ -1,7 +1,7 @@
 #include "SerializeConfig.h"
 #include "gtest/gtest.h"
 #include "BsonParser.h"
-#include "BsonPrinterConfig.h"
+#include "BsonConfig.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserConfig;

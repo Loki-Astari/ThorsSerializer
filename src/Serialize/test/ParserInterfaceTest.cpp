@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "JsonParser.h"
 #include "BsonParser.h"
-#include "BsonPrinterConfig.h"
+#include "BsonConfig.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::JsonParser;

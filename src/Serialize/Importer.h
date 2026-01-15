@@ -14,8 +14,8 @@ namespace ThorsAnvil::Serialize
 template<typename Format, typename T, typename Config = ParserConfig, typename ConfigStore = std::reference_wrapper<const Config>>
 class Importer
 {
-    T&             value;
-    ConfigStore    config;
+    T&              value;
+    ConfigStore     config;
     public:
         Importer(T& value, Config const& config)
             : value(value)

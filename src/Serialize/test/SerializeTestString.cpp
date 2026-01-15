@@ -9,8 +9,10 @@
 #include <string>
 #include <algorithm>
 
+using ThorsAnvil::Serialize::BsonContainer;
 using ThorsAnvil::Serialize::ParserConfig;
 using ThorsAnvil::Serialize::BsonParserConfig;
+using ThorsAnvil::Serialize::BsonPrinterConfig;
 
 
 std::string const testData1 = R"({"theInteger":34,"aNonRealValue":56.780000,"test":true,"normalString":"Done"})";
@@ -403,9 +405,6 @@ std::string const testData5Bson = "\x5c\x00\x00\x00"
 //NOTE OUTPUT  R"({"theInteger":34,"aNonRealValue":56.78,"test":true,"normalString":"Done","anotherValue":14})";
 TEST(SerializeTestString, BsonSerializeStructureOfValue)
 {
-    using ThorsAnvil::Serialize::BsonContainer;
-    using ThorsAnvil::Serialize::BsonPrinterConfig;
-
     SerializeTest::SerializeTestExtra        data(34,56.78, true, "Done");
 
     std::string      stream;
@@ -439,9 +438,6 @@ TEST(SerializeTestString, BsonDeSerializeStructureOfValue)
 
 TEST(SerializeTestString, BsonSerializeStructureOfValueAndParents)
 {
-    using ThorsAnvil::Serialize::BsonContainer;
-    using ThorsAnvil::Serialize::BsonPrinterConfig;
-
     SerializeTest::SerializeTestChild     data(1, 2, 456, 89.101, false, "Akinkthatisnotstraight");
     ThorsAnvil::Serialize::PrinterConfig  config;
 
@@ -475,9 +471,6 @@ TEST(SerializeTestString, BsonDeSerializeStructureOfValueAndParent)
 
 TEST(SerializeTestString, BsonSerializeStructureMemberOfValue)
 {
-    using ThorsAnvil::Serialize::BsonContainer;
-    using ThorsAnvil::Serialize::BsonPrinterConfig;
-
     SerializeTest::SerializeTestMembers        data(67, 11, 234567, 123.45, true, "NotASquareAndOnlyOneSide");
     ThorsAnvil::Serialize::PrinterConfig       config;
 
@@ -587,9 +580,6 @@ TEST(SerializeTestString, BsonIgnoreAllTheDataWeDontCareAbout)
 }
 TEST(SerializeTestString, BsonDerivedTypeNoNewMembers)
 {
-    using ThorsAnvil::Serialize::BsonContainer;
-    using ThorsAnvil::Serialize::BsonPrinterConfig;
-
     SerializeTest::SerializeExactNoMembers        data(34,56.78, true, "Done");
     ThorsAnvil::Serialize::PrinterConfig          config;
 
@@ -604,9 +594,6 @@ TEST(SerializeTestString, BsonDerivedTypeNoNewMembers)
 }
 TEST(SerializeTestString, BsonDerivedTypeNoNewMembersPolyMorphic)
 {
-    using ThorsAnvil::Serialize::BsonContainer;
-    using ThorsAnvil::Serialize::BsonPrinterConfig;
-
     SerializeTest::SerializeExactNoMembersPoly        data(34,56.78, true, "Done");
     ThorsAnvil::Serialize::PrinterConfig              config;
 

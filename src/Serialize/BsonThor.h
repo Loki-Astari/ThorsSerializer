@@ -86,7 +86,6 @@ template<typename T>
 requires(Traits<T>::type != TraitType::Invalid)
 Exporter<Bson, T, BsonPrinterConfig, BsonPrinterConfig> bsonExporter(T const& value, PrinterConfig const& config = PrinterConfig{}, IdStore id = {})
 {
-    std::cerr << "bsonExporter: " << id.has_value() << "\n";
     BsonBaseTypeGetter<T>::validate(value);
 
     return Exporter<Bson, T, BsonPrinterConfig, BsonPrinterConfig>(value, BsonPrinterConfig{config, BsonBaseTypeGetter<T>::value, id});
