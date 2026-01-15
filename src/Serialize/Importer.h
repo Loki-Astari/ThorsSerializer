@@ -6,6 +6,7 @@
  */
 
 #include "SerializeConfig.h"
+#include "BsonConfig.h"
 #include <istream>
 #include <string>
 #include <string_view>
