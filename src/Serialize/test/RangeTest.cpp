@@ -15,8 +15,8 @@ class MyRange
     std::vector<int>    data{1,2,3,4,5,6,7,8};
     public:
         std::size_t size() const    {return data.size();}
-        auto begin()                {return std::begin(data);}
-        auto end()                  {return std::end(data);}
+        auto begin() const          {return std::begin(data);}
+        auto end()   const          {return std::end(data);}
 };
 
 TEST(RangeTest, rangeAsJsonArray)
