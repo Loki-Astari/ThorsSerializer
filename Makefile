@@ -1,5 +1,5 @@
 
-THORSANVIL_ROOT				= $(realpath ./)
+THORSANVIL_ROOT				?= $(realpath ./)
 
 TARGET						= src
 
