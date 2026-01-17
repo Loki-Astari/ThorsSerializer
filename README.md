@@ -16,7 +16,7 @@ This code is the basis for [ThorsMongo](https://github.com/Loki-Astari/ThorsMong
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7567)](http://codereview.stackexchange.com/q/7567/507)
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=7536)](http://codereview.stackexchange.com/q/7536/507)
 
-[![Brew package](https://img.shields.io/badge/Brew-package-blueviolet)](https://formulae.brew.sh/formula/thors-mongo)
+[![Brew package](https://img.shields.io/badge/Brew-package-blueviolet)](https://formulae.brew.sh/formula/thors-anvil)
 
 
 ## Benchmark Results
@@ -44,10 +44,10 @@ Unlike other libraries this one does not require you to build DOM of you object 
 
 Can be installed via brew on Mac and Linux
 
-    brew install thors-mongo
+    brew install thors-anvil
 
-* Mac: https://formulae.brew.sh/formula/thors-mongo
-* Linux: https://formulae.brew.sh/formula-linux/thors-mongo
+* Mac: https://formulae.brew.sh/formula/thors-anvil
+* Linux: https://formulae.brew.sh/formula-linux/thors-anvil
 
 ## Header Only
 
