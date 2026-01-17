@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "JsonParser.h"
+#include "Serialize.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::ParserToken;

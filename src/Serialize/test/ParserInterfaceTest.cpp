@@ -2,6 +2,7 @@
 #include "JsonParser.h"
 #include "BsonParser.h"
 #include "BsonConfig.h"
+#include "Serialize.h"
 
 namespace TA=ThorsAnvil::Serialize;
 using TA::JsonParser;
