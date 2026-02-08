@@ -8,7 +8,7 @@
 * [Yaml](https://yaml.org/)
 * [Bson](http://bsonspec.org/)
 
-This code is the basis for [ThorsMongo](https://github.com/Loki-Astari/ThorsMongo) a C++ API for streaming objects to a MongoDB with zero client overhead.  
+This code is the basis for [ThorsAnvil](https://github.com/Loki-Astari/ThorsAnvil) a C++ API for streaming objects.  
 
 
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=81920)](http://codereview.stackexchange.com/q/81920/507)
@@ -53,7 +53,7 @@ Can be installed via brew on Mac and Linux
 
 To install header only version
 
-    git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsMongo.git
+    git clone --single-branch --branch header-only https://github.com/Loki-Astari/ThorsAnvil.git
 
 Some dependencies:
 
