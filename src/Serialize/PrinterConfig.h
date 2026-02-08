@@ -56,7 +56,6 @@ struct PrinterConfig
     PrinterConfig& setPolymorphicMarker(std::string const& p_polymorphicMarker) {polymorphicMarker = p_polymorphicMarker;  return *this;}
     PrinterConfig& setCatchExceptions(bool p_catchExceptions)                   {catchExceptions = p_catchExceptions;      return *this;}
     PrinterConfig& setCatchUnknownExceptions(bool p_catchExceptions)            {catchUnknownExceptions =p_catchExceptions;return *this;}
-    PrinterConfig& setUseOldSharedPtr(bool oldSP = true)                        {useOldSharedPtr = oldSP;                  return *this;}
     PrinterConfig& setExactPreFlightCalc(bool ePFlight = true)                  {exactPreFlight = ePFlight;                return *this;}
     PrinterConfig& setTabSize(int ts)                                           {tabSize = ts;                             return *this;}
     PrinterConfig& setBlockSize(int bs)                                         {blockSize = bs;                           return *this;}
@@ -67,7 +66,6 @@ struct PrinterConfig
     bool            catchUnknownExceptions  = false;
     long            tabSize                 = 0;
     long            blockSize               = 0;
-    bool            useOldSharedPtr         = false;
     bool            exactPreFlight          = false;
 };
 
