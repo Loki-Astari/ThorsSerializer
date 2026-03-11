@@ -4,6 +4,8 @@
 .*.swp
 *.gcov
 
+third/fastfloat
+
 unittest
 coverage/
 debug/
