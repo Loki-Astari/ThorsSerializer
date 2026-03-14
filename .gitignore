@@ -13,7 +13,9 @@ release/
 profile/
 report/
 makedependency/
+buildmeta/
 vera/
+
 makefile_tmp
 Makefile.extra
 Makefile.config
