@@ -4,6 +4,9 @@
 .*.swp
 *.gcov
 
+.claude
+.clangd
+
 third/fastfloat
 
 unittest
