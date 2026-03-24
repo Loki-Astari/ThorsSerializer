@@ -800,6 +800,7 @@ enable_coverage
 enable_vera
 enable_dark_mode
 with_standard_version
+enable_submodule
 enable_test_with_conan
 with_magicenum_header_only_root
 with_yaml_root
@@ -1463,6 +1464,10 @@ Optional Features:
 
   --enable-dark-mode      If your background is black some text that was grey
                           is turned yellow
+
+  --enable-submodule      Enable if this is a submodule of THORBuild
+                          repository. It links them together and makes things
+                          more efficient.
 
   --enable-test-with-conan
                           Set the Makefile variable "THOR_ENABLE_CONAN". This
@@ -4749,6 +4754,31 @@ fi
 
 
 
+    # Check whether --enable-submodule was given.
+if test ${enable_submodule+y}
+then :
+  enableval=$enable_submodule;
+fi
+
+
+    if test "x$enable_submodule" == "xyes"
+then :
+
+            rm -rf build/include
+            rm -rf build/lib
+            rm -rf build/bin
+            rm -rf build/3rd
+            rm -rf build/share
+
+            ln -s ../../../build/include     build/include
+            ln -s ../../../build/lib         build/lib
+            ln -s ../../../build/bin         build/bin
+            ln -s ../../../build/3rd         build/3rd
+            ln -s ../../../build/share       build/share
+
+else case e in #(
+  e)
+
     for ac_prog in bzip2
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -4819,6 +4849,12 @@ then :
 fi
     ./setup "${CXX}  ${CXX_STD_FLAG}" "${buildTool}" "${buildConfig}" || as_fn_error $? "Failed to set up the test utilities" "$LINENO" 5
     popd
+
+
+     ;;
+esac
+fi
+
 
 
 
@@ -20225,8 +20261,8 @@ fi
             echo "Building Third Party: ${third}"
             pushd ${third}
             if [ -e ./configure ]; then
-                echo "${third}:  ./configure ${subconfigure} --prefix=${prefix} "
-                ./configure ${subconfigure} --prefix=${prefix}
+                echo "${third}:  ./configure --enable-submodule ${subconfigure} --prefix=${prefix} "
+                ./configure --enable-submodule ${subconfigure} --prefix=${prefix}
                 if [ $? != 0 ]; then
                     echo "Failed to configure: ${third}"
                     exit 1
