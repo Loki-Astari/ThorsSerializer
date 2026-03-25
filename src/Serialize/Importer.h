@@ -6,6 +6,8 @@
  */
 
 #include "SerializeConfig.h"
+#include "Serialize.h"
+#include "SerUtil.h"
 #include <istream>
 #include <string>
 #include <string_view>
@@ -16,6 +18,7 @@
 namespace ThorsAnvil::Serialize
 {
 
+struct ParserConfig;
 template<typename Format, typename T, typename Config = ParserConfig, typename ConfigStore = std::reference_wrapper<const Config>>
 class Importer
 {
