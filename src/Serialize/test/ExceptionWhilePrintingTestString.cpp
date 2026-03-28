@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
-#include <sstream>
 #include "test/ExceptionTest.h"
 
 

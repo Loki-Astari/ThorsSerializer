@@ -4,8 +4,6 @@
 
 #include "../SerUtil.h"
 
-namespace TA=ThorsAnvil::Serialize;
-
 namespace IgnoreUneededDataTest
 {
 

@@ -1,6 +1,4 @@
 #include "gtest/gtest.h"
-#include "test/SerializeTest.h"
-#include "SerUtil.h"
 #include "Traits.h"
 #include "JsonThor.h"
 #include "BsonThor.h"

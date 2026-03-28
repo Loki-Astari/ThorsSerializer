@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "Traits.h"
-#include "SerUtil.h"
 #include "JsonThor.h"
 #include "YamlThor.h"
 #include "BsonThor.h"

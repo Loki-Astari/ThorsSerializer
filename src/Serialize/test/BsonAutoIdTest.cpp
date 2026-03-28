@@ -1,8 +1,6 @@
 #include "gtest/gtest.h"
 #include "Traits.h"
-#include "SerUtil.h"
 #include "BsonThor.h"
-#include "MongoUtility.h"
 
 
 struct Address
@@ -34,7 +32,7 @@ using ThorsAnvil::Serialize::MongoUtility::ObjectID;
 TEST(BsonAutoIdTest, JsonExportCustomField)
 {
     using namespace std::string_literals;
- 
+
     Insert                  people{{{"Martin", 12, {"Road", "12"}}, {"Loki", 25, {"Street", "525"}}}};
     std::stringstream       output;
     std::vector<ObjectID>   result;

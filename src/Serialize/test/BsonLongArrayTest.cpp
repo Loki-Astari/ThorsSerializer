@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "BsonThor.h"
-#include "SerUtil.h"
 
 TEST(BsonLongArrayTest, ArrayWith110Elements)
 {

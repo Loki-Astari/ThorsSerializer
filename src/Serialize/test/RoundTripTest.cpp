@@ -5,7 +5,6 @@
 #include "YamlThor.h"
 
 namespace TA=ThorsAnvil::Serialize;
-using TA::ParserInterface;
 
 
 TEST(RoundTripTest, JsonMap)

@@ -2,7 +2,6 @@
 #include "SmartPointerTest.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
-#include "SerUtil.h"
 #include <memory>
 
 TEST(SmartPointerTest, JsonCreateNormalPtrNull)

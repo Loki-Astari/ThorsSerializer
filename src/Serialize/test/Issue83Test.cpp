@@ -1,11 +1,7 @@
 #include "gtest/gtest.h"
-#include "test/SerializeTest.h"
 #include "Traits.h"
 #include "JsonThor.h"
-#include "BsonThor.h"
-#include "SerUtil.h"
 #include <memory>
-#include <iostream>
 
 struct Example
 {

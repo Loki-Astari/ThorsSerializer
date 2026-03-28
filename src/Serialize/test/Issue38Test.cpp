@@ -1,11 +1,7 @@
 #include "gtest/gtest.h"
-#include "test/SerializeTest.h"
 #include "Traits.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
-#include "SerUtil.h"
-#include <memory>
-#include <iostream>
 
 
 using namespace std::string_literals;
@@ -83,8 +79,6 @@ ThorsAnvil_ExpandTrait(Issue38::Tcp4ConnectionParent, Issue38::Tcp4Connection, d
 ThorsAnvil_ExpandTrait(Issue38::Tcp6ConnectionParent, Issue38::Tcp6Connection, sync);
 ThorsAnvil_ExpandTrait(Issue38::Udp4ConnectionParent, Issue38::Udp4Connection, fly);
 ThorsAnvil_ExpandTrait(Issue38::Udp6ConnectionParent, Issue38::Udp6Connection, fancy);
-
-#include <iostream>
 
 TEST(Issue38Test, JsonConnection)
 {

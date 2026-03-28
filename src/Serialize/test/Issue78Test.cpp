@@ -1,10 +1,6 @@
 #include "gtest/gtest.h"
-#include "test/SerializeTest.h"
 #include "Traits.h"
 #include "JsonThor.h"
-#include "BsonThor.h"
-#include "SerUtil.h"
-#include <memory>
 #include <iostream>
 
 enum class ENUM : std::uint8_t {AAAAA, BBBBB, CCCCC};

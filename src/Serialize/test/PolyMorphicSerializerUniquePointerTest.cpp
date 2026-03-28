@@ -2,8 +2,6 @@
 #include "Traits.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
-#include "SerUtil.h"
-#include <iostream>
 
 namespace PolyMorphicSerializerUniquePointerTest
 {

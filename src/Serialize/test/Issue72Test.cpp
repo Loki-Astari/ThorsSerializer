@@ -2,6 +2,8 @@
 #include "Traits.h"
 #include <string>
 #include <map>
+#include <sstream>
+#include "JsonThor.h"
 
 namespace Issue72
 {
@@ -18,9 +20,6 @@ namespace Issue72
 ThorsAnvil_MakeFilter(Issue72::FilterTestType, filter);
 ThorsAnvil_MakeTrait(Issue72::FilterTestType, m1, m2);
 
-#include <iostream>
-#include <sstream>
-#include "JsonThor.h"
 
 TEST(Issue72Test, JsonConnection)
 {

@@ -18,8 +18,6 @@ namespace Issue51
 // The test is this line compiling correctly.
 ThorsAnvil_Template_MakeTrait(2, Issue51::Data, data1, data2);
 
-#include <iostream>
-
 TEST(Issue51Test, JsonConnection)
 {
 }

@@ -3,6 +3,8 @@
 #include "JsonThor.h"
 #include "BsonThor.h"
 
+namespace TA=ThorsAnvil::Serialize;
+
 TEST(IgnoreUneededDataTestString, JsonArrayEmpty)
 {
     IgnoreUneededDataTest::Thing obj;

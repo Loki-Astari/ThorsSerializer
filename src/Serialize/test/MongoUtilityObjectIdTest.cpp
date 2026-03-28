@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
-#include "MongoUtility.h"
 
 using namespace ThorsAnvil::Serialize;
 using ThorsAnvil::Serialize::MongoUtility::ObjectID;

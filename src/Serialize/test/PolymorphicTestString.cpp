@@ -1,11 +1,8 @@
 #include "gtest/gtest.h"
-#include "test/SerializeTest.h"
 #include "Traits.h"
-#include "SerUtil.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
 #include <string>
-#include <sstream>
 #include <cctype>
 
 namespace PolymorphicTest

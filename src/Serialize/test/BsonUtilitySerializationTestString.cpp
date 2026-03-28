@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "BsonThor.h"
 #include "test/BsonUtilitySerializationTest.h"
-#include <sstream>
 
 
 using namespace ThorsAnvil::Serialize;

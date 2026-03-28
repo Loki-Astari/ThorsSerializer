@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "test/SerializeTest.h"
-#include "SerUtil.h"
 #include "UnicodeIterator.h"
 
 namespace TA=ThorsAnvil::Serialize;

@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "BsonThor.h"
-#include <algorithm>
 
 class BsonTestPrinter: public ThorsAnvil::Serialize::BsonPrinter
 {

@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "JsonThor.h"
 #include "BsonThor.h"
-#include "SerUtil.h"
 #include <algorithm>
 
 using namespace ThorsAnvil::Serialize;

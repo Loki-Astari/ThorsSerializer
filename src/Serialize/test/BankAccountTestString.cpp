@@ -1,8 +1,6 @@
 #include "gtest/gtest.h"
 #include "BankAccountTest.h"
-#include <algorithm>
 #include <string>
-#include <sstream>
 #include <cctype>
 
 TEST(BankAccountTestString, JsonExportCustomField)
