@@ -33,7 +33,10 @@ YamlParser::YamlParser(std::istream& input, ParserConfig const& config)
     , first(true)
     , error(false)
 {
-    yaml_parser_initialize(&parser);
+    int chk = yaml_parser_initialize(&parser);
+    if (chk != 1) {
+        ThorsLogAndThrowError(std::runtime_error, "ThorsAnvil::Serialize::YamlParser", "YamlParser", "yaml_parser_initialize() call failed: ");
+    }
     yaml_parser_set_input(&parser, thorsanvilYamlStreamReader, this);
 }
 
