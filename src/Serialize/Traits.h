@@ -744,7 +744,7 @@ class Traits<DataType>                                                  \
             default:                                                    \
             {                                                           \
                 ThorsLogAndThrowError(std::runtime_error,               \
-                                      "ThorsAnivl::Seriaizlize::Traits<DataType>",   \
+                                      "ThorsAnvil::Serialize::Traits<DataType>",   \
                                       "getPrintSize",                   \
                                       "Should not get here");           \
             }                                                           \

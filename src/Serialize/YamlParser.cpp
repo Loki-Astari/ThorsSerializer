@@ -165,7 +165,7 @@ void YamlParser::generateParsingException(std::function<bool ()> test, std::stri
     {
         error = true;
         ThorsLogAndThrowError(std::runtime_error,
-                              "ThorsAnvil::Serializer::YamlParser",
+                              "ThorsAnvil::Serialize::YamlParser",
                               "generateParsingException",
                               msg);
     }
