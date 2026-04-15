@@ -539,7 +539,6 @@ brew install thors-anvil
 ```
 
 #### What is installed:
-* `/usr/local/include/ThorsIOUtil/`
 * `/usr/local/include/ThorsLogging/`
 * `/usr/local/include/ThorSerialize/`
 * `/usr/local/include/ThorsStorage/`
@@ -580,7 +579,6 @@ If you are simply building for yourself you may not care about the style guide. 
 By default installation will be in `/usr/local/include` and `/usr/local/lib`. You can override this with the normal auto-tools defaults. Use `./configure --help` to get details.
 
 #### What is installed:
-* `/usr/local/include/ThorsIOUtil/`
 * `/usr/local/include/ThorsLogging/`
 * `/usr/local/include/ThorSerialize/`
 * `/usr/local/include/ThorsCrypto/`

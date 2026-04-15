@@ -52,7 +52,6 @@ This library uses features from C++20 so you will need a compiler that supports 
 ### What is installed:
 * `/user/local/include/ThorSerialize`
 * `/user/local/include/ThorsCrypto`
-* `/user/local/include/ThorsIOUtil`
 * `/user/local/include/ThorsLogging`
 * `/user/local/include/ThorsMongo`
 * `/user/local/include/ThorsSocket`
