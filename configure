@@ -3918,7 +3918,7 @@ then :
   enableval=$enable_dark_mode;
 fi
 
-    if test "x$enable_dark-mode" != "xyes"
+    if test "x$enable_dark-mode" == "xyes"
 then :
 
             DARK_MODE="ON"
@@ -5045,7 +5045,8 @@ You can install this with
 Alternately if you have manually installed magic_enum you can specify its location with
     --with-magicenum-header-only-root=<location of magic_enum installation>/include
 
-            " "$LINENO" 5
+
+    " "$LINENO" 5
 
 fi
 
@@ -5055,7 +5056,6 @@ fi
 
 
     CXXFLAGS="${ORIG_CXXFLAGS}"
-
 
 
             if test "x${magicenum_header_only_found}" != "x"
