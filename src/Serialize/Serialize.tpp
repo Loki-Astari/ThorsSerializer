@@ -23,6 +23,57 @@
 namespace ThorsAnvil::Serialize
 {
 
+
+/*
+ * This is an example Custom Serilization class.
+ * See: ThorsAnvil_MakeTraitCustomSerialize() macro in Traits.h
+ *
+ * This is used to maintain backward compatability in the test.
+ * You can inherit from this class to maintain backward compatability after a change on May/2026
+ *
+ * But if you are implementing this for the first time you don't need to inherit from this class
+ * You simply need a class that implements:
+ *
+ *      => void readCustom(DeSerializer& parent, ParserInterface& parser, T& object)
+ *      => void writeCustom(Serializer& parent, PrinterInterface& printer, T consT& object)
+ *
+ * Note the code uses duck-typing so these don't need to be virtual.
+ */
+template<typename T>
+struct CustomSerializerBreakerFix
+{
+    virtual ~CustomSerializerBreakerFix() {}
+    virtual void readCustom(DeSerializer& /*parent*/, ParserInterface& parser, T& object) const
+    {
+        ParserToken    tokenType = parser.getToken();
+        if (tokenType != ParserToken::Value)
+        {
+            ThorsLogAndThrowError(std::runtime_error,
+                                      "ThorsAnvil::Serialize::DeSerializationForBlock<Value>",
+                                      "DeSerializationForBlock",
+                                      "Invalid Object");
+        }
+        readCustomOld(parser, object);
+    }
+    virtual void readCustomOld(ParserInterface& parser, T& object) const = 0;
+
+    virtual void writeCustom(Serializer& /*parent*/, PrinterInterface& printer, T const& object) const
+    {
+        writeCustomOld(printer, object);
+    }
+    virtual void writeCustomOld(PrinterInterface& printer, T const& object) const = 0;
+};
+
+/*
+ * Don't use this unless you are fixing code that relies on the old functionality.
+ * Then you will need to rename your old functions and inherit from this class.
+ *
+ *      writeCustom => writeCustomOld
+ *      readCustom  => readCustomOld
+ *
+ * See: CustomSerialization for an example of how to fix code that implemented original functionlity
+ */
+
 /* ------------ ApplyActionToParent ------------------------- */
 template<typename P, typename T, typename I>
 class ApplyActionToAllParent
@@ -305,6 +356,7 @@ DeSerializationForBlock<TraitType::Custom_Depricated, T>
             valueStream >> object;
         }
 };
+
 template<typename T>
 class DeSerializationForBlock<TraitType::Custom_Serialize, T>
 {
@@ -317,17 +369,9 @@ class DeSerializationForBlock<TraitType::Custom_Serialize, T>
         {}
         void scanObject(T& object)
         {
-            ParserToken    tokenType = parser.getToken();
-            if (tokenType != ParserToken::Value)
-            {
-                ThorsLogAndThrowError(std::runtime_error,
-                                      "ThorsAnvil::Serialize::DeSerializationForBlock<Value>",
-                                      "DeSerializationForBlock",
-                                      "Invalid Object");
-            }
             using SerializingType = typename Traits<std::remove_cv_t<T>>::SerializingType;
             SerializingType info;
-            info.readCustom(parser, object);
+            info.readCustom(parent, parser, object);
         }
 };
 
@@ -1011,6 +1055,7 @@ SerializerForBlock<TraitType::Custom_Depricated, T>
             printer.addRawValue(buffer.str());
         }
 };
+
 template<typename T>
 class SerializerForBlock<TraitType::Custom_Serialize, T>
 {
@@ -1028,7 +1073,7 @@ class SerializerForBlock<TraitType::Custom_Serialize, T>
         {
             using SerializingType = typename Traits<std::remove_cv_t<T>>::SerializingType;
             SerializingType info;
-            info.writeCustom(printer, object);
+            info.writeCustom(parent, printer, object);
         }
 };
 
