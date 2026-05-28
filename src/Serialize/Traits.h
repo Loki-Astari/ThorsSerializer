@@ -95,8 +95,8 @@
  *          struct SerializableType
  *          {
  *              static std::size_t getPrintSizeBson(BsonPrinter& printer, Type const& object);
- *              static void writeCustom(PrinterInterface& printer, Type const& object);
- *              static void readCustom(ParserInterface& parser, Type& object);
+ *              static void writeCustom(Serializer& parent, PrinterInterface& printer, T const& object);
+ *              static void readCustom(DeSerializer& parent, ParserInterface& parser, T& object)
  *          };
  *
  * Sometimes you can not use the key names you want (they are reserved words or contain
