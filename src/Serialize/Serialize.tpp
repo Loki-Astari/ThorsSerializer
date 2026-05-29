@@ -3,6 +3,7 @@
 
 #include "ThorsSerializerUtil.h"
 #include "ThorsLogging/ThorsLogging.h"
+#include "BsonPrinter.h"
 
 #include <sstream>
 #include <type_traits>
@@ -62,6 +63,25 @@ struct CustomSerializerBreakerFix
         writeCustomOld(printer, object);
     }
     virtual void writeCustomOld(PrinterInterface& printer, T const& object) const = 0;
+
+    virtual std::size_t getPrintSize(PrinterInterface& printer, T const& object) const
+    {
+        switch (printer.formatType())
+        {
+            case FormatType::Bson:  return getPrintSizeBson(dynamic_cast<BsonPrinter&>(printer), object);
+            case FormatType::Json:  return getPrintSizeJson(printer, object);
+            case FormatType::Yaml:  /* Fall Through */
+            default:
+            {
+                ThorsLogAndThrowError(std::runtime_error,
+                                      "ThorsAnvil::Serialize::Traits<DataType>",
+                                      "getPrintSize",
+                                      "Should not get here");
+            }
+        }
+    }
+    virtual std::size_t getPrintSizeBson(BsonPrinter& printer, T const& object) const = 0;
+    virtual std::size_t getPrintSizeJson(PrinterInterface& printer, T const& object) const = 0;
 };
 
 /*

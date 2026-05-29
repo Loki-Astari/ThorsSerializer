@@ -114,6 +114,16 @@ std::size_t DefaultCustomSerializer<T>::getPrintSizeBson(BsonPrinter& /*printer*
 }
 
 template<typename T>
+std::size_t DefaultCustomSerializer<T>::getPrintSizeJson(PrinterInterface& /*printer*/, T const& /*object*/) const
+{
+    ThorsLogAndThrowError(std::runtime_error,
+                          "ThorsAnvil::Serialize::DefaultCustomSerializer", "getPrintSizeBson",
+                          "Using an unimplemented translation:\n",
+                          "This means you are a streaming a type you have marked with the macro: ThorsAnvil_MakeTraitCustomSerialize.\n",
+                          "But have not implemented the getPrintSizeBson() method on the SerializationClass");
+}
+
+template<typename T>
 void DefaultCustomSerializer<T>::writeBson(BsonPrinter& /*printer*/, T const& /*object*/) const
 {
     ThorsLogAndThrowError(std::runtime_error,
