@@ -423,44 +423,46 @@ struct ConvertPointer<std::shared_ptr<T>>
     }
 };
 
-template<typename T>
-auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, int) -> decltype(object->parsePolyMorphicObject(parent, parser), void())
+inline
+std::string getPolymorphicClassName(ParserInterface& parser, std::string const& keyTypeName)
 {
-    using BaseType  = std::remove_pointer_t<T>;
-    using AllocType = typename GetAllocationType<BaseType>::AllocType;
+    std::string     className;
+    ParserToken     tokenType = parser.getToken();
 
-    std::string className = parser.identifyDynamicType();
-
-    if (className == "")
+    if (tokenType != ParserToken::MapStart)
     {
-        ParserToken    tokenType;
-        tokenType = parser.getToken();
-        if (tokenType != ParserToken::MapStart)
-        {
-            ThorsLogAndThrowError(std::runtime_error,
+        ThorsLogAndThrowError(std::runtime_error,
                                   "ThorsAnvil::Serialize",
                                   "tryParsePolyMorphicObject",
                                   "Invalid Object. Expecting MapStart");
-        }
+    }
 
-        tokenType = parser.getToken();
-        if (tokenType != ParserToken::Key)
-        {
-            ThorsLogAndThrowError(std::runtime_error,
+    tokenType = parser.getToken();
+    if (tokenType != ParserToken::Key)
+    {
+        ThorsLogAndThrowError(std::runtime_error,
                                   "ThorsAnvil::Serialize",
                                   "tryParsePolyMorphicObject",
                                   "Invalid Object. Expecting Key");
-        }
+    }
 
-        std::string_view key = parser.getKey();
-        if (key != Private::getPolymorphicMarker<AllocType>(parser.config.polymorphicMarker))
-        {
+    std::streampos pos = parser.tellg();
+    std::string_view key = parser.getKey();
+    if (key != keyTypeName)
+    {
+        parser.pushBackToken(ParserToken::Key);
+        parser.seekg(pos);
+
+        className = parser.identifyDynamicType();
+        if (className == "") {
             ThorsLogAndThrowError(std::runtime_error,
                                   "ThorsAnvil::Serialize",
                                   "tryParsePolyMorphicObject",
-                                  "Invalid PolyMorphic Object. Found: >", key, "< Config Key: >", parser.config.polymorphicMarker, "< Expecting Key Name <", Private::getPolymorphicMarker<T>(parser.config.polymorphicMarker), "<");
+                                  "Invalid PolyMorphic Object. Found: >", key, "< Config Key: >", parser.config.polymorphicMarker, "< Expecting Key Name >", keyTypeName, "<");
         }
-
+    }
+    else
+    {
         tokenType = parser.getToken();
         if (tokenType != ParserToken::Value)
         {
@@ -471,8 +473,19 @@ auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T&
         }
 
         parser.getValue(className);
-        parser.pushBackToken(ParserToken::MapStart);
     }
+    parser.pushBackToken(ParserToken::MapStart);
+
+    return className;
+}
+
+template<typename T>
+auto tryParsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& object, int) -> decltype(object->parsePolyMorphicObject(parent, parser), void())
+{
+    using BaseType  = std::remove_pointer_t<T>;
+    using AllocType = typename GetAllocationType<BaseType>::AllocType;
+
+    std::string className = getPolymorphicClassName(parser, Private::getPolymorphicMarker<AllocType>(parser.config.polymorphicMarker));
 
     object = ConvertPointer<BaseType>::assign(PolyMorphicRegistry::getNamedTypeConvertedTo<AllocType>(className));
 
@@ -520,51 +533,14 @@ bool readVariantValue(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::S
     variantValueDeSerializer.scanObject(std::get<T>(dst));
     return true;
 }
+
 template<typename... Args>
 void readVariant(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, std::variant<Args...>& dst)
 {
-    std::string className = parser.identifyDynamicType();
-    std::string_view key;
-
-    if (className == "")
-    {
-        using namespace ThorsAnvil::Serialize;
-
-        ParserToken    tokenType;
-        tokenType = parser.getToken();
-        if (tokenType != ParserToken::MapStart)
-        {
-            ThorsLogAndThrowError(std::runtime_error,
-                                  "ThorsAnvil::Serialize",
-                                  "readVariant",
-                                  "Invalid Object. Expecting MapStart");
-        }
-
-        tokenType = parser.getToken();
-        if (tokenType != ParserToken::Key)
-        {
-            ThorsLogAndThrowError(std::runtime_error,
-                                  "ThorsAnvil::Serialize",
-                                  "readVariant",
-                                  "Invalid Object. Expecting Key");
-        }
-
-        key = parser.getKey();
-
-        tokenType = parser.getToken();
-        if (tokenType != ParserToken::Value)
-        {
-            ThorsLogAndThrowError(std::runtime_error,
-                                  "ThorsAnvil::Serialize",
-                                  "readVariant",
-                                  "Invalid Object. Expecting Value");
-        }
-
-        parser.getValue(className);
-
-        parser.pushBackToken(ParserToken::MapStart);
-    }
-    bool result = (readVariantValue<Args>(parent, parser, dst, key, className) || ...);
+    using FirstType         = std::tuple_element_t<0, std::tuple<Args...>>;
+    std::string key         = Private::getPolymorphicMarker<FirstType>(parser.config.polymorphicMarker);
+    std::string className   = getPolymorphicClassName(parser, key);
+    bool        result      = (readVariantValue<Args>(parent, parser, dst, key, className) || ...);
     if (!result) {
         parser.ignoreValue();
     }
