@@ -19,7 +19,7 @@ TEST(Issue78Test, ThorwOnInvalidEnumDeSerializationOriginalEnum)
     ThorsLogInfo("X", "Y", "Message Info");
     ThorsLogDebug("X", "Y", "Message Debug");
     ThorsLogTrace("X", "Y", "Message Trace");
-    ThorsLogAll("X", "Y", "Message All");
+    ThorsLogFine("X", "Y", "Message Fine");
     using ThorsAnvil::Serialize::jsonExporter;
 
     auto action = []() {
