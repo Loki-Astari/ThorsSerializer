@@ -947,6 +947,7 @@ class AnyBlock
     std::stringstream data;
     public:
         std::string         getString() const {return data.str();}
+        std::string_view    getView() const   {return data.view();}
 
 
         void openMap()                              {data << "{";}
