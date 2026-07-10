@@ -25,6 +25,8 @@ class JsonManualLexer
         JsonManualLexer(ParserInterface& parser);
         int yylex();
 
+        ValueType   peekType() const;
+
         void        ignoreRawValue();
         std::string_view getRawString();
         std::string_view getString();

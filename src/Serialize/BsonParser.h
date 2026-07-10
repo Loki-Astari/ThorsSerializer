@@ -62,6 +62,35 @@ class BsonParser: public ParserInterface
     char                        nextType;
     bool                        skipOverValue;
 
+    // https://bsonspec.org/spec.html
+    static constexpr ValueType            peekTypeMap[] = { /*0 */ ValueType::Error,
+                                                            /*1 */ ValueType::Number,   // 64Bit Binary FP
+                                                            /*2 */ ValueType::String,   // UTF-8 string
+                                                            /*3 */ ValueType::Error,    // Document
+                                                            /*4 */ ValueType::Error,    // Array
+                                                            /*5 */ ValueType::Error,    // Binary
+                                                            /*6 */ ValueType::Error,    // Depricated
+                                                            /*7 */ ValueType::Number,   // ObjectId: 96Bit Value
+                                                            /*8 */ ValueType::Bool,     // Bool
+                                                            /*9 */ ValueType::Number,   // UTC DateTime (milliseconds since epoch (64 bit)
+                                                            /*10*/ ValueType::Null,     // Null
+                                                            /*11*/ ValueType::Error,    // RegExp
+                                                            /*12*/ ValueType::Error,    // Depricated
+                                                            /*13*/ ValueType::String,   // Javascript
+                                                            /*14*/ ValueType::String,   // Symbol Name
+                                                            /*15*/ ValueType::Error,    // Depricated
+                                                            /*16*/ ValueType::Number,   // 32Bit Integer
+                                                            /*17*/ ValueType::Number,   // Timestamp 64Bit
+                                                            /*18*/ ValueType::Number,   // 64Bit Integer
+                                                            /*19*/ ValueType::Number,   // 128Bit Decimal
+                                                            /*20*/ ValueType::Error,    // Buffer
+                                                            /*21*/ ValueType::Error,    // Buffer
+                                                            /*22*/ ValueType::Error,    // Buffer
+                                                            /*23*/ ValueType::Error,    // Buffer
+                                                            /*24*/ ValueType::Error,    // Buffer
+                                                            /*25*/ ValueType::Error,    // Buffer
+                                                          };
+
 
     public:
         BsonParser(std::istream& stream, BsonParserConfig const& config);
@@ -74,6 +103,7 @@ class BsonParser: public ParserInterface
         virtual void    ignoreDataMap(bool)                     override;
         virtual void    ignoreDataArray(bool)                   override;
 
+        virtual ValueType peekType() const                      override    {return peekTypeMap[static_cast<int>(nextType)];}
         virtual void    getValue(short int& value)              override    {value = static_cast<int>(getIntValue<MaxTemplate<4, sizeof(short int)>::value, short int>());}
         virtual void    getValue(int& value)                    override    {value = getIntValue<sizeof(int), int>();}
         virtual void    getValue(long int& value)               override    {value = getIntValue<sizeof(long int), long int>();}

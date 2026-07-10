@@ -75,6 +75,20 @@ void JsonManualLexer::readNull()
 }
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+ValueType JsonManualLexer::peekType() const
+{
+    switch (lastToken)
+    {
+        case ThorsAnvil::Serialize::JSON_TRUE:      return ValueType::Bool;
+        case ThorsAnvil::Serialize::JSON_FALSE:     return ValueType::Bool;
+        case ThorsAnvil::Serialize::JSON_NULL:      return ValueType::Null;
+        case ThorsAnvil::Serialize::JSON_NUMBER:    return ValueType::Number;
+        case ThorsAnvil::Serialize::JSON_STRING:    return ValueType::String;
+        default:                                    return ValueType::Error;
+    }
+}
+
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void JsonManualLexer::ignoreRawValue()
 {
     switch (lastToken)

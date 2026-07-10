@@ -60,6 +60,8 @@ class YamlParser: public ParserInterface
         virtual ParserToken         getNextToken()              override;
         virtual std::string_view    getKey()                    override    {return getString();}
 
+        virtual ValueType peekType() const                      override;
+
         virtual void    getValue(short int& value)              override;
         virtual void    getValue(int& value)                    override;
         virtual void    getValue(long int& value)               override;

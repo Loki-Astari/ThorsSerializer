@@ -148,6 +148,9 @@ std::string_view JsonParser::getKey()
     return getString();
 }
 
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE
+ValueType JsonParser::peekType() const                       {return lexer.peekType();}
+
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(short int& value)                     {value = lexer.scan<short int>();}
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(int& value)                           {value = lexer.scan<int>();}
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void JsonParser::getValue(long int& value)                      {value = lexer.scan<long int>();}

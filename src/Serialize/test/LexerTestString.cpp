@@ -14,6 +14,8 @@ class FakeParser: public ThorsAnvil::Serialize::ParserInterface
         virtual ThorsAnvil::Serialize::ParserToken getNextToken()  {return ThorsAnvil::Serialize::ParserToken::Value;}
         virtual std::string_view     getKey()            {return "";}
 
+        virtual ThorsAnvil::Serialize::ValueType peekType() const            {return ThorsAnvil::Serialize::ValueType::Error;}
+
         virtual void    getValue(short int&)             {}
         virtual void    getValue(int&)                   {}
         virtual void    getValue(long int&)              {}

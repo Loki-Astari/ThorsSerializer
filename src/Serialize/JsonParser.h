@@ -51,6 +51,8 @@ class JsonParser: public ParserInterface
 
         virtual void    ignoreDataValue()                       override;
 
+        virtual ValueType peekType() const                      override;
+
         virtual void    getValue(short int& value)              override;
         virtual void    getValue(int& value)                    override;
         virtual void    getValue(long int& value)               override;

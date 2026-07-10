@@ -13,7 +13,7 @@ namespace ThorsAnvil::Serialize
 {
 
 enum class BsonContainer  {Map, Array, Value};
-enum class ValueType {Int32, Int64, Double64, Double128, Bool, String, Null, Binary, Obj, Key};
+enum class BsonValueType {Int32, Int64, Double64, Double128, Bool, String, Null, Binary, Obj, Key};
 
 template<std::size_t lhs, std::size_t rhs>
 struct MaxTemplate

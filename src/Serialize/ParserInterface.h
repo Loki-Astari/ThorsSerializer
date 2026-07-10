@@ -128,6 +128,8 @@ struct PeekNextNonSpaceValue
     }
 };
 
+enum class ValueType {Error, Null, Bool, String, Number};
+
 class ParserInterface
 {
     public:
@@ -155,6 +157,8 @@ class ParserInterface
         virtual void    ignoreDataValue()               {}
         virtual void    ignoreDataMap(bool)             {}
         virtual void    ignoreDataArray(bool)           {}
+
+        virtual ValueType peekType() const               = 0;
 
         virtual void    getValue(short int&)             = 0;
         virtual void    getValue(int&)                   = 0;

@@ -214,6 +214,7 @@ T YamlParser::scan()
 }
 
 
+THORS_SERIALIZER_HEADER_ONLY_INCLUDE ValueType YamlParser::peekType() const                  {return ValueType::Error;/* TODO */}
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void YamlParser::getValue(short int& value)             {value   = scan<short int>();}
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void YamlParser::getValue(int& value)                   {value   = scan<int>();}
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE void YamlParser::getValue(long int& value)              {value   = scan<long int>();}

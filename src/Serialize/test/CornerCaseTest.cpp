@@ -35,6 +35,8 @@ class ParserMock: public ParserInterface
         virtual ParserToken         getNextToken()       override{return nextToken < tokens.size() ? tokens[nextToken++] : ParserToken::Error;}
         virtual std::string_view    getKey()             override{return keys[nextKey++];}
 
+        virtual ThorsAnvil::Serialize::ValueType peekType() const override {return ThorsAnvil::Serialize::ValueType::Error;}
+
         virtual void    getValue(short int&)             override{}
         virtual void    getValue(int&)                   override{}
         virtual void    getValue(long int&)              override{}
