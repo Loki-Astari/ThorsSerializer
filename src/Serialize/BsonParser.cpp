@@ -316,7 +316,7 @@ void BsonParser::readEndOfContainer()
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonParser::readKey()
 {
-    if (read(&nextType, 1) && readTo(nextKey, '\0'))
+    if (read(&nextType, 1) && nextType != 0 && readTo(nextKey, '\0'))
     {
         ThorsLogTrack("ThorsAnvil::Serialize::BsonParser", "readKey", "Key: ", nextKey);
         dataLeft.back() -= (1 + nextKey.size() + 1);
