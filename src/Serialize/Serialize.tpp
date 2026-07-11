@@ -127,8 +127,8 @@ struct HeedAllValues
         {
             ThorsLogAndThrowError(std::runtime_error,
                                   "ThorsAnvil::Serialize::HeedAllValues",
-                                  "checkAMember"
-                                  "Did not fine: ", member.first);
+                                  "checkAMember",
+                                  "Did not find: ", member.first);
         }
         return 0;
     }
