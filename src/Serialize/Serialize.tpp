@@ -193,6 +193,27 @@ struct HeedAllValues<std::unordered_multimap<K, V>>
  * The default Block is a mapping of "Map" to "Object"
  * We expect an OpenMap followed by a set of Key/Value pairs followed by CloseMap
  */
+template<typename T>
+struct BuildArryInfo
+{
+    void operator()(std::vector<std::string_view>& /*arrayInfo*/, T const& /*memberExtractor*/){}
+};
+
+template<typename... T>
+struct BuildArryInfo<std::tuple<T...>>
+{
+    template<std::size_t... I>
+    void buildArrayInfoIndex(std::vector<std::string_view>& arrayInfo, std::tuple<T...> const& members, std::index_sequence<I...> const&)
+    {
+        (arrayInfo.emplace_back(std::get<I>(members).first), ...);
+    }
+
+    void operator()(std::vector<std::string_view>& arrayInfo, std::tuple<T...> const& members)
+    {
+        buildArrayInfoIndex(arrayInfo, members, std::make_index_sequence<sizeof...(T)>{});
+    }
+};
+
 template<TraitType traitType, typename T>
 class DeSerializationForBlock
 {
@@ -203,20 +224,33 @@ class DeSerializationForBlock
     DeSerializer&    parent;
     ParserInterface& parser;
     std::string      key;
+    bool             inputArray;
+    std::vector<std::string_view>  arrayInfo;
+    std::size_t      nextIndex;
+
     public:
         DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
             : parent(parent)
             , parser(parser)
+            , inputArray{false}
+            , nextIndex{0}
         {
             ParserToken    tokenType = parser.getToken();
 
-            if (tokenType != ParserToken::MapStart)
-            {
-                ThorsLogAndThrowError(std::runtime_error,
-                                      "ThorsAnvil::Serialize::DeSerializationForBlock<Map>",
-                                      "DeSerializationForBlock",
-                                      "Invalid Object Start: Token ", static_cast<int>(tokenType));
+            if (tokenType == ParserToken::MapStart) {
+                return;
             }
+            if (tokenType == ParserToken::ArrayStart) {
+                 inputArray = true;
+                 BuildArryInfo<typename Traits<T>::Members>  builder;
+                 builder(arrayInfo, Traits<T>::getMembers());
+                 //buildArryInfo(std::make_index_sequence<std::tuple_size<typename Traits<T>::Members>::value>{});
+                 return;
+            }
+            ThorsLogAndThrowError(std::runtime_error,
+                                  "ThorsAnvil::Serialize::DeSerializationForBlock<Map>",
+                                  "DeSerializationForBlock",
+                                  "Invalid Object Start: Token ", static_cast<int>(tokenType));
         }
 
         void scanObject(T& object)
@@ -245,11 +279,11 @@ class DeSerializationForBlock
         bool hasMoreValue()
         {
             ParserToken    tokenType = parser.getToken();
-            bool           result    = tokenType != ParserToken::MapEnd;
+            bool           result    = tokenType != ParserToken::MapEnd && tokenType != ParserToken::ArrayEnd;
             if (result)
             {
 #if defined(FULL_VALIDATION_OF_PARSER)
-                if (tokenType != ParserToken::Key)
+                if (!inputArray && tokenType != ParserToken::Key)
                 {
                     ThorsLogAndThrowError(std::runtime_error,
                                           "ThorsAnvil::Serialize::DeSerializationForBlock<Map>",
@@ -257,7 +291,14 @@ class DeSerializationForBlock
                                           "Expecting key token");
                 }
 #endif
-                key = parser.getKey();
+                if (inputArray) {
+                    using namespace std::string_view_literals;
+                    key = nextIndex < arrayInfo.size() ? arrayInfo[nextIndex++] : ""sv;
+                    parser.pushBackToken(tokenType);
+                }
+                else {
+                    key = parser.getKey();
+                }
             }
 
             return result;

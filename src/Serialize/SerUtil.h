@@ -604,10 +604,10 @@ class Traits<std::map<std::string, Value>>: public MapLike<std::map<std::string,
     public:
         static constexpr TraitType type = TraitType::Map;
 
-        class MemberExtractor
+        class Members
         {
             public:
-                constexpr MemberExtractor(){}
+                constexpr Members(){}
                 void operator()(PrinterInterface& printer, std::map<std::string, Value> const& object) const
                 {
                     PutValueType<Value>     valuePutter(printer);
@@ -624,9 +624,9 @@ class Traits<std::map<std::string, Value>>: public MapLike<std::map<std::string,
                 }
         };
 
-        static MemberExtractor const& getMembers()
+        static Members const& getMembers()
         {
-            static constexpr MemberExtractor    memberExtractor;
+            static constexpr Members    memberExtractor;
             return memberExtractor;
         }
 };
@@ -669,10 +669,10 @@ class Traits<std::unordered_map<std::string, Value>>: public MapLike<std::unorde
     public:
         static constexpr TraitType type = TraitType::Map;
 
-        class MemberExtractor
+        class Members
         {
             public:
-                constexpr MemberExtractor(){}
+                constexpr Members(){}
                 void operator()(PrinterInterface& printer, std::unordered_map<std::string, Value> const& object) const
                 {
                     PutValueType<Value>     valuePutter(printer);
@@ -690,9 +690,9 @@ class Traits<std::unordered_map<std::string, Value>>: public MapLike<std::unorde
                 }
         };
 
-        static MemberExtractor const& getMembers()
+        static Members const& getMembers()
         {
-            static constexpr MemberExtractor    memberExtractor;
+            static constexpr Members    memberExtractor;
             return memberExtractor;
         }
 };
@@ -731,10 +731,10 @@ class Traits<std::unordered_multimap<std::string, Value>>: public MapLike<std::u
     public:
         static constexpr TraitType type = TraitType::Map;
 
-        class MemberExtractor
+        class Members
         {
             public:
-                constexpr MemberExtractor(){}
+                constexpr Members(){}
                 void operator()(PrinterInterface& printer, std::unordered_multimap<std::string, Value> const& object) const
                 {
                     PutValueType<Value>     valuePutter(printer);
@@ -752,9 +752,9 @@ class Traits<std::unordered_multimap<std::string, Value>>: public MapLike<std::u
                 }
         };
 
-        static MemberExtractor const& getMembers()
+        static Members const& getMembers()
         {
-            static constexpr MemberExtractor    memberExtractor;
+            static constexpr Members    memberExtractor;
             return memberExtractor;
         }
 };
@@ -793,10 +793,10 @@ class Traits<std::multimap<std::string, Value>>: public MapLike<std::multimap<st
     public:
         static constexpr TraitType type = TraitType::Map;
 
-        class MemberExtractor
+        class Members
         {
             public:
-                constexpr MemberExtractor(){}
+                constexpr Members(){}
                 void operator()(PrinterInterface& printer, std::multimap<std::string, Value> const& object) const
                 {
                     PutValueType<Value>     valuePutter(printer);
@@ -814,9 +814,9 @@ class Traits<std::multimap<std::string, Value>>: public MapLike<std::multimap<st
                 }
         };
 
-        static MemberExtractor const& getMembers()
+        static Members const& getMembers()
         {
-            static constexpr MemberExtractor    memberExtractor;
+            static constexpr Members    memberExtractor;
             return memberExtractor;
         }
 };
