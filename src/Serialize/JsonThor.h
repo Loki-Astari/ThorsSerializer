@@ -55,7 +55,7 @@ ExporterRange<Json, R> jsonExporter(R range, PrinterConfig const& config = Print
  * Size of the output (if streamed with no extra space)
  */
 template<typename T>
-std::size_t jsonStreanSize(T const& value)
+std::size_t jsonStreamSize(T const& value)
 {
     ThorsAnvil::Serialize::JsonPrinter      printer(std::cout, PrinterConfig{OutputType::Stream});
     std::size_t size = ThorsAnvil::Serialize::Traits<T>::getPrintSize(printer, value, true);

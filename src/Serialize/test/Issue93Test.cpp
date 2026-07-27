@@ -40,7 +40,7 @@ TEST(Issue93Test, RichTextPostMessage)
     std::stringstream       output;
     output << ThorsAnvil::Serialize::jsonExporter(message, streamConfig);
     std::cout << output.str() << "\n";
-    std::size_t  size = ThorsAnvil::Serialize::jsonStreanSize(message);
+    std::size_t  size = ThorsAnvil::Serialize::jsonStreamSize(message);
 
     EXPECT_EQ(size, output.str().size());
 }
@@ -54,7 +54,7 @@ TEST(Issue93Test, ElRtTextNoStyle)
     std::stringstream       output;
     output << ThorsAnvil::Serialize::jsonExporter(text, streamConfig);
     std::cout << output.str() << "\n";
-    std::size_t  size = ThorsAnvil::Serialize::jsonStreanSize(text);
+    std::size_t  size = ThorsAnvil::Serialize::jsonStreamSize(text);
 
     EXPECT_EQ(size, output.str().size());
 }
@@ -67,7 +67,7 @@ TEST(Issue93Test, ElRtTextNoStyleInVariant)
     std::stringstream       output;
     output << ThorsAnvil::Serialize::jsonExporter(text, streamConfig);
     std::cout << output.str() << "\n";
-    std::size_t  size = ThorsAnvil::Serialize::jsonStreanSize(text);
+    std::size_t  size = ThorsAnvil::Serialize::jsonStreamSize(text);
 
     EXPECT_EQ(size, output.str().size());
 }
@@ -81,7 +81,7 @@ TEST(Issue93Test, ElRtTextWithStyle)
     std::stringstream       output;
     output << ThorsAnvil::Serialize::jsonExporter(text, streamConfig);
     std::cout << output.str() << "\n";
-    std::size_t  size = ThorsAnvil::Serialize::jsonStreanSize(text);
+    std::size_t  size = ThorsAnvil::Serialize::jsonStreamSize(text);
 
     EXPECT_EQ(size, output.str().size());
 }

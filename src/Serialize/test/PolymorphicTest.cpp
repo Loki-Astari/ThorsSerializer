@@ -139,7 +139,7 @@ TEST(PolymorphicTest, JsonPolymorphicSize)
     // {"age":10,"transport":{"__type":"PolymorphicTest::Bike","stroke":7,"speed":18}}   => Size 79
     PolymorphicTest::User    user1{10, new PolymorphicTest::Bike(18, 7)};
 
-    EXPECT_EQ(79, ThorsAnvil::Serialize::jsonStreanSize(user1));
+    EXPECT_EQ(79, ThorsAnvil::Serialize::jsonStreamSize(user1));
 
 }
 TEST(PolymorphicTest, JsonPolymorphicSizeWithCustomFieldName)
@@ -147,7 +147,7 @@ TEST(PolymorphicTest, JsonPolymorphicSizeWithCustomFieldName)
     // {"type":"hyper-pod","size":18,"time":7,"level":12}   Size => 50
     std::unique_ptr<PolymorphicTest::Pod> pod(new PolymorphicTest::HyperPod{18, 7});
 
-    EXPECT_EQ(50, ThorsAnvil::Serialize::jsonStreanSize(pod));
+    EXPECT_EQ(50, ThorsAnvil::Serialize::jsonStreamSize(pod));
 }
 TEST(PolymorphicTest, BsonNullPointer)
 {
