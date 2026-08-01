@@ -819,7 +819,56 @@ class Traits<EnumName>                                                  \
                                       "serializeForBlock",              \
                                       "Invalid Enum Value");            \
             }                                                           \
-            printer.addValue(getValues().find(object)->second);         \
+            printer.addValue(find->second);                             \
+        }                                                               \
+};                                                                      \
+}                                                                       \
+DO_ASSERT(EnumName)
+
+#define ThorsAnvil_MakeEnumAlt(EnumName, ...)                           \
+namespace ThorsAnvil::Serialize {                                       \
+template<>                                                              \
+class Traits<EnumName>                                                  \
+{                                                                       \
+    public:                                                             \
+        static constexpr    TraitType       type = TraitType::Enum;     \
+        static std::vector<std::string_view> const& getValues()         \
+        {                                                               \
+            using std::string_literals::operator""s;                    \
+            static const std::vector<std::string_view> values =         \
+            {                                                           \
+                __VA_ARGS__                                             \
+            };                                                          \
+            return values;                                              \
+        }                                                               \
+        static EnumName getValue(std::string const& val, std::string const&) \
+        {                                                               \
+            std::vector<std::string_view> const& values = getValues();  \
+            for (std::size_t loop = 0; loop < values.size(); ++loop)    \
+            {                                                           \
+                if (val == values[loop]) {                              \
+                    return static_cast<EnumName>(loop);                 \
+                }                                                       \
+            }                                                           \
+            ThorsLogAndThrowError(std::runtime_error,                   \
+                                  "ThorsAnvil::Serialize::Traits<EnumName>", \
+                                  "getValue",                           \
+                                  "Invalid Enum Value");                \
+        }                                                               \
+        static std::size_t getPrintSize(PrinterInterface& printer, EnumName const& value, bool)\
+        {                                                               \
+            return printer.getSizeValue(getValues()[static_cast<int>(value)]); \
+        }                                                               \
+        static void serializeForBlock(PrinterInterface& printer, EnumName const& object) \
+        {                                                               \
+            auto values = getValues();                                  \
+            if (static_cast<std::size_t>(object) >= values.size()) {    \
+                ThorsLogAndThrowError(std::runtime_error,               \
+                                      "ThorsAnvil::Serialize::Traits<EnumName>", \
+                                      "serializeForBlock",              \
+                                      "Invalid Enum Value");            \
+            }                                                           \
+            printer.addValue(getValues()[static_cast<int>(object)]);     \
         }                                                               \
 };                                                                      \
 }                                                                       \
