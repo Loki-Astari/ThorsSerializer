@@ -841,6 +841,7 @@ class Traits<EnumName>                                                  \
             };                                                          \
             return values;                                              \
         }                                                               \
+        static std::string to_string(EnumName val) {return std::string{getValues()[static_cast<int>(val)]};} \
         static EnumName getValue(std::string const& val, std::string const&) \
         {                                                               \
             std::vector<std::string_view> const& values = getValues();  \
