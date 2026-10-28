@@ -14,7 +14,7 @@ namespace ThorsAnvil::Serialize
 
 enum class FormatType   {Json, Yaml, Bson};
 enum class ParseType    {Weak, Strict, Exact};
-enum class ParserToken  {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value};
+enum class ParserToken  {Error, DocStart, DocEnd, MapStart, MapEnd, ArrayStart, ArrayEnd, Key, Value, OKEndOfInput};
 
 template<typename T>
 struct SharedInfo

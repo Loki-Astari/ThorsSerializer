@@ -115,16 +115,18 @@ struct PeekNextNonSpaceValue
         char value = -1;
         if ((*input) >> value) {
             checkAction(*input, value);
+            return value;
         }
-        return value;
+        return -1;
     }
     int operator()(StringInput& input) const
     {
         char value = -1;
         if (input.readValue(value)) {
             checkAction(input, value);
+            return value;
         }
-        return value;
+        return -1;
     }
 };
 
@@ -189,7 +191,7 @@ class ParserInterface
             struct Read
             {
                 bool operator()(std::istream* input, char* dst, std::size_t size)    const {return static_cast<bool>(input->read(dst, size));}
-                bool operator()(StringInput& input, char* dst, std::size_t size)     const {return input.read(dst, size);}
+                bool operator()(StringInput& input, char* dst, std::size_t size)     const {input.read(dst, size);return input.getLastReadCount() == size;}
             };
             using Dst   = std::variant<char*>;
             using Size  = std::variant<std::size_t>;
@@ -297,6 +299,15 @@ class ParserInterface
                 void operator()(StringInput& input)     const {input.setFail();}
             };
             std::visit(SetFail{}, input);
+        }
+        void setEOF()
+        {
+            struct SetEOF
+            {
+                void operator()(std::istream* input)    const {input->setstate(std::ios::eofbit);}
+                void operator()(StringInput& input)     const {input.setEOF();}
+            };
+            std::visit(SetEOF{}, input);
         }
         template<typename T>
         requires std::integral<T>

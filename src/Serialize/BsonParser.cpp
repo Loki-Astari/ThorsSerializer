@@ -7,7 +7,9 @@
 using namespace ThorsAnvil::Serialize;
 
 
+#ifdef DEBUG
 char const* getTokenTypeAsString(ParserToken result);
+#endif
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 BsonParser::BsonParser(std::istream& stream, BsonParserConfig const& config)
@@ -55,9 +57,19 @@ ParserToken BsonParser::getNextToken()
                 case BsonContainer::Array:  nextToken = ParserToken::ArrayStart;break;
                 case BsonContainer::Value:
                 {
+                    std::int32_t    size = readSize<4, std::int32_t>();
+                    if (size == -1) {
+                        if (currentContainer.size() == 1) {
+                            nextToken = ParserToken::OKEndOfInput;
+                            currentContainer.pop_back();
+                        }
+                        else {
+                            nextToken = ParserToken::Error;
+                        }
+                        break;
+                    }
                     nextToken = ParserToken::Key;
                     currentContainer.emplace_back(BsonContainer::Value);
-                    std::int32_t    size = readSize<4, std::int32_t>();
                     dataSize.emplace_back(size);
                     dataLeft.emplace_back(size);
                     dataLeft.back() -= 4;
@@ -79,6 +91,14 @@ ParserToken BsonParser::getNextToken()
         case ParserToken::ArrayStart:
         {
             std::int32_t    size = readSize<4, std::int32_t>();
+            if (size == -1) {
+                result = ParserToken::Error;
+                if (currentContainer.size() == 1) {
+                    result = ParserToken::OKEndOfInput;
+                    nextToken = ParserToken::DocEnd;
+                }
+                break;
+            }
             dataSize.emplace_back(size);
             dataLeft.emplace_back(size);
             dataLeft.back() -= 4;
@@ -140,6 +160,11 @@ ParserToken BsonParser::getNextToken()
             skipOverValue = true;
             break;
         }
+        case ParserToken::OKEndOfInput:
+        {
+            nextToken = ParserToken::DocEnd;
+            break;
+        }
         default:
         {
             ThorsLogAndThrowError(std::runtime_error,
@@ -148,10 +173,13 @@ ParserToken BsonParser::getNextToken()
                                   "Invalid state reached in switch");
         }
     }
+#ifdef DEBUG
     ThorsLogTrack("ThorsAnvil::Serialize::BsonParser", "getNextToken", getTokenTypeAsString(result));
+#endif
     return result;
 }
 
+#ifdef DEBUG
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 char const* getTokenTypeAsString(ParserToken result)
 {
@@ -166,10 +194,12 @@ char const* getTokenTypeAsString(ParserToken result)
         case ParserToken::ArrayEnd:  return "ArrayEnd";
         case ParserToken::Key:       return "Key";
         case ParserToken::Value:     return "Value";
+        case ParserToken::OKEndOfInput: return "EndOfInput";
         default:
             return "Unknown TYPE: SHOULD NOT HAPPEN";
     }
 }
+#endif
 
 THORS_SERIALIZER_HEADER_ONLY_INCLUDE
 void BsonParser::ignoreDataMap(bool begin)

@@ -133,8 +133,7 @@ class BsonParser: public ParserInterface
         template<std::size_t size, typename Int> Int readLE()
         {
             Int docSize;
-            read(reinterpret_cast<char*>(&docSize), size);
-            return docSize;
+            return (read(reinterpret_cast<char*>(&docSize), size)) ? docSize : -1;
         }
 
         template<std::size_t size, typename Int> Int readBE()

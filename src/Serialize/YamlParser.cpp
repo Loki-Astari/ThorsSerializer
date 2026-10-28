@@ -74,6 +74,21 @@ ParserToken YamlParser::getNextToken()
         state.emplace_back(State::Open, 0);
     }
 
+    if (state.size() == 1 && state.back().first == State::Empty)
+    {
+        switch (state.back().second)
+        {
+            case 0:
+                ++state.back().second;
+                return ParserToken::OKEndOfInput;
+            case 1:
+                ++state.back().second;
+                return ParserToken::DocEnd;
+            default:
+                generateParsingException([](){return true;}, "ThorsAnvil::Serialize::YamlParser: Empty Input continued parsing");
+        }
+    }
+
     if (error)
     {
         return ParserToken::Error;
@@ -95,8 +110,14 @@ ParserToken YamlParser::getNextToken()
         case YAML_NO_EVENT:             generateParsingException([](){return true;}, "ThorsAnvil::Serialize::YamlParser: No Event not supported");
         // fallthrough
 
-        case YAML_STREAM_END_EVENT:     return parsingError();
-
+        case YAML_STREAM_END_EVENT:
+        {
+            if (state.size() == 1 && state.back().first == State::Open && state.back().second == 0) {
+                state.back().first = State::Empty;
+                return ParserToken::DocStart;
+            }
+            return parsingError();
+        }
         case YAML_DOCUMENT_START_EVENT:
         {
             generateParsingException([&](){return (state.size() != 1 || state.back().first != State::Open || state.back().second != 0);},

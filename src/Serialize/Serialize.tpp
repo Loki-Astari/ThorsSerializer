@@ -227,15 +227,22 @@ class DeSerializationForBlock
     bool             inputArray;
     std::vector<std::string_view>  arrayInfo;
     std::size_t      nextIndex;
+    bool             base;
 
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool baseInit = false)
             : parent(parent)
             , parser(parser)
             , inputArray{false}
             , nextIndex{0}
+            , base{baseInit}
         {
             ParserToken    tokenType = parser.getToken();
+
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
 
             if (tokenType == ParserToken::MapStart) {
                 return;
@@ -252,6 +259,8 @@ class DeSerializationForBlock
                                   "DeSerializationForBlock",
                                   "Invalid Object Start: Token ", static_cast<int>(tokenType));
         }
+
+        bool getBase() const {return base;}
 
         void scanObject(T& object)
         {
@@ -315,14 +324,23 @@ class DeSerializationForBlock<TraitType::Value, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
         void scanObject(T& object)
         {
             ParserToken    tokenType = parser.getToken();
+
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
+
             if (tokenType != ParserToken::Value)
             {
                 ThorsLogAndThrowError(std::runtime_error,
@@ -339,14 +357,23 @@ DeSerializationForBlock<TraitType::Custom_Depricated, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
         void scanObject(T& object)
         {
             ParserToken    tokenType = parser.getToken();
+
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
+
             if (tokenType != ParserToken::Value)
             {
                 ThorsLogAndThrowError(std::runtime_error,
@@ -364,13 +391,24 @@ class DeSerializationForBlock<TraitType::Custom_Serialize, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
         void scanObject(T& object)
         {
+            ParserToken    tokenType = parser.getToken();
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
+
+            parser.pushBackToken(tokenType);
+
             using SerializingType = typename Traits<std::remove_cv_t<T>>::SerializingType;
             SerializingType info;
             info.readCustom(parent, parser, object);
@@ -499,7 +537,7 @@ void parsePolyMorphicObject(DeSerializer& parent, ParserInterface& parser, T& ob
 }
 /* ------------ PolyMorphic DeSerializer For variant------------------------- */
 template<typename T, typename... Args>
-bool readVariantValue(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, std::variant<Args...>& dst, std::string_view key, std::string const& name)
+bool readVariantValue(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, bool& base, std::variant<Args...>& dst, std::string_view key, std::string const& name)
 {
     if (key != "" && key != Private::getPolymorphicMarker<T>(parser.config.polymorphicMarker)) {
         return false;
@@ -511,18 +549,19 @@ bool readVariantValue(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::S
     using TraitBase = ThorsAnvil::Serialize::Traits<ValueType>;
     dst = ValueType{};
 
-    ThorsAnvil::Serialize::DeSerializationForBlock<TraitBase::type, T>   variantValueDeSerializer(parent, parser);
+    ThorsAnvil::Serialize::DeSerializationForBlock<TraitBase::type, T>   variantValueDeSerializer(parent, parser, base);
     variantValueDeSerializer.scanObject(std::get<T>(dst));
+    base = variantValueDeSerializer.getBase();
     return true;
 }
 
 template<typename... Args>
-void readVariant(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, std::variant<Args...>& dst)
+void readVariant(ThorsAnvil::Serialize::DeSerializer& parent, ThorsAnvil::Serialize::ParserInterface& parser, bool& base, std::variant<Args...>& dst)
 {
     using FirstType         = std::tuple_element_t<0, std::tuple<Args...>>;
     std::string key         = Private::getPolymorphicMarker<FirstType>(parser.config.polymorphicMarker);
     std::string className   = getPolymorphicClassName(parser, key);
-    bool        result      = (readVariantValue<Args>(parent, parser, dst, key, className) || ...);
+    bool        result      = (readVariantValue<Args>(parent, parser, base, dst, key, className) || ...);
     if (!result) {
         parser.ignoreValue();
     }
@@ -534,16 +573,25 @@ class DeSerializationForBlock<TraitType::Pointer, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
         void scanObject(T& object)
         {
             Traits<std::remove_cv_t<T>>::release(object);
 
             ParserToken    tokenType = parser.getToken();
+
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
+
             if (parser.isValueNull())
             {
                 parser.ignoreDataValue();
@@ -561,15 +609,24 @@ class DeSerializationForBlock<TraitType::Pointer, std::shared_ptr<T>>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
         void scanObject(std::shared_ptr<T>& object)
         {
             object.reset();
             ParserToken    tokenType = parser.getToken();
+
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
+
             if (tokenType == ParserToken::Value && parser.isValueNull())
             {
                 parser.ignoreDataValue();
@@ -591,18 +648,22 @@ class DeSerializationForBlock<TraitType::Reference, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
         void scanObject(T& object)
         {
             using Trait         = Traits<std::remove_cv_t<T>>;
             using RefType       = typename Trait::RefType;
             using ValueGetter   = typename Trait::ValueGetter;
             ValueGetter         getter(parser);
-            DeSerializationForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>   deserializer(parent, parser);
+            DeSerializationForBlock<Traits<std::remove_cv_t<RefType>>::type, RefType>   deserializer(parent, parser, base);
+            base = deserializer.getBase();
             deserializer.scanObject(getter.getInputValue(object));
         }
 };
@@ -611,14 +672,17 @@ class DeSerializationForBlock<TraitType::Variant, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
         void scanObject(T& object)
         {
-            readVariant(parent, parser, object);
+            readVariant(parent, parser, base, object);
         }
 };
 /*
@@ -631,14 +695,23 @@ class DeSerializationForBlock<TraitType::Enum, T>
 {
     DeSerializer&       parent;
     ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
         void scanObject(T& object)
         {
             ParserToken    tokenType = parser.getToken();
+
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
+
             if (tokenType != ParserToken::Value)
             {
                 ThorsLogAndThrowError(std::runtime_error,
@@ -665,13 +738,20 @@ class DeSerializationForBlock<TraitType::Array, T>
     DeSerializer&    parent;
     ParserInterface& parser;
     std::size_t      index;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer& parent, ParserInterface& parser, bool base = false)
             : parent(parent)
             , parser(parser)
             , index(-1)
+            , base{base}
         {
             ParserToken    tokenType = parser.getToken();
+
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
 
             if (tokenType != ParserToken::ArrayStart)
             {
@@ -682,6 +762,7 @@ class DeSerializationForBlock<TraitType::Array, T>
             }
         }
 
+        bool getBase() const {return base;}
         void scanObject(T& object)
         {
             while (hasMoreValue())
@@ -705,17 +786,27 @@ class DeSerializationForBlock<TraitType::Array, T>
 template<>
 class DeSerializationForBlock<TraitType::AnyBlock, ::ThorsAnvil::Serialize::AnyBlock>
 {
-    ParserInterface& parser;
+    ParserInterface&    parser;
+    bool                base;
     public:
-        DeSerializationForBlock(DeSerializer&, ParserInterface& parser)
+        DeSerializationForBlock(DeSerializer&, ParserInterface& parser, bool base = false)
             : parser(parser)
+            , base{base}
         {}
+        bool getBase() const {return base;}
 
         void scanObject(::ThorsAnvil::Serialize::AnyBlock& object)
         {
             ParserToken    tokenType = parser.getToken();
+
+            if (base && tokenType == ParserToken::OKEndOfInput) {
+                base = false;
+                return;
+            }
+
             switch (tokenType)
             {
+                case ParserToken::OKEndOfInput:
                 case ParserToken::Error:
                 case ParserToken::DocStart:
                 case ParserToken::DocEnd:
@@ -759,6 +850,7 @@ class DeSerializationForBlock<TraitType::AnyBlock, ::ThorsAnvil::Serialize::AnyB
 
                 switch (tokenType)
                 {
+                    case ParserToken::OKEndOfInput:
                     case ParserToken::Error:
                     case ParserToken::DocStart:
                     case ParserToken::DocEnd:
@@ -799,6 +891,7 @@ class DeSerializationForBlock<TraitType::AnyBlock, ::ThorsAnvil::Serialize::AnyB
                 }
                 switch (tokenType)
                 {
+                    case ParserToken::OKEndOfInput:
                     case ParserToken::Error:
                     case ParserToken::DocStart:
                     case ParserToken::DocEnd:
@@ -923,8 +1016,13 @@ inline void DeSerializer::parse(T& object)
 {
     try
     {
-        DeSerializationForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, parser);
-        block.scanObject(object);
+        DeSerializationForBlock<Traits<std::remove_cv_t<T>>::type, T>     block(*this, parser, true);
+        if (block.getBase()) {
+            block.scanObject(object);
+        }
+        if (!block.getBase()) {
+            parser.setEOF();
+        }
     }
     catch (std::exception const& e)
     {

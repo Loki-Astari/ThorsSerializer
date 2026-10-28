@@ -35,7 +35,7 @@ namespace ThorsAnvil::Serialize
 
 class YamlParser: public ParserInterface
 {
-    enum class State {Open, Map, Array};
+    enum class State {Open, Map, Array, Empty};
     std::vector<std::pair<State, int>>  state;
     yaml_parser_t       parser;
     yaml_event_t        event;

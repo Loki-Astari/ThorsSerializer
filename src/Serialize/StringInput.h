@@ -23,6 +23,7 @@ struct StringInput
     std::size_t             position;
     std::size_t             lastRead;
     bool                    good;
+    bool                    eofmarker;
 
     public:
         StringInput(std::string_view const& view)
@@ -30,6 +31,7 @@ struct StringInput
             , position(0)
             , lastRead(0)
             , good(true)
+            , eofmarker{false}
         {}
 
         bool read(char* dst, std::size_t size)
@@ -100,6 +102,11 @@ struct StringInput
         void setFail()
         {
             good = false;
+        }
+        void setEOF()
+        {
+            good = false;
+            eofmarker = true;
         }
 
         template<typename T>
