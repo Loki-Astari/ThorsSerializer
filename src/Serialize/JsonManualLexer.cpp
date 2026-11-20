@@ -197,7 +197,7 @@ void JsonManualLexer::getStringInto(std::string& value)
     if (next != '"')
     {
         ThorsLogAndThrowError(std::runtime_error,
-                              "ThorsAnvil::Serialize::JsonManualLexer",
+                            "ThorsAnvil::Serialize::JsonManualLexer",
                               "UnicodeWrapperIterator",
                               "String does not start with a \" character");
     }
