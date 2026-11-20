@@ -1351,6 +1351,27 @@ class SerializerForBlock<TraitType::Array, T>
         }
 };
 
+template<typename T>
+class SerializerForBlock<TraitType::AnyBlock, T>
+{
+    Serializer&         parent;
+    PrinterInterface& printer;
+    T const&            object;
+    public:
+        SerializerForBlock(Serializer& parent, PrinterInterface& printer, T const& object, bool /*poly*/ = false)
+            : parent(parent)
+            , printer(printer)
+            , object(object)
+        {}
+        ~SerializerForBlock()
+        {
+        }
+        void printMembers()
+        {
+            printer.write(object.getView());
+        }
+};
+
 /* ------------ SerializeMember ------------------------- */
 
 template<typename T, typename M>

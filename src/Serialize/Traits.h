@@ -1007,6 +1007,7 @@ class AnyBlock
         void addKey(ParserInterface& parser)        {data << "\"" << parser.getKey() << "\":";}
         void addValue(ParserInterface& parser)      {data << parser.getRawValue();}
         void next()                                 {data << ",";}
+        void reset()                                {data.str("");}
 };
 
 template<typename T>
