@@ -100,6 +100,17 @@
  *              static void readCustom(DeSerializer& parent, ParserInterface& parser, T& object)
  *          };
  *
+ *     Note: There is a basic half implementation of SerializableType in CustomSerializer.h
+ *           This class defines the getPrintSize() and writeCustom() methods and all you need to do
+ *           is define the specialization of readCustom().
+ *
+ *           Note: This class depends on `streamableValue()` which has a default implementation
+ *                 but can be used in relation with this class and the type. PrintableType
+ *                 See example in test/CustomSerializableTest.cpp
+ *                             Also NisseMPC/src/NisseMCP/SerializableId.h
+ *                             Also NisseMPC/src/NisseMCP/DataTool.h
+ *
+ * ------------
  * Sometimes you can not use the key names you want (they are reserved words or contain
  * symbols that are not valid in identifiers in C++). So we provide a way to override
  * the member names supplied in the ThorsAnvil_MakeTrait() so they will be mapped to
@@ -764,7 +775,7 @@ class Traits<DataType>                                                  \
     static std::size_t getPrintSize(PrinterInterface& printer, DataType const& object, bool)\
     {                                                                   \
         SerializingType info;                                           \
-        return info.getPrintSize(printer, object);                      \
+        return info.getPrintSize(printer, streamableValue(object));     \
     }                                                                   \
 };                                                                      \
 }                                                                       \

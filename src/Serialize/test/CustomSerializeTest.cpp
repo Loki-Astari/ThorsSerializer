@@ -1,21 +1,35 @@
 #include <gtest/gtest.h>
 
 #include "JsonThor.h"
+#include "Serialize.h"
+#include "CustomSerializer.h"
 
 #include <variant>
 #include <string>
 
 using SerializableId                = std::variant<std::string, long>;
+struct SerializableIdExtension
+{
+    using PrintableType = SerializableId;
+    SerializableId          value;
+    int                     type;
+};
+template<typename T>
+requires std::is_same_v<std::remove_const_t<T>, ::SerializableIdExtension>
+ThorsAnvil::Serialize::GetPrintableType_t<T>& streamableValue(T& object) {return object.value;}
 
+template<typename T>
 struct BlockOne
 {
-    SerializableId      id;
+    T                   id;
     std::string         method;
     long                core;
 };
 
-class IdSerializer
+using ThorsAnvil::Serialize::streamableValue;
+class IdSerializer: public ThorsAnvil::Serialize::CustomSerializer
 {
+    /*
     struct IdWriter
     {
         ThorsAnvil::Serialize::Serializer&          parent;
@@ -41,7 +55,9 @@ class IdSerializer
             return Traits::getPrintSize(printer, val, true);
         }
     };
+    */
     public:
+    /*
         template<typename T>
         static std::size_t getPrintSize(ThorsAnvil::Serialize::PrinterInterface& printer, T const& object)
         {
@@ -52,14 +68,15 @@ class IdSerializer
         {
             std::visit(IdWriter{parent, printer}, object);
         }
+    */
         template<typename T>
         static void readCustom(ThorsAnvil::Serialize::DeSerializer& /*parent*/, ThorsAnvil::Serialize::ParserInterface& parser, T& object)
         {
             ThorsAnvil::Serialize::ParserToken    tokenType = parser.getToken();
             switch (parser.peekType())
             {
-                case ThorsAnvil::Serialize::ValueType::Number:  {long value;        parser.getValue(value);object = value;break;}
-                case ThorsAnvil::Serialize::ValueType::String:  {std::string value; parser.getValue(value);object = value;break;}
+                case ThorsAnvil::Serialize::ValueType::Number:  {long value;        parser.getValue(value);streamableValue(object) = value;break;}
+                case ThorsAnvil::Serialize::ValueType::String:  {std::string value; parser.getValue(value);streamableValue(object) = value;break;}
                 default:
                     ThorsLogAndThrowDebug(std::runtime_error, "ThorsAnvil::Nisse::MCP::IdSerializer", "readCustom", "Expected integer or string for id");
             }
@@ -67,7 +84,8 @@ class IdSerializer
 };
 
 ThorsAnvil_MakeTraitCustomSerialize(SerializableId, IdSerializer);
-ThorsAnvil_MakeTrait(BlockOne, id, method, core);
+ThorsAnvil_MakeTraitCustomSerialize(SerializableIdExtension, IdSerializer);
+ThorsAnvil_Template_MakeTrait(1, BlockOne, id, method, core);
 
 
 TEST(CustomSerializeTest, GetLongId)
@@ -80,6 +98,17 @@ TEST(CustomSerializeTest, GetLongId)
     EXPECT_EQ(10, std::get<long>(id));
 }
 
+TEST(CustomSerializeTest, GetLongIdExtension)
+{
+    std::string_view    input = "10";
+    SerializableIdExtension      id  = {0, 2};
+
+    input >> ThorsAnvil::Serialize::jsonImporter(id);
+
+    EXPECT_EQ(10, std::get<long>(id.value));
+    EXPECT_EQ(2, id.type);
+}
+
 TEST(CustomSerializeTest, GetStringId)
 {
     std::string_view    input = R"json("Discover")json";
@@ -90,10 +119,21 @@ TEST(CustomSerializeTest, GetStringId)
     EXPECT_EQ("Discover", std::get<std::string>(id));
 }
 
+TEST(CustomSerializeTest, GetStringIdExtension)
+{
+    std::string_view    input = R"json("Discover")json";
+    SerializableIdExtension      id  = {0, 4};
+
+    input >> ThorsAnvil::Serialize::jsonImporter(id);
+
+    EXPECT_EQ("Discover", std::get<std::string>(id.value));
+    EXPECT_EQ(4, id.type);
+}
+
 TEST(CustomSerializeTest, BlockOneWithLongId)
 {
     std::string_view    input = R"json({"id":10,"method":"this/thing","core":12})json";
-    BlockOne            data{0, "", 0};
+    BlockOne<SerializableId>            data{0, "", 0};
 
     input >> ThorsAnvil::Serialize::jsonImporter(data);
 
@@ -102,14 +142,39 @@ TEST(CustomSerializeTest, BlockOneWithLongId)
     EXPECT_EQ(12, data.core);
 }
 
+TEST(CustomSerializeTest, BlockOneWithLongIdExtension)
+{
+    std::string_view    input = R"json({"id":10,"method":"this/thing","core":12})json";
+    BlockOne<SerializableIdExtension>            data{{0,8}, "", 0};
+
+    input >> ThorsAnvil::Serialize::jsonImporter(data);
+
+    EXPECT_EQ(10, std::get<long>(data.id.value));
+    EXPECT_EQ(8, data.id.type);
+    EXPECT_EQ("this/thing", data.method);
+    EXPECT_EQ(12, data.core);
+}
+
 TEST(CustomSerializeTest, BlockOneWithStringId)
 {
     std::string_view   input = R"json({"id":"Discover","method":"this/thing","core":12})json";
-    BlockOne            data{0, "", 0};
+    BlockOne<SerializableId>            data{0, "", 0};
 
     input >> ThorsAnvil::Serialize::jsonImporter(data);
 
     EXPECT_EQ("Discover", std::get<std::string>(data.id));
+    EXPECT_EQ("this/thing", data.method);
+    EXPECT_EQ(12, data.core);
+}
+TEST(CustomSerializeTest, BlockOneWithStringIdExtension)
+{
+    std::string_view   input = R"json({"id":"Discover","method":"this/thing","core":12})json";
+    BlockOne<SerializableIdExtension>            data{{0,5}, "", 0};
+
+    input >> ThorsAnvil::Serialize::jsonImporter(data);
+
+    EXPECT_EQ("Discover", std::get<std::string>(data.id.value));
+    EXPECT_EQ(5, data.id.type);
     EXPECT_EQ("this/thing", data.method);
     EXPECT_EQ(12, data.core);
 }

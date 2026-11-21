@@ -386,6 +386,28 @@ DeSerializationForBlock<TraitType::Custom_Depricated, T>
         }
 };
 
+// Primary template: fallback to Default
+template <typename T, typename = void>
+struct GetPrintableType
+{
+    using type = T;
+};
+
+template <typename T>
+struct GetPrintableType<T, std::void_t<typename T::PrintableType>>
+{
+    using type = std::conditional_t<std::is_const_v<T>,
+                                    typename T::PrintableType const,
+                                    typename T::PrintableType>;
+};
+
+template<typename T>
+using GetPrintableType_t = typename GetPrintableType<T>::type;
+
+
+template<typename T>
+GetPrintableType_t<T>& streamableValue(T& object)    {return object;}
+
 template<typename T>
 class DeSerializationForBlock<TraitType::Custom_Serialize, T>
 {
@@ -1149,7 +1171,7 @@ class SerializerForBlock<TraitType::Custom_Serialize, T>
         {
             using SerializingType = typename Traits<std::remove_cv_t<T>>::SerializingType;
             SerializingType info;
-            info.writeCustom(parent, printer, object);
+            info.writeCustom(parent, printer, streamableValue(object));
         }
 };
 
