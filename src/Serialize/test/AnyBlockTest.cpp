@@ -13,14 +13,17 @@ TEST(AnyBlockTest, BoolTrue)
 
     EXPECT_EQ("true", any.getString());
 }
-TEST(AnyBlockTest, BoolFalse)
+
+TEST(AnyBlockTest, AnyMoveOut)
 {
     std::stringstream               stream("false");
     ThorsAnvil::Serialize::AnyBlock any;
 
     stream >> ThorsAnvil::Serialize::jsonImporter(any);
 
-    EXPECT_EQ("false", any.getString());
+    std::string extracted = std::move(any).getString();
+    EXPECT_EQ("false", extracted);
+    EXPECT_EQ("",      any.getString());
 }
 TEST(AnyBlockTest, Int)
 {

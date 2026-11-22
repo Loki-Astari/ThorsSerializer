@@ -1007,9 +1007,15 @@ class AnyBlock
 {
     std::stringstream data;
     public:
-        std::string         getString() const {return data.str();}
-        std::string_view    getView() const   {return data.view();}
+        AnyBlock()                      = default;
+        AnyBlock(AnyBlock const& copy)        {data << copy.data.rdbuf();}
+        AnyBlock(AnyBlock&&)            = default;
+        AnyBlock& operator=(AnyBlock const& copy) {data.clear();data << copy.data.rdbuf();return *this;}
+        AnyBlock& operator=(AnyBlock&&) = default;
 
+        std::string         getString() &&      {return std::move(data).str();}
+        std::string         getString() const&  {return data.str();}
+        std::string_view    getView()   const   {return data.view();}
 
         void openMap()                              {data << "{";}
         void closeMap()                             {data << "}";}
@@ -1019,6 +1025,9 @@ class AnyBlock
         void addValue(ParserInterface& parser)      {data << parser.getRawValue();}
         void next()                                 {data << ",";}
         void reset()                                {data.str("");}
+
+        std::strong_ordering operator<=>(AnyBlock const& rhs) const {return data.str() <=> rhs.data.str();}
+        bool                  operator==(AnyBlock const& rhs) const {return data.str() == rhs.data.str();}
 };
 
 template<typename T>
